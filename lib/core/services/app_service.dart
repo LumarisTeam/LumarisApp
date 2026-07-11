@@ -71,7 +71,8 @@ class AppService {
       return assetUrl;
     }
 
-    return '';
+    return 'https://gitee.com/luckyfishisdashen/iOSClub.AppMobile/'
+        'releases/download/${release.name}/app-release.apk';
   }
 
   static Future<void> updateApp(ReleaseModel release) async {

@@ -459,17 +459,25 @@ class CacheInterceptor extends Interceptor {
 
     // 只有GET请求才使用缓存
     if (options.method == 'GET' && !bypassCache) {
-      final cachedData = await _cache.get(options.uri.toString(),
-          params: options.queryParameters);
-      if (cachedData != null) {
-        // 使用缓存数据
-        final response = Response(
-          data: cachedData,
-          requestOptions: options,
-          statusCode: 200,
-          statusMessage: 'OK (from cache)',
+      try {
+        final cachedData = await _cache.get(
+          options.uri.toString(),
+          params: options.queryParameters,
         );
-        return handler.resolve(response);
+        if (cachedData != null) {
+          final response = Response(
+            data: cachedData,
+            requestOptions: options,
+            statusCode: 200,
+            statusMessage: 'OK (from cache)',
+          );
+          return handler.resolve(response);
+        }
+      } catch (error) {
+        // Cache availability must never prevent the network request. This also
+        // keeps isolated widget hosts independent from Hive initialization.
+        AppLogger.warning('Request cache unavailable; bypassing cache',
+            error: error);
       }
     }
     handler.next(options);
@@ -479,11 +487,16 @@ class CacheInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) async {
     // 只有GET请求才缓存
     if (response.requestOptions.method == 'GET' && response.statusCode == 200) {
-      await _cache.set(
-        response.requestOptions.uri.toString(),
-        response.data,
-        params: response.requestOptions.queryParameters,
-      );
+      try {
+        await _cache.set(
+          response.requestOptions.uri.toString(),
+          response.data,
+          params: response.requestOptions.queryParameters,
+        );
+      } catch (error) {
+        AppLogger.warning('Request cache unavailable; response not cached',
+            error: error);
+      }
     }
     handler.next(response);
   }

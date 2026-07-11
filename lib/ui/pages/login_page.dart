@@ -9,9 +9,7 @@ import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
-import 'package:ios_club_app/features/education/services/auth_service.dart';
-import 'package:ios_club_app/features/education/services/education_cache_service.dart';
-import 'package:ios_club_app/features/education/services/education_refresh_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/state/settings_store.dart';
@@ -136,27 +134,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   /// 登录教务系统
   /// 返回 true 表示登录 API 调用成功（数据刷新失败不影响登录状态）
   Future<bool> _loginToEduSystem() async {
-    await EducationCacheService.clearEduCache();
-    await PrefsService.instance.remove(PrefsKeys.GUEST_COURSE_DATA);
-
-    final loginResult = await AuthService.loginFromData(
-      _usernameController.text,
-      _passwordController.text,
-    );
-
-    if (!loginResult) {
+    final result = await ref.read(educationSessionCoordinatorProvider).login(
+          school: _selectedSchool,
+          username: _usernameController.text,
+          password: _passwordController.text,
+        );
+    if (!result.isSuccess) {
       if (mounted) {
         showClubSnackBar(
           context,
-          Text(context.l10n.loginFailed),
+          Text(result.error.userMessage),
         );
       }
       return false;
     }
-
-    // 数据刷新失败不影响登录结果
-    await EducationRefreshService.refreshWithExistingSession();
-
     return true;
   }
 
@@ -180,11 +171,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     // Read before setSchoolId() clears school-related prefs data
     final userDataString = prefs.getString(PrefsKeys.USER_DATA);
-
-    // 保存选中的学校
-    await ref
-        .read(settingsStoreProvider.notifier)
-        .setSchoolId(_selectedSchool.code);
 
     if (userDataString != null) {
       // Re-save because setSchoolId() → _clearSchoolRelatedData() removes USER_DATA

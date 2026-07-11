@@ -9,6 +9,7 @@ import '../../../state/prefs_keys.dart';
 import '../../../core/utils/request_cache.dart';
 import '../../../core/services/retry_policy.dart';
 import '../../basic/models/school.dart';
+import '../data/edu_api_client.dart';
 import 'login_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
@@ -29,7 +30,8 @@ class AuthStateCallbacks {
   final RelogFailedCallback? onRelogFailed;
 }
 
-class EduHttpClient {
+class EduHttpClient implements EduApiClient {
+  static const String skipAuthRecoveryKey = 'skip_auth_recovery';
   static const String _rateLimitMessage = '已被限流，请稍后再试';
   static const int _rateLimitCooldownMs = 5000;
 
@@ -104,6 +106,11 @@ class EduHttpClient {
       onError: (DioException e, handler) async {
         final statusCode = e.response?.statusCode;
 
+        if (e.requestOptions.extra[skipAuthRecoveryKey] == true) {
+          handler.next(e);
+          return;
+        }
+
         if (statusCode == 429) {
           _recordRateLimit(e.requestOptions);
           handler.next(
@@ -169,6 +176,7 @@ class EduHttpClient {
   }
 
   /// 获取当前基础 URL
+  @override
   String get baseUrl => _baseUrl;
 
   /// 暴露 Dio 实例，便于在测试中注入拦截器和验证请求。
@@ -177,6 +185,7 @@ class EduHttpClient {
   /// 更新基础 URL
   ///
   /// 用于切换学校时更新 API 地址
+  @override
   void updateBaseUrl(String newBaseUrl) {
     _baseUrl = newBaseUrl;
     _dio.options.baseUrl = newBaseUrl;
@@ -421,6 +430,7 @@ class EduHttpClient {
   }
 
   // 通用GET请求方法
+  @override
   Future<dynamic> get(
     String path, {
     Map<String, dynamic>? queryParameters,
@@ -451,6 +461,7 @@ class EduHttpClient {
   }
 
   // 通用POST请求方法
+  @override
   Future<dynamic> post(
     String path, {
     dynamic data,
@@ -471,6 +482,7 @@ class EduHttpClient {
   }
 
   // 通用DELETE请求方法
+  @override
   Future<dynamic> delete(
     String path, {
     dynamic data,
@@ -498,6 +510,7 @@ class EduHttpClient {
     DioErrorHandler.handleError(e);
   }
 
+  @override
   void dispose() {
     _dio.close();
   }

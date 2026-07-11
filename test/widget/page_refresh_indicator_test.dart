@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
+import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/features/education/models/electric_data.dart';
 import 'package:ios_club_app/features/education/models/edu_api_models.dart';
 import 'package:ios_club_app/features/education/models/plan_course.dart';
@@ -34,6 +35,14 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
     await PrefsService.init();
     await PrefsService.instance.clear();
+    await PrefsService.instance.setString(
+      PrefsKeys.USER_DATA,
+      '{"studentId":"widget-test","cookie":"test-cookie"}',
+    );
+    await PrefsService.instance.setInt(
+      PrefsKeys.LAST_FETCH_TIME,
+      DateTime.now().millisecondsSinceEpoch,
+    );
   });
 
   testWidgets('ProgramPage should not expose pull to refresh', (tester) async {

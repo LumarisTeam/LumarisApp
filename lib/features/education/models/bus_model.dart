@@ -27,17 +27,21 @@ class BusItem {
   /// 线路名称
   @JsonKey(fromJson: parseSchemaString)
   final String lineName;
+
   /// 描述
   @JsonKey(fromJson: parseSchemaString)
   final String description;
+
   /// 出发站
   @JsonKey(fromJson: parseSchemaString)
   final String departureStation;
+
   /// 到达站
   @JsonKey(fromJson: parseSchemaString)
   final String arrivalStation;
   @JsonKey(fromJson: parseSchemaString)
   String runTime;
+
   /// 到达终点所需时间
   @JsonKey(fromJson: parseSchemaString)
   String arrivalStationTime;
@@ -68,6 +72,8 @@ class BusItem {
       if (s.length >= 2) {
         int h = int.parse(s[0]);
         int m = int.parse(s[1]);
+        arrivalStationTime = '${h.toString().padLeft(2, '0')}小时 '
+            '${m.toString().padLeft(2, '0')}分钟';
         if (runTime.isNotEmpty && runTime.contains(':')) {
           var runTimeSplit = runTime.split(':');
           if (runTimeSplit.length >= 2) {

@@ -159,7 +159,12 @@ class ExamService {
       try {
         final endTime = _parseExamTime(item.examTime, now);
         if (endTime != null && !now.isAfter(endTime)) {
-          list.add(ExamItemAndEndTime(name: item.name, examTime: item.examTime, room: item.room, seatNo: item.seatNo, endTime: endTime));
+          list.add(ExamItemAndEndTime(
+              name: item.name,
+              examTime: item.examTime,
+              room: item.room,
+              seatNo: item.seatNo,
+              endTime: endTime));
         }
       } catch (e) {
         AppLogger.debug('时间解析失败: $e');
@@ -193,7 +198,10 @@ class ExamService {
         examMap['${exam.name}_${exam.examTime}_${exam.room}'] = exam;
       }
 
-      final validExams = examMap.values.toList();
+      final validExams = examMap.values.where((exam) {
+        final endTime = _parseExamTime(exam.examTime, now);
+        return endTime != null && !now.isAfter(endTime);
+      }).toList();
 
       return ExamResponse(exams: validExams, canClick: newExams.canClick);
     } catch (e) {

@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+
 import '../../../core/services/network_exception.dart';
 import 'edu_http_client.dart';
+import 'edu_http_client_manager.dart';
 
 /// 登录服务
 class LoginService {
-  static EduHttpClient _client = EduHttpClient();
+  static EduHttpClient? _clientOverride;
   static Future<Map<String, dynamic>> Function(String, String)?
       _loginOverrideForTest;
 
@@ -18,12 +21,18 @@ class LoginService {
       return await _loginOverrideForTest!(username, password);
     }
     try {
-      final response = await _client.post(
+      final client = _clientOverride ?? EduHttpClientManager.instance;
+      final response = await client.post(
         '/Login',
         data: {
           'username': username,
           'password': password,
         },
+        options: Options(
+          extra: const <String, dynamic>{
+            EduHttpClient.skipAuthRecoveryKey: true,
+          },
+        ),
       );
       if (response is Map<String, dynamic>) {
         return response;
@@ -47,11 +56,11 @@ class LoginService {
   }
 
   static void setClientForTest(EduHttpClient client) {
-    _client = client;
+    _clientOverride = client;
   }
 
   static void resetClientForTest() {
-    _client.dispose();
-    _client = EduHttpClient();
+    _clientOverride?.dispose();
+    _clientOverride = null;
   }
 }
