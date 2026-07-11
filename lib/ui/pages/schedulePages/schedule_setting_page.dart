@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
-import 'package:ios_club_app/features/education/services/course_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/course_store.dart';
@@ -110,7 +110,10 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
   Future<void> _loadCourseData() async {
     try {
       await courseStore.loadIgnoreCourses();
-      final courseNames = await CourseService.getCourseName();
+      final courseResult =
+          await ref.read(courseFeatureRepositoryProvider).getCourseNames();
+      if (!courseResult.isSuccess) throw courseResult.error;
+      final courseNames = courseResult.data;
 
       final ignores = courseNames
           .map((i) => CourseIgnore(
@@ -548,7 +551,9 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
       }
 
       courseStore.setIgnoreCourses(ignoreList);
-      return CourseService.setIgnore(ignoreList);
+      return ref
+          .read(courseFeatureRepositoryProvider)
+          .saveIgnoredCourses(ignoreList);
     });
   }
 

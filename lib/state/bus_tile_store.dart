@@ -1,13 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/education/models/bus_model.dart';
-import 'package:ios_club_app/features/education/services/bus_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/tile_store_providers.dart';
 
 typedef BusFetcher = Future<BusModel> Function();
 
 final busFetcherProvider = Provider<BusFetcher>((ref) {
-  return BusService.getBus;
+  return () async {
+    final result = await ref.read(busRepositoryProvider).getBus();
+    if (!result.isSuccess) throw result.error;
+    return result.data;
+  };
 });
 
 final busTileStoreProvider =

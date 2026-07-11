@@ -9,8 +9,7 @@ import 'package:ios_club_app/core/utils/week_start_utils.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/week_info.dart';
-import 'package:ios_club_app/features/education/services/course_service.dart';
-import 'package:ios_club_app/features/education/services/edu_time_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/features/system/notifications/task_executor.dart';
 import 'package:ios_club_app/platform/android/background_service.dart';
 import 'package:ios_club_app/platform/ios/background_service.dart';
@@ -68,9 +67,11 @@ class ScheduleStore extends Notifier<ScheduleState> {
 
   Future<void> initializeData() async {
     try {
-      final weekData = await EduTimeService.getWeek(
-        weekStartDay: _weekStartDay,
-      );
+      final weekResult = await ref
+          .read(educationTimeRepositoryProvider)
+          .getWeek(weekStartDay: _weekStartDay);
+      if (!weekResult.isSuccess) throw weekResult.error;
+      final weekData = weekResult.data;
       _handleWeekData(weekData);
       final isLogin = ref.read(userStoreProvider).isLogin;
       if (isLogin) {
@@ -115,7 +116,11 @@ class ScheduleStore extends Notifier<ScheduleState> {
   }
 
   Future<void> getRemindCourses() async {
-    _allCoursesRemind = await CourseService.getAllCourse(isNeedIgnore: false);
+    final result = await ref
+        .read(courseFeatureRepositoryProvider)
+        .getAllCourses(applyIgnore: false);
+    if (!result.isSuccess) throw result.error;
+    _allCoursesRemind = result.data;
   }
 
   Future<void> refreshCourseData() async {
@@ -132,8 +137,10 @@ class ScheduleStore extends Notifier<ScheduleState> {
   }
 
   Future<void> _loadCourses() async {
-    final courses = await CourseService.getAllCourse();
-    _applyCourses(courses);
+    final result =
+        await ref.read(courseFeatureRepositoryProvider).getAllCourses();
+    if (!result.isSuccess) throw result.error;
+    _applyCourses(result.data);
   }
 
   void _applyCourses(List<CourseModel> courses) {
@@ -170,28 +177,35 @@ class ScheduleStore extends Notifier<ScheduleState> {
     AppLogger.debug('[ScheduleStore] 开始刷新课程');
     state = state.copyWith(isLoading: true);
     try {
-      AppLogger.debug('[ScheduleStore] 调用 CourseService.getCourse');
+      AppLogger.debug('[ScheduleStore] 调用 CourseRepository.refreshCourses');
 
-      final weekData = await EduTimeService.getWeek(
-        isRefresh: true,
-        weekStartDay: _weekStartDay,
-      );
+      final weekResult =
+          await ref.read(educationTimeRepositoryProvider).getWeek(
+                forceRefresh: true,
+                weekStartDay: _weekStartDay,
+              );
+      if (!weekResult.isSuccess) throw weekResult.error;
+      final weekData = weekResult.data;
 
       if (currentRefreshId != _refreshCount) return;
 
       _handleWeekData(weekData);
 
-      await CourseService.getCourse(isRefresh: true).timeout(
+      final refreshResult = await ref
+          .read(courseFeatureRepositoryProvider)
+          .refreshCourses()
+          .timeout(
         const Duration(seconds: 20),
         onTimeout: () {
           AppLogger.warning('[ScheduleStore] 刷新课程超时');
           throw TimeoutException('刷新课程超时');
         },
       );
+      if (!refreshResult.isSuccess) throw refreshResult.error;
 
       if (currentRefreshId != _refreshCount) return;
 
-      AppLogger.debug('[ScheduleStore] CourseService.getCourse 完成');
+      AppLogger.debug('[ScheduleStore] CourseRepository.refreshCourses 完成');
 
       await getRemindCourses();
       AppLogger.debug('[ScheduleStore] getRemindCourses 完成');

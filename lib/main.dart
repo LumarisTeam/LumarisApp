@@ -5,24 +5,19 @@ import 'package:display_mode/display_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/basic/services/basic_http_client_manager.dart';
-import 'package:ios_club_app/state/auth_state_notifier.dart';
 import 'package:ios_club_app/core/services/hive_manager.dart';
 import 'package:ios_club_app/core/services/permission_service.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
-import 'package:ios_club_app/features/education/services/auth_service.dart';
-import 'package:ios_club_app/features/education/services/edu_http_client.dart';
-import 'package:ios_club_app/features/education/services/edu_http_client_manager.dart';
-import 'package:ios_club_app/features/education/services/education_refresh_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/features/system/notifications/notification_service.dart';
 import 'package:ios_club_app/features/system/notifications/task_executor.dart';
 import 'package:ios_club_app/features/system/widget_service.dart';
 import 'package:ios_club_app/platform/android/background_service.dart';
 import 'package:ios_club_app/platform/ios/background_service.dart';
 import 'package:ios_club_app/routes/router.dart';
-import 'package:ios_club_app/state/course_store.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/ui/components/platform_dialog.dart';
@@ -54,9 +49,6 @@ void main() async {
 
   final providerContainer = ProviderContainer();
   final settingsStore = providerContainer.read(settingsStoreProvider.notifier);
-  final authStateNotifier =
-      providerContainer.read(authStateNotifierProvider.notifier);
-  final courseStore = providerContainer.read(courseStoreProvider.notifier);
 
   BasicHttpClientManager.initialize();
 
@@ -66,16 +58,7 @@ void main() async {
   final initialSchool = providerContainer.read(schoolStoreProvider).school ??
       settingsStore.currentSchool;
 
-  EduHttpClientManager.initialize(
-    school: initialSchool,
-    authStateCallbacks: AuthStateCallbacks(
-      onRelogging: authStateNotifier.startRelogging,
-      onRelogSuccess: authStateNotifier.relogSuccess,
-      onRelogFailed: authStateNotifier.relogFailed,
-    ),
-  );
-
-  EducationRefreshService.setCourseRefreshCallback(courseStore.loadCourses);
+  providerContainer.read(educationBootstrapProvider).initialize(initialSchool);
 
   if (!PlatformUtils.isMacOS) {
     requestPermissions();
@@ -128,15 +111,15 @@ void main() async {
 
   // 延后到首帧渲染之后：凭证迁移、请求缓存、后台服务等
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    _deferredInit();
+    _deferredInit(providerContainer);
   });
 }
 
 /// 延后执行的非关键初始化，避免阻塞首帧渲染
-Future<void> _deferredInit() async {
+Future<void> _deferredInit(ProviderContainer container) async {
   // 凭证迁移（SecureStorage 在安卓上可能较慢）和请求缓存并行执行
   await Future.wait([
-    AuthService.migrateCredentials(),
+    container.read(educationBootstrapProvider).migrateCredentials(),
     RequestCache().initialize(),
   ]);
 

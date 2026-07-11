@@ -98,7 +98,7 @@ class EduHttpClient implements EduApiClient {
         final cookie = await _getCookie();
         if (cookie != null) {
           options.headers['Cookie'] = cookie;
-          options.headers['xauat'] = cookie;
+          // options.headers['xauat'] = cookie;
         }
         options.headers.putIfAbsent('x-language', _resolveLanguageHeaderValue);
         handler.next(options);

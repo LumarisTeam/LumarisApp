@@ -9,7 +9,7 @@ import 'package:ios_club_app/core/services/app_locale_service.dart';
 import '../features/basic/models/school.dart';
 import '../features/basic/services/school_api.dart';
 import '../features/basic/services/school_config_cache.dart';
-import '../features/education/services/edu_http_client_manager.dart';
+import '../features/education/application/education_dependencies.dart';
 import 'prefs_keys.dart';
 import 'school_store.dart';
 
@@ -206,7 +206,7 @@ class SettingsStore extends Notifier<SettingsState> {
     await SchoolConfigCache.save(school);
 
     try {
-      EduHttpClientManager.current.updateSchoolConfig(school);
+      ref.read(eduApiClientProvider).updateBaseUrl(school.website);
     } catch (_) {
       // The manager may not be initialized during early app startup or tests.
     }

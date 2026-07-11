@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
-import 'package:ios_club_app/features/education/services/education_cache_service.dart';
+import 'package:ios_club_app/features/education/application/education_dependencies.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/course_store.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
@@ -65,7 +65,7 @@ class UserStore extends Notifier<UserState> {
     await secureStorage.delete(key: PrefsKeys.USERNAME);
     await secureStorage.delete(key: PrefsKeys.PASSWORD);
 
-    await EducationCacheService.clearEduCache();
+    await ref.read(educationCacheClearerProvider)();
 
     ref.read(courseStoreProvider.notifier).clearCourseData();
     ref.read(scheduleStoreProvider.notifier).clean();

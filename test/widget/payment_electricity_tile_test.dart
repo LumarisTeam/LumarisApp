@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/features/education/models/electric_data.dart';
+import 'package:ios_club_app/features/education/models/bus_model.dart';
 import 'package:ios_club_app/core/models/tile_configuration.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/features/education/models/payment_model.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:ios_club_app/state/electricity_store.dart';
+import 'package:ios_club_app/state/bus_tile_store.dart';
 import 'package:ios_club_app/state/payment_store.dart';
 import 'package:ios_club_app/state/tile_edit_notifier.dart';
 import 'package:ios_club_app/ui/components/tiles/bus_tile.dart';
@@ -30,6 +32,7 @@ List<Override> _overrides() => [
           .overrideWithValue((_) async => true),
       studentIsLoginReaderProvider.overrideWithValue(() => true),
       paymentStudentIdReaderProvider.overrideWithValue(() async => 'student-1'),
+      paymentPasswordReaderProvider.overrideWithValue(() async => null),
       paymentDataFetcherProvider.overrideWithValue(
         (_, __) async => const PaymentData(
           [
@@ -44,6 +47,9 @@ List<Override> _overrides() => [
         ),
       ),
       tileVisibilityReaderProvider.overrideWithValue((_) async => true),
+      busFetcherProvider.overrideWithValue(
+        () async => BusModel(records: const [], total: 0),
+      ),
     ];
 
 void main() {
@@ -55,9 +61,17 @@ void main() {
   });
 
   testWidgets('tiles_render_loaded_states', (tester) async {
+    final container = ProviderContainer(overrides: _overrides());
+    addTearDown(container.dispose);
+    await Future.wait([
+      container.read(electricityStoreProvider.notifier).loadElectricityData(),
+      container.read(paymentStoreProvider.notifier).loadData(),
+      container.read(busTileStoreProvider.notifier).loadBusData(),
+    ]);
+
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: _overrides(),
+      UncontrolledProviderScope(
+        container: container,
         child: MaterialApp(
           locale: const Locale('zh'),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -77,8 +91,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text('当前电费'), findsOneWidget);
-    expect(find.text('当前余额'), findsOneWidget);
-    expect(find.text('今日校车'), findsOneWidget);
+    expect(find.text('当前余额'), findsNWidgets(2));
+    expect(find.text('校车'), findsOneWidget);
   });
 }

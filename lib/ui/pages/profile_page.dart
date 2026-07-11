@@ -8,7 +8,7 @@ import 'package:ios_club_app/features/education/models/info_model.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/animations/animations.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
-import 'package:ios_club_app/features/education/services/info_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/ui/components/club_card.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
@@ -199,7 +199,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           maxLines: 1,
                         ),
                         Text(
-                          isLogin ? '${school?.name ?? ""} ${l10n.academicAccount}' : l10n.guest,
+                          isLogin
+                              ? '${school?.name ?? ""} ${l10n.academicAccount}'
+                              : l10n.guest,
                           style: TextStyle(
                             fontSize: 14,
                             color: colors.secondaryLabel,
@@ -239,11 +241,23 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             ),
           ),
           if (isLogin) const SizedBox(height: 16),
-          if (isLogin && (ref.watch(schoolStoreProvider).school?.supports(Feature.studyProgress) ?? true))
+          if (isLogin &&
+              (ref
+                      .watch(schoolStoreProvider)
+                      .school
+                      ?.supports(Feature.studyProgress) ??
+                  true))
             FutureBuilder(
                 key: ValueKey('info_data_$_dataRefreshKey'),
                 // 添加超时保护：最多10秒
-                future: InfoService.getInfoList().timeout(
+                future: ref
+                    .read(infoRepositoryProvider)
+                    .getInfo()
+                    .then(
+                      (result) =>
+                          result.isSuccess ? result.data : <InfoModel>[],
+                    )
+                    .timeout(
                   const Duration(seconds: 10),
                   onTimeout: () {
                     AppLogger.warning('[ProfilePage] 获取信息列表超时');

@@ -10,8 +10,8 @@ import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/basic/services/school_config_cache.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/time_info.dart';
-import 'package:ios_club_app/features/education/services/course_service.dart';
-import 'package:ios_club_app/features/education/services/edu_time_service.dart';
+import 'package:ios_club_app/features/education/data/repositories/service_repository_adapters.dart';
+import 'package:ios_club_app/core/utils/week_start_utils.dart';
 import 'package:ios_club_app/features/system/notifications/notification_service.dart';
 import 'package:ios_club_app/features/system/widget_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
@@ -19,6 +19,9 @@ import 'package:ios_club_app/state/prefs_keys.dart';
 /// 任务执行器 - 实际的业务逻辑
 @pragma('vm:entry-point')
 class TaskExecutor {
+  static const _courseRepository = CourseRepositoryAdapter();
+  static const _timeRepository = EducationTimeRepositoryAdapter();
+
   /// 标记是否正在执行任务，避免重复执行
   static bool _isExecuting = false;
 
@@ -51,8 +54,8 @@ class TaskExecutor {
     try {
       // 并行获取课程和时间数据
       final results = await Future.wait([
-        CourseService.getAllCourse(),
-        EduTimeService.getTime(),
+        _courseRepository.getAllCourses(),
+        _timeRepository.getTime(),
       ]).timeout(
         const Duration(seconds: 30),
         onTimeout: () {
@@ -60,8 +63,12 @@ class TaskExecutor {
         },
       );
 
-      _cachedCourses = results[0] as List<CourseModel>;
-      _cachedTime = results[1] as TimeInfo;
+      final courseResult = results[0];
+      if (!courseResult.isSuccess) throw courseResult.error;
+      _cachedCourses = courseResult.data as List<CourseModel>;
+      final timeResult = results[1];
+      if (!timeResult.isSuccess) throw timeResult.error;
+      _cachedTime = timeResult.data as TimeInfo;
       _cachedWeekStartDay = SchoolConfigCache.readWeekStartDay();
       _cacheTimestamp = DateTime.now();
       AppLogger.debug('后台任务数据预加载完成');
@@ -85,7 +92,7 @@ class TaskExecutor {
     }
 
     final startTime = DateTime.parse(time.startTime!);
-    var weekNow = EduTimeService.getWeekIndexByStartTime(
+    var weekNow = WeekStartUtils.getWeekIndexByStartTime(
       now,
       startTime,
       weekStartDay: _cachedWeekStartDay,
@@ -98,7 +105,7 @@ class TaskExecutor {
     if (filteredCourses.isEmpty) {
       if (isTomorrow) {
         final tomorrow = now.add(const Duration(days: 1));
-        var weekTomorrow = EduTimeService.getWeekIndexByStartTime(
+        var weekTomorrow = WeekStartUtils.getWeekIndexByStartTime(
           tomorrow,
           startTime,
           weekStartDay: _cachedWeekStartDay,
@@ -142,7 +149,7 @@ class TaskExecutor {
     }
 
     final startTime = DateTime.parse(time.startTime!);
-    var weekNow = EduTimeService.getWeekIndexByStartTime(
+    var weekNow = WeekStartUtils.getWeekIndexByStartTime(
       now,
       startTime,
       weekStartDay: _cachedWeekStartDay,
@@ -167,7 +174,7 @@ class TaskExecutor {
 
     // 计算明天日期和周数
     final tomorrow = now.add(const Duration(days: 1));
-    var weekTomorrow = EduTimeService.getWeekIndexByStartTime(
+    var weekTomorrow = WeekStartUtils.getWeekIndexByStartTime(
       tomorrow,
       startTime,
       weekStartDay: _cachedWeekStartDay,
@@ -266,7 +273,7 @@ class TaskExecutor {
       DateTime? scheduledDate;
       for (int i = 0; i < 2; i++) {
         final targetDate = now.add(Duration(days: i));
-        final targetWeek = EduTimeService.getWeekIndexByStartTime(
+        final targetWeek = WeekStartUtils.getWeekIndexByStartTime(
           targetDate,
           startTime,
           weekStartDay: _cachedWeekStartDay,

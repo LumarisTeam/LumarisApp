@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:ios_club_app/core/services/permission_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
-import 'package:ios_club_app/features/education/apis/map_api.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:latlong2/latlong.dart';
 import 'map_state.dart';
 
@@ -23,7 +23,9 @@ class MapNotifier extends Notifier<MapState> {
 
     state = state.copyWith(isLoadingPOIs: true);
     try {
-      final models = await MapApi.getMap();
+      final result = await ref.read(mapRepositoryProvider).getMap();
+      if (!result.isSuccess) throw result.error;
+      final models = result.data;
       final pois = models.where((m) => m.isActive).map((m) {
         return CampusPOI(
           name: m.name,
@@ -45,7 +47,7 @@ class MapNotifier extends Notifier<MapState> {
 
   Future<void> checkLocationPermission() async {
     if (state.isLoadingLocation) return; // Prevent concurrent requests
-    
+
     state = state.copyWith(isLoadingLocation: true);
     AppLogger.debug('MapNotifier: Starting location check...');
 
@@ -75,31 +77,34 @@ class MapNotifier extends Notifier<MapState> {
       // 3. Get position - try current position first, fallback to last known
       AppLogger.debug('MapNotifier: Attempting to get current position...');
       Position? position;
-      
+
       try {
         // Try to get current position (most accurate)
         position = await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.medium, // Use medium accuracy for faster results
-            timeLimit: Duration(seconds: 8), 
+            accuracy: LocationAccuracy
+                .medium, // Use medium accuracy for faster results
+            timeLimit: Duration(seconds: 8),
           ),
         );
         AppLogger.debug('MapNotifier: Current position obtained successfully');
       } catch (e) {
         // If current position fails (timeout, no signal, etc.), use last known position
-        AppLogger.debug('MapNotifier: Failed to get current position ($e), falling back to last known position...');
+        AppLogger.debug(
+            'MapNotifier: Failed to get current position ($e), falling back to last known position...');
         position = await Geolocator.getLastKnownPosition();
-        
+
         if (position != null) {
           AppLogger.debug('MapNotifier: Using last known position as fallback');
         }
       }
-      
+
       if (position == null) {
         throw Exception('Unable to get any location data');
       }
 
-      AppLogger.debug('MapNotifier: Position received: ${position.latitude}, ${position.longitude}');
+      AppLogger.debug(
+          'MapNotifier: Position received: ${position.latitude}, ${position.longitude}');
 
       final gcj02Location =
           _wgs84ToGcj02(position.latitude, position.longitude);

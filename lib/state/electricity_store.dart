@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/education/models/electric_data.dart';
-import 'package:ios_club_app/features/education/services/electricity_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart'
+    as education;
 import 'package:ios_club_app/features/system/tile_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/tile_edit_notifier.dart';
@@ -11,17 +12,25 @@ typedef ElectricityWeeklyReader = Future<List<ElectricData>> Function();
 typedef ElectricityTileVisibilityReader = Future<bool> Function(String tileId);
 typedef ElectricityTileMutator = Future<void> Function(String tileId);
 
-final electricityServiceProvider = Provider<ElectricityService>((ref) {
-  return ElectricityService();
-});
+final electricityServiceProvider = education.electricityServiceProvider;
 
 final electricityReaderProvider = Provider<ElectricityReader>((ref) {
-  return () => ref.read(electricityServiceProvider).fetchCurrentBalance();
+  return () async {
+    final result =
+        await ref.read(education.electricityRepositoryProvider).getBalance();
+    if (!result.isSuccess) throw result.error;
+    return result.data;
+  };
 });
 
 final electricityWeeklyReaderProvider =
     Provider<ElectricityWeeklyReader>((ref) {
-  return ref.read(electricityServiceProvider).fetchWeeklyData;
+  return () async {
+    final result =
+        await ref.read(education.electricityRepositoryProvider).getWeeklyData();
+    if (!result.isSuccess) throw result.error;
+    return result.data;
+  };
 });
 
 final electricityTileVisibilityReaderProvider =

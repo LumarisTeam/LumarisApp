@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/result.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../state/settings_store.dart';
+import '../../../state/user_store.dart';
 import '../../basic/models/school.dart';
 import '../services/auth_service.dart';
 import '../services/education_cache_service.dart';
@@ -49,6 +50,76 @@ class EducationSessionCoordinator {
           error: error,
           stackTrace: stackTrace,
         );
+        return Result.failure(_mapError(error));
+      }
+    });
+  }
+
+  /// Switches the school as one serialized operation and restores the prior
+  /// school configuration when applying the new one fails.
+  Future<Result<School>> switchSchool(School school) {
+    return _serialized(() async {
+      final settings = _ref.read(settingsStoreProvider.notifier);
+      final previousSchool = settings.currentSchool;
+
+      if (previousSchool?.code == school.code) {
+        return Result.success(school);
+      }
+
+      try {
+        await settings.setSchoolId(school.code);
+        await EducationCacheService.clearEduCache();
+        return Result.success(school);
+      } catch (error, stackTrace) {
+        if (previousSchool != null) {
+          try {
+            await settings.setSchoolId(previousSchool.code);
+          } catch (rollbackError, rollbackStackTrace) {
+            AppLogger.error(
+              '切换学校回滚失败',
+              error: rollbackError,
+              stackTrace: rollbackStackTrace,
+            );
+          }
+        }
+        AppLogger.error('切换学校失败', error: error, stackTrace: stackTrace);
+        return Result.failure(_mapError(error));
+      }
+    });
+  }
+
+  Future<Result<bool>> refresh({bool force = true}) {
+    return _serialized(() async {
+      try {
+        final refreshed = force
+            ? await EducationRefreshService.refresh()
+            : await EducationRefreshService.refreshWithExistingSession(
+                isForced: false,
+              );
+        if (!refreshed) {
+          return Result.failure(
+            AppError.authentication('登录状态已失效，请重新登录'),
+          );
+        }
+        return Result.success(true);
+      } catch (error, stackTrace) {
+        AppLogger.error(
+          '刷新教育数据失败',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        return Result.failure(_mapError(error));
+      }
+    });
+  }
+
+  Future<Result<void>> logout() {
+    return _serialized(() async {
+      try {
+        await _ref.read(userStoreProvider.notifier).logout();
+        return Result.success(null);
+      } catch (error, stackTrace) {
+        AppLogger.error('退出教育会话失败', error: error, stackTrace: stackTrace);
         return Result.failure(_mapError(error));
       }
     });

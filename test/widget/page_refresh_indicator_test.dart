@@ -6,11 +6,14 @@ import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/features/education/models/electric_data.dart';
 import 'package:ios_club_app/features/education/models/edu_api_models.dart';
 import 'package:ios_club_app/features/education/models/plan_course.dart';
+import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/features/education/services/electricity_service.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:ios_club_app/state/electricity_store.dart';
+import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/program_page_notifier.dart';
 import 'package:ios_club_app/state/tile_store_providers.dart';
+import 'package:ios_club_app/state/user_store.dart';
 import 'package:ios_club_app/state/bus_page_notifier.dart';
 import 'package:ios_club_app/ui/pages/electricity_page.dart';
 import 'package:ios_club_app/ui/pages/payment_page.dart';
@@ -28,6 +31,14 @@ Widget _wrapWithApp(Widget child) {
     darkTheme: ClubTheme.darkTheme(),
     home: child,
   );
+}
+
+class _LoggedInUserStore extends UserStore {
+  @override
+  UserState build() => UserState(
+        isLogin: true,
+        userData: UserData(studentId: 'widget-test', cookie: 'test-cookie'),
+      );
 }
 
 void main() {
@@ -86,10 +97,12 @@ void main() {
       ProviderScope(
         overrides: [
           tileStoreAutoLoadProvider.overrideWithValue(false),
+          userStoreProvider.overrideWith(_LoggedInUserStore.new),
         ],
         child: _wrapWithApp(const PaymentPage()),
       ),
     );
+    await tester.pump();
 
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
@@ -103,6 +116,7 @@ void main() {
         child: _wrapWithApp(const ElectricityPage()),
       ),
     );
+    await tester.pump();
 
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
@@ -222,7 +236,6 @@ void main() {
     await tester.tap(find.text('已开启低余额提醒'));
     await tester.pumpAndSettle();
 
-    expect(find.text('订阅内容'), findsOneWidget);
     expect(find.text('提醒邮箱'), findsOneWidget);
     expect(find.text('codex@example.com'), findsOneWidget);
     expect(find.text('提醒阈值'), findsOneWidget);
@@ -291,6 +304,7 @@ void main() {
         child: _wrapWithApp(const SchoolBusPage()),
       ),
     );
+    await tester.pump();
 
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });

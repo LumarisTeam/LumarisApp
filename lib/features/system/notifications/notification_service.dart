@@ -13,11 +13,12 @@ import 'package:intl/intl.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/core/models/todo_item.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
-import 'package:ios_club_app/features/education/services/course_service.dart';
+import 'package:ios_club_app/features/education/data/repositories/service_repository_adapters.dart';
 import 'package:ios_club_app/features/system/notifications/course_reminder_helper.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 
 class NotificationService {
+  static const _courseRepository = CourseRepositoryAdapter();
   static final NotificationService _instance = NotificationService._();
   static const String _courseChannelNameZh = '课程通知';
   static const String _courseChannelDescriptionZh = '进行每日课表的课程通知';
@@ -337,7 +338,10 @@ class NotificationService {
       await NotificationService.instance.initialize();
     }
 
-    final a = await CourseService.getTodayOrTomorrowCourse(isTomorrow: true);
+    final courseResult =
+        await _courseRepository.getTodayOrTomorrowCourses(tomorrow: true);
+    if (!courseResult.isSuccess) return;
+    final a = courseResult.data;
     final targetDate =
         a.$1 ? DateTime.now().add(const Duration(days: 1)) : DateTime.now();
 

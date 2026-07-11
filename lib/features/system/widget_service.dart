@@ -6,9 +6,10 @@ import 'package:ios_club_app/core/models/schedule_item.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/features/basic/services/school_config_cache.dart';
-import 'package:ios_club_app/features/education/services/edu_time_service.dart';
+import 'package:ios_club_app/features/education/data/repositories/service_repository_adapters.dart';
 
 class WidgetService {
+  static const _timeRepository = EducationTimeRepositoryAdapter();
   static const String iOSWidgetGroupId = 'group.com.example.iosClubApp.widget';
   static bool _isInitialized = false;
 
@@ -39,9 +40,11 @@ class WidgetService {
 
     final now = DateTime.now();
 
-    final week = await EduTimeService.getWeek(
+    final weekResult = await _timeRepository.getWeek(
       weekStartDay: SchoolConfigCache.readWeekStartDay(),
     );
+    if (!weekResult.isSuccess) return;
+    final week = weekResult.data;
     const a = ['日', '一', '二', '三', '四', '五', '六', '日'];
     final weekNow = week.week;
 

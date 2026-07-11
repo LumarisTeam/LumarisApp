@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/education/models/plan_course.dart';
-import 'package:ios_club_app/features/education/services/program_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/state/app_states.dart';
 
 typedef ProgramsFetcher = Future<List<PlanCourseList>> Function(
@@ -8,8 +8,12 @@ typedef ProgramsFetcher = Future<List<PlanCourseList>> Function(
 
 final programAutoLoadProvider = Provider<bool>((ref) => true);
 final programsFetcherProvider = Provider<ProgramsFetcher>((ref) {
-  return ({bool forceRefresh = false}) {
-    return ProgramService.getPrograms(forceRefresh: forceRefresh);
+  return ({bool forceRefresh = false}) async {
+    final result = await ref
+        .read(programRepositoryProvider)
+        .getPrograms(forceRefresh: forceRefresh);
+    if (!result.isSuccess) throw result.error;
+    return result.data;
   };
 });
 

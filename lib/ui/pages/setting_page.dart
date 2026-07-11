@@ -13,8 +13,7 @@ import 'package:ios_club_app/core/utils/request_cache.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/ui/components/club_modal_bottom_sheet.dart';
 import 'package:ios_club_app/ui/pages/settingPages/version_setting.dart';
-import 'package:ios_club_app/features/education/services/education_cache_service.dart';
-import 'package:ios_club_app/features/education/services/education_refresh_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/features/system/notifications/notification_service.dart';
 import 'package:ios_club_app/features/system/widget_settings_service.dart';
 import 'package:ios_club_app/platform/android/background_service.dart';
@@ -68,7 +67,7 @@ class SettingPage extends ConsumerWidget {
                 _buildSectionTitle(context, context.l10n.basicSettings),
                 const SizedBox(height: 12),
                 _buildSettingsGroup([
-                  _buildRefreshTile(context),
+                  _buildRefreshTile(context, ref),
                   _buildThemeModeTile(context, settings, settingsStore),
                   const LanguageSetting(),
                   const ShowTomorrowSetting(),
@@ -106,7 +105,7 @@ class SettingPage extends ConsumerWidget {
                 _buildSectionTitle(context, context.l10n.other),
                 const SizedBox(height: 12),
                 _buildSettingsGroup([
-                  _buildClearCacheTile(context),
+                  _buildClearCacheTile(context, ref),
                   if (userState.isLogin) _buildLogoutTile(context, userStore),
                   ClubListTile(
                     contentPadding: const EdgeInsets.symmetric(
@@ -232,7 +231,7 @@ class SettingPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildRefreshTile(BuildContext context) {
+  Widget _buildRefreshTile(BuildContext context, WidgetRef ref) {
     return ClubListTile(
       leading: Icon(
         CupertinoIcons.refresh,
@@ -243,15 +242,17 @@ class SettingPage extends ConsumerWidget {
       showChevron: true,
       onTap: () async {
         showClubSnackBar(context, Text(context.l10n.refreshingData));
-        final re = await EducationRefreshService.refresh();
-        if (re) {
+        final refreshResult =
+            await ref.read(educationSessionCoordinatorProvider).refresh();
+        final refreshed = refreshResult.isSuccess;
+        if (refreshed) {
           await _syncHomeWidget();
         }
         if (context.mounted) {
           showClubSnackBar(
             context,
             Text(
-              re
+              refreshed
                   ? context.l10n.refreshDataSuccess
                   : context.l10n.refreshDataFailed,
             ),
@@ -513,7 +514,7 @@ class SettingPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildClearCacheTile(BuildContext context) {
+  Widget _buildClearCacheTile(BuildContext context, WidgetRef ref) {
     return ClubListTile(
       leading: Icon(
         CupertinoIcons.trash_fill,
@@ -536,7 +537,7 @@ class SettingPage extends ConsumerWidget {
             showClubSnackBar(context, Text(context.l10n.clearingCache));
           }
 
-          await EducationCacheService.clearEduCache();
+          await ref.read(educationCacheClearerProvider)();
           await RequestCache.instance.clear();
 
           if (context.mounted) {

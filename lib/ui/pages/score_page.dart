@@ -7,7 +7,7 @@ import 'package:ios_club_app/core/services/course_color_manager.dart';
 import 'package:ios_club_app/core/utils/animations/animated_card.dart';
 import 'package:ios_club_app/core/utils/animations/animated_list_item.dart';
 import 'package:ios_club_app/features/education/models/edu_fetch_models.dart';
-import 'package:ios_club_app/features/education/services/score_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/user_store.dart';
 import 'package:ios_club_app/features/education/models/score_model.dart';
@@ -66,8 +66,11 @@ class _ScorePageState extends ConsumerState<ScorePage>
       return;
     }
 
-    final localSnapshot =
-        await ScoreService.getScores(policy: FetchPolicy.localFirst);
+    final localResult = await ref
+        .read(scoreRepositoryProvider)
+        .getScores(policy: FetchPolicy.localFirst);
+    if (!localResult.isSuccess) throw localResult.error;
+    final localSnapshot = localResult.data;
     if (localSnapshot.data.isNotEmpty) {
       _applyScoreData(localSnapshot.data, isLoading: false);
       unawaited(_loadScores(
@@ -95,12 +98,17 @@ class _ScorePageState extends ConsumerState<ScorePage>
     });
 
     try {
-      final snapshot = await ScoreService.getScores(policy: policy).timeout(
+      final repositoryResult = await ref
+          .read(scoreRepositoryProvider)
+          .getScores(policy: policy)
+          .timeout(
         const Duration(seconds: 15),
         onTimeout: () {
           throw TimeoutException(l10n.fetchTimeout);
         },
       );
+      if (!repositoryResult.isSuccess) throw repositoryResult.error;
+      final snapshot = repositoryResult.data;
 
       _applyScoreData(snapshot.data, isLoading: false);
       if (!mounted) return;

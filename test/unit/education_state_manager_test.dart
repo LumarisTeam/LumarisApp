@@ -7,6 +7,7 @@ import 'package:ios_club_app/state/electricity_store.dart';
 import 'package:ios_club_app/state/payment_store.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/state/tile_edit_notifier.dart';
+import 'package:ios_club_app/state/tile_store_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -68,6 +69,7 @@ void main() {
     test('ElectricityStore.toggleTile should update local tile list', () async {
       final touchedTiles = <String>[];
       final container = createContainer(overrides: [
+        tileStoreAutoLoadProvider.overrideWithValue(false),
         electricityTileAdderProvider.overrideWithValue(
             (tileId) async => touchedTiles.add('add:$tileId')),
         electricityTileRemoverProvider.overrideWithValue(

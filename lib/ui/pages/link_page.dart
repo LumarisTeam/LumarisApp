@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/features/education/apis/link_api.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/state/user_store.dart';
 import 'package:ios_club_app/ui/components/club_card.dart';
 import 'package:ios_club_app/ui/components/empty_widget.dart';
@@ -28,12 +28,18 @@ class _LinkPageState extends ConsumerState<LinkPage> {
   @override
   void initState() {
     super.initState();
-    _linksFuture = LinkApi.getLinks();
+    _linksFuture = _loadLinks();
+  }
+
+  Future<List<CategoryModel>> _loadLinks() async {
+    final result = await ref.read(linkRepositoryProvider).getLinks();
+    if (!result.isSuccess) throw result.error;
+    return result.data;
   }
 
   void _refreshLinks() {
     setState(() {
-      _linksFuture = LinkApi.getLinks();
+      _linksFuture = _loadLinks();
     });
   }
 

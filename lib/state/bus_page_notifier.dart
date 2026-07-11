@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:ios_club_app/features/education/models/bus_model.dart';
-import 'package:ios_club_app/features/education/services/bus_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 import 'package:ios_club_app/features/system/tile_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/tile_edit_notifier.dart';
@@ -13,11 +13,13 @@ typedef BusPageFetcher = Future<BusModel> Function({
 
 final busPageAutoLoadProvider = Provider<bool>((ref) => true);
 final busPageFetcherProvider = Provider<BusPageFetcher>((ref) {
-  return ({String? dayDate, bool forceRefresh = false}) {
-    return BusService.getBus(
-      dayDate: dayDate,
-      forceRefresh: forceRefresh,
-    );
+  return ({String? dayDate, bool forceRefresh = false}) async {
+    final result = await ref.read(busRepositoryProvider).getBus(
+          dayDate: dayDate,
+          forceRefresh: forceRefresh,
+        );
+    if (!result.isSuccess) throw result.error;
+    return result.data;
   };
 });
 

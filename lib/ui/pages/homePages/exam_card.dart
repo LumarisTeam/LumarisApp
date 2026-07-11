@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/utils/error_message_resolver.dart';
 import 'package:ios_club_app/core/services/course_color_manager.dart';
 import 'package:ios_club_app/features/education/models/exam_result.dart';
 import 'package:ios_club_app/core/utils/animations/animations.dart';
-import 'package:ios_club_app/features/education/services/exam_service.dart';
+import 'package:ios_club_app/features/education/application/education_providers.dart';
 
 import 'package:ios_club_app/ui/components/club_card.dart';
 import 'package:ios_club_app/ui/components/club_modal_bottom_sheet.dart';
@@ -17,14 +18,14 @@ import 'package:ios_club_app/ui/components/platform_dialog.dart';
 import 'package:ios_club_app/ui/theme/club_smooth_corners.dart';
 import 'package:ios_club_app/ui/theme/club_theme.dart';
 
-class ExamCard extends StatefulWidget {
+class ExamCard extends ConsumerStatefulWidget {
   const ExamCard({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ExamCardState();
+  ConsumerState<ExamCard> createState() => _ExamCardState();
 }
 
-class _ExamCardState extends State<ExamCard> {
+class _ExamCardState extends ConsumerState<ExamCard> {
   List<ExamData> examItems = [];
   bool isLoading = true;
   String? errorMessage;
@@ -34,11 +35,15 @@ class _ExamCardState extends State<ExamCard> {
   void initState() {
     super.initState();
     isLoading = true;
-    ExamService.getExamResult().then((result) {
+    ref.read(examRepositoryProvider).getExams().then((repositoryResult) {
       if (!mounted) {
         return;
       }
-      setExam(result);
+      if (repositoryResult.isSuccess) {
+        setExam(repositoryResult.data);
+      } else {
+        setExam(ExamResult.error(repositoryResult.error.userMessage));
+      }
     });
   }
 
@@ -76,11 +81,14 @@ class _ExamCardState extends State<ExamCard> {
       isLoading = true;
       errorMessage = null;
     });
-    final result = await ExamService.getExamResult(isRefresh: true);
+    final repositoryResult =
+        await ref.read(examRepositoryProvider).getExams(forceRefresh: true);
     if (!mounted) {
       return;
     }
-    setExam(result);
+    setExam(repositoryResult.isSuccess
+        ? repositoryResult.data
+        : ExamResult.error(repositoryResult.error.userMessage));
   }
 
   @override

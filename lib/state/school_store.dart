@@ -3,7 +3,7 @@ import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/features/basic/services/school_api.dart';
 import 'package:ios_club_app/features/basic/services/school_config_cache.dart';
-import 'package:ios_club_app/features/education/services/edu_http_client_manager.dart';
+import 'package:ios_club_app/features/education/application/education_dependencies.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
@@ -32,7 +32,7 @@ class SchoolStore extends Notifier<SchoolStoreState> {
       await SchoolConfigCache.save(school);
 
       try {
-        EduHttpClientManager.current.updateSchoolConfig(school);
+        ref.read(eduApiClientProvider).updateBaseUrl(school.website);
       } catch (_) {
         // Manager may not be initialized during early startup or tests.
       }
