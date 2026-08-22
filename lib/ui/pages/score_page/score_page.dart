@@ -244,7 +244,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
                 ),
               ),
               SizedBox(height: 24),
-              ElevatedButton(
+              CupertinoButton.filled(
                 onPressed: () {
                   AppRouter.go(AppRoutes.profile);
                 },
@@ -642,7 +642,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
             icon: Icons.school,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
+          CupertinoButton.filled(
             onPressed: () => refresh(isRefresh: true),
             child: Text(context.l10n.refreshDataBtn),
           ),
