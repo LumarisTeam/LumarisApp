@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:display_mode/display_mode.dart';
+import 'package:feedback_sdk/feedback_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/basic/services/basic_http_client_manager.dart';
@@ -65,6 +66,13 @@ void main() async {
   final schoolStore = providerContainer.read(schoolStoreProvider.notifier);
   final initialSchool = providerContainer.read(schoolStoreProvider).school ??
       settingsStore.currentSchool;
+
+  // 反馈 SDK 初始化（匿名反馈中心）。school 用当前学校 code 作 slug（如 xauat）。
+  await FeedbackSdk.init(FeedbackConfig(
+    baseUrl: 'http://feedbackapi.luckyfishes.site', // TODO: 后端上 TLS 后换 https
+    appName: 'lumaris',
+    school: initialSchool?.code.toLowerCase() ?? '',
+  ));
 
   EduHttpClientManager.initialize(
     school: initialSchool,

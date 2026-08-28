@@ -9,6 +9,7 @@ import '../ui/pages/agreement_page/agreement_page.dart';
 import '../ui/pages/author_page/author_page.dart';
 import '../ui/pages/easter_egg_page/easter_egg_page.dart';
 import '../ui/pages/electricity_page/electricity_page.dart';
+import '../ui/pages/feedback_page/feedback_page.dart';
 import '../ui/pages/helper_page/helper_page.dart';
 import '../ui/pages/home_page/home_page.dart';
 import '../ui/pages/license_page/license_page.dart';
@@ -54,6 +55,7 @@ class AppRoutes {
   static const privacyPolicy = '/Profile/About/PrivacyPolicy';
   static const userAgreement = '/Profile/About/UserAgreement';
   static const author = '/Profile/About/Author';
+  static const feedback = '/Profile/About/Feedback';
   static const htmlImport = '/Schedule/HtmlImport';
   static const htmlImportWebview = '/Schedule/HtmlImport/Webview';
   static const campusMap = '/CampusMap';
@@ -145,6 +147,8 @@ class AppRouter {
                         (context, state) => const UserAgreementPage()),
                     _detailRoute(
                         'Author', (context, state) => const AuthorPage()),
+                    _detailRoute(
+                        'Feedback', (context, state) => const FeedbackPage()),
                   ],
                 ),
               ],

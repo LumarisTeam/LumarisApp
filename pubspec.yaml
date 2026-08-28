@@ -39,6 +39,8 @@ dependencies:
   flutter_riverpod: ^2.6.1
   display_mode: ^0.0.2
   encrypt: ^5.0.3
+  feedback_sdk:
+    path: C:/Users/Qu/feedback_sdk
   macos_ui: ^2.2.2
   file_picker: ^11.0.2
   flutter_markdown: ^0.7.7+1

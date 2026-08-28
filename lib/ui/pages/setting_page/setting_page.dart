@@ -96,6 +96,7 @@ class SettingPage extends ConsumerWidget {
                 _buildSectionTitle(context, context.l10n.about),
                 const SizedBox(height: 12),
                 _buildSettingsGroup([
+                  _buildFeedbackTile(context),
                   _buildTeamTile(context),
                   _buildLicenseTile(context),
                   _buildPrivacyPolicyTile(context),
@@ -290,6 +291,21 @@ class SettingPage extends ConsumerWidget {
     if (PlatformUtils.isIOS) {
       await IOSBackgroundService.updateWidget();
     }
+  }
+
+  Widget _buildFeedbackTile(BuildContext context) {
+    return ClubListTile(
+      leading: Icon(
+        Icons.feedback_outlined,
+        size: 20,
+        color: context.clubColors.primary,
+      ),
+      title: Text(context.l10n.feedback),
+      subtitle: Text(context.l10n.feedbackSubtitle),
+      onTap: () {
+        AppRouter.push(AppRoutes.feedback);
+      },
+    );
   }
 
   Widget _buildTeamTile(BuildContext context) {
