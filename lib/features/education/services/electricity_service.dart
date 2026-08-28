@@ -67,6 +67,11 @@ class ElectricityService {
     }
   }
 
+  Future<bool> hasConfiguredSource() async {
+    final resolvedUrl = await _resolveSourceUrl();
+    return resolvedUrl.trim().isNotEmpty;
+  }
+
   Future<List<ElectricData>> fetchWeeklyData() async {
     final resolvedUrl = await _resolveSourceUrl();
     return await _weeklyDataReader(

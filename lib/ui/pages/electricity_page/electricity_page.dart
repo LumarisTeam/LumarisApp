@@ -61,6 +61,9 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
     final hasElectricityData = ref.watch(
       electricityStoreProvider.select((state) => state.hasData),
     );
+    final hasConfiguredSource = ref.watch(
+      electricityStoreProvider.select((state) => state.hasConfiguredSource),
+    );
     final l10n = context.l10n;
     final isLogin =
         ref.watch(userStoreProvider.select((state) => state.isLogin));
@@ -113,7 +116,9 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
               child: Icon(
                 hasElectricityData
                     ? CupertinoIcons.arrow_2_circlepath
-                    : CupertinoIcons.add,
+                    : hasConfiguredSource
+                        ? CupertinoIcons.arrow_2_circlepath
+                        : CupertinoIcons.add,
                 color: Theme.of(context).colorScheme.primary,
                 size: 24,
               ),
@@ -178,6 +183,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
           electricityStoreProvider.select(
             (state) => (
               hasData: state.hasData,
+              hasConfiguredSource: state.hasConfiguredSource,
               electricity: state.electricity,
             ),
           ),
@@ -256,7 +262,9 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
                       ? (electricityState.electricity <= 10
                           ? l10n.electricityLowBalance
                           : l10n.electricitySufficient)
-                      : l10n.electricityAddTip,
+                      : electricityState.hasConfiguredSource
+                          ? l10n.fetchFailed
+                          : l10n.electricityAddTip,
                   style: TextStyle(
                     fontSize: 13,
                     color: electricityState.hasData
@@ -821,7 +829,8 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
   }
 
   void _handleElectricityAction() {
-    if (ref.read(electricityStoreProvider).hasData) {
+    final electricityState = ref.read(electricityStoreProvider);
+    if (electricityState.hasData || electricityState.hasConfiguredSource) {
       _showRefreshDialog();
     } else {
       _showInputDialog();
@@ -902,16 +911,18 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
           label: l10n.confirm,
           isDefaultAction: true,
           onPressed: () async {
+            final sourceUrl = _urlController.text;
             final value =
                 await ref.read(electricityServiceProvider).fetchCurrentBalance(
-                      url: _urlController.text,
+                      url: sourceUrl,
                     );
             if (!mounted) {
               return;
             }
+            final controller = ref.read(electricityStoreProvider.notifier);
+            controller.setSourceConfigured(sourceUrl.trim().isNotEmpty);
             if (value != null) {
               _urlController.clear();
-              final controller = ref.read(electricityStoreProvider.notifier);
               await controller.setElectricityValue(value);
               await controller.loadElectricityData();
               await _loadSubscriptions(force: true);

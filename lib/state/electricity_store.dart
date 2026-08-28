@@ -9,6 +9,7 @@ import 'package:ios_club_app/state/tile_store_providers.dart';
 
 typedef ElectricityReader = Future<double?> Function();
 typedef ElectricityWeeklyReader = Future<List<ElectricData>> Function();
+typedef ElectricitySourceConfigurationReader = Future<bool> Function();
 typedef ElectricityTileVisibilityReader = Future<bool> Function(String tileId);
 typedef ElectricityTileMutator = Future<void> Function(String tileId);
 
@@ -23,6 +24,11 @@ final electricityReaderProvider = Provider<ElectricityReader>((ref) {
 final electricityWeeklyReaderProvider =
     Provider<ElectricityWeeklyReader>((ref) {
   return ref.read(electricityServiceProvider).fetchWeeklyData;
+});
+
+final electricitySourceConfigurationReaderProvider =
+    Provider<ElectricitySourceConfigurationReader>((ref) {
+  return ref.read(electricityServiceProvider).hasConfiguredSource;
 });
 
 final electricityTileVisibilityReaderProvider =
@@ -60,9 +66,12 @@ class ElectricityStore extends Notifier<ElectricityState> {
 
   Future<void> loadElectricityData() async {
     final requestId = _loadGuard.beginRequest();
+    bool? hasConfiguredSource;
     try {
       state = state.copyWith(isLoading: true);
 
+      hasConfiguredSource =
+          await ref.read(electricitySourceConfigurationReaderProvider)();
       final value = await ref.read(electricityReaderProvider)();
       final isVisible =
           await ref.read(electricityTileVisibilityReaderProvider)('电费');
@@ -82,11 +91,15 @@ class ElectricityStore extends Notifier<ElectricityState> {
       state = state.copyWith(
         electricity: value ?? state.electricity,
         hasData: value != null ? true : state.hasData,
+        hasConfiguredSource: hasConfiguredSource,
         tiles: nextTiles,
         weeklyData: weekly,
       );
     } catch (_) {
       // Keep the last known values on transient failures.
+      if (_loadGuard.isCurrent(requestId) && hasConfiguredSource != null) {
+        state = state.copyWith(hasConfiguredSource: hasConfiguredSource);
+      }
     } finally {
       if (_loadGuard.isCurrent(requestId)) {
         state = state.copyWith(isLoading: false);
@@ -96,9 +109,12 @@ class ElectricityStore extends Notifier<ElectricityState> {
 
   Future<void> refreshElectricityData() async {
     final requestId = _loadGuard.beginRequest();
+    bool? hasConfiguredSource;
     try {
       state = state.copyWith(isLoading: true);
 
+      hasConfiguredSource =
+          await ref.read(electricitySourceConfigurationReaderProvider)();
       final value = await ref.read(electricityReaderProvider)();
       final weekly = await ref.read(electricityWeeklyReaderProvider)();
 
@@ -107,10 +123,14 @@ class ElectricityStore extends Notifier<ElectricityState> {
       state = state.copyWith(
         electricity: value ?? state.electricity,
         hasData: value != null ? true : state.hasData,
+        hasConfiguredSource: hasConfiguredSource,
         weeklyData: weekly,
       );
     } catch (_) {
       // Keep the last known values on transient failures.
+      if (_loadGuard.isCurrent(requestId) && hasConfiguredSource != null) {
+        state = state.copyWith(hasConfiguredSource: hasConfiguredSource);
+      }
     } finally {
       if (_loadGuard.isCurrent(requestId)) {
         state = state.copyWith(isLoading: false);
@@ -135,6 +155,14 @@ class ElectricityStore extends Notifier<ElectricityState> {
   }
 
   Future<void> setElectricityValue(double value) async {
-    state = state.copyWith(electricity: value, hasData: true);
+    state = state.copyWith(
+      electricity: value,
+      hasData: true,
+      hasConfiguredSource: true,
+    );
+  }
+
+  void setSourceConfigured(bool value) {
+    state = state.copyWith(hasConfiguredSource: value);
   }
 }

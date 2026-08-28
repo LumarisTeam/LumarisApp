@@ -120,7 +120,9 @@ class ElectricityTile extends ConsumerWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    l10n.tapToSubscribe,
+                    electricity.hasConfiguredSource
+                        ? l10n.electricityNoData
+                        : l10n.tapToSubscribe,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

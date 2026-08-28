@@ -1090,6 +1090,7 @@ abstract class _ScheduleState implements ScheduleState {
 mixin _$ElectricityState {
   bool get isLoading => throw _privateConstructorUsedError;
   bool get hasData => throw _privateConstructorUsedError;
+  bool get hasConfiguredSource => throw _privateConstructorUsedError;
   double get electricity => throw _privateConstructorUsedError;
   List<String> get tiles => throw _privateConstructorUsedError;
   List<ElectricData> get weeklyData => throw _privateConstructorUsedError;
@@ -1108,6 +1109,7 @@ abstract class $ElectricityStateCopyWith<$Res> {
   $Res call(
       {bool isLoading,
       bool hasData,
+      bool hasConfiguredSource,
       double electricity,
       List<String> tiles,
       List<ElectricData> weeklyData});
@@ -1128,6 +1130,7 @@ class _$ElectricityStateCopyWithImpl<$Res, $Val extends ElectricityState>
   $Res call({
     Object? isLoading = null,
     Object? hasData = null,
+    Object? hasConfiguredSource = null,
     Object? electricity = null,
     Object? tiles = null,
     Object? weeklyData = null,
@@ -1140,6 +1143,10 @@ class _$ElectricityStateCopyWithImpl<$Res, $Val extends ElectricityState>
       hasData: null == hasData
           ? _value.hasData
           : hasData // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasConfiguredSource: null == hasConfiguredSource
+          ? _value.hasConfiguredSource
+          : hasConfiguredSource // ignore: cast_nullable_to_non_nullable
               as bool,
       electricity: null == electricity
           ? _value.electricity
@@ -1168,6 +1175,7 @@ abstract class _$$ElectricityStateImplCopyWith<$Res>
   $Res call(
       {bool isLoading,
       bool hasData,
+      bool hasConfiguredSource,
       double electricity,
       List<String> tiles,
       List<ElectricData> weeklyData});
@@ -1186,6 +1194,7 @@ class __$$ElectricityStateImplCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = null,
     Object? hasData = null,
+    Object? hasConfiguredSource = null,
     Object? electricity = null,
     Object? tiles = null,
     Object? weeklyData = null,
@@ -1198,6 +1207,10 @@ class __$$ElectricityStateImplCopyWithImpl<$Res>
       hasData: null == hasData
           ? _value.hasData
           : hasData // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasConfiguredSource: null == hasConfiguredSource
+          ? _value.hasConfiguredSource
+          : hasConfiguredSource // ignore: cast_nullable_to_non_nullable
               as bool,
       electricity: null == electricity
           ? _value.electricity
@@ -1221,6 +1234,7 @@ class _$ElectricityStateImpl implements _ElectricityState {
   const _$ElectricityStateImpl(
       {this.isLoading = true,
       this.hasData = false,
+      this.hasConfiguredSource = false,
       this.electricity = 0.0,
       final List<String> tiles = const <String>[],
       final List<ElectricData> weeklyData = const <ElectricData>[]})
@@ -1233,6 +1247,9 @@ class _$ElectricityStateImpl implements _ElectricityState {
   @override
   @JsonKey()
   final bool hasData;
+  @override
+  @JsonKey()
+  final bool hasConfiguredSource;
   @override
   @JsonKey()
   final double electricity;
@@ -1256,7 +1273,7 @@ class _$ElectricityStateImpl implements _ElectricityState {
 
   @override
   String toString() {
-    return 'ElectricityState(isLoading: $isLoading, hasData: $hasData, electricity: $electricity, tiles: $tiles, weeklyData: $weeklyData)';
+    return 'ElectricityState(isLoading: $isLoading, hasData: $hasData, hasConfiguredSource: $hasConfiguredSource, electricity: $electricity, tiles: $tiles, weeklyData: $weeklyData)';
   }
 
   @override
@@ -1267,6 +1284,8 @@ class _$ElectricityStateImpl implements _ElectricityState {
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.hasData, hasData) || other.hasData == hasData) &&
+            (identical(other.hasConfiguredSource, hasConfiguredSource) ||
+                other.hasConfiguredSource == hasConfiguredSource) &&
             (identical(other.electricity, electricity) ||
                 other.electricity == electricity) &&
             const DeepCollectionEquality().equals(other._tiles, _tiles) &&
@@ -1279,6 +1298,7 @@ class _$ElectricityStateImpl implements _ElectricityState {
       runtimeType,
       isLoading,
       hasData,
+      hasConfiguredSource,
       electricity,
       const DeepCollectionEquality().hash(_tiles),
       const DeepCollectionEquality().hash(_weeklyData));
@@ -1295,6 +1315,7 @@ abstract class _ElectricityState implements ElectricityState {
   const factory _ElectricityState(
       {final bool isLoading,
       final bool hasData,
+      final bool hasConfiguredSource,
       final double electricity,
       final List<String> tiles,
       final List<ElectricData> weeklyData}) = _$ElectricityStateImpl;
@@ -1303,6 +1324,8 @@ abstract class _ElectricityState implements ElectricityState {
   bool get isLoading;
   @override
   bool get hasData;
+  @override
+  bool get hasConfiguredSource;
   @override
   double get electricity;
   @override

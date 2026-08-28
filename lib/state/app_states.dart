@@ -77,6 +77,7 @@ class ElectricityState with _$ElectricityState {
   const factory ElectricityState({
     @Default(true) bool isLoading,
     @Default(false) bool hasData,
+    @Default(false) bool hasConfiguredSource,
     @Default(0.0) double electricity,
     @Default(<String>[]) List<String> tiles,
     @Default(<ElectricData>[]) List<ElectricData> weeklyData,
