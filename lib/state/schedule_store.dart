@@ -271,10 +271,16 @@ class ScheduleStore extends Notifier<ScheduleState> {
       return [];
     }
 
-    var filteredCourses = state.allCourses[weekIndex]
-        .where((course) =>
-            course.weekIndexes.contains(weekIndex) && course.weekday == weekDay)
-        .toList();
+    // Index 0 is the unfiltered "all schedules" bucket, not a real semester
+    // week. Never use it for today's courses, otherwise pre-semester dates can
+    // leak courses from the all-schedules view into the home page.
+    var filteredCourses = weekIndex == 0
+        ? <CourseModel>[]
+        : state.allCourses[weekIndex]
+            .where((course) =>
+                course.weekIndexes.contains(weekIndex) &&
+                course.weekday == weekDay)
+            .toList();
 
     filteredCourses = filteredCourses.where((course) {
       final time = TimeService.getStartAndEnd(course);
@@ -308,16 +314,14 @@ class ScheduleStore extends Notifier<ScheduleState> {
       final targetWeek =
           tomorrowWeekStart == todayWeekStart ? weekIndex : weekIndex + 1;
 
-      if (targetWeek >= state.allCourses.length) {
-        return [];
+      if (targetWeek > 0 && targetWeek < state.allCourses.length) {
+        final courses = state.allCourses[targetWeek];
+        isShowingTomorrow = true;
+        filteredCourses = courses
+            .where((course) => course.weekday == tomorrowWeekDay)
+            .toList()
+          ..sort((a, b) => a.startUnit.compareTo(b.startUnit));
       }
-
-      final courses = state.allCourses[targetWeek];
-      isShowingTomorrow = true;
-      filteredCourses = courses
-          .where((course) => course.weekday == tomorrowWeekDay)
-          .toList()
-        ..sort((a, b) => a.startUnit.compareTo(b.startUnit));
     }
 
     Future<void>.microtask(() {

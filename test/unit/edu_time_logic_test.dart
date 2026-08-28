@@ -41,6 +41,26 @@ void main() {
       expect(EduTimeService.getWeekIndexByStartTime(sunday, startTime), 2);
     });
 
+    test('should keep dates before a Sunday semester start in week zero', () {
+      final sundayStart = DateTime(2024, 3, 10);
+      final friday = DateTime(2024, 3, 8);
+      final saturday = DateTime(2024, 3, 9);
+      final sunday = DateTime(2024, 3, 10);
+
+      expect(
+        EduTimeService.getWeekIndexByStartTime(friday, sundayStart),
+        0,
+      );
+      expect(
+        EduTimeService.getWeekIndexByStartTime(saturday, sundayStart),
+        0,
+      );
+      expect(
+        EduTimeService.getWeekIndexByStartTime(sunday, sundayStart),
+        1,
+      );
+    });
+
     test('should keep same week from Sunday to Monday', () {
       final sunday = DateTime(2024, 3, 10);
       final monday = DateTime(2024, 3, 11);
