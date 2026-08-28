@@ -124,64 +124,7 @@ class ScheduleGrid extends StatelessWidget {
     BuildContext context,
     List<CourseModel> conflictCourses,
   ) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    if (isMobile) {
-      // 移动端：显示冲突提示
-      return [_buildConflictIndicator(context, conflictCourses)];
-    }
-
-    // 桌面端：并排显示冲突课程
-    final widgets = <Widget>[];
-    final count = conflictCourses.length;
-
-    // 计算总宽度
-    var width = screenWidth;
-    final isTablet = screenWidth > 600;
-    if (isTablet) {
-      if (PlatformUtils.isAndroid ||
-          PlatformUtils.isIOS ||
-          PlatformUtils.isWindows ||
-          PlatformUtils.isWeb) {
-        width = screenWidth - 300;
-      } else if (PlatformUtils.isMacOS && screenWidth > 500) {
-        width = screenWidth - 250;
-      } else {
-        width = screenWidth - 60;
-      }
-    } else {
-      width = screenWidth - 60;
-    }
-
-    // 计算每个日期列的宽度
-    final dayColumnWidth = width / 7;
-
-    for (int i = 0; i < count; i++) {
-      final course = conflictCourses[i];
-      final top = (course.startUnit - 1) * cellHeight;
-      final height = (course.endUnit - course.startUnit + 1) * cellHeight;
-
-      widgets.add(
-        Positioned(
-          top: top,
-          left: i * (dayColumnWidth / count),
-          right: (count - i - 1) * (dayColumnWidth / count),
-          height: height,
-          child: CourseCard(
-            course: course,
-            height: height,
-            style: cardStyle,
-            onTap: onCourseTap != null ? () => onCourseTap!(course) : null,
-            onLongPress: onCourseLongPress != null
-                ? () => onCourseLongPress!(course)
-                : null,
-          ),
-        ),
-      );
-    }
-
-    return widgets;
+    return [_buildConflictIndicator(context, conflictCourses)];
   }
 
   /// 构建冲突提示卡片

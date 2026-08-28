@@ -43,5 +43,54 @@ void main() {
         'https://gitee.com/luckyfishisdashen/iOSClub.AppMobile/releases/download/1.2.3/app-release.apk',
       );
     });
+
+    test('should_compare_build_number_when_semantic_versions_match', () {
+      expect(
+        AppService.isVersionNewer(
+          releaseName: '1.2.0.2026060915',
+          currentVersion: '1.2.0',
+          currentBuildNumber: '2026060914',
+        ),
+        isTrue,
+      );
+      expect(
+        AppService.isVersionNewer(
+          releaseName: '1.2.0.2026060914',
+          currentVersion: '1.2.0',
+          currentBuildNumber: '2026060914',
+        ),
+        isFalse,
+      );
+      expect(
+        AppService.isVersionNewer(
+          releaseName: '1.2.0.2026060913',
+          currentVersion: '1.2.0',
+          currentBuildNumber: '2026060914',
+        ),
+        isFalse,
+      );
+    });
+
+    test('should_prioritize_semantic_version_over_build_number', () {
+      expect(
+        AppService.isVersionNewer(
+          releaseName: '1.3.0.1',
+          currentVersion: '1.2.0',
+          currentBuildNumber: '9999999999',
+        ),
+        isTrue,
+      );
+    });
+
+    test('should_accept_version_without_build_number_and_v_prefix', () {
+      expect(
+        AppService.isVersionNewer(
+          releaseName: 'v1.2.1',
+          currentVersion: '1.2.0',
+          currentBuildNumber: '2026060914',
+        ),
+        isTrue,
+      );
+    });
   });
 }

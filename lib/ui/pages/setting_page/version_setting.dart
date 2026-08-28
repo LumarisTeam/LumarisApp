@@ -24,6 +24,7 @@ class VersionSetting extends ConsumerStatefulWidget {
 class _VersionSettingState extends ConsumerState<VersionSetting> {
   late bool isNeedUpdate = false;
   late String version = '';
+  late String buildNumber = '';
   ReleaseModel? latestRelease;
   int tapCount = 0;
   DateTime? lastTapTime;
@@ -35,6 +36,7 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
     PackageInfo.fromPlatform().then((packageInfo) {
       setState(() {
         version = packageInfo.version;
+        buildNumber = packageInfo.buildNumber;
         if (PlatformUtils.isAndroid) {
           CheckUpdateManager.checkForUpdates().then((res) {
             isNeedUpdate = res.$1;
@@ -90,7 +92,9 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
                 )
               : Icon(Icons.verified, size: 20, color: colors.success),
           title: Text(l10n.version),
-          subtitle: Text(version),
+          subtitle: Text(
+            buildNumber.isEmpty ? version : '$version.$buildNumber',
+          ),
           subtitleTextStyle: TextStyle(
             fontSize: 13,
             color: colors.secondaryLabel,

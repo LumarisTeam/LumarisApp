@@ -46,23 +46,62 @@ class AppService {
       return (false, result);
     }
 
-    final resultList = result.name.split('.').map((e) => int.parse(e)).toList();
-    final currentList =
-        packageInfo.version.split('.').map((e) => int.parse(e)).toList();
+    return (
+      isVersionNewer(
+        releaseName: result.name,
+        currentVersion: packageInfo.version,
+        currentBuildNumber: packageInfo.buildNumber,
+      ),
+      result,
+    );
+  }
 
-    final len = resultList.length > currentList.length
-        ? currentList.length
-        : resultList.length;
+  /// Compares an API version (`major.minor.patch.build`) with the installed
+  /// package version and build number.
+  ///
+  /// The build number is only considered after the semantic version parts
+  /// match. Invalid version strings are treated as not newer.
+  static bool isVersionNewer({
+    required String releaseName,
+    required String currentVersion,
+    required String currentBuildNumber,
+  }) {
+    final releaseParts = _parseVersion(releaseName);
+    final currentParts = _parseVersion(currentVersion);
+    final currentBuild = int.tryParse(currentBuildNumber.trim());
 
-    for (int i = 0; i < len; i++) {
-      if (resultList[i] > currentList[i]) {
-        return (true, result);
-      } else if (resultList[i] < currentList[i]) {
-        return (false, result);
+    if (releaseParts == null || currentParts == null || currentBuild == null) {
+      return false;
+    }
+
+    final releaseVersion =
+        releaseParts.length > 3 ? releaseParts.sublist(0, 3) : releaseParts;
+    final releaseBuild = releaseParts.length > 3 ? releaseParts[3] : 0;
+    final versionLength = releaseVersion.length > currentParts.length
+        ? releaseVersion.length
+        : currentParts.length;
+
+    for (var i = 0; i < versionLength; i++) {
+      final releasePart = i < releaseVersion.length ? releaseVersion[i] : 0;
+      final currentPart = i < currentParts.length ? currentParts[i] : 0;
+      if (releasePart != currentPart) {
+        return releasePart > currentPart;
       }
     }
 
-    return (resultList.length > currentList.length, result);
+    return releaseBuild > currentBuild;
+  }
+
+  static List<int>? _parseVersion(String value) {
+    final normalized =
+        value.trim().replaceFirst(RegExp(r'^v', caseSensitive: false), '');
+    if (normalized.isEmpty) {
+      return null;
+    }
+
+    final parts = normalized.split('.');
+    final parsed = parts.map((part) => int.tryParse(part)).toList();
+    return parsed.every((part) => part != null) ? parsed.cast<int>() : null;
   }
 
   static String getReleaseDownloadUrl(ReleaseModel release) {
@@ -71,12 +110,17 @@ class AppService {
       return assetUrl;
     }
 
-    return '';
+    return 'https://gitee.com/luckyfishisdashen/iOSClub.AppMobile/releases/download/'
+        '${release.name}/app-release.apk';
   }
 
   static Future<void> updateApp(ReleaseModel release) async {
     final packageInfo = await PackageInfo.fromPlatform();
-    if (release.name != packageInfo.version) {
+    if (isVersionNewer(
+      releaseName: release.name,
+      currentVersion: packageInfo.version,
+      currentBuildNumber: packageInfo.buildNumber,
+    )) {
       final url = getReleaseDownloadUrl(release);
       final uri = Uri.parse(url);
 

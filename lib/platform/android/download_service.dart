@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/core/services/app_service.dart';
 import 'package:ios_club_app/ui/components/platform_dialog.dart';
 import 'package:ios_club_app/ui/components/show_club_snack_bar.dart';
 import 'package:ios_club_app/ui/theme/club_theme.dart';
@@ -19,7 +20,11 @@ Future<void> updateApp(
       onProgress,
 }) async {
   final packageInfo = await PackageInfo.fromPlatform();
-  if (name != packageInfo.version) {
+  if (AppService.isVersionNewer(
+    releaseName: name,
+    currentVersion: packageInfo.version,
+    currentBuildNumber: packageInfo.buildNumber,
+  )) {
     final Uri uri = Uri.parse(
         'https://gitee.com/luckyfishisdashen/iOSClub.AppMobile/releases/download/$name/app-release.apk');
 
