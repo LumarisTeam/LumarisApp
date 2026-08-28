@@ -444,12 +444,13 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
       ),
     );
     final courses = scheduleState.allCourses[weekIndex];
+    final currentWeek = scheduleState.currentWeek;
     final now = DateTime.now();
 
     final weekStartDate = weekIndex == 0
         ? WeekStartUtils.getWeekStart(now, weekStartDay)
         : WeekStartUtils.getWeekStart(now, weekStartDay).add(
-            Duration(days: (weekIndex - scheduleState.currentWeek) * 7),
+            Duration(days: (weekIndex - currentWeek) * 7),
           );
 
     return Builder(builder: (context) {
@@ -461,6 +462,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
             currentWeek: weekIndex == 0 ? null : weekIndex,
             showDate: weekIndex > 0,
             showGrid: settings.showCourseGrid,
+            highlightToday: currentWeek != 0,
           ),
           // 课表网格
           Expanded(
