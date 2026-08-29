@@ -69,7 +69,7 @@ void main() async {
 
   // 反馈 SDK 初始化（匿名反馈中心）。school 用当前学校 code 作 slug（如 xauat）。
   await FeedbackSdk.init(FeedbackConfig(
-    baseUrl: 'http://feedbackapi.luckyfishes.site', // TODO: 后端上 TLS 后换 https
+    baseUrl: 'https://feedbackapi.luckyfishes.site',
     appName: 'lumaris',
     school: initialSchool?.code.toLowerCase() ?? '',
   ));
