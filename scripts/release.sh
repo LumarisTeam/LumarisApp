@@ -60,12 +60,15 @@ Options:
   --dry-run              Print commands without executing them
   --help                 Show this help
 
-Server upload environment variables:
-  RELEASE_SERVER_METHOD  scp (default), rsync, or curl
-  RELEASE_SERVER_URL     Destination URL/path. Examples:
-                         user@example.com:/srv/releases/ios-club
-                         https://upload.example.com/releases
-  RELEASE_SERVER_TOKEN   Bearer token (curl only, optional)
+Server API upload environment variables:
+  RELEASE_SERVER_API       API root (default: http://localhost:5046)
+  RELEASE_SERVER_USERNAME  Login username
+  RELEASE_SERVER_PASSWORD  Login password
+  RELEASE_APP_ID           Application id from GET /api/App
+  RELEASE_CHANNEL_ID       Channel id from GET /api/Channel
+  RELEASE_ID               Release id shown to users (default: pubspec version)
+  RELEASE_NAME             Release name (default: <platform> <version>)
+  RELEASE_DESCRIPTION      Release description (optional)
 
 App Store Connect environment variables:
   ASC_API_KEY_ID         App Store Connect API key ID
@@ -76,7 +79,9 @@ App Store Connect environment variables:
 Examples:
   scripts/release.sh build android-aab --channel appstore
   scripts/release.sh release ios --output-dir ./dist
-  RELEASE_SERVER_URL=user@host:/srv/releases scripts/release.sh upload-server
+  RELEASE_SERVER_USERNAME=root RELEASE_SERVER_PASSWORD='***' \
+    RELEASE_APP_ID=... RELEASE_CHANNEL_ID=... \
+    scripts/release.sh upload-server
   ASC_API_KEY_ID=ABC ASC_ISSUER_ID=... ASC_API_KEY_PATH=./private/AuthKey_ABC.p8 \
     scripts/release.sh upload-asc
 EOF
@@ -167,35 +172,61 @@ build_all() {
 }
 
 upload_server() {
-  [[ -n "${RELEASE_SERVER_URL:-}" ]] || die "Set RELEASE_SERVER_URL before uploading"
-  local method="${RELEASE_SERVER_METHOD:-scp}"
+  local api="${RELEASE_SERVER_API:-http://localhost:5046}"
+  local username="${RELEASE_SERVER_USERNAME:-}"
+  local password="${RELEASE_SERVER_PASSWORD:-}"
+  [[ -n "${username}" ]] || die "Set RELEASE_SERVER_USERNAME before uploading"
+  [[ -n "${password}" ]] || die "Set RELEASE_SERVER_PASSWORD before uploading"
+  [[ -n "${RELEASE_APP_ID:-}" ]] || die "Set RELEASE_APP_ID before uploading"
+  [[ -n "${RELEASE_CHANNEL_ID:-}" ]] || die "Set RELEASE_CHANNEL_ID before uploading"
   local files=()
   while IFS= read -r -d '' file; do files+=("${file}"); done < <(find "${OUTPUT_DIR}" -maxdepth 1 -type f -print0)
   ((${#files[@]} > 0)) || die "No artifacts found in ${OUTPUT_DIR}; run build first"
+  require_command curl
+  require_command jq
 
-  case "${method}" in
-    scp)
-      require_command scp
-      run scp "${files[@]}" "${RELEASE_SERVER_URL}"
-      ;;
-    rsync)
-      require_command rsync
-      run rsync -av --progress "${files[@]}" "${RELEASE_SERVER_URL%/}/"
-      ;;
-    curl)
-      require_command curl
-      local file
-      for file in "${files[@]}"; do
-        local curl_args=(-fS --upload-file "${file}")
-        if [[ -n "${RELEASE_SERVER_TOKEN:-}" ]]; then
-          curl_args+=( -H "Authorization: Bearer ${RELEASE_SERVER_TOKEN}" )
-        fi
-        run curl "${curl_args[@]}" "${RELEASE_SERVER_URL%/}/$(basename "${file}")"
-      done
-      ;;
-    *) die "RELEASE_SERVER_METHOD must be scp, rsync, or curl (got ${method})" ;;
-  esac
-  log "Uploaded artifacts from ${OUTPUT_DIR}"
+  local release_id="${RELEASE_ID:-}"
+  if [[ -z "${release_id}" ]]; then
+    release_id="$(sed -n 's/^version:[[:space:]]*\([^+[:space:]]*\).*/\1/p' "${PROJECT_ROOT}/pubspec.yaml" | head -1)"
+  fi
+  [[ -n "${release_id}" ]] || die "Set RELEASE_ID or add a version to pubspec.yaml"
+  local release_name="${RELEASE_NAME:-}"
+  [[ -n "${release_name}" ]] || release_name="${release_id}"
+
+  if [[ "${DRY_RUN}" == "true" ]]; then
+    printf '+ POST %s/api/Auth/login (credentials redacted)\n' "${api%/}"
+    printf '+ POST %s/api/Release (appId=%q releaseId=%q)\n' "${api%/}" "${RELEASE_APP_ID}" "${release_id}"
+    printf '+ POST %s/api/Soft/upload for %d artifact(s) (channelId=%q)\n' "${api%/}" "${#files[@]}" "${RELEASE_CHANNEL_ID}"
+    return 0
+  fi
+
+  local login_json token release_json release_db_id file platform upload_name
+  login_json="$(curl -fsS "${api%/}/api/Auth/login" \
+    -H 'Content-Type: application/json' \
+    -d "$(jq -nc --arg username "${username}" --arg password "${password}" '{username:$username,password:$password}')")"
+  token="$(jq -r '.token // empty' <<<"${login_json}")"
+  [[ -n "${token}" && "${token}" != "null" ]] || die "Server login failed"
+
+  release_json="$(curl -fsS "${api%/}/api/Release" -X POST \
+    -H "Authorization: Bearer ${token}" -H 'Content-Type: application/json' \
+    -d "$(jq -nc --arg name "${release_name}" --arg description "${RELEASE_DESCRIPTION:-}" \
+      --arg releaseId "${release_id}" --arg appId "${RELEASE_APP_ID}" \
+      '{name:$name,description:$description,releaseId:$releaseId,appId:$appId}')")"
+  release_db_id="$(jq -r '.id // empty' <<<"${release_json}")"
+  [[ -n "${release_db_id}" && "${release_db_id}" != "null" ]] || die "Server did not return a release id"
+
+  for file in "${files[@]}"; do
+    platform="$(basename "${file}")"
+    upload_name="${RELEASE_UPLOAD_NAME_PREFIX:-Downloader} ${platform}"
+    curl -fsS "${api%/}/api/Soft/upload" -X POST \
+      -H "Authorization: Bearer ${token}" \
+      -F "name=${upload_name}" \
+      -F "description=${RELEASE_SOFT_DESCRIPTION:-${platform}}" \
+      -F "releaseId=${release_db_id}" \
+      -F "channelId=${RELEASE_CHANNEL_ID}" \
+      -F "file=@${file}" | jq .
+  done
+  log "Uploaded ${#files[@]} artifact(s) to ${api%/}"
 }
 
 upload_asc() {
