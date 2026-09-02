@@ -340,22 +340,26 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
       );
     } else {
       // 手机 - 使用底部导航栏（仅在四个主页面显示）
-      shell = SafeArea(
-          child: Scaffold(
-        body: routedChild,
+      shell = Scaffold(
+        body: SafeArea(
+          child: routedChild,
+        ),
         bottomNavigationBar: showBottomNav
-            ? BottomNavigation(
-                destinations: primaryDestinations,
-                selectedIndex: currentIndex,
-                onDestinationSelected: (int index) {
-                  _navigateToMainRoute(index);
-                },
-                backgroundColor: Theme.of(context)
-                    .scaffoldBackgroundColor
-                    .withValues(alpha: 0.95),
+            ? SafeArea(
+                top: false,
+                child: BottomNavigation(
+                  destinations: primaryDestinations,
+                  selectedIndex: currentIndex,
+                  onDestinationSelected: (int index) {
+                    _navigateToMainRoute(index);
+                  },
+                  backgroundColor: Theme.of(context)
+                      .scaffoldBackgroundColor
+                      .withValues(alpha: 0.95),
+                ),
               )
             : null,
-      ));
+      );
     }
 
     return shell;
