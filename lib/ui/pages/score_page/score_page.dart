@@ -184,6 +184,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
         for (final item2 in item.list) {
           item2.grade = '100';
           item2.gpa = '5';
+          item2.gradeDetail = '666';
         }
       }
       _yearList.clear();

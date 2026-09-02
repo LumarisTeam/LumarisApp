@@ -340,8 +340,9 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
       );
     } else {
       // 手机 - 使用底部导航栏（仅在四个主页面显示）
-      shell = Scaffold(
-        body: SafeArea(child: routedChild),
+      shell = SafeArea(
+          child: Scaffold(
+        body: routedChild,
         bottomNavigationBar: showBottomNav
             ? BottomNavigation(
                 destinations: primaryDestinations,
@@ -354,7 +355,7 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
                     .withValues(alpha: 0.95),
               )
             : null,
-      );
+      ));
     }
 
     return shell;
