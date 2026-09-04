@@ -60,52 +60,54 @@ class AppLocalizationsRu extends AppLocalizations {
   String get other => 'Прочее';
 
   @override
-  String get feedback => '意见反馈';
+  String get feedback => 'Обратная связь';
 
   @override
-  String get feedbackSubtitle => '提交问题或建议，帮助我们改进';
+  String get feedbackSubtitle => 'Сообщите о проблеме или предложите улучшение';
 
   @override
-  String get feedbackContentLabel => '问题描述';
+  String get feedbackContentLabel => 'Описание';
 
   @override
-  String get feedbackContentHint => '请描述你遇到的问题';
+  String get feedbackContentHint => 'Опишите возникшую проблему';
 
   @override
-  String get feedbackContentRequired => '请填写问题描述';
+  String get feedbackContentRequired => 'Пожалуйста, опишите проблему';
 
   @override
-  String get feedbackContactLabel => '联系方式';
+  String get feedbackContactLabel => 'Контактные данные';
 
   @override
-  String get feedbackContactHint => '手机号 / 邮箱 / QQ 等';
+  String get feedbackContactHint => 'Телефон / эл. почта / QQ и т. д.';
 
   @override
-  String get feedbackContactRequired => '请填写联系方式';
+  String get feedbackContactRequired => 'Укажите контактные данные';
 
   @override
-  String get feedbackImagesLabel => '图片（选填，最多 6 张）';
+  String get feedbackImagesLabel => 'Изображения (необязательно, не более 6)';
 
   @override
-  String get feedbackAddImage => '添加图片';
+  String get feedbackAddImage => 'Добавить изображение';
 
   @override
-  String get feedbackSubmit => '提交';
+  String get feedbackSubmit => 'Отправить';
 
   @override
-  String get feedbackSubmitting => '提交中…';
+  String get feedbackSubmitting => 'Отправка…';
 
   @override
-  String get feedbackSubmitSuccess => '反馈已提交，感谢你的支持！';
+  String get feedbackSubmitSuccess => 'Отзыв отправлен. Спасибо за поддержку!';
 
   @override
-  String get feedbackPickImageFailed => '选择图片失败，请重试';
+  String get feedbackPickImageFailed =>
+      'Не удалось выбрать изображение. Повторите попытку';
 
   @override
-  String get feedbackImageUploadFailed => '图片上传失败，请重试';
+  String get feedbackImageUploadFailed =>
+      'Не удалось загрузить изображение. Повторите попытку';
 
   @override
-  String get feedbackImageTooMany => '最多上传 6 张图片';
+  String get feedbackImageTooMany => 'Можно добавить не более 6 изображений';
 
   @override
   String get refreshData => 'Обновить';

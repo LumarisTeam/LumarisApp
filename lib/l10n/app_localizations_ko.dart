@@ -60,52 +60,52 @@ class AppLocalizationsKo extends AppLocalizations {
   String get other => '기타';
 
   @override
-  String get feedback => '意见反馈';
+  String get feedback => '피드백';
 
   @override
-  String get feedbackSubtitle => '提交问题或建议，帮助我们改进';
+  String get feedbackSubtitle => '문제를 신고하거나 개선 의견을 보내 주세요';
 
   @override
-  String get feedbackContentLabel => '问题描述';
+  String get feedbackContentLabel => '내용';
 
   @override
-  String get feedbackContentHint => '请描述你遇到的问题';
+  String get feedbackContentHint => '겪으신 문제를 설명해 주세요';
 
   @override
-  String get feedbackContentRequired => '请填写问题描述';
+  String get feedbackContentRequired => '문제 내용을 입력해 주세요';
 
   @override
-  String get feedbackContactLabel => '联系方式';
+  String get feedbackContactLabel => '연락처';
 
   @override
-  String get feedbackContactHint => '手机号 / 邮箱 / QQ 等';
+  String get feedbackContactHint => '전화번호 / 이메일 / QQ 등';
 
   @override
-  String get feedbackContactRequired => '请填写联系方式';
+  String get feedbackContactRequired => '연락처를 입력해 주세요';
 
   @override
-  String get feedbackImagesLabel => '图片（选填，最多 6 张）';
+  String get feedbackImagesLabel => '이미지(선택 사항, 최대 6장)';
 
   @override
-  String get feedbackAddImage => '添加图片';
+  String get feedbackAddImage => '이미지 추가';
 
   @override
-  String get feedbackSubmit => '提交';
+  String get feedbackSubmit => '제출';
 
   @override
-  String get feedbackSubmitting => '提交中…';
+  String get feedbackSubmitting => '제출 중…';
 
   @override
-  String get feedbackSubmitSuccess => '反馈已提交，感谢你的支持！';
+  String get feedbackSubmitSuccess => '피드백이 제출되었습니다. 소중한 의견 감사합니다!';
 
   @override
-  String get feedbackPickImageFailed => '选择图片失败，请重试';
+  String get feedbackPickImageFailed => '이미지를 선택하지 못했습니다. 다시 시도해 주세요';
 
   @override
-  String get feedbackImageUploadFailed => '图片上传失败，请重试';
+  String get feedbackImageUploadFailed => '이미지를 업로드하지 못했습니다. 다시 시도해 주세요';
 
   @override
-  String get feedbackImageTooMany => '最多上传 6 张图片';
+  String get feedbackImageTooMany => '이미지는 최대 6장까지 추가할 수 있습니다';
 
   @override
   String get refreshData => '데이터 새로고침';

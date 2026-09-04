@@ -2207,6 +2207,54 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get other => '其他';
 
   @override
+  String get feedback => '意見回饋';
+
+  @override
+  String get feedbackSubtitle => '回報問題或提出改善建議';
+
+  @override
+  String get feedbackContentLabel => '問題描述';
+
+  @override
+  String get feedbackContentHint => '請描述你遇到的問題';
+
+  @override
+  String get feedbackContentRequired => '請填寫問題描述';
+
+  @override
+  String get feedbackContactLabel => '聯絡方式';
+
+  @override
+  String get feedbackContactHint => '手機號碼 / 電子郵件 / QQ 等';
+
+  @override
+  String get feedbackContactRequired => '請填寫聯絡方式';
+
+  @override
+  String get feedbackImagesLabel => '圖片（選填，最多 6 張）';
+
+  @override
+  String get feedbackAddImage => '新增圖片';
+
+  @override
+  String get feedbackSubmit => '送出';
+
+  @override
+  String get feedbackSubmitting => '送出中…';
+
+  @override
+  String get feedbackSubmitSuccess => '意見已送出，感謝你的支持！';
+
+  @override
+  String get feedbackPickImageFailed => '選擇圖片失敗，請再試一次';
+
+  @override
+  String get feedbackImageUploadFailed => '圖片上傳失敗，請再試一次';
+
+  @override
+  String get feedbackImageTooMany => '最多可上傳 6 張圖片';
+
+  @override
   String get refreshData => '重新整理資料';
 
   @override

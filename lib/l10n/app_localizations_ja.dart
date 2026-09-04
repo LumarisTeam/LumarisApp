@@ -60,52 +60,52 @@ class AppLocalizationsJa extends AppLocalizations {
   String get other => 'その他';
 
   @override
-  String get feedback => '意见反馈';
+  String get feedback => 'フィードバック';
 
   @override
-  String get feedbackSubtitle => '提交问题或建议，帮助我们改进';
+  String get feedbackSubtitle => '問題の報告や改善案を送信できます';
 
   @override
-  String get feedbackContentLabel => '问题描述';
+  String get feedbackContentLabel => '内容';
 
   @override
-  String get feedbackContentHint => '请描述你遇到的问题';
+  String get feedbackContentHint => '発生した問題について説明してください';
 
   @override
-  String get feedbackContentRequired => '请填写问题描述';
+  String get feedbackContentRequired => '問題の内容を入力してください';
 
   @override
-  String get feedbackContactLabel => '联系方式';
+  String get feedbackContactLabel => '連絡先';
 
   @override
-  String get feedbackContactHint => '手机号 / 邮箱 / QQ 等';
+  String get feedbackContactHint => '電話番号 / メールアドレス / QQ など';
 
   @override
-  String get feedbackContactRequired => '请填写联系方式';
+  String get feedbackContactRequired => '連絡先を入力してください';
 
   @override
-  String get feedbackImagesLabel => '图片（选填，最多 6 张）';
+  String get feedbackImagesLabel => '画像（任意、最大6枚）';
 
   @override
-  String get feedbackAddImage => '添加图片';
+  String get feedbackAddImage => '画像を追加';
 
   @override
-  String get feedbackSubmit => '提交';
+  String get feedbackSubmit => '送信';
 
   @override
-  String get feedbackSubmitting => '提交中…';
+  String get feedbackSubmitting => '送信中…';
 
   @override
-  String get feedbackSubmitSuccess => '反馈已提交，感谢你的支持！';
+  String get feedbackSubmitSuccess => 'フィードバックを送信しました。ご協力ありがとうございます！';
 
   @override
-  String get feedbackPickImageFailed => '选择图片失败，请重试';
+  String get feedbackPickImageFailed => '画像を選択できませんでした。もう一度お試しください';
 
   @override
-  String get feedbackImageUploadFailed => '图片上传失败，请重试';
+  String get feedbackImageUploadFailed => '画像をアップロードできませんでした。もう一度お試しください';
 
   @override
-  String get feedbackImageTooMany => '最多上传 6 张图片';
+  String get feedbackImageTooMany => '画像は6枚まで追加できます';
 
   @override
   String get refreshData => 'データ更新';

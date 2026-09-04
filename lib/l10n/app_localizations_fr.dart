@@ -60,52 +60,56 @@ class AppLocalizationsFr extends AppLocalizations {
   String get other => 'Autre';
 
   @override
-  String get feedback => '意见反馈';
+  String get feedback => 'Commentaires';
 
   @override
-  String get feedbackSubtitle => '提交问题或建议，帮助我们改进';
+  String get feedbackSubtitle =>
+      'Signalez un problème ou suggérez une amélioration';
 
   @override
-  String get feedbackContentLabel => '问题描述';
+  String get feedbackContentLabel => 'Description';
 
   @override
-  String get feedbackContentHint => '请描述你遇到的问题';
+  String get feedbackContentHint => 'Décrivez le problème rencontré';
 
   @override
-  String get feedbackContentRequired => '请填写问题描述';
+  String get feedbackContentRequired => 'Veuillez décrire le problème';
 
   @override
-  String get feedbackContactLabel => '联系方式';
+  String get feedbackContactLabel => 'Coordonnées';
 
   @override
-  String get feedbackContactHint => '手机号 / 邮箱 / QQ 等';
+  String get feedbackContactHint => 'Téléphone / E-mail / QQ, etc.';
 
   @override
-  String get feedbackContactRequired => '请填写联系方式';
+  String get feedbackContactRequired => 'Veuillez indiquer vos coordonnées';
 
   @override
-  String get feedbackImagesLabel => '图片（选填，最多 6 张）';
+  String get feedbackImagesLabel => 'Images (facultatif, 6 maximum)';
 
   @override
-  String get feedbackAddImage => '添加图片';
+  String get feedbackAddImage => 'Ajouter une image';
 
   @override
-  String get feedbackSubmit => '提交';
+  String get feedbackSubmit => 'Envoyer';
 
   @override
-  String get feedbackSubmitting => '提交中…';
+  String get feedbackSubmitting => 'Envoi en cours…';
 
   @override
-  String get feedbackSubmitSuccess => '反馈已提交，感谢你的支持！';
+  String get feedbackSubmitSuccess =>
+      'Votre avis a été envoyé. Merci pour votre soutien !';
 
   @override
-  String get feedbackPickImageFailed => '选择图片失败，请重试';
+  String get feedbackPickImageFailed =>
+      'Échec de la sélection de l\'image. Veuillez réessayer';
 
   @override
-  String get feedbackImageUploadFailed => '图片上传失败，请重试';
+  String get feedbackImageUploadFailed =>
+      'Échec de l\'envoi de l\'image. Veuillez réessayer';
 
   @override
-  String get feedbackImageTooMany => '最多上传 6 张图片';
+  String get feedbackImageTooMany => 'Vous pouvez ajouter jusqu\'à 6 images';
 
   @override
   String get refreshData => 'Actualiser';
