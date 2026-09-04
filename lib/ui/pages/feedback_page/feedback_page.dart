@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:feedback_sdk/feedback_sdk.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
@@ -174,22 +175,50 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
             _buildFieldLabel(context, l10n.feedbackContentLabel,
                 required: true),
             const SizedBox(height: 8),
-            TextField(
+            CupertinoTextField(
               controller: _contentController,
               minLines: 5,
               maxLines: 8,
               maxLength: _config.maxContentLength,
-              decoration: _inputDecoration(context, l10n.feedbackContentHint),
+              placeholder: l10n.feedbackContentHint,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: CupertinoDynamicColor.withBrightness(
+                  color: CupertinoColors.white,
+                  darkColor: CupertinoColors.black,
+                ),
+                border: Border.all(
+                  color: CupertinoDynamicColor.withBrightness(
+                    color: Color(0x33000000),
+                    darkColor: Color(0x33FFFFFF),
+                  ),
+                  width: 1,
+                ),
+              ),
               onChanged: (_) => _markDirty(),
             ),
             const SizedBox(height: 16),
             _buildFieldLabel(context, l10n.feedbackContactLabel,
                 required: true),
             const SizedBox(height: 8),
-            TextField(
+            CupertinoTextField(
               controller: _contactController,
               maxLength: _config.maxContactLength,
-              decoration: _inputDecoration(context, l10n.feedbackContactHint),
+              placeholder: l10n.feedbackContactHint,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: CupertinoDynamicColor.withBrightness(
+                  color: CupertinoColors.white,
+                  darkColor: CupertinoColors.black,
+                ),
+                border: Border.all(
+                  color: CupertinoDynamicColor.withBrightness(
+                    color: Color(0x33000000),
+                    darkColor: Color(0x33FFFFFF),
+                  ),
+                  width: 1,
+                ),
+              ),
               onChanged: (_) => _markDirty(),
             ),
             const SizedBox(height: 16),
@@ -198,14 +227,10 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
             _buildImageGrid(context),
             const SizedBox(height: 32),
             SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: _submitting ? null : _submit,
-                child: Text(
-                  _submitting ? l10n.feedbackSubmitting : l10n.feedbackSubmit,
-                ),
-              ),
-            ),
+                width: double.infinity,
+                child: CupertinoButton.filled(
+                    onPressed: _submitting ? null : _submit,
+                    child: Text(l10n.feedbackSubmit)))
           ],
         ),
       ),
@@ -233,26 +258,12 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     );
   }
 
-  InputDecoration _inputDecoration(BuildContext context, String hint) {
-    final colors = context.clubColors;
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: TextStyle(color: colors.tertiaryLabel),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: colors.primary),
-      ),
-    );
-  }
-
   Widget _buildImageGrid(BuildContext context) {
     return Wrap(
       spacing: 8,
       runSpacing: 8,
       children: [
-        for (var i = 0; i < _images.length; i++)
-          _buildImageThumb(context, i),
+        for (var i = 0; i < _images.length; i++) _buildImageThumb(context, i),
         if (_images.length < _config.maxImageCount) _buildAddTile(context),
       ],
     );

@@ -296,7 +296,7 @@ class SettingPage extends ConsumerWidget {
   Widget _buildFeedbackTile(BuildContext context) {
     return ClubListTile(
       leading: Icon(
-        Icons.feedback_outlined,
+        Icons.feedback_rounded,
         size: 20,
         color: context.clubColors.primary,
       ),
