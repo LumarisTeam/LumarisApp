@@ -60,6 +60,54 @@ class AppLocalizationsDe extends AppLocalizations {
   String get other => 'Sonstiges';
 
   @override
+  String get feedback => '意见反馈';
+
+  @override
+  String get feedbackSubtitle => '提交问题或建议，帮助我们改进';
+
+  @override
+  String get feedbackContentLabel => '问题描述';
+
+  @override
+  String get feedbackContentHint => '请描述你遇到的问题';
+
+  @override
+  String get feedbackContentRequired => '请填写问题描述';
+
+  @override
+  String get feedbackContactLabel => '联系方式';
+
+  @override
+  String get feedbackContactHint => '手机号 / 邮箱 / QQ 等';
+
+  @override
+  String get feedbackContactRequired => '请填写联系方式';
+
+  @override
+  String get feedbackImagesLabel => '图片（选填，最多 6 张）';
+
+  @override
+  String get feedbackAddImage => '添加图片';
+
+  @override
+  String get feedbackSubmit => '提交';
+
+  @override
+  String get feedbackSubmitting => '提交中…';
+
+  @override
+  String get feedbackSubmitSuccess => '反馈已提交，感谢你的支持！';
+
+  @override
+  String get feedbackPickImageFailed => '选择图片失败，请重试';
+
+  @override
+  String get feedbackImageUploadFailed => '图片上传失败，请重试';
+
+  @override
+  String get feedbackImageTooMany => '最多上传 6 张图片';
+
+  @override
   String get refreshData => 'Aktualisieren';
 
   @override
