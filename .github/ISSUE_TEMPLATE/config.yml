@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 项目说明
+    url: https://github.com/iOS-Club-XAUAT/ios_club_app#readme
+    about: 先看看 README，了解功能范围、本地运行方式与打包流程。
+  - name: 💬 使用疑问 / 意见反馈
+    url: https://iosclub.org
+    about: 使用上的疑问、吐槽和建议不必开 Issue，到 iOS Club 主页找我们聊聊更快。
+  - name: 🚀 安装包下载（Gitee 发行版）
+    url: https://gitee.com/luckyfishisdashen/iOSClub.AppMobile/releases
+    about: Android / Windows 等平台的安装包在 Gitee 发行版页面发布。
