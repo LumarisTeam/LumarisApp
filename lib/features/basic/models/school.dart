@@ -80,6 +80,12 @@ class School {
   final String code;
   final String name;
   final String website;
+
+  /// 学生登录教务系统的地址，用于指引与 HTML 课表导入。
+  ///
+  /// 与 [website]（后端 API 基址）不同，该字段可以为空——学校尚未登记时
+  /// 消费方应回退到 [website]，见 [htmlImportUrl]。
+  final String eduSystemUrl;
   final List<Feature> features;
   final bool enabled;
   final DateTime createdAt;
@@ -90,6 +96,7 @@ class School {
     required this.code,
     required this.name,
     required this.website,
+    this.eduSystemUrl = '',
     required this.features,
     this.enabled = true,
     int? weekStartDay,
@@ -98,6 +105,11 @@ class School {
   }) : weekStartDay = _normalizeWeekStartDay(weekStartDay);
 
   bool supports(Feature feature) => features.contains(feature);
+
+  /// HTML 导入时应打开的地址：优先学校登记的教务系统地址，未登记时回退到
+  /// [website]（历史行为——这些学校此前就是拿 [website] 导入的）。
+  String get htmlImportUrl =>
+      eduSystemUrl.trim().isNotEmpty ? eduSystemUrl : website;
 
   static School? findByCode(List<School> schools, String code) {
     final normalizedCode = code.toUpperCase();
@@ -131,10 +143,17 @@ class School {
     return value is int ? value : null;
   }
 
+  /// 容错读取：旧缓存与老版本接口都不含该字段，缺失或类型不符时按空处理。
+  static String _readEduSystemUrl(Map<String, dynamic> json) {
+    final value = json['edu_system_url'];
+    return value is String ? value : '';
+  }
+
   factory School.fromJson(Map<String, dynamic> json) => School(
         code: json['code'] as String,
         name: json['name'] as String,
         website: json['website'] as String,
+        eduSystemUrl: _readEduSystemUrl(json),
         features: (json['features'] as List<dynamic>)
             .map((f) => Feature.fromValue(f as String))
             .toList(),
@@ -148,6 +167,7 @@ class School {
         'code': code,
         'name': name,
         'website': website,
+        'edu_system_url': eduSystemUrl,
         'features': features.map((f) => f.value).toList(),
         'enabled': enabled,
         'week_start_day': weekStartDay,

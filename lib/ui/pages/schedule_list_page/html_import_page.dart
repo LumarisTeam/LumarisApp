@@ -23,7 +23,8 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
   /// 选中的学校 code；手填自定义网址时为 null。
   String? _selectedCode;
 
-  /// 实际用于加载 WebView 的网址：选中学校时是 school.website，否则是手填值。
+  /// 实际用于加载 WebView 的网址：选中学校时是 school.htmlImportUrl
+  /// （优先教务系统地址，未登记时回退到 API 基址），否则是手填值。
   String? _selectedUrl;
 
   @override
@@ -31,9 +32,9 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
     super.initState();
     // 默认选中当前学校，省掉一次「我已经选过了」的操作。
     final current = ref.read(schoolStoreProvider).school;
-    if (current != null && current.website.trim().isNotEmpty) {
+    if (current != null && current.htmlImportUrl.trim().isNotEmpty) {
       _selectedCode = current.code;
-      _selectedUrl = current.website;
+      _selectedUrl = current.htmlImportUrl;
     }
   }
 
@@ -46,7 +47,7 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
   void _selectSchool(School school) {
     setState(() {
       _selectedCode = school.code;
-      _selectedUrl = school.website;
+      _selectedUrl = school.htmlImportUrl;
     });
     _urlController.clear();
   }
@@ -72,8 +73,9 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
     final schools =
         ref.watch(importSchoolListProvider).valueOrNull ?? School.fallbackList;
     // 没有网址的学校点不动（会加载一个空 URI），直接不展示。
-    final selectable =
-        schools.where((school) => school.website.trim().isNotEmpty).toList();
+    final selectable = schools
+        .where((school) => school.htmlImportUrl.trim().isNotEmpty)
+        .toList();
 
     final canImport =
         _selectedUrl != null || _urlController.text.trim().isNotEmpty;
@@ -131,7 +133,7 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
                                     ),
                                     const SizedBox(height: 2),
                                     Text(
-                                      school.website,
+                                      school.htmlImportUrl,
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: colors.secondaryLabel,

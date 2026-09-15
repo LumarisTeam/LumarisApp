@@ -136,6 +136,67 @@ void main() {
       expect(json['website'], equals('https://api.test.edu.cn'));
       expect(json['features'], equals(['timetable']));
       expect(json['week_start_day'], equals(DateTime.monday));
+      expect(json['edu_system_url'], equals(''));
+    });
+  });
+
+  group('School.eduSystemUrl', () {
+    Map<String, dynamic> jsonWith(Object? eduSystemUrl) => {
+          'code': 'test',
+          'name': '测试大学',
+          'website': 'https://api.test.edu.cn',
+          'features': <String>['timetable'],
+          'enabled': true,
+          'created_at': '2024-01-01T00:00:00.000',
+          'updated_at': '2024-01-01T00:00:00.000',
+          'edu_system_url': ?eduSystemUrl,
+        };
+
+    test('should read edu system url from json', () {
+      final json = jsonWith('https://jwc.test.edu.cn');
+      final school = School.fromJson(json);
+      expect(school.eduSystemUrl, equals('https://jwc.test.edu.cn'));
+    });
+
+    // 旧缓存与老版本接口都不含该字段。这里必须容错而不是抛异常，否则
+    // SchoolConfigCache.read() 的 catch 会把用户静默降级到 fallbackList。
+    test('should default missing edu system url to empty', () {
+      final school = School.fromJson(jsonWith(null));
+      expect(school.eduSystemUrl, equals(''));
+    });
+
+    test('should default non string edu system url to empty', () {
+      final school = School.fromJson(jsonWith(123));
+      expect(school.eduSystemUrl, equals(''));
+    });
+
+    test('should convert edu system url to json', () {
+      final school = School.fromJson(jsonWith('https://jwc.test.edu.cn'));
+      expect(school.toJson()['edu_system_url'],
+          equals('https://jwc.test.edu.cn'));
+    });
+
+    test('htmlImportUrl should prefer edu system url', () {
+      final json = jsonWith('https://jwc.test.edu.cn');
+      final school = School.fromJson(json);
+      expect(school.htmlImportUrl, equals('https://jwc.test.edu.cn'));
+    });
+
+    // 未登记教务系统地址的学校必须保持改动前的导入行为。
+    test('htmlImportUrl should fall back to website when unset', () {
+      final school = School.fromJson(jsonWith(null));
+      expect(school.htmlImportUrl, equals('https://api.test.edu.cn'));
+    });
+
+    test('htmlImportUrl should fall back to website when blank', () {
+      final school = School.fromJson(jsonWith('   '));
+      expect(school.htmlImportUrl, equals('https://api.test.edu.cn'));
+    });
+
+    test('fallback school should keep falling back to website', () {
+      final school = School.fallbackList.first;
+      expect(school.eduSystemUrl, isEmpty);
+      expect(school.htmlImportUrl, equals(school.website));
     });
   });
 }
