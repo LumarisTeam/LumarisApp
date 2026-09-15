@@ -1180,7 +1180,11 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String scheduleCourseTime(
-      String weekRanges, String weekday, int start, int end) {
+    String weekRanges,
+    String weekday,
+    int start,
+    int end,
+  ) {
     return 'Woche $weekRanges jeden $weekday Stunde $start-$end';
   }
 

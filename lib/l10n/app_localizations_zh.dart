@@ -1135,7 +1135,11 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String scheduleCourseTime(
-      String weekRanges, String weekday, int start, int end) {
+    String weekRanges,
+    String weekday,
+    int start,
+    int end,
+  ) {
     return '$weekRanges周 每周$weekday 第$start-$end节';
   }
 
@@ -3283,7 +3287,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String scheduleCourseTime(
-      String weekRanges, String weekday, int start, int end) {
+    String weekRanges,
+    String weekday,
+    int start,
+    int end,
+  ) {
     return '$weekRanges週 每週$weekday 第$start-$end節';
   }
 

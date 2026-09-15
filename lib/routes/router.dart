@@ -110,6 +110,8 @@ class AppRouter {
                       'Webview',
                       (context, state) => HtmlImportWebViewPage(
                         url: state.extra as String,
+                        // 选中学校时由导入页带过来，解析时优先用该校适配器。
+                        schoolCode: state.uri.queryParameters['school'],
                       ),
                     ),
                   ],

@@ -1149,7 +1149,11 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String scheduleCourseTime(
-      String weekRanges, String weekday, int start, int end) {
+    String weekRanges,
+    String weekday,
+    int start,
+    int end,
+  ) {
     return '$weekRanges주차 매주 $weekday 제$start-$end교시';
   }
 

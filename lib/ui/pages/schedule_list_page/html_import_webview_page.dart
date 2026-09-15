@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:ios_club_app/core/services/course_html_parser.dart';
+import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/state/course_store.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
@@ -12,7 +13,14 @@ import 'package:ios_club_app/ui/components/show_club_snack_bar.dart';
 class HtmlImportWebViewPage extends ConsumerStatefulWidget {
   final String url;
 
-  const HtmlImportWebViewPage({super.key, required this.url});
+  /// 用户在导入页选中的学校代号（如 `XAUAT`）；手填网址时为 null。
+  final String? schoolCode;
+
+  const HtmlImportWebViewPage({
+    super.key,
+    required this.url,
+    this.schoolCode,
+  });
 
   @override
   ConsumerState<HtmlImportWebViewPage> createState() =>
@@ -57,9 +65,17 @@ class _HtmlImportWebViewPageState extends ConsumerState<HtmlImportWebViewPage> {
         return;
       }
 
-      final courses = CourseHtmlParser.parseHtml(html);
+      final parsed = CourseHtmlParser.parseHtml(
+        html,
+        schoolCode: widget.schoolCode,
+      );
 
-      if (courses.isEmpty) {
+      if (parsed.isEmpty) {
+        // 线上排查靠这段：适配器、课程数、被跳过的课程数，以及每条诊断。
+        AppLogger.warning(
+          '[HtmlImport] 未解析到课程 (school=${widget.schoolCode ?? '-'}, '
+          'url=${widget.url})\n${parsed.diagnosticReport}',
+        );
         if (mounted) {
           showClubSnackBar(
             context,
@@ -68,6 +84,8 @@ class _HtmlImportWebViewPageState extends ConsumerState<HtmlImportWebViewPage> {
         }
         return;
       }
+
+      final courses = parsed.courses;
 
       await ref.read(courseStoreProvider.notifier).saveGuestCourses(courses);
       ref.read(scheduleStoreProvider.notifier).loadGuestCourseData();

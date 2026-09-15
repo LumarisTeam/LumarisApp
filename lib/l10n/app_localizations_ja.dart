@@ -1104,7 +1104,11 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String scheduleCourseTime(
-      String weekRanges, String weekday, int start, int end) {
+    String weekRanges,
+    String weekday,
+    int start,
+    int end,
+  ) {
     return '第$weekRanges週 毎$weekday曜日 $start-$end限';
   }
 

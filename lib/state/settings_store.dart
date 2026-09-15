@@ -54,6 +54,24 @@ class SchoolListNotifier extends AsyncNotifier<List<School>> {
   }
 }
 
+/// HTML 课表导入用的学校列表。
+///
+/// 与 [schoolListProvider] 的关键区别是**不按 `Feature.login` 过滤**：HTML 导入是在
+/// WebView 里自己登录教务系统，不依赖 App 侧的任何学校功能开关。复用前者会把
+/// 「只开了课表、没开 App 内登录」的学校从列表里悄悄隐掉。
+///
+/// 只保留 `enabled` 的学校；接口失败时退回 `School.fallbackList`（导入页还允许
+/// 手填自定义网址，所以退化成一项不会把用户堵死）。
+final importSchoolListProvider = FutureProvider<List<School>>((ref) async {
+  try {
+    final data = await SchoolApi.listSchools();
+    final schools = data.items.where((s) => s.enabled).toList();
+    return schools.isEmpty ? School.fallbackList : schools;
+  } catch (_) {
+    return School.fallbackList;
+  }
+});
+
 class SettingsStore extends Notifier<SettingsState> {
   @override
   SettingsState build() {

@@ -4,8 +4,9 @@ description: "西建大iOS Club出品软件，包括教务系统数据查询，�
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.2.1+2026090421
 
+# curriculum 要求 Dart ^3.11.0，下限随之上调（原为 >=3.5.3）。
 environment:
-  sdk: '>=3.5.3 <4.0.0'
+  sdk: '>=3.11.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -25,7 +26,6 @@ dependencies:
   home_widget: ^0.9.0
   path_provider: ^2.1.5
   open_file: ^3.5.10
-  html: ^0.15.6
   dio: ^5.9.0
   timezone: ^0.11.0
   flutter_svg: ^2.2.3
@@ -36,6 +36,12 @@ dependencies:
   window_manager: ^0.5.1
   tray_manager:
     path: third_party/tray_manager
+  # 与本仓库并排 checkout 的兄弟包（纯 Dart，无 Flutter 依赖）。
+  # 注意：CI 或他人单独克隆本仓库时解析会失败，详见 README。
+  curriculum:
+    git:
+      url: https://github.com/lijiajunply/curriculum.git
+      ref: main
   flutter_riverpod: ^2.6.1
   display_mode: ^0.0.2
   encrypt: ^5.0.3
