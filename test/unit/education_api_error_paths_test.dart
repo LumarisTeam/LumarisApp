@@ -66,6 +66,7 @@ void main() {
         () => BusApi.getBusNewData('0830', loc: 'ALL'),
         () => BusApi.getBusOldData('0830', isShow: true),
         () => CourseApi.getCourse('2026001'),
+        () => CourseApi.getScheduleTime(),
         () => ElectricityApi.createSubscription(
               const CreateElectricitySubscriptionRequest(
                 url: 'https://example.com/wxAccount?id=1',

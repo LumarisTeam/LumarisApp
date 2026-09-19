@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:ios_club_app/core/models/schedule_item.dart';
 import 'package:ios_club_app/core/services/hive_manager.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
+import 'package:ios_club_app/features/education/services/schedule_time_service.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/basic/services/school_config_cache.dart';
@@ -194,6 +195,8 @@ class TaskExecutor {
     DartPluginRegistrant.ensureInitialized();
     await HiveManager.init();
     await PrefsService.init();
+    // 后台 isolate 不共享内存，课程提醒/小组件要自己装载一次作息表
+    await ScheduleTimeService.ensureLoaded();
     _backgroundInitialized = true;
   }
 

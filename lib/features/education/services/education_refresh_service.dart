@@ -1,5 +1,6 @@
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
+import 'package:ios_club_app/features/education/services/schedule_time_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
 import 'auth_service.dart';
@@ -55,6 +56,7 @@ class EducationRefreshService {
       }
 
       await EduTimeService.fetchTimeInfoFromRemote(forceRefresh: true);
+      await ScheduleTimeService.fetchFromRemote(forceRefresh: true);
 
       if (isForced) {
         await Future.wait([

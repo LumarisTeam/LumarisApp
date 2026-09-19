@@ -11,6 +11,7 @@ import 'package:ios_club_app/features/education/services/bus_service.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/features/education/services/edu_http_client.dart';
 import 'package:ios_club_app/features/education/services/edu_http_client_manager.dart';
+import 'package:ios_club_app/features/education/apis/course_api.dart';
 import 'package:ios_club_app/features/education/apis/exam_api.dart';
 import 'package:ios_club_app/features/education/apis/info_api.dart';
 import 'package:ios_club_app/features/education/apis/login_api.dart';
@@ -145,6 +146,14 @@ void main() {
                   'code': 0,
                   'message': 'ok',
                 };
+              case '/v1/course/ScheduleTime':
+                data = <dynamic>[
+                  <String, dynamic>{
+                    'campusName': '草堂校区',
+                    'start': <String>['8:00'],
+                    'end': <String>['8:20'],
+                  },
+                ];
               case '/Bus/2026-04-27':
                 data = <String, dynamic>{
                   'data': <dynamic>[],
@@ -171,9 +180,11 @@ void main() {
       await ExamApi.getExam('2026001', forceRefresh: true);
       await ProgramApi.getProgram('2026001', forceRefresh: true);
       await ProgramApi.getProgramDic('2026001', forceRefresh: true);
+      await CourseApi.getScheduleTime(forceRefresh: true);
       await BusApi.getBus(dayDate: '2026-04-27', forceRefresh: true);
 
       expect(seenPaths, {
+        '/v1/course/ScheduleTime',
         '/Info/Completion',
         '/Exam',
         '/Program',
@@ -452,6 +463,79 @@ void main() {
         () => LoginApi.login('u', 'p'),
         throwsA(isA<NetworkException>()),
       );
+    });
+    test('CourseApi.getScheduleTime should parse the bare array response',
+        () async {
+      EduHttpClientManager.instance.dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            expect(options.path, '/v1/course/ScheduleTime');
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: <dynamic>[
+                  <String, dynamic>{
+                    'campusName': '草堂校区',
+                    'start': <String>['8:00', '8:30'],
+                    'end': <String>['8:20', '9:15'],
+                  },
+                  <String, dynamic>{
+                    'campusName': '雁塔校区',
+                    'time': '05/01~09/30',
+                    'start': <String>['', '8:00'],
+                    'end': <String>['', '8:50'],
+                  },
+                ],
+              ),
+            );
+          },
+        ),
+      );
+
+      final tables = await CourseApi.getScheduleTime();
+
+      expect(tables, hasLength(2));
+      expect(tables.first.campusName, '草堂校区');
+      expect(tables.first.time, '');
+      expect(tables.last.time, '05/01~09/30');
+      expect(tables.last.start, <String>['', '8:00']);
+    });
+
+    test('CourseApi.getScheduleTime should parse the enveloped response',
+        () async {
+      EduHttpClientManager.instance.dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            expect(options.path, '/v1/course/ScheduleTime');
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: <String, dynamic>{
+                  'data': <dynamic>[
+                    <String, dynamic>{
+                      'campusName': '雁塔校区',
+                      'time': '10/01~04/30',
+                      'start': <String>['', '8:00'],
+                      'end': <String>['', '8:50'],
+                    },
+                  ],
+                  'code': 0,
+                  'message': 'ok',
+                  'total': 1,
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      final tables = await CourseApi.getScheduleTime();
+
+      expect(tables, hasLength(1));
+      expect(tables.single.campusName, '雁塔校区');
+      expect(tables.single.end, <String>['', '8:50']);
     });
   });
 

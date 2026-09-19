@@ -82,34 +82,14 @@ class TimelineColumn extends StatelessWidget {
   }
 
   ({String start, String end}) _getTimeInfo(int period) {
-    final now = DateTime.now();
-    final isSummer = now.month >= 5 && now.month < 10;
+    // 作息表由 ScheduleTimeService 装载（远端优先，内置兜底），这里同步读取；
+    // 雁塔的季节由表上的适用区间决定，节次越界时回退草堂时间。
+    final time = TimeService.getStartAndEndForCampus(
+      campus: isYanTa ? TimeService.yanTaCampus : TimeService.caoTangCampus,
+      startUnit: period,
+      endUnit: period,
+    );
 
-    String startTime = '';
-    String endTime = '';
-
-    // 确保索引在有效范围内
-    if (period < TimeService.CanTangTimeStart.length) {
-      // 默认使用草堂时间
-      startTime = TimeService.CanTangTimeStart[period];
-      endTime = TimeService.CanTangTimeEnd[period];
-
-      // 根据季节选择雁塔时间
-      if (isYanTa) {
-        if (isSummer) {
-          if (period < TimeService.YanTaXiaStart.length) {
-            startTime = TimeService.YanTaXiaStart[period];
-            endTime = TimeService.YanTaXiaEnd[period];
-          }
-        } else {
-          if (period < TimeService.YanTaDongStart.length) {
-            startTime = TimeService.YanTaDongStart[period];
-            endTime = TimeService.YanTaDongEnd[period];
-          }
-        }
-      }
-    }
-
-    return (start: startTime, end: endTime);
+    return (start: time.start, end: time.end);
   }
 }

@@ -18,6 +18,7 @@ import 'package:ios_club_app/features/education/services/auth_service.dart';
 import 'package:ios_club_app/features/education/services/edu_http_client.dart';
 import 'package:ios_club_app/features/education/services/edu_http_client_manager.dart';
 import 'package:ios_club_app/features/education/services/education_refresh_service.dart';
+import 'package:ios_club_app/features/education/services/schedule_time_service.dart';
 import 'package:ios_club_app/features/system/notifications/notification_service.dart';
 import 'package:ios_club_app/features/system/notifications/task_executor.dart';
 import 'package:ios_club_app/features/system/widget_service.dart';
@@ -47,6 +48,9 @@ void main() async {
     HiveManager.init(),
     PrefsService.init(),
   ]);
+
+  // 课表首帧就要用到节次时间，先用本地缓存的作息表装载
+  await ScheduleTimeService.loadFromCache();
 
   if (PlatformUtils.isIOS) {
     await WidgetService.initialize();
