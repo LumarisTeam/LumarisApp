@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
+import 'package:ios_club_app/features/basic/services/school_config_cache.dart';
 import 'package:ios_club_app/features/education/services/course_service.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/routes/router.dart';
@@ -60,19 +61,31 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
     return uri.replace(scheme: 'webcal').toString();
   }
 
+  /// 日历订阅地址。
+  ///
+  /// 原先指向 `schedule.xauat.site/class`（Flask / LoginApi 那一侧）。ICS 生成已迁到
+  /// EduApi 的 `v1/course/Calendar`——它本来就在解析同一套课表与考试数据，
+  /// 没必要两边各解析一遍。
+  ///
+  /// 基址取学校记录里的 website（XAUAT 是 https://xauatapi.xauat.site），
+  /// 拿不到时回落到内置的学校配置。原来的 `school=xauat` 参数不需要了：
+  /// EduApi 只服务本校，多余参数会被忽略。
   String _buildCalendarSubscriptionUrl({
     required String username,
     required String password,
   }) {
-    return Uri.https(
-      'schedule.xauat.site',
-      '/class',
-      <String, dynamic>{
-        'school': 'xauat',
-        'username': username,
-        'password': password,
-      },
-    ).toString();
+    final website = SchoolConfigCache.read()?.website ??
+        School.fallbackList.first.website;
+
+    return Uri.parse(website)
+        .replace(
+          path: '/v1/course/Calendar',
+          queryParameters: <String, String>{
+            'username': username,
+            'password': password,
+          },
+        )
+        .toString();
   }
 
   @override
