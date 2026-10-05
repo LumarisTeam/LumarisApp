@@ -271,7 +271,7 @@ packages:
       path: "."
       ref: main
       resolved-ref: bf5367eb8bbb1d806d0536c5851796f8fff51fb4
-      url: "https://github.com/lijiajunply/curriculum.git"
+      url: "https://github.com/LumarisTeam/curriculum.git"
     source: git
     version: "0.1.0"
   dart_earcut:

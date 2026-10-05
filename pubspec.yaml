@@ -40,7 +40,7 @@ dependencies:
   # 注意：CI 或他人单独克隆本仓库时解析会失败，详见 README。
   curriculum:
     git:
-      url: https://github.com/lijiajunply/curriculum.git
+      url: https://github.com/LumarisTeam/curriculum.git
       ref: main
   flutter_riverpod: ^2.6.1
   display_mode: ^0.0.2
