@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
@@ -44,7 +45,7 @@ Widget _wrap(Widget child, {ThemeMode themeMode = ThemeMode.light}) {
       theme: ClubTheme.lightTheme(),
       darkTheme: ClubTheme.darkTheme(),
       themeMode: themeMode,
-      home: Scaffold(body: child),
+      home: child,
     ),
   );
 }
@@ -66,6 +67,12 @@ Icon _itemIcon(WidgetTester tester, String label) {
 
 Color? _labelColor(WidgetTester tester, String label) {
   return tester.widget<Text>(find.text(label)).style?.color;
+}
+
+/// [Text] 合并 [DefaultTextStyle] 之后真正用于排版的那个样式。
+TextStyle _resolvedStyle(WidgetTester tester, String label) {
+  final paragraph = tester.renderObject<RenderParagraph>(find.text(label));
+  return (paragraph.text as TextSpan).style!;
 }
 
 void main() {
@@ -126,6 +133,26 @@ void main() {
       expect(_itemDecoration(tester, '课表').color, _expectedSelectionDark);
       expect(_itemDecoration(tester, '首页').color, Colors.transparent);
       expect(_labelColor(tester, '首页'), _expectedLabelDark);
+    });
+
+    testWidgets('should not inherit the MaterialApp error text style',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          MacosSidebar(
+            items: _items,
+            selectedIndex: 0,
+            onItemSelected: (_) {},
+          ),
+        ),
+      );
+
+      // MaterialApp 的兜底 DefaultTextStyle 带黄色双下划线，专门提醒开发者
+      // 文字缺少 Material 祖先。侧边栏不含 Scaffold，必须自带 DefaultTextStyle。
+      final style = _resolvedStyle(tester, '首页');
+      expect(style.decoration, isNot(TextDecoration.underline));
+      expect(style.fontSize, 13);
+      expect(style.fontFamily, '.AppleSystemUIFont');
     });
 
     testWidgets('should render the bottom user tile', (

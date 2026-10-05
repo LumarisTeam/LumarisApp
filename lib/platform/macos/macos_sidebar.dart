@@ -145,28 +145,39 @@ class _MacosSidebarState extends State<MacosSidebar> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: context.clubColors.groupedBackground,
-      child: Column(
-        children: [
-          const SizedBox(height: 8),
-          Expanded(
-            child: ListView(
-              physics: const ClampingScrollPhysics(),
-              padding: _listPadding,
-              children: [
-                for (var index = 0; index < widget.items.length; index++)
-                  _MacosSidebarItem(
-                    destination: widget.items[index],
-                    selected: widget.selectedIndex == index,
-                    isWindowFocused: _isWindowFocused,
-                    onTap: () => widget.onItemSelected(index),
-                  ),
-              ],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return DefaultTextStyle(
+      // macos_ui 的 MacosApp 会在整个 macOS 应用外包一层 DefaultTextStyle，
+      // 换成 MaterialApp 后没有了，而 MaterialApp 的兜底样式带着黄色双下划线
+      // （专门用来提醒文字缺少 Material 祖先）。侧边栏本身不含 Scaffold/Material，
+      // 必须自己提供基础样式，否则只设置了字号/颜色的 Text 会把下划线漏进来。
+      style: TextStyle(
+        color: isDark ? _labelColorDark : _labelColorLight,
+        decoration: TextDecoration.none,
+      ),
+      child: ColoredBox(
+        color: context.clubColors.groupedBackground,
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            Expanded(
+              child: ListView(
+                physics: const ClampingScrollPhysics(),
+                padding: _listPadding,
+                children: [
+                  for (var index = 0; index < widget.items.length; index++)
+                    _MacosSidebarItem(
+                      destination: widget.items[index],
+                      selected: widget.selectedIndex == index,
+                      isWindowFocused: _isWindowFocused,
+                      onTap: () => widget.onItemSelected(index),
+                    ),
+                ],
+              ),
             ),
-          ),
-          const _UserTile(),
-        ],
+            const _UserTile(),
+          ],
+        ),
       ),
     );
   }
