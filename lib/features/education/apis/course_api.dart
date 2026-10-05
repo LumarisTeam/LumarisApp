@@ -36,17 +36,24 @@ class CourseApi {
     }
   }
 
-  /// GET /v1/course/ScheduleTime → ListOfScheduleTimeModel
+  /// GET /course/ScheduleTime → ListOfScheduleTimeModel
   ///
   /// 获取各校区、各季节的作息时间表（草堂一份，雁塔冬季/夏季各一份）。
   /// 服务端返回的是裸数组，也兼容带 `data` 包装的响应；服务端不做校区判断，
   /// 由调用方按课程的校区字段和当前日期自行选择。
+  ///
+  /// 路径不能写成 `/v1/course/ScheduleTime`：Dio 是把 baseUrl 和 path 直接拼
+  /// 起来的（`options.dart` 里 `url = baseUrl + url`），而 XAUAT 的 `website`
+  /// 本身就是 `https://xauatapi.xauat.site/v1`，再带一个 `/v1` 会请求到
+  /// `/v1/v1/course/ScheduleTime` 并 404——异常又会被 ScheduleTimeService 吞掉，
+  /// 表现成「远端作息表一直没生效、悄悄用内置表」。这里与本文件其它接口一致，
+  /// 只写资源路径。
   static Future<List<ScheduleTimeModel>> getScheduleTime({
     bool forceRefresh = false,
   }) async {
     try {
       final rawResponse = await EduHttpClientManager.instance.get(
-        '/v1/course/ScheduleTime',
+        '/course/ScheduleTime',
         bypassCache: forceRefresh,
       );
       final apiResponse = ApiResponse<List<ScheduleTimeModel>>.parsed(

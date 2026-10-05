@@ -146,7 +146,7 @@ void main() {
                   'code': 0,
                   'message': 'ok',
                 };
-              case '/v1/course/ScheduleTime':
+              case '/course/ScheduleTime':
                 data = <dynamic>[
                   <String, dynamic>{
                     'campusName': '草堂校区',
@@ -184,7 +184,7 @@ void main() {
       await BusApi.getBus(dayDate: '2026-04-27', forceRefresh: true);
 
       expect(seenPaths, {
-        '/v1/course/ScheduleTime',
+        '/course/ScheduleTime',
         '/Info/Completion',
         '/Exam',
         '/Program',
@@ -469,7 +469,7 @@ void main() {
       EduHttpClientManager.instance.dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            expect(options.path, '/v1/course/ScheduleTime');
+            expect(options.path, '/course/ScheduleTime');
             handler.resolve(
               Response<dynamic>(
                 requestOptions: options,
@@ -507,7 +507,7 @@ void main() {
       EduHttpClientManager.instance.dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            expect(options.path, '/v1/course/ScheduleTime');
+            expect(options.path, '/course/ScheduleTime');
             handler.resolve(
               Response<dynamic>(
                 requestOptions: options,

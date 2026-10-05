@@ -96,12 +96,53 @@ void main() {
   });
 
   group('ScheduleTimeService', () {
+    test('requests a single /v1 for a website that already carries the prefix',
+        () async {
+      // 回归：XAUAT 的 website 就是 https://xauatapi.xauat.site/v1，而 Dio 是把
+      // baseUrl 与 path 直接拼起来的。路径里再写一次 /v1 会请求到
+      // /v1/v1/course/ScheduleTime 并 404，异常又被这里吞掉，于是远端作息表
+      // 一直没生效、悄悄用内置表——只看 options.path 的测试是发现不了的，
+      // 所以这里断言拼接后的完整 URL。
+      EduHttpClientManager.current.updateSchoolConfig(
+        School(
+          code: 'XAUAT',
+          name: '西安建筑科技大学',
+          website: 'https://xauatapi.xauat.site/v1',
+          features: [],
+          createdAt: DateTime(2024, 1, 1),
+          updatedAt: DateTime(2024, 1, 1),
+        ),
+      );
+
+      Uri? requested;
+      EduHttpClientManager.instance.dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            requested = options.uri;
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: _remotePayload,
+              ),
+            );
+          },
+        ),
+      );
+
+      final ok = await ScheduleTimeService.fetchFromRemote();
+
+      expect(ok, isTrue);
+      expect(requested.toString(),
+          'https://xauatapi.xauat.site/v1/course/ScheduleTime');
+    });
+
     test('fetchFromRemote should install remote tables and cache them',
         () async {
       EduHttpClientManager.instance.dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            expect(options.path, '/v1/course/ScheduleTime');
+            expect(options.path, '/course/ScheduleTime');
             handler.resolve(
               Response<dynamic>(
                 requestOptions: options,
