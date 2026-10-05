@@ -14,11 +14,10 @@ import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/ui/components/platform_dialog.dart';
 import 'package:ios_club_app/ui/components/show_club_snack_bar.dart';
-import 'package:macos_ui/macos_ui.dart';
 
 import 'platform/mobile/bottom_navigation.dart';
 import 'platform/tablet/tablet_navigation.dart';
-import 'platform/macos/macos_ui_sidebar.dart';
+import 'platform/macos/macos_shell.dart';
 import 'platform/windows/windows_sidebar.dart';
 
 class MainApp extends ConsumerStatefulWidget {
@@ -292,20 +291,10 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
     late final Widget shell;
 
     if (isMacOS) {
-      shell = MacosWindow(
-        sidebar: macosUISidebar(
-          items: destinations,
-          selectedIndex: currentIndex,
-          onItemSelected: (int index) {
-            _navigateToMainRoute(index);
-          },
-        ),
-        titleBar: TitleBar(
-          title: Text(context.l10n.appName),
-          decoration: BoxDecoration(
-            color: MacosTheme.of(context).canvasColor,
-          ),
-        ),
+      shell = MacosShell(
+        items: destinations,
+        selectedIndex: currentIndex,
+        onItemSelected: _navigateToMainRoute,
         child: routedChild,
       );
     } else if (isWindows || isLinux) {

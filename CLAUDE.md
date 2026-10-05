@@ -83,7 +83,7 @@ Some legacy GetX-style stores (e.g., `BusTileStore`, `CourseStore`) remain in `l
 Routes are defined in `lib/routes/router.dart` using `GoRouter`. The router is provided via Riverpod as `appRouterProvider`.
 
 The app shell adapts per platform in `lib/main_app.dart`:
-- **macOS**: Native `MacosWindow` with `macosUISidebar`
+- **macOS**: `MacosShell` with `MacosSidebar` (window uses the system title bar)
 - **Windows/Linux**: `WindowsSidebar` (Fluent Design style)
 - **Tablet** (width > 600): `NavigationRail`-based layout
 - **Mobile**: Bottom navigation bar (shown only on 4 main routes: home, schedule, score, profile)
@@ -114,7 +114,7 @@ lib/
 ├── platform/                 # Platform-specific UI and services
 │   ├── android/              # Android background services
 │   ├── ios/                  # iOS background services
-│   ├── macos/                # macOS native sidebar
+│   ├── macos/                # macOS sidebar and window shell
 │   ├── mobile/               # Mobile bottom navigation
 │   ├── tablet/               # Tablet NavigationRail layout
 │   └── windows/              # Windows Fluent sidebar

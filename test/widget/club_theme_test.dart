@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/ui/theme/club_theme.dart';
-import 'package:macos_ui/macos_ui.dart';
 
 void main() {
   group('ClubTheme', () {
@@ -44,7 +43,7 @@ void main() {
       expect(resolved, ClubColors.dark);
     });
 
-    testWidgets('should bridge macOS dark theme to Material widgets',
+    testWidgets('should bridge dark theme to Cupertino widgets',
         (WidgetTester tester) async {
       late ThemeData resolvedTheme;
       late ClubColors resolvedColors;
@@ -52,21 +51,19 @@ void main() {
       late Color cupertinoPrimaryColor;
 
       await tester.pumpWidget(
-        MacosApp(
+        MaterialApp(
           themeMode: ThemeMode.dark,
-          darkTheme: ClubTheme.macosDarkTheme(),
-          home: ClubMaterialThemeBridge(
-            child: Scaffold(
-              body: Builder(
-                builder: (context) {
-                  resolvedTheme = Theme.of(context);
-                  resolvedColors = context.clubColors;
-                  final cupertinoTheme = CupertinoTheme.of(context);
-                  cupertinoBrightness = cupertinoTheme.brightness!;
-                  cupertinoPrimaryColor = cupertinoTheme.primaryColor;
-                  return const SizedBox.shrink();
-                },
-              ),
+          darkTheme: ClubTheme.darkTheme(),
+          home: Scaffold(
+            body: Builder(
+              builder: (context) {
+                resolvedTheme = Theme.of(context);
+                resolvedColors = context.clubColors;
+                final cupertinoTheme = CupertinoTheme.of(context);
+                cupertinoBrightness = cupertinoTheme.brightness!;
+                cupertinoPrimaryColor = cupertinoTheme.primaryColor;
+                return const SizedBox.shrink();
+              },
             ),
           ),
         ),

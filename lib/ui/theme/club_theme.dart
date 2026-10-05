@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ios_club_app/ui/theme/club_radii.dart';
 import 'package:ios_club_app/ui/theme/club_smooth_corners.dart';
-import 'package:macos_ui/macos_ui.dart';
 
 @immutable
 class ClubColors extends ThemeExtension<ClubColors> {
@@ -329,36 +328,6 @@ class ClubTheme {
     );
   }
 
-  static MacosThemeData macosLightTheme() {
-    return MacosThemeData.light().copyWith(
-      primaryColor: ClubColors.light.primary,
-      canvasColor: ClubColors.light.groupedBackground,
-      brightness: Brightness.light,
-      pushButtonTheme: const PushButtonThemeData(
-        color: Color(0xFF007AFF),
-        secondaryColor: Color(0xFFD1D1D6),
-      ),
-      helpButtonTheme: const HelpButtonThemeData(
-        color: Color(0xFF007AFF),
-      ),
-    );
-  }
-
-  static MacosThemeData macosDarkTheme() {
-    return MacosThemeData.dark().copyWith(
-      primaryColor: ClubColors.dark.primary,
-      canvasColor: ClubColors.dark.groupedBackground,
-      brightness: Brightness.dark,
-      pushButtonTheme: const PushButtonThemeData(
-        color: Color(0xFF0A84FF),
-        secondaryColor: Color(0xFF38383A),
-      ),
-      helpButtonTheme: const HelpButtonThemeData(
-        color: Color(0xFF0A84FF),
-      ),
-    );
-  }
-
   static ThemeData _buildTheme({
     required Brightness brightness,
     required ClubColors colors,
@@ -558,36 +527,5 @@ class ClubThemeModeCodec {
       case ThemeMode.system:
         return 'system';
     }
-  }
-}
-
-class ClubMaterialThemeBridge extends StatelessWidget {
-  const ClubMaterialThemeBridge({
-    super.key,
-    required this.child,
-    this.fontFamily,
-    this.locale,
-  });
-
-  final Widget child;
-  final String? fontFamily;
-  final Locale? locale;
-
-  @override
-  Widget build(BuildContext context) {
-    final brightness = MacosTheme.brightnessOf(context);
-    final materialTheme = brightness == Brightness.dark
-        ? ClubTheme.darkTheme(fontFamily: fontFamily, locale: locale)
-        : ClubTheme.lightTheme(fontFamily: fontFamily, locale: locale);
-    final cupertinoTheme =
-        MaterialBasedCupertinoThemeData(materialTheme: materialTheme);
-
-    return Theme(
-      data: materialTheme,
-      child: CupertinoTheme(
-        data: cupertinoTheme,
-        child: child,
-      ),
-    );
   }
 }

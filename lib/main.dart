@@ -30,7 +30,6 @@ import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/ui/components/platform_dialog.dart';
 import 'package:ios_club_app/ui/theme/club_theme.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -100,42 +99,22 @@ void main() async {
     await windowManager.ensureInitialized();
     final appName = AppLocaleService.currentL10n().appName;
 
-    if (PlatformUtils.isMacOS) {
-      WindowOptions windowOptions = WindowOptions(
-        minimumSize: Size(800, 600),
-        center: true,
-        backgroundColor: Colors.transparent,
-        skipTaskbar: false,
-        titleBarStyle: TitleBarStyle.hidden,
-        title: appName,
-      );
+    // 所有桌面端都使用系统原生标题栏，Flutter 内容从标题栏下方开始。
+    WindowOptions windowOptions = WindowOptions(
+      minimumSize: Size(800, 600),
+      center: true,
+      skipTaskbar: false,
+      titleBarStyle: TitleBarStyle.normal,
+      title: appName,
+    );
 
-      windowManager.waitUntilReadyToShow(windowOptions, () async {
-        await windowManager.show();
-        await windowManager.focus();
-      });
-    } else {
-      WindowOptions windowOptions = WindowOptions(
-        minimumSize: Size(800, 600),
-        center: true,
-        backgroundColor: Colors.transparent,
-        skipTaskbar: false,
-        titleBarStyle: TitleBarStyle.normal,
-        title: appName,
-      );
-
-      windowManager.waitUntilReadyToShow(windowOptions, () async {
-        await windowManager.show();
-        await windowManager.focus();
-      });
-    }
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
   } else if (PlatformUtils.isIOS) {
     await IOSBackgroundService.initializeService();
     await IOSBackgroundService.startService();
-  }
-
-  if (PlatformUtils.isMacOS) {
-    await _configureMacosWindowUtils();
   }
 
   // 先渲染 UI，再执行非关键初始化
@@ -172,12 +151,6 @@ Future<void> _deferredInit() async {
   }
 }
 
-/// 配置macOS窗口样式
-Future<void> _configureMacosWindowUtils() async {
-  const config = MacosWindowUtilsConfig();
-  await config.apply();
-}
-
 void initApp(ProviderContainer container) {
   runApp(UncontrolledProviderScope(
     container: container,
@@ -205,31 +178,6 @@ class _AppLauncher extends ConsumerWidget {
     final fontFamily = settingsStore.fontFamily.isEmpty
         ? PlatformUtils.getWindowsFontFamily()
         : PlatformUtils.getDesktopFontFamily(settingsStore.fontFamily);
-
-    if (PlatformUtils.isMacOS) {
-      return MacosApp.router(
-        title: AppLocaleService.currentL10n().appName,
-        onGenerateTitle: (context) => context.l10n.appName,
-        debugShowCheckedModeBanner: false,
-        locale: locale,
-        supportedLocales: AppLocaleService.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-        ],
-        theme: ClubTheme.macosLightTheme(),
-        darkTheme: ClubTheme.macosDarkTheme(),
-        themeMode: settingsStore.themeMode,
-        routerConfig: router,
-        builder: (context, child) => ClubMaterialThemeBridge(
-          fontFamily: fontFamily,
-          locale: locale,
-          child: _buildAppShell(child ?? const SizedBox.shrink()),
-        ),
-      );
-    }
 
     return MaterialApp.router(
       title: AppLocaleService.currentL10n().appName,
