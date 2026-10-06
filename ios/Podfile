@@ -1,5 +1,6 @@
-# Uncomment this line to define a global platform for your project
-# platform :ios, '15.0'
+# Minimum iOS version supported by the current Xcode SDK toolchain.
+# Keep this in sync with IPHONEOS_DEPLOYMENT_TARGET in Runner.xcodeproj.
+platform :ios, '15.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -31,9 +32,21 @@ target 'Runner' do
 end
 
 post_install do |installer|
+  # Some pods (and Flutter's own generated podspec) declare a deployment target
+  # lower than what the installed Xcode SDK still supports, which fails the
+  # "Target Integrity" check. Force every pod target up to the platform above.
+  ios_deployment_target = '15.0'
+
+  installer.pods_project.build_configurations.each do |config|
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = ios_deployment_target
+  end
+
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
+      # Must come after flutter_additional_ios_build_settings, which deletes
+      # this setting for targets whose podspec minimum is below iOS 13.
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = ios_deployment_target
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
         ## dart: PermissionGroup.photos

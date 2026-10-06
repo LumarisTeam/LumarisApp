@@ -49,7 +49,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     // 检查是否已有登录信息
     final prefs = PrefsService.instance;
     final secureStorage = SecureStorageService.instance;
-    final username = await secureStorage.read(key: PrefsKeys.USERNAME) ??
+    final username =
+        await secureStorage.read(key: PrefsKeys.USERNAME) ??
         prefs.getString(PrefsKeys.USERNAME);
 
     // 重置 _username
@@ -102,9 +103,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       );
     }
 
-    return Scaffold(
-      body: _buildProfileContent(),
-    );
+    return Scaffold(body: _buildProfileContent());
   }
 
   List<ProfileButtonItem> getProfileButtonItems(BuildContext context) {
@@ -113,50 +112,61 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     return [
       if (isLogin)
         ProfileButtonItem(
-            icon: CupertinoIcons.link_circle,
-            title: l10n.campusNavigation,
-            route: AppRoutes.link),
+          icon: CupertinoIcons.link_circle,
+          title: l10n.campusNavigation,
+          route: AppRoutes.link,
+        ),
       ProfileButtonItem(
-          icon: Icons.settings,
-          title: l10n.settingsAbout,
-          route: AppRoutes.about),
+        icon: Icons.settings,
+        title: l10n.settingsAbout,
+        route: AppRoutes.about,
+      ),
       if (isLogin)
         ProfileButtonItem(
-            title: l10n.schoolBus,
-            icon: Icons.directions_bus_rounded,
-            route: AppRoutes.schoolBus),
+          title: l10n.schoolBus,
+          icon: Icons.directions_bus_rounded,
+          route: AppRoutes.schoolBus,
+        ),
       if (!kIsWeb && isLogin)
         ProfileButtonItem(
-            icon: CupertinoIcons.bolt_fill,
-            title: l10n.electricity,
-            route: AppRoutes.electricity),
+          icon: CupertinoIcons.bolt_fill,
+          title: l10n.electricity,
+          route: AppRoutes.electricity,
+        ),
       if (isLogin)
         ProfileButtonItem(
-            icon: Icons.toc,
-            title: l10n.programLabel,
-            route: AppRoutes.program),
+          icon: Icons.toc,
+          title: l10n.programLabel,
+          route: AppRoutes.program,
+        ),
       if (isLogin)
         ProfileButtonItem(
-            icon: Icons.monetization_on_outlined,
-            title: l10n.payment,
-            route: AppRoutes.payment),
+          icon: Icons.monetization_on_outlined,
+          title: l10n.payment,
+          route: AppRoutes.payment,
+        ),
       // if (!kIsWeb)
       //   ProfileButtonItem(
       //       icon: Icons.wifi_outlined, title: '校园网', route: AppRoutes.net),
       if (!isLogin)
         ProfileButtonItem(
-            icon: Icons.login,
-            title: l10n.loginEduSystem,
-            onPressed: () {
-              _enterLoginMode(isOnlyLoginMember: false);
-            }),
+          icon: Icons.login,
+          title: l10n.loginEduSystem,
+          onPressed: () {
+            _enterLoginMode(isOnlyLoginMember: false);
+          },
+        ),
       if (isLogin)
         ProfileButtonItem(
-            icon: CupertinoIcons.map,
-            title: l10n.campusMap,
-            route: AppRoutes.campusMap),
+          icon: CupertinoIcons.map,
+          title: l10n.campusMap,
+          route: AppRoutes.campusMap,
+        ),
       ProfileButtonItem(
-          icon: Icons.help_outline, title: l10n.help, route: AppRoutes.helper),
+        icon: Icons.help_outline,
+        title: l10n.help,
+        route: AppRoutes.helper,
+      ),
     ];
   }
 
@@ -180,10 +190,26 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               children: [
                 Row(
                   children: [
-                    LazyLoadImage.assets(
-                      'assets/icon.webp',
+                    Container(
                       width: 48,
                       height: 48,
+                      decoration: ShapeDecoration(
+                        shape: ClubSmoothCorners.shape(ClubRadii.control),
+                        shadows: [
+                          BoxShadow(
+                            color: colors.shadowColor,
+                            blurRadius: ClubRadii.sm,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: ClubSmoothCorners.clip(
+                        borderRadius: ClubRadii.control,
+                        child: const Image(
+                          image: AssetImage('assets/icon.webp'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Column(
@@ -199,7 +225,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           maxLines: 1,
                         ),
                         Text(
-                          isLogin ? '${school?.name ?? ""} ${l10n.academicAccount}' : l10n.guest,
+                          isLogin
+                              ? '${school?.name ?? ""} ${l10n.academicAccount}'
+                              : l10n.guest,
                           style: TextStyle(
                             fontSize: 14,
                             color: colors.secondaryLabel,
@@ -207,7 +235,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           ),
                         ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ],
@@ -218,72 +246,80 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             child: ClubCard(
               margin: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
               child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: isTablet ? 6 : 3,
-                    ),
-                    itemBuilder: (context, index) {
-                      return AnimatedCard(
-                        delay: Duration(milliseconds: 50 * index),
-                        child: Center(
-                          child: getProfileButtonItems(context)[index]
-                              .build(context),
-                        ),
-                      );
-                    },
-                    itemCount: getProfileButtonItems(context).length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                  )),
+                padding: const EdgeInsets.all(12),
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: isTablet ? 6 : 3,
+                  ),
+                  itemBuilder: (context, index) {
+                    return AnimatedCard(
+                      delay: Duration(milliseconds: 50 * index),
+                      child: Center(
+                        child: getProfileButtonItems(
+                          context,
+                        )[index].build(context),
+                      ),
+                    );
+                  },
+                  itemCount: getProfileButtonItems(context).length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                ),
+              ),
             ),
           ),
           if (isLogin) const SizedBox(height: 16),
-          if (isLogin && (ref.watch(schoolStoreProvider).school?.supports(Feature.studyProgress) ?? true))
+          if (isLogin &&
+              (ref
+                      .watch(schoolStoreProvider)
+                      .school
+                      ?.supports(Feature.studyProgress) ??
+                  true))
             FutureBuilder(
-                key: ValueKey('info_data_$_dataRefreshKey'),
-                // 添加超时保护：最多10秒
-                future: InfoService.getInfoList().timeout(
-                  const Duration(seconds: 10),
-                  onTimeout: () {
-                    AppLogger.warning('[ProfilePage] 获取信息列表超时');
-                    return <InfoModel>[];
-                  },
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: LoadingStateView(
-                        title: l10n.syncingAcademic,
-                        subtitle: l10n.syncingAcademicSubtitle,
-                        compact: true,
-                        showCard: true,
-                      ),
-                    );
-                  }
-
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text('${l10n.loadFailed}: ${snapshot.error}'),
-                      ),
-                    );
-                  }
-
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (context, index) =>
-                        StudyCreditCard(data: snapshot.data![index]),
+              key: ValueKey('info_data_$_dataRefreshKey'),
+              // 添加超时保护：最多10秒
+              future: InfoService.getInfoList().timeout(
+                const Duration(seconds: 10),
+                onTimeout: () {
+                  AppLogger.warning('[ProfilePage] 获取信息列表超时');
+                  return <InfoModel>[];
+                },
+              ),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: LoadingStateView(
+                      title: l10n.syncingAcademic,
+                      subtitle: l10n.syncingAcademicSubtitle,
+                      compact: true,
+                      showCard: true,
+                    ),
                   );
-                }),
+                }
+
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text('${l10n.loadFailed}: ${snapshot.error}'),
+                    ),
+                  );
+                }
+
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: snapshot.data?.length,
+                  itemBuilder: (context, index) =>
+                      StudyCreditCard(data: snapshot.data![index]),
+                );
+              },
+            ),
         ],
       ),
     );
@@ -296,55 +332,58 @@ class ProfileButtonItem {
   String route = '';
   Function? onPressed;
 
-  ProfileButtonItem(
-      {required this.title,
-      required this.icon,
-      this.route = '',
-      this.onPressed});
+  ProfileButtonItem({
+    required this.title,
+    required this.icon,
+    this.route = '',
+    this.onPressed,
+  });
 
   Widget build(BuildContext context) {
     final colors = context.clubColors;
     final shape = ClubSmoothCorners.shape(ClubRadii.panel);
     return Material(
-        shape: shape,
-        clipBehavior: Clip.antiAlias,
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: ClubRadii.panel,
-          customBorder: shape,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: 32,
-                  color: CourseColorManager.generateSoftColor(
-                    title,
-                    isDark: true,
-                  ),
-                ),
-                Text(
+      shape: shape,
+      clipBehavior: Clip.antiAlias,
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: ClubRadii.panel,
+        customBorder: shape,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 32,
+                color: CourseColorManager.generateSoftColor(
                   title,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                      color: colors.secondaryLabel),
-                )
-              ],
-            ),
+                  isDark: true,
+                ),
+              ),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  color: colors.secondaryLabel,
+                ),
+              ),
+            ],
           ),
-          onTap: () {
-            if (route.isEmpty) {
-              onPressed?.call();
-            } else {
-              AppRouter.push(route);
-            }
-          },
-        ));
+        ),
+        onTap: () {
+          if (route.isEmpty) {
+            onPressed?.call();
+          } else {
+            AppRouter.push(route);
+          }
+        },
+      ),
+    );
   }
 }

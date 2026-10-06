@@ -122,11 +122,12 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/icon.png
+  # 启动页用带圆角的 c_icon（icon.png 已改为无圆角全幅图标，供启动器裁切使用）
+  image: assets/c_icon.png
   android: true
   ios: true
   color_dark: "#121212"
-  image_dark: assets/icon.png
+  image_dark: assets/c_icon.png
   web: true
 
 msix_config:
