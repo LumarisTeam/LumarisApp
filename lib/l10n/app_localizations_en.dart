@@ -423,14 +423,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get todoReminderTitle => 'Todo reminder';
-
-  @override
-  String todoReminderBody(Object title) {
-    return 'Your todo $title is due';
-  }
-
-  @override
   String get allowBackgroundRun => 'Allow background run';
 
   @override
@@ -525,7 +517,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get privacySection1_3 =>
-      '1.3 Campus life information: When you use related features, the app may retrieve electricity balance, campus card transactions and network usage information.';
+      '1.3 Campus life information: When you use related features, the app may retrieve electricity balance and campus card transactions.';
 
   @override
   String get privacySection1_4 =>
@@ -823,12 +815,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hapticFeedbackSubtitle => 'Vibrate on bottom navigation tap';
 
   @override
-  String get cloudSyncTodo => 'Save todos to cloud';
-
-  @override
-  String get servicePaused => 'Service is paused';
-
-  @override
   String get showTomorrowCourses => 'Show Tomorrow\'s Courses';
 
   @override
@@ -848,12 +834,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String remindMinutes(int n) {
     return '$n minutes';
   }
-
-  @override
-  String get todoReminder => 'To-Do Reminder';
-
-  @override
-  String get todoReminderSubtitle => 'Remind before to-do deadlines';
 
   @override
   String get schedulePage => 'Schedule';
@@ -1343,15 +1323,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get showPaymentTileSubtitle => 'Show balance overview on home page';
 
   @override
-  String get addTodo => 'Add Todo';
-
-  @override
-  String get todoTitle => 'Title';
-
-  @override
-  String get deadline => 'Deadline';
-
-  @override
   String get change => 'Update';
 
   @override
@@ -1359,9 +1330,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get done => 'Done';
-
-  @override
-  String get todoListLabel => 'Todo List';
 
   @override
   String get readingTodos => 'Reading todos';
@@ -1377,21 +1345,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noTodosSubtitle => 'Tap + to add a todo';
 
   @override
-  String get todoLoadFailedSubtitle => 'Failed to load todos';
-
-  @override
   String deadlineLabel(String date) {
     return 'Deadline: $date';
   }
 
   @override
   String get noDeadline => 'None';
-
-  @override
-  String get titleRequired => 'Title is required';
-
-  @override
-  String get deadlineRequired => 'Deadline is required';
 
   @override
   String get add => 'Add';
@@ -1705,46 +1664,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get arrival => 'Arrive';
 
   @override
-  String get netRefreshFailed => 'Refresh failed, showing current data';
-
-  @override
-  String get netData => 'Network Data';
-
-  @override
-  String get usedTraffic => 'Used Traffic';
-
-  @override
-  String onlineDuration(String time) {
-    return 'Online: $time';
-  }
-
-  @override
-  String get username => 'Username';
-
-  @override
-  String get ipAddress => 'IP Address';
-
-  @override
-  String get productPackage => 'Product Plan';
-
-  @override
   String get unknown => 'Unknown';
 
   @override
   String get copiedToClipboard => 'Copied to clipboard';
-
-  @override
-  String get netLoading => 'Reading network data';
-
-  @override
-  String get netLoadingSubtitle =>
-      'Syncing traffic, online time and account info';
-
-  @override
-  String get netLoadFailed => 'Load failed';
-
-  @override
-  String get netNoData => 'No data';
 
   @override
   String get electricityBalance => 'Current Balance';
@@ -2027,12 +1950,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'View card balance and transaction history';
 
   @override
-  String get helpFeatureNet => 'Campus Network';
-
-  @override
-  String get helpFeatureNetDesc => 'View network traffic usage and statistics';
-
-  @override
   String get helpFeatureLinks => 'Quick Links';
 
   @override
@@ -2073,9 +1990,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get helpInstructionWidgetDesc =>
       'Long press home screen to add app widget for quick course access';
-
-  @override
-  String get helpNoteNetwork => 'Some features require campus network access';
 
   @override
   String get helpNoteUpdate =>
@@ -2162,11 +2076,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get poiYanTaEastGateDesc => 'Historic campus entrance';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '${d}d ${h}h ${m}m ${s}s';
-  }
 
   @override
   String get shortcuts => 'Shortcuts';

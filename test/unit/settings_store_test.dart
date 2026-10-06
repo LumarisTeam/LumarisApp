@@ -33,7 +33,6 @@ void main() {
       expect(settingsStore.updateIgnored, isFalse);
       expect(settingsStore.fontFamily, '');
       expect(settingsStore.showCourseGrid, isFalse);
-      expect(settingsStore.todoRemindEnabled, isFalse);
       expect(settingsStore.themeMode, ThemeMode.system);
       expect(settingsStore.scheduleBackground, '');
       expect(settingsStore.customBackgroundImage, '');
@@ -51,7 +50,6 @@ void main() {
       await prefs.setBool(PrefsKeys.UPDATE_IGNORED, true);
       await prefs.setString(PrefsKeys.FONT_FAMILY, 'PingFang SC');
       await prefs.setBool(PrefsKeys.SHOW_COURSE_GRID, true);
-      await prefs.setBool(PrefsKeys.TODO_REMIND_ENABLED, true);
       await prefs.setString(PrefsKeys.THEME_MODE, 'dark');
       await prefs.setString(PrefsKeys.SCHEDULE_BACKGROUND, 'paper');
       await prefs.setString(PrefsKeys.CUSTOM_BACKGROUND_IMAGE, '/tmp/bg.jpg');
@@ -70,7 +68,6 @@ void main() {
       expect(settingsStore.updateIgnored, isTrue);
       expect(settingsStore.fontFamily, 'PingFang SC');
       expect(settingsStore.showCourseGrid, isTrue);
-      expect(settingsStore.todoRemindEnabled, isTrue);
       expect(settingsStore.themeMode, ThemeMode.dark);
       expect(settingsStore.scheduleBackground, 'paper');
       expect(settingsStore.customBackgroundImage, '/tmp/bg.jpg');
@@ -88,7 +85,6 @@ void main() {
       await settingsStore.setUpdateIgnored(true);
       await settingsStore.setFontFamily('Source Han Sans');
       await settingsStore.setShowCourseGrid(true);
-      await settingsStore.setTodoRemindEnabled(true);
       await settingsStore.setThemeMode(ThemeMode.light);
       await settingsStore.setScheduleBackground('wave');
       await settingsStore.setCustomBackgroundImage('/tmp/custom.png');
@@ -102,7 +98,6 @@ void main() {
       expect(settingsStore.updateIgnored, isTrue);
       expect(settingsStore.fontFamily, 'Source Han Sans');
       expect(settingsStore.showCourseGrid, isTrue);
-      expect(settingsStore.todoRemindEnabled, isTrue);
       expect(settingsStore.themeMode, ThemeMode.light);
       expect(settingsStore.scheduleBackground, 'wave');
       expect(settingsStore.customBackgroundImage, '/tmp/custom.png');
@@ -115,7 +110,6 @@ void main() {
       expect(prefs.getBool(PrefsKeys.UPDATE_IGNORED), isTrue);
       expect(prefs.getString(PrefsKeys.FONT_FAMILY), 'Source Han Sans');
       expect(prefs.getBool(PrefsKeys.SHOW_COURSE_GRID), isTrue);
-      expect(prefs.getBool(PrefsKeys.TODO_REMIND_ENABLED), isTrue);
       expect(prefs.getString(PrefsKeys.THEME_MODE), 'light');
       expect(prefs.getString(PrefsKeys.SCHEDULE_BACKGROUND), 'wave');
       expect(

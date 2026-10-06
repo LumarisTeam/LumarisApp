@@ -8,7 +8,6 @@ import 'package:hive/hive.dart';
 import 'package:ios_club_app/core/repositories/course_repository.dart';
 import 'package:ios_club_app/core/repositories/score_repository.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
-import 'package:ios_club_app/core/models/todo_item.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/score_model.dart';
@@ -39,9 +38,6 @@ void registerHiveAdapters() {
   }
   if (!Hive.isAdapterRegistered(3)) {
     Hive.registerAdapter(SemesterModelAdapter());
-  }
-  if (!Hive.isAdapterRegistered(4)) {
-    Hive.registerAdapter(TodoItemAdapter());
   }
 }
 
@@ -116,7 +112,6 @@ void main() {
       'request_cache',
       'courses',
       'scores',
-      'todos'
     ]) {
       final box = await Hive.openBox(boxName);
       await box.clear();

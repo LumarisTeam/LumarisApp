@@ -409,14 +409,6 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get todoReminderTitle => 'ToDo リマインダー';
-
-  @override
-  String todoReminderBody(Object title) {
-    return 'ToDo「$title」の期限です';
-  }
-
-  @override
   String get allowBackgroundRun => 'バックグラウンド実行を許可';
 
   @override
@@ -505,7 +497,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get privacySection1_3 =>
-      '1.3 キャンパス生活情報：関連機能の使用時に、電気料金残高、食堂カード取引、ネットワーク使用量などを取得する場合があります。';
+      '1.3 キャンパス生活情報：関連機能の使用時に、電気料金残高、食堂カード取引などを取得する場合があります。';
 
   @override
   String get privacySection1_4 =>
@@ -766,12 +758,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hapticFeedbackSubtitle => 'ボトムナビゲーションタップ時に振動';
 
   @override
-  String get cloudSyncTodo => 'ToDoをクラウドに保存';
-
-  @override
-  String get servicePaused => 'サービス一時停止中';
-
-  @override
   String get showTomorrowCourses => '明日の授業を表示';
 
   @override
@@ -790,12 +776,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String remindMinutes(int n) {
     return '$n分';
   }
-
-  @override
-  String get todoReminder => 'ToDoリマインダー';
-
-  @override
-  String get todoReminderSubtitle => 'ToDoの期限前にリマインド';
 
   @override
   String get schedulePage => '時間割';
@@ -1277,15 +1257,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get showPaymentTileSubtitle => 'ホームページに残高概要を表示';
 
   @override
-  String get addTodo => 'ToDoを追加';
-
-  @override
-  String get todoTitle => 'タイトル';
-
-  @override
-  String get deadline => '期限';
-
-  @override
   String get change => '更新';
 
   @override
@@ -1293,9 +1264,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get done => '完了';
-
-  @override
-  String get todoListLabel => 'タスクリスト';
 
   @override
   String get readingTodos => 'タスクを読み込み中';
@@ -1310,21 +1278,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noTodosSubtitle => '右上の＋をタップして追加';
 
   @override
-  String get todoLoadFailedSubtitle => 'タスクを読み込めません';
-
-  @override
   String deadlineLabel(String date) {
     return '締切日: $date';
   }
 
   @override
   String get noDeadline => 'なし';
-
-  @override
-  String get titleRequired => 'タイトルは必須です';
-
-  @override
-  String get deadlineRequired => '締切日は必須です';
 
   @override
   String get add => '追加';
@@ -1629,45 +1588,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get arrival => '到着';
 
   @override
-  String get netRefreshFailed => '更新に失敗しました。現在のデータを表示します';
-
-  @override
-  String get netData => 'ネットワークデータ';
-
-  @override
-  String get usedTraffic => '使用済み通信量';
-
-  @override
-  String onlineDuration(String time) {
-    return 'オンライン時間: $time';
-  }
-
-  @override
-  String get username => 'ユーザー名';
-
-  @override
-  String get ipAddress => 'IPアドレス';
-
-  @override
-  String get productPackage => '製品プラン';
-
-  @override
   String get unknown => '不明';
 
   @override
   String get copiedToClipboard => 'クリップボードにコピーしました';
-
-  @override
-  String get netLoading => 'ネットワークデータを読み込み中';
-
-  @override
-  String get netLoadingSubtitle => '通信量、オンライン時間、アカウント情報を同期中';
-
-  @override
-  String get netLoadFailed => '読み込みに失敗しました';
-
-  @override
-  String get netNoData => 'データがありません';
 
   @override
   String get electricityBalance => '現在の残高';
@@ -1936,12 +1860,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get helpFeaturePaymentDesc => '残高と取引履歴を表示';
 
   @override
-  String get helpFeatureNet => 'キャンパスネットワーク';
-
-  @override
-  String get helpFeatureNetDesc => 'ネットワーク使用量と統計を表示';
-
-  @override
   String get helpFeatureLinks => '便利リンク';
 
   @override
@@ -1976,9 +1894,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get helpInstructionWidgetDesc => 'ホーム画面を長押ししてウィジェットを追加';
-
-  @override
-  String get helpNoteNetwork => '一部の機能はキャンパスネットワークが必要';
 
   @override
   String get helpNoteUpdate => '最新機能と修正のためアプリを更新してください';
@@ -2059,11 +1974,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get poiYanTaEastGateDesc => '歴史あるキャンパスの入り口';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '$d日$h時間$m分$s秒';
-  }
 
   @override
   String get shortcuts => 'ショートカット';

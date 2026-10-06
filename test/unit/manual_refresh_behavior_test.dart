@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:ios_club_app/core/services/hive_manager.dart';
-import 'package:ios_club_app/core/services/net_service.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
 import 'package:ios_club_app/features/education/models/bus_model.dart';
@@ -42,56 +40,15 @@ void main() {
   setUp(() async {
     await PrefsService.instance.clear();
     await RequestCache.instance.clear();
-    NetService.resetForTest();
   });
 
   tearDownAll(() async {
-    NetService.resetForTest();
     if (tempDir != null) {
       await Hive.close();
       if (await tempDir!.exists()) {
         await tempDir!.delete(recursive: true);
       }
     }
-  });
-
-  group('NetService', () {
-    test(
-        'force refresh should skip request cache and update it with fresh data',
-        () async {
-      const url = 'http://10.99.144.34/cgi-bin/rad_user_info?callback=json';
-      await RequestCache.instance.set(url, <String, dynamic>{
-        'sum_bytes': 100,
-        'sum_seconds': 50,
-      });
-
-      var networkHits = 0;
-      final dio = Dio();
-      dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            networkHits++;
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: 'json({"sum_bytes":200,"sum_seconds":60})',
-              ),
-            );
-          },
-        ),
-      );
-      NetService.setDioForTest(dio);
-
-      final cached = await NetService.get();
-      final refreshed = await NetService.get(forceRefresh: true);
-      final stored = await RequestCache.instance.get<Map<String, dynamic>>(url);
-
-      expect(cached['sum_bytes'], 100);
-      expect(refreshed['sum_bytes'], 200);
-      expect(networkHits, 1);
-      expect(stored?['sum_bytes'], 200);
-    });
   });
 
   group('manual refresh retention', () {

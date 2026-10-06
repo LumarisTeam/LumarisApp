@@ -3,7 +3,6 @@ import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/score_model.dart';
 import 'package:ios_club_app/features/education/models/semester_model.dart';
-import 'package:ios_club_app/core/models/todo_item.dart';
 
 /// Hive 数据库管理类
 ///
@@ -21,7 +20,6 @@ class HiveManager {
   static const String requestCacheBoxName = 'request_cache';
   static const String courseBoxName = 'courses';
   static const String scoreBoxName = 'scores';
-  static const String todoBoxName = 'todos';
 
   /// 初始化 Hive
   ///
@@ -50,9 +48,6 @@ class HiveManager {
       }
       if (!Hive.isAdapterRegistered(3)) {
         Hive.registerAdapter(SemesterModelAdapter());
-      }
-      if (!Hive.isAdapterRegistered(4)) {
-        Hive.registerAdapter(TodoItemAdapter());
       }
 
       _initialized = true;

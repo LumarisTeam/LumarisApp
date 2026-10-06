@@ -412,14 +412,6 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get todoReminderTitle => '할 일 알림';
-
-  @override
-  String todoReminderBody(Object title) {
-    return '할 일 $title의 마감 시간이 되었습니다';
-  }
-
-  @override
   String get allowBackgroundRun => '백그라운드 실행 허용';
 
   @override
@@ -508,7 +500,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get privacySection1_3 =>
-      '1.3 캠퍼스 생활 정보: 관련 기능을 사용할 때, 본 앱은 학교 관련 시스템에서 귀하의 전기요금 잔액, 식권 소비 기록, 캠퍼스 네트워크 사용량 등의 정보를 가져와 귀하의 기기 로컬에 저장하고 표시합니다.';
+      '1.3 캠퍼스 생활 정보: 관련 기능을 사용할 때, 본 앱은 학교 관련 시스템에서 귀하의 전기요금 잔액, 식권 소비 기록 등의 정보를 가져와 귀하의 기기 로컬에 저장하고 표시합니다.';
 
   @override
   String get privacySection1_4 =>
@@ -633,7 +625,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get userAgreementSection1_1 =>
-      '1.1 본 앱은 시안건축과학기술대학교 iOS Club에서 개발한 캠퍼스 도우미 애플리케이션으로, 재학생에게 편리한 캠퍼스 정보 서비스를 제공하는 것을 목적으로 하며, 수업 관리, 성적 조회, 스쿨버스 시간표, 전기요금 조회, 식권 소비 기록, 캠퍼스 네트워크 사용량 조회, 교육 과정 확인 등의 기능을 포함하되 이에 국한되지 않습니다.';
+      '1.1 본 앱은 시안건축과학기술대학교 iOS Club에서 개발한 캠퍼스 도우미 애플리케이션으로, 재학생에게 편리한 캠퍼스 정보 서비스를 제공하는 것을 목적으로 하며, 수업 관리, 성적 조회, 스쿨버스 시간표, 전기요금 조회, 식권 소비 기록, 교육 과정 확인 등의 기능을 포함하되 이에 국한되지 않습니다.';
 
   @override
   String get userAgreementSection1_2 =>
@@ -809,12 +801,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get hapticFeedbackSubtitle => '하단 네비게이션 바 클릭 시 진동';
 
   @override
-  String get cloudSyncTodo => '할 일을 클라우드에 저장할지 여부';
-
-  @override
-  String get servicePaused => '해당 서비스가 일시 중지되었습니다';
-
-  @override
   String get showTomorrowCourses => '내일 수업 표시';
 
   @override
@@ -833,12 +819,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String remindMinutes(int n) {
     return '$n분 전';
   }
-
-  @override
-  String get todoReminder => '할 일 알림';
-
-  @override
-  String get todoReminderSubtitle => '할 일 마감 전 알림';
 
   @override
   String get schedulePage => '시간표 페이지';
@@ -1324,15 +1304,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get showPaymentTileSubtitle => '홈에서 잔액 개요 표시';
 
   @override
-  String get addTodo => '할 일 추가';
-
-  @override
-  String get todoTitle => '제목';
-
-  @override
-  String get deadline => '마감일';
-
-  @override
   String get change => '변경';
 
   @override
@@ -1340,9 +1311,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get done => '완료';
-
-  @override
-  String get todoListLabel => '할 일';
 
   @override
   String get readingTodos => '할 일 로딩 중';
@@ -1357,21 +1325,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noTodosSubtitle => '오른쪽 상단 버튼을 눌러 할 일 추가';
 
   @override
-  String get todoLoadFailedSubtitle => '할 일을 불러올 수 없습니다';
-
-  @override
   String deadlineLabel(String date) {
     return '마감일: $date';
   }
 
   @override
   String get noDeadline => '없음';
-
-  @override
-  String get titleRequired => '제목은 필수입니다';
-
-  @override
-  String get deadlineRequired => '마감일은 필수입니다';
 
   @override
   String get add => '추가';
@@ -1678,45 +1637,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get arrival => '도착';
 
   @override
-  String get netRefreshFailed => '새로고침 실패, 현재 캠퍼스 네트워크 데이터가 유지됨';
-
-  @override
-  String get netData => '캠퍼스 네트워크 데이터';
-
-  @override
-  String get usedTraffic => '사용한 데이터';
-
-  @override
-  String onlineDuration(String time) {
-    return '온라인 시간: $time';
-  }
-
-  @override
-  String get username => '사용자 이름';
-
-  @override
-  String get ipAddress => 'IP 주소';
-
-  @override
-  String get productPackage => '요금제';
-
-  @override
   String get unknown => '알 수 없음';
 
   @override
   String get copiedToClipboard => '클립보드에 복사됨';
-
-  @override
-  String get netLoading => '캠퍼스 네트워크 데이터 로딩 중';
-
-  @override
-  String get netLoadingSubtitle => '데이터 사용량, 온라인 시간 및 계정 정보를 동기화하는 중';
-
-  @override
-  String get netLoadFailed => '로드 실패';
-
-  @override
-  String get netNoData => '데이터 없음';
 
   @override
   String get electricityBalance => '현재 잔액';
@@ -1986,12 +1910,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get helpFeaturePaymentDesc => '식권 잔액 및 소비 내역 확인';
 
   @override
-  String get helpFeatureNet => '캠퍼스 네트워크';
-
-  @override
-  String get helpFeatureNetDesc => '네트워크 데이터 사용량 및 통계 확인';
-
-  @override
   String get helpFeatureLinks => '바로가기 링크';
 
   @override
@@ -2029,9 +1947,6 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get helpInstructionWidgetDesc =>
       '바탕화면을 길게 눌러 앱 위젯을 추가하면 수업 정보를 빠르게 확인할 수 있습니다';
-
-  @override
-  String get helpNoteNetwork => '일부 기능은 캠퍼스 네트워크에 연결되어야 정상적으로 사용할 수 있습니다';
 
   @override
   String get helpNoteUpdate => '최신 기능과 수정 사항을 위해 앱을 최신 버전으로 유지하세요';
@@ -2113,11 +2028,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get poiYanTaEastGateDesc => '역사적인 캠퍼스 입구';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '$d일 $h시간 $m분 $s초';
-  }
 
   @override
   String get shortcuts => '바로가기 기능';

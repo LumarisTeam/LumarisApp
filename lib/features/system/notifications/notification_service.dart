@@ -8,10 +8,8 @@ import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:ios_club_app/state/prefs_keys.dart';
-import 'package:intl/intl.dart';
 
 import 'package:ios_club_app/features/education/models/course_model.dart';
-import 'package:ios_club_app/core/models/todo_item.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/services/course_service.dart';
 import 'package:ios_club_app/features/system/notifications/course_reminder_helper.dart';
@@ -21,8 +19,6 @@ class NotificationService {
   static final NotificationService _instance = NotificationService._();
   static const String _courseChannelNameZh = '课程通知';
   static const String _courseChannelDescriptionZh = '进行每日课表的课程通知';
-  static const String _todoChannelNameZh = '待办事务提醒';
-  static const String _todoChannelDescriptionZh = '待办事务截止提醒';
 
   static NotificationService get instance => _instance;
   bool isInit = false;
@@ -86,16 +82,6 @@ class NotificationService {
           'ios_club_app_course_reminders',
           _courseChannelNameZh,
           description: _courseChannelDescriptionZh,
-          importance: Importance.max,
-        ));
-
-    await notifications
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(AndroidNotificationChannel(
-          'ios_club_app_todo_reminders',
-          _todoChannelNameZh,
-          description: _todoChannelDescriptionZh,
           importance: Importance.max,
         ));
 
@@ -183,117 +169,6 @@ class NotificationService {
     } catch (e) {
       AppLogger.debug('Error scheduling notification: $e');
     }
-  }
-
-  /// 安排待办事项提醒
-  Future<void> scheduleTodoNotification(
-      TodoItem todo, bool todoRemindEnabled) async {
-    // 如果提醒功能未启用，直接返回
-    if (!todoRemindEnabled) return;
-
-    // 如果待办事项已完成，取消提醒
-    if (todo.isCompleted) {
-      await notifications.cancel(id: todo.id.hashCode);
-      return;
-    }
-
-    // 确保时区已初始化
-    if (!isInit) {
-      await initialize();
-    }
-
-    final android = notifications.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    if (android != null) {
-      final canScheduleExact = await android.canScheduleExactNotifications();
-      if (canScheduleExact == null || !canScheduleExact) {
-        AppLogger.debug('Exact alarm scheduling not allowed for todo reminder');
-        return;
-      }
-    }
-
-    // 解析截止日期
-    DateTime? deadline;
-    try {
-      deadline = DateFormat('yyyy-MM-dd HH:mm').parse(todo.deadline);
-    } catch (e) {
-      try {
-        deadline = DateFormat('yyyy-MM-dd').parse(todo.deadline);
-      } catch (e) {
-        try {
-          deadline = DateTime.parse(todo.deadline);
-        } catch (e) {
-          // 如果解析失败，不设置提醒
-          return;
-        }
-      }
-    }
-
-    // 如果没有截止日期或已经过期，不设置提醒
-    if (deadline.isBefore(DateTime.now())) {
-      return;
-    }
-
-    // 设置提醒
-    final notificationTime =
-        deadline; // deadline.subtract(const Duration(hours: 1));
-
-    // 如果计算出的提醒时间已经过去，不设置提醒
-    if (notificationTime.isBefore(DateTime.now())) {
-      return;
-    }
-
-    final tzNotificationTime = tz.TZDateTime.from(notificationTime, tz.local);
-
-    try {
-      final l10n = _l10n;
-      await notifications.zonedSchedule(
-        id: todo.id.hashCode, // 使用唯一ID作为通知ID
-        title: l10n.todoReminderTitle,
-        body: l10n.todoReminderBody(todo.title),
-        scheduledDate: tzNotificationTime,
-        notificationDetails: NotificationDetails(
-          android: AndroidNotificationDetails(
-            'ios_club_app_todo_reminders',
-            _todoChannelNameZh,
-            channelDescription: _todoChannelDescriptionZh,
-            importance: Importance.max,
-            priority: Priority.high,
-            playSound: true,
-          ),
-          iOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-            threadIdentifier: 'ios_club_app_todo_reminders',
-          ),
-          macOS: DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-            threadIdentifier: 'ios_club_app_todo_reminders',
-          ),
-          windows: WindowsNotificationDetails(),
-        ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      );
-    } catch (e) {
-      AppLogger.debug('Error scheduling todo notification: $e');
-    }
-  }
-
-  /// 更新待办事项提醒
-  Future<void> updateTodoNotification(
-      TodoItem todo, bool todoRemindEnabled) async {
-    // 确保时区已初始化
-    if (!isInit) {
-      await initialize();
-    }
-
-    // 先取消之前的通知
-    await notifications.cancel(id: todo.id.hashCode);
-    // 再根据新状态决定是否重新安排通知
-    await scheduleTodoNotification(todo, todoRemindEnabled);
   }
 
   static Future<bool> ensureReminderPermission(BuildContext context) async {

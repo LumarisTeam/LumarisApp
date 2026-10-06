@@ -192,14 +192,6 @@ class _HelperPageState extends State<HelperPage> with TickerProviderStateMixin {
                 ),
                 _buildDivider(),
                 _buildFeatureItem(
-                  icon: CupertinoIcons.wifi,
-                  title: context.l10n.helpFeatureNet,
-                  description: context.l10n.helpFeatureNetDesc,
-                  color: colors.cyan,
-                  isTablet: isTablet,
-                ),
-                _buildDivider(),
-                _buildFeatureItem(
                   icon: CupertinoIcons.link,
                   title: context.l10n.helpFeatureLinks,
                   description: context.l10n.helpFeatureLinksDesc,
@@ -289,12 +281,6 @@ class _HelperPageState extends State<HelperPage> with TickerProviderStateMixin {
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                _buildNoteItem(
-                  icon: CupertinoIcons.wifi,
-                  text: context.l10n.helpNoteNetwork,
-                  color: colors.cyan,
-                ),
-                const SizedBox(height: 16),
                 _buildNoteItem(
                   icon: CupertinoIcons.arrow_clockwise,
                   text: context.l10n.helpNoteUpdate,

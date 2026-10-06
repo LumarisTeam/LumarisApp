@@ -30,7 +30,6 @@ class SettingsState with _$SettingsState {
     @Default(false) bool updateIgnored,
     @Default('') String fontFamily,
     @Default(false) bool showCourseGrid,
-    @Default(false) bool todoRemindEnabled,
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default(AppLocaleCode.system) AppLocaleCode localeCode,
     @Default('') String scheduleBackground,

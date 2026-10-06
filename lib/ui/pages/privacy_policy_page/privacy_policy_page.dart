@@ -53,7 +53,7 @@ class PrivacyPolicyPage extends StatelessWidget {
             const SizedBox(height: 8),
             _buildBodyText(
               '1.3 校园生活信息：在您使用相关功能时，本应用会从学校相关系统获取您的'
-              '电费余额、饭卡消费记录、校园网流量使用情况等信息，并在您的设备本地进行存储和展示。',
+              '电费余额、饭卡消费记录等信息，并在您的设备本地进行存储和展示。',
               textColor,
             ),
             const SizedBox(height: 8),

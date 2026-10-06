@@ -431,14 +431,6 @@ class AppLocalizationsDe extends AppLocalizations {
   }
 
   @override
-  String get todoReminderTitle => 'Aufgaben-Erinnerung';
-
-  @override
-  String todoReminderBody(Object title) {
-    return 'Ihre Aufgabe $title ist fällig';
-  }
-
-  @override
   String get allowBackgroundRun => 'Hintergrundausführung erlauben';
 
   @override
@@ -533,7 +525,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get privacySection1_3 =>
-      '1.3 Campusleben: Die App kann Ihr Stromguthaben, Kartentransaktionen und Netzwerknutzung abrufen.';
+      '1.3 Campusleben: Die App kann Ihr Stromguthaben und Kartentransaktionen abrufen.';
 
   @override
   String get privacySection1_4 =>
@@ -833,12 +825,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Vibrieren beim Antippen der unteren Navigation';
 
   @override
-  String get cloudSyncTodo => 'Aufgaben in der Cloud speichern';
-
-  @override
-  String get servicePaused => 'Dienst pausiert';
-
-  @override
   String get showTomorrowCourses => 'Morgige Kurse anzeigen';
 
   @override
@@ -858,12 +844,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String remindMinutes(int n) {
     return '$n Minuten';
   }
-
-  @override
-  String get todoReminder => 'Aufgabenerinnerung';
-
-  @override
-  String get todoReminderSubtitle => 'Vor Abgabefristen an Aufgaben erinnern';
 
   @override
   String get schedulePage => 'Stundenplan';
@@ -1363,15 +1343,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Guthabenübersicht auf der Startseite anzeigen';
 
   @override
-  String get addTodo => 'Aufgabe hinzufügen';
-
-  @override
-  String get todoTitle => 'Titel';
-
-  @override
-  String get deadline => 'Abgabefrist';
-
-  @override
   String get change => 'Aktualisieren';
 
   @override
@@ -1379,9 +1350,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get done => 'Erledigt';
-
-  @override
-  String get todoListLabel => 'Aufgabenliste';
 
   @override
   String get readingTodos => 'Lese Aufgaben';
@@ -1397,21 +1365,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get noTodosSubtitle => 'Tippen Sie auf + zum Hinzufügen';
 
   @override
-  String get todoLoadFailedSubtitle => 'Aufgaben konnten nicht geladen werden';
-
-  @override
   String deadlineLabel(String date) {
     return 'Frist: $date';
   }
 
   @override
   String get noDeadline => 'Keine';
-
-  @override
-  String get titleRequired => 'Titel ist erforderlich';
-
-  @override
-  String get deadlineRequired => 'Frist ist erforderlich';
 
   @override
   String get add => 'Hinzufügen';
@@ -1732,47 +1691,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get arrival => 'Ankommen';
 
   @override
-  String get netRefreshFailed =>
-      'Aktualisierung fehlgeschlagen, aktuelle Daten werden angezeigt';
-
-  @override
-  String get netData => 'Netzwerkdaten';
-
-  @override
-  String get usedTraffic => 'Verbrauchtes Datenvolumen';
-
-  @override
-  String onlineDuration(String time) {
-    return 'Online: $time';
-  }
-
-  @override
-  String get username => 'Benutzername';
-
-  @override
-  String get ipAddress => 'IP-Adresse';
-
-  @override
-  String get productPackage => 'Produktpaket';
-
-  @override
   String get unknown => 'Unbekannt';
 
   @override
   String get copiedToClipboard => 'In die Zwischenablage kopiert';
-
-  @override
-  String get netLoading => 'Netzwerkdaten lesen';
-
-  @override
-  String get netLoadingSubtitle =>
-      'Datenvolumen, Online-Zeit und Kontoinformationen synchronisieren';
-
-  @override
-  String get netLoadFailed => 'Laden fehlgeschlagen';
-
-  @override
-  String get netNoData => 'Keine Daten';
 
   @override
   String get electricityBalance => 'Aktuelles Guthaben';
@@ -2065,12 +1987,6 @@ class AppLocalizationsDe extends AppLocalizations {
       'Kartenguthaben und Transaktionsverlauf anzeigen';
 
   @override
-  String get helpFeatureNet => 'Campus-Netzwerk';
-
-  @override
-  String get helpFeatureNetDesc => 'Netzwerkverbrauch und Statistiken anzeigen';
-
-  @override
   String get helpFeatureLinks => 'Nützliche Links';
 
   @override
@@ -2111,10 +2027,6 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get helpInstructionWidgetDesc =>
       'Startbildschirm lange drücken, um App-Widget hinzuzufügen';
-
-  @override
-  String get helpNoteNetwork =>
-      'Einige Funktionen erfordern Campus-Netzwerkzugang';
 
   @override
   String get helpNoteUpdate =>
@@ -2202,11 +2114,6 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get poiYanTaEastGateDesc => 'Historischer Campus-Eingang';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '${d}T ${h}Std ${m}Min ${s}Sek';
-  }
 
   @override
   String get shortcuts => 'Verknüpfungen';

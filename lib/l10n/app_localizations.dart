@@ -889,18 +889,6 @@ abstract class AppLocalizations {
   /// **'将在{minutes}分钟后开始'**
   String courseReminderStartsIn(Object minutes);
 
-  /// 待办提醒标题
-  ///
-  /// In zh, this message translates to:
-  /// **'待办事务提醒'**
-  String get todoReminderTitle;
-
-  /// 待办提醒正文
-  ///
-  /// In zh, this message translates to:
-  /// **'您的待办事务 {title} 已到期'**
-  String todoReminderBody(Object title);
-
   /// 后台运行权限标题
   ///
   /// In zh, this message translates to:
@@ -1066,7 +1054,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'1.3 校园生活信息：在您使用相关功能时，本应用会从学校相关系统获取您的电费余额、饭卡消费记录、校园网流量使用情况等信息，并在您的设备本地进行存储和展示。'**
+  /// **'1.3 校园生活信息：在您使用相关功能时，本应用会从学校相关系统获取您的电费余额、饭卡消费记录等信息，并在您的设备本地进行存储和展示。'**
   String get privacySection1_3;
 
   ///
@@ -1270,7 +1258,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'1.1 本应用是西安建筑科技大学 iOS Club 开发的校园助手应用，旨在为在校学生提供便捷的校园信息服务，包括但不限于课程管理、成绩查询、校车时刻、电费查询、饭卡消费记录、校园网流量查询、培养方案查看等功能。'**
+  /// **'1.1 本应用是西安建筑科技大学 iOS Club 开发的校园助手应用，旨在为在校学生提供便捷的校园信息服务，包括但不限于课程管理、成绩查询、校车时刻、电费查询、饭卡消费记录、培养方案查看等功能。'**
   String get userAgreementSection1_1;
 
   ///
@@ -1570,18 +1558,6 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'是否将待办保存至云端'**
-  String get cloudSyncTodo;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'该服务已暂停'**
-  String get servicePaused;
-
-  ///
-  ///
-  /// In zh, this message translates to:
   /// **'显示明日课程'**
   String get showTomorrowCourses;
 
@@ -1614,18 +1590,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{n}分钟'**
   String remindMinutes(int n);
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'待办事务提醒'**
-  String get todoReminder;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'在待办事务截止前进行提醒'**
-  String get todoReminderSubtitle;
 
   ///
   ///
@@ -2529,24 +2493,6 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'添加待办'**
-  String get addTodo;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'标题'**
-  String get todoTitle;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'截止日期'**
-  String get deadline;
-
-  ///
-  ///
-  /// In zh, this message translates to:
   /// **'更改'**
   String get change;
 
@@ -2561,12 +2507,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'完成'**
   String get done;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'待办事务'**
-  String get todoListLabel;
 
   ///
   ///
@@ -2595,12 +2535,6 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'无法加载待办事项'**
-  String get todoLoadFailedSubtitle;
-
-  ///
-  ///
-  /// In zh, this message translates to:
   /// **'截止日期: {date}'**
   String deadlineLabel(String date);
 
@@ -2609,18 +2543,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'无'**
   String get noDeadline;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'标题是必须项'**
-  String get titleRequired;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'截至日期是必须项'**
-  String get deadlineRequired;
 
   ///
   ///
@@ -3213,48 +3135,6 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'刷新失败，已保留当前校园网数据'**
-  String get netRefreshFailed;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'校园网数据'**
-  String get netData;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'已用流量'**
-  String get usedTraffic;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'在线时长: {time}'**
-  String onlineDuration(String time);
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'用户名'**
-  String get username;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'IP 地址'**
-  String get ipAddress;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'产品套餐'**
-  String get productPackage;
-
-  ///
-  ///
-  /// In zh, this message translates to:
   /// **'未知'**
   String get unknown;
 
@@ -3263,30 +3143,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'已复制到剪贴板'**
   String get copiedToClipboard;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'正在读取校园网数据'**
-  String get netLoading;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'正在同步流量、在线时长和账号信息'**
-  String get netLoadingSubtitle;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'加载失败'**
-  String get netLoadFailed;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'暂无数据'**
-  String get netNoData;
 
   ///
   ///
@@ -3813,18 +3669,6 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'校园网'**
-  String get helpFeatureNet;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'查看网络流量使用情况和统计'**
-  String get helpFeatureNetDesc;
-
-  ///
-  ///
-  /// In zh, this message translates to:
   /// **'常用链接'**
   String get helpFeatureLinks;
 
@@ -3893,12 +3737,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'在桌面长按添加应用小组件，快速查看课程信息'**
   String get helpInstructionWidgetDesc;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'部分功能需要连接校园网才能正常使用'**
-  String get helpNoteNetwork;
 
   ///
   ///
@@ -4055,12 +3893,6 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'历史悠久的老校区入口'**
   String get poiYanTaEastGateDesc;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'{d}天{h}小时{m}分{s}秒'**
-  String durationDHMS(String d, String h, String m, String s);
 
   ///
   ///

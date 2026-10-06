@@ -87,7 +87,6 @@ class SettingsStore extends Notifier<SettingsState> {
   bool get updateIgnored => state.updateIgnored;
   String get fontFamily => state.fontFamily;
   bool get showCourseGrid => state.showCourseGrid;
-  bool get todoRemindEnabled => state.todoRemindEnabled;
   ThemeMode get themeMode => state.themeMode;
   String get scheduleBackground => state.scheduleBackground;
   String get customBackgroundImage => state.customBackgroundImage;
@@ -122,7 +121,6 @@ class SettingsStore extends Notifier<SettingsState> {
       updateIgnored: prefs.getBool(PrefsKeys.UPDATE_IGNORED) ?? false,
       fontFamily: prefs.getString(PrefsKeys.FONT_FAMILY) ?? '',
       showCourseGrid: prefs.getBool(PrefsKeys.SHOW_COURSE_GRID) ?? false,
-      todoRemindEnabled: prefs.getBool(PrefsKeys.TODO_REMIND_ENABLED) ?? false,
       themeMode: ClubThemeModeCodec.fromPreference(
         prefs.getString(PrefsKeys.THEME_MODE),
       ),
@@ -192,11 +190,6 @@ class SettingsStore extends Notifier<SettingsState> {
   Future<void> setShowCourseGrid(bool value) async {
     state = state.copyWith(showCourseGrid: value);
     await PrefsService.instance.setBool(PrefsKeys.SHOW_COURSE_GRID, value);
-  }
-
-  Future<void> setTodoRemindEnabled(bool value) async {
-    state = state.copyWith(todoRemindEnabled: value);
-    await PrefsService.instance.setBool(PrefsKeys.TODO_REMIND_ENABLED, value);
   }
 
   Future<void> setThemeMode(ThemeMode value) async {

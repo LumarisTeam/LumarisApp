@@ -4,7 +4,6 @@ import 'package:hive/hive.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/score_model.dart';
 import 'package:ios_club_app/features/education/models/semester_model.dart';
-import 'package:ios_club_app/core/models/todo_item.dart';
 import 'package:ios_club_app/core/services/hive_manager.dart';
 
 void main() {
@@ -31,7 +30,6 @@ void main() {
       expect(HiveManager.requestCacheBoxName, 'request_cache');
       expect(HiveManager.courseBoxName, 'courses');
       expect(HiveManager.scoreBoxName, 'scores');
-      expect(HiveManager.todoBoxName, 'todos');
     });
   });
 
@@ -52,19 +50,15 @@ void main() {
       if (!Hive.isAdapterRegistered(3)) {
         Hive.registerAdapter(SemesterModelAdapter());
       }
-      if (!Hive.isAdapterRegistered(4)) {
-        Hive.registerAdapter(TodoItemAdapter());
-      }
     }
 
-    test('should_register_all_five_adapters', () {
+    test('should_register_all_four_adapters', () {
       registerAdapters();
 
       expect(Hive.isAdapterRegistered(0), isTrue); // CourseModel
       expect(Hive.isAdapterRegistered(1), isTrue); // ScoreModel
       expect(Hive.isAdapterRegistered(2), isTrue); // ScoreList
       expect(Hive.isAdapterRegistered(3), isTrue); // SemesterModel
-      expect(Hive.isAdapterRegistered(4), isTrue); // TodoItem
     });
 
     test('should_not_throw_when_registering_same_adapter_twice', () {

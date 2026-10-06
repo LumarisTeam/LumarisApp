@@ -15,7 +15,6 @@ import '../ui/pages/home_page/home_page.dart';
 import '../ui/pages/license_page/license_page.dart';
 import '../ui/pages/link_page/link_page.dart';
 import '../ui/pages/login_page/login_page.dart';
-import '../ui/pages/net_page/net_page.dart';
 import '../ui/pages/payment_page/payment_page.dart';
 import '../ui/pages/privacy_policy_page/privacy_policy_page.dart';
 import '../ui/pages/profile_page/profile_page.dart';
@@ -47,7 +46,6 @@ class AppRoutes {
   static const program = '/Profile/Program';
   static const electricity = '/Electricity';
   static const payment = '/Payment';
-  static const net = '/Electricity/Net';
   static const helper = '/Profile/Helper';
   static const egg = '/Profile/About/Egg';
   static const license = '/Profile/About/License';
@@ -160,9 +158,6 @@ class AppRouter {
             GoRoute(
               path: AppRoutes.electricity,
               builder: (context, state) => const ElectricityPage(),
-              routes: [
-                _detailRoute('Net', (context, state) => const NetPage())
-              ],
             ),
           ]),
           StatefulShellBranch(routes: [

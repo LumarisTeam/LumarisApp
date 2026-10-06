@@ -431,14 +431,6 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get todoReminderTitle => 'Rappel de tâche';
-
-  @override
-  String todoReminderBody(Object title) {
-    return 'Votre tâche $title arrive à échéance';
-  }
-
-  @override
   String get allowBackgroundRun => 'Autoriser l\'exécution en arrière-plan';
 
   @override
@@ -534,7 +526,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get privacySection1_3 =>
-      '1.3 Vie étudiante : L\'application peut récupérer votre solde d\'électricité, vos transactions de carte et votre utilisation réseau.';
+      '1.3 Vie étudiante : L\'application peut récupérer votre solde d\'électricité et vos transactions de carte.';
 
   @override
   String get privacySection1_4 =>
@@ -835,12 +827,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vibrer au toucher de la navigation inférieure';
 
   @override
-  String get cloudSyncTodo => 'Sauvegarder les tâches dans le cloud';
-
-  @override
-  String get servicePaused => 'Service suspendu';
-
-  @override
   String get showTomorrowCourses => 'Afficher les cours de demain';
 
   @override
@@ -860,12 +846,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String remindMinutes(int n) {
     return '$n minutes';
   }
-
-  @override
-  String get todoReminder => 'Rappel de tâches';
-
-  @override
-  String get todoReminderSubtitle => 'Rappeler avant l\'échéance des tâches';
 
   @override
   String get schedulePage => 'Emploi du temps';
@@ -1358,15 +1338,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Afficher l\'aperçu du solde sur l\'accueil';
 
   @override
-  String get addTodo => 'Ajouter une tâche';
-
-  @override
-  String get todoTitle => 'Titre';
-
-  @override
-  String get deadline => 'Date limite';
-
-  @override
   String get change => 'Modifier';
 
   @override
@@ -1374,9 +1345,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get done => 'Terminé';
-
-  @override
-  String get todoListLabel => 'Liste de tâches';
 
   @override
   String get readingTodos => 'Lecture des tâches';
@@ -1392,21 +1360,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noTodosSubtitle => 'Appuyez sur + pour ajouter une tâche';
 
   @override
-  String get todoLoadFailedSubtitle => 'Impossible de charger les tâches';
-
-  @override
   String deadlineLabel(String date) {
     return 'Date limite : $date';
   }
 
   @override
   String get noDeadline => 'Aucune';
-
-  @override
-  String get titleRequired => 'Le titre est requis';
-
-  @override
-  String get deadlineRequired => 'La date limite est requise';
 
   @override
   String get add => 'Ajouter';
@@ -1726,47 +1685,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get arrival => 'Arrivée';
 
   @override
-  String get netRefreshFailed =>
-      'Échec de l\'actualisation, affichage des données actuelles';
-
-  @override
-  String get netData => 'Données réseau';
-
-  @override
-  String get usedTraffic => 'Trafic utilisé';
-
-  @override
-  String onlineDuration(String time) {
-    return 'En ligne : $time';
-  }
-
-  @override
-  String get username => 'Nom d\'utilisateur';
-
-  @override
-  String get ipAddress => 'Adresse IP';
-
-  @override
-  String get productPackage => 'Forfait';
-
-  @override
   String get unknown => 'Inconnu';
 
   @override
   String get copiedToClipboard => 'Copié dans le presse-papiers';
-
-  @override
-  String get netLoading => 'Lecture des données réseau';
-
-  @override
-  String get netLoadingSubtitle =>
-      'Synchronisation du trafic, temps en ligne et infos du compte';
-
-  @override
-  String get netLoadFailed => 'Échec du chargement';
-
-  @override
-  String get netNoData => 'Aucune donnée';
 
   @override
   String get electricityBalance => 'Solde actuel';
@@ -2053,13 +1975,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Voir le solde et l\'historique des transactions';
 
   @override
-  String get helpFeatureNet => 'Réseau du campus';
-
-  @override
-  String get helpFeatureNetDesc =>
-      'Voir l\'utilisation et les statistiques du réseau';
-
-  @override
   String get helpFeatureLinks => 'Liens utiles';
 
   @override
@@ -2100,10 +2015,6 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get helpInstructionWidgetDesc =>
       'Appuyez longuement sur l\'écran d\'accueil pour ajouter un widget';
-
-  @override
-  String get helpNoteNetwork =>
-      'Certaines fonctions nécessitent le réseau du campus';
 
   @override
   String get helpNoteUpdate =>
@@ -2191,11 +2102,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get poiYanTaEastGateDesc => 'Entrée du campus historique';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '${d}j ${h}h ${m}min ${s}s';
-  }
 
   @override
   String get shortcuts => 'Raccourcis';

@@ -73,7 +73,6 @@ class SettingPage extends ConsumerWidget {
                   const LanguageSetting(),
                   const ShowTomorrowSetting(),
                   if (PlatformUtils.isMobile) const RemindSetting(),
-                  // const TodoRemindSetting(),
                   const HomePageSetting(),
                   if (PlatformUtils.isDesktop && !PlatformUtils.isMacOS)
                     const FontFamilySetting(),

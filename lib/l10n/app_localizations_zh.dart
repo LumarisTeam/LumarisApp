@@ -409,14 +409,6 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get todoReminderTitle => '待办事务提醒';
-
-  @override
-  String todoReminderBody(Object title) {
-    return '您的待办事务 $title 已到期';
-  }
-
-  @override
   String get allowBackgroundRun => '允许后台运行';
 
   @override
@@ -503,7 +495,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get privacySection1_3 =>
-      '1.3 校园生活信息：在您使用相关功能时，本应用会从学校相关系统获取您的电费余额、饭卡消费记录、校园网流量使用情况等信息，并在您的设备本地进行存储和展示。';
+      '1.3 校园生活信息：在您使用相关功能时，本应用会从学校相关系统获取您的电费余额、饭卡消费记录等信息，并在您的设备本地进行存储和展示。';
 
   @override
   String get privacySection1_4 =>
@@ -624,7 +616,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get userAgreementSection1_1 =>
-      '1.1 本应用是西安建筑科技大学 iOS Club 开发的校园助手应用，旨在为在校学生提供便捷的校园信息服务，包括但不限于课程管理、成绩查询、校车时刻、电费查询、饭卡消费记录、校园网流量查询、培养方案查看等功能。';
+      '1.1 本应用是西安建筑科技大学 iOS Club 开发的校园助手应用，旨在为在校学生提供便捷的校园信息服务，包括但不限于课程管理、成绩查询、校车时刻、电费查询、饭卡消费记录、培养方案查看等功能。';
 
   @override
   String get userAgreementSection1_2 =>
@@ -797,12 +789,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hapticFeedbackSubtitle => '底部导航栏点击时震动';
 
   @override
-  String get cloudSyncTodo => '是否将待办保存至云端';
-
-  @override
-  String get servicePaused => '该服务已暂停';
-
-  @override
   String get showTomorrowCourses => '显示明日课程';
 
   @override
@@ -821,12 +807,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String remindMinutes(int n) {
     return '$n分钟';
   }
-
-  @override
-  String get todoReminder => '待办事务提醒';
-
-  @override
-  String get todoReminderSubtitle => '在待办事务截止前进行提醒';
 
   @override
   String get schedulePage => '课程页';
@@ -1308,15 +1288,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get showPaymentTileSubtitle => '在首页显示余额概览';
 
   @override
-  String get addTodo => '添加待办';
-
-  @override
-  String get todoTitle => '标题';
-
-  @override
-  String get deadline => '截止日期';
-
-  @override
   String get change => '更改';
 
   @override
@@ -1324,9 +1295,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get done => '完成';
-
-  @override
-  String get todoListLabel => '待办事务';
 
   @override
   String get readingTodos => '正在读取待办事务';
@@ -1341,21 +1309,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noTodosSubtitle => '点击右上角添加待办事项';
 
   @override
-  String get todoLoadFailedSubtitle => '无法加载待办事项';
-
-  @override
   String deadlineLabel(String date) {
     return '截止日期: $date';
   }
 
   @override
   String get noDeadline => '无';
-
-  @override
-  String get titleRequired => '标题是必须项';
-
-  @override
-  String get deadlineRequired => '截至日期是必须项';
 
   @override
   String get add => '添加';
@@ -1659,45 +1618,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get arrival => '到达';
 
   @override
-  String get netRefreshFailed => '刷新失败，已保留当前校园网数据';
-
-  @override
-  String get netData => '校园网数据';
-
-  @override
-  String get usedTraffic => '已用流量';
-
-  @override
-  String onlineDuration(String time) {
-    return '在线时长: $time';
-  }
-
-  @override
-  String get username => '用户名';
-
-  @override
-  String get ipAddress => 'IP 地址';
-
-  @override
-  String get productPackage => '产品套餐';
-
-  @override
   String get unknown => '未知';
 
   @override
   String get copiedToClipboard => '已复制到剪贴板';
-
-  @override
-  String get netLoading => '正在读取校园网数据';
-
-  @override
-  String get netLoadingSubtitle => '正在同步流量、在线时长和账号信息';
-
-  @override
-  String get netLoadFailed => '加载失败';
-
-  @override
-  String get netNoData => '暂无数据';
 
   @override
   String get electricityBalance => '当前余额';
@@ -1965,12 +1889,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get helpFeaturePaymentDesc => '查看饭卡余额和消费明细';
 
   @override
-  String get helpFeatureNet => '校园网';
-
-  @override
-  String get helpFeatureNetDesc => '查看网络流量使用情况和统计';
-
-  @override
   String get helpFeatureLinks => '常用链接';
 
   @override
@@ -2005,9 +1923,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get helpInstructionWidgetDesc => '在桌面长按添加应用小组件，快速查看课程信息';
-
-  @override
-  String get helpNoteNetwork => '部分功能需要连接校园网才能正常使用';
 
   @override
   String get helpNoteUpdate => '请保持应用更新以获得最新功能和修复';
@@ -2088,11 +2003,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get poiYanTaEastGateDesc => '历史悠久的老校区入口';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '$d天$h小时$m分$s秒';
-  }
 
   @override
   String get shortcuts => '快捷功能';
@@ -2560,14 +2470,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   }
 
   @override
-  String get todoReminderTitle => '待辦事項提醒';
-
-  @override
-  String todoReminderBody(Object title) {
-    return '您的待辦事項 $title 已到期';
-  }
-
-  @override
   String get allowBackgroundRun => '允許背景執行';
 
   @override
@@ -2655,7 +2557,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get privacySection1_3 =>
-      '1.3 校園生活資訊：在您使用相關功能時，本應用程式會從學校相關系統取得您的電費餘額、飯卡消費記錄、校園網路流量使用情況等資訊，並在您的裝置本地進行儲存和展示。';
+      '1.3 校園生活資訊：在您使用相關功能時，本應用程式會從學校相關系統取得您的電費餘額、飯卡消費記錄等資訊，並在您的裝置本地進行儲存和展示。';
 
   @override
   String get privacySection1_4 =>
@@ -2776,7 +2678,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get userAgreementSection1_1 =>
-      '1.1 本應用程式是西安建築科技大學 iOS Club 開發的校園助手應用程式，旨在為在校學生提供便捷的校園資訊服務，包括但不限於課程管理、成績查詢、校車時刻、電費查詢、飯卡消費記錄、校園網路流量查詢、培養方案檢視等功能。';
+      '1.1 本應用程式是西安建築科技大學 iOS Club 開發的校園助手應用程式，旨在為在校學生提供便捷的校園資訊服務，包括但不限於課程管理、成績查詢、校車時刻、電費查詢、飯卡消費記錄、培養方案檢視等功能。';
 
   @override
   String get userAgreementSection1_2 =>
@@ -2949,12 +2851,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get hapticFeedbackSubtitle => '底部導覽列點選時震動';
 
   @override
-  String get cloudSyncTodo => '是否將待辦儲存至雲端';
-
-  @override
-  String get servicePaused => '該服務已暫停';
-
-  @override
   String get showTomorrowCourses => '顯示明日課程';
 
   @override
@@ -2973,12 +2869,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String remindMinutes(int n) {
     return '$n分鐘';
   }
-
-  @override
-  String get todoReminder => '待辦事務提醒';
-
-  @override
-  String get todoReminderSubtitle => '在待辦事務截止前進行提醒';
 
   @override
   String get schedulePage => '課程頁';
@@ -3460,15 +3350,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get showPaymentTileSubtitle => '在首頁顯示餘額概覽';
 
   @override
-  String get addTodo => '新增待辦';
-
-  @override
-  String get todoTitle => '標題';
-
-  @override
-  String get deadline => '截止日期';
-
-  @override
   String get change => '更改';
 
   @override
@@ -3476,9 +3357,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get done => '完成';
-
-  @override
-  String get todoListLabel => '待辦事務';
 
   @override
   String get readingTodos => '正在讀取待辦事務';
@@ -3493,21 +3371,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get noTodosSubtitle => '點選右上角新增待辦事項';
 
   @override
-  String get todoLoadFailedSubtitle => '無法載入待辦事項';
-
-  @override
   String deadlineLabel(String date) {
     return '截止日期: $date';
   }
 
   @override
   String get noDeadline => '無';
-
-  @override
-  String get titleRequired => '標題是必須項';
-
-  @override
-  String get deadlineRequired => '截止日期是必須項';
 
   @override
   String get add => '新增';
@@ -3811,45 +3680,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get arrival => '到達';
 
   @override
-  String get netRefreshFailed => '重新整理失敗，已保留目前校園網路資料';
-
-  @override
-  String get netData => '校園網路資料';
-
-  @override
-  String get usedTraffic => '已用流量';
-
-  @override
-  String onlineDuration(String time) {
-    return '線上時長: $time';
-  }
-
-  @override
-  String get username => '使用者名稱';
-
-  @override
-  String get ipAddress => 'IP 位址';
-
-  @override
-  String get productPackage => '產品方案';
-
-  @override
   String get unknown => '未知';
 
   @override
   String get copiedToClipboard => '已複製到剪貼簿';
-
-  @override
-  String get netLoading => '正在讀取校園網路資料';
-
-  @override
-  String get netLoadingSubtitle => '正在同步流量、線上時長和帳號資訊';
-
-  @override
-  String get netLoadFailed => '載入失敗';
-
-  @override
-  String get netNoData => '暫無資料';
 
   @override
   String get electricityBalance => '目前餘額';
@@ -4117,12 +3951,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get helpFeaturePaymentDesc => '檢視飯卡餘額和消費明細';
 
   @override
-  String get helpFeatureNet => '校園網路';
-
-  @override
-  String get helpFeatureNetDesc => '檢視網路流量使用情況和統計';
-
-  @override
   String get helpFeatureLinks => '常用連結';
 
   @override
@@ -4157,9 +3985,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get helpInstructionWidgetDesc => '在桌面長按新增應用程式小元件，快速檢視課程資訊';
-
-  @override
-  String get helpNoteNetwork => '部分功能需要連接校園網路才能正常使用';
 
   @override
   String get helpNoteUpdate => '請保持應用程式更新以獲得最新功能和修復';
@@ -4240,11 +4065,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get poiYanTaEastGateDesc => '歷史悠久的老校區入口';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '$d天$h小時$m分$s秒';
-  }
 
   @override
   String get shortcuts => '快捷功能';

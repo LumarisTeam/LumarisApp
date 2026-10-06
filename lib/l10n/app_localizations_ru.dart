@@ -425,14 +425,6 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get todoReminderTitle => 'Напоминание о задаче';
-
-  @override
-  String todoReminderBody(Object title) {
-    return 'Срок выполнения задачи $title наступил';
-  }
-
-  @override
   String get allowBackgroundRun => 'Разрешить работу в фоне';
 
   @override
@@ -525,7 +517,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get privacySection1_3 =>
-      '1.3 Данные студенческой жизни: Приложение может получать данные о балансе электроэнергии, транзакциях карты и использовании сети.';
+      '1.3 Данные студенческой жизни: Приложение может получать данные о балансе электроэнергии и транзакциях карты.';
 
   @override
   String get privacySection1_4 =>
@@ -825,12 +817,6 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вибрация при нажатии на нижнюю навигацию';
 
   @override
-  String get cloudSyncTodo => 'Сохранять задачи в облако';
-
-  @override
-  String get servicePaused => 'Сервис приостановлен';
-
-  @override
   String get showTomorrowCourses => 'Показать завтрашние занятия';
 
   @override
@@ -850,12 +836,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String remindMinutes(int n) {
     return '$n мин.';
   }
-
-  @override
-  String get todoReminder => 'Напоминание о задачах';
-
-  @override
-  String get todoReminderSubtitle => 'Напоминать о сроках выполнения задач';
 
   @override
   String get schedulePage => 'Расписание';
@@ -1345,15 +1325,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get showPaymentTileSubtitle => 'Показать баланс карты на главной';
 
   @override
-  String get addTodo => 'Добавить задачу';
-
-  @override
-  String get todoTitle => 'Название';
-
-  @override
-  String get deadline => 'Срок';
-
-  @override
   String get change => 'Изменить';
 
   @override
@@ -1361,9 +1332,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get done => 'Готово';
-
-  @override
-  String get todoListLabel => 'Список задач';
 
   @override
   String get readingTodos => 'Чтение задач';
@@ -1378,21 +1346,12 @@ class AppLocalizationsRu extends AppLocalizations {
   String get noTodosSubtitle => 'Нажмите + чтобы добавить';
 
   @override
-  String get todoLoadFailedSubtitle => 'Не удалось загрузить задачи';
-
-  @override
   String deadlineLabel(String date) {
     return 'Срок: $date';
   }
 
   @override
   String get noDeadline => 'Нет';
-
-  @override
-  String get titleRequired => 'Требуется название';
-
-  @override
-  String get deadlineRequired => 'Требуется срок';
 
   @override
   String get add => 'Добавить';
@@ -1708,46 +1667,10 @@ class AppLocalizationsRu extends AppLocalizations {
   String get arrival => 'Прибытие';
 
   @override
-  String get netRefreshFailed => 'Ошибка обновления, показаны текущие данные';
-
-  @override
-  String get netData => 'Данные сети';
-
-  @override
-  String get usedTraffic => 'Использованный трафик';
-
-  @override
-  String onlineDuration(String time) {
-    return 'В сети: $time';
-  }
-
-  @override
-  String get username => 'Имя пользователя';
-
-  @override
-  String get ipAddress => 'IP-адрес';
-
-  @override
-  String get productPackage => 'Тарифный план';
-
-  @override
   String get unknown => 'Неизвестно';
 
   @override
   String get copiedToClipboard => 'Скопировано в буфер обмена';
-
-  @override
-  String get netLoading => 'Чтение данных сети';
-
-  @override
-  String get netLoadingSubtitle =>
-      'Синхронизация трафика, времени в сети и данных учётной записи';
-
-  @override
-  String get netLoadFailed => 'Не удалось загрузить';
-
-  @override
-  String get netNoData => 'Нет данных';
 
   @override
   String get electricityBalance => 'Текущий баланс';
@@ -2032,12 +1955,6 @@ class AppLocalizationsRu extends AppLocalizations {
       'Просмотр баланса карты и истории транзакций';
 
   @override
-  String get helpFeatureNet => 'Сеть кампуса';
-
-  @override
-  String get helpFeatureNetDesc => 'Просмотр использования и статистики сети';
-
-  @override
   String get helpFeatureLinks => 'Полезные ссылки';
 
   @override
@@ -2078,10 +1995,6 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get helpInstructionWidgetDesc =>
       'Долгое нажатие на главном экране для добавления виджета';
-
-  @override
-  String get helpNoteNetwork =>
-      'Некоторые функции требуют доступа к сети кампуса';
 
   @override
   String get helpNoteUpdate =>
@@ -2170,11 +2083,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get poiYanTaEastGateDesc => 'Вход в исторический кампус';
-
-  @override
-  String durationDHMS(String d, String h, String m, String s) {
-    return '$dд $hч $mм $sс';
-  }
 
   @override
   String get shortcuts => 'Ярлыки';

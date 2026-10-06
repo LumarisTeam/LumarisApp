@@ -145,9 +145,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           title: l10n.payment,
           route: AppRoutes.payment,
         ),
-      // if (!kIsWeb)
-      //   ProfileButtonItem(
-      //       icon: Icons.wifi_outlined, title: '校园网', route: AppRoutes.net),
       if (!isLogin)
         ProfileButtonItem(
           icon: Icons.login,

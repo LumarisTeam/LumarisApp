@@ -1,7 +1,6 @@
 import 'package:ios_club_app/core/repositories/course_repository.dart';
 import 'package:ios_club_app/core/repositories/score_repository.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
-import 'package:ios_club_app/core/services/todo_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
@@ -39,7 +38,6 @@ class EducationCacheService {
 
       await CourseRepository().clear();
       await ScoreRepository().clear();
-      await TodoService.clearLocalData();
 
       await RequestCache().deleteByPattern(RegExp(r'.*/course.*'));
       await RequestCache().deleteByPattern(RegExp(r'.*/score.*'));
