@@ -154,11 +154,62 @@ ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
   scripts/release.sh release ios
 ```
 
-`release ios` 会构建 IPA、上传服务器（需先配置上面的 `RELEASE_SERVER_*` 变量，账号没配好会直接报错），然后上传 App Store Connect。若只上传已有 IPA，使用 `scripts/release.sh upload-asc`。整个流程可先加 `--dry-run` 检查命令而不执行。
+`release ios` 会构建 IPA、上传服务器（需先配置上面的 `RELEASE_SERVER_*` 变量，账号没配好会直接报错），然后上传 App Store Connect。整个流程可先加 `--dry-run` 检查命令而不执行。
+
+只上传已有产物时用 `upload-asc`，它按目标挑选文件并决定 altool 的 `--type`：
+
+| 目标 | 上传的文件 | `altool --type` |
+| --- | --- | --- |
+| `ios`（默认） | `dist/*.ipa` | `ios` |
+| `macos` | `dist/*.pkg` | `osx` |
+
+macOS 上架 App Store 必须先打成 `.pkg`（App Store 导出产物），`flutter build macos` 直接产出的 `.app` 不能提交。
+
+```bash
+ASC_API_KEY_ID='ABC1234567' ASC_ISSUER_ID='YOUR_ISSUER_UUID' \
+ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
+  scripts/release.sh upload-asc macos --output-dir ./dist
+```
+
+#### 先验证 API Key
+
+拿到 Key ID 和 Issuer ID 不等于能用：真正决定成败的是三者是否配对，以及 Key 的角色够不够云端签名。`scripts/verify_asc_key.sh` 直接用 `.p8` 签一个 ES256 JWT 去问 App Store Connect，除了 `openssl` / `curl` / `jq` 不需要额外工具：
+
+```bash
+ASC_API_KEY_ID='ABC1234567' \
+ASC_ISSUER_ID='YOUR_ISSUER_UUID' \
+ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
+  scripts/verify_asc_key.sh com.example.iosClubApp
+```
+
+它依次报告三件事，任一项预示失败就以非零码退出：
+
+1. **认证**：Key ID / Issuer ID / `.p8` 是否配对（`401` 即三者不匹配）
+2. **签名资源权限**：能否读取证书与描述文件。`403` 可以确定角色不足；但反过来读取成功不代表够用——Developer 角色同样能读，创建描述文件的权限无法在不产生副作用的前提下探测，所以 Key 的角色请直接在 ASC 的 Integrations 页面核对（角色在创建 Key 时选定且不可修改，是 Developer 就得吊销重建）
+3. **app 记录**：传入 bundle id 时检查 ASC 里是否存在对应记录，缺失则上传会被拒
+
+在 CI 里 `build-apple` 也会先跑同一个脚本（不传 bundle id，避免 app 记录变更时误伤发布），这样 Key 失效时几秒就报错，而不是等十几分钟的 macOS 构建跑完才失败。注意脚本只能预测，不能替代真跑一次：云端签名是否真能签下来，只有 `xcodebuild archive` 走完才算数。
+
+#### CI 上的云端签名
+
+CI 里没有本机的证书和描述文件，用 `--asc-cloud-signing` 让 Xcode 通过 API Key 向 App Store Connect 申请：脚本执行 `flutter build <target> --config-only` 之后直接调 `xcodebuild archive` 和 `-exportArchive`，并带上 `-allowProvisioningUpdates -authenticationKeyPath/-ID/-IssuerID`。`flutter build ipa` 传不了这些参数（`FLUTTER_XCODE_` 前缀只能映射成 build settings，不是命令行 flag），所以这条路绕开了它。
+
+```bash
+ASC_API_KEY_ID='ABC1234567' ASC_ISSUER_ID='YOUR_ISSUER_UUID' \
+ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
+  scripts/release.sh build ios --asc-cloud-signing --channel appstore
+ASC_API_KEY_ID='ABC1234567' ASC_ISSUER_ID='YOUR_ISSUER_UUID' \
+ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
+  scripts/release.sh upload-asc ios
+```
+
+前提：该 API Key 是 Team Key 且角色为 Admin 或 App Manager。签名用的团队 id 默认从 `*/Runner.xcodeproj/project.pbxproj` 的 `DEVELOPMENT_TEAM` 读取，可用 `ASC_TEAM_ID` 覆盖。
 
 ### 推 tag 自动发布（GitHub Actions）
 
-推送 tag（`1.2.1` 或 `v1.2.1`）时，`.github/workflows/release.yml` 会调用 `scripts/release.sh` 完成打包与发布：Android 和 Linux 两个 job 并行构建，产物汇总后再上传自建平台、创建 GitHub Release。
+推送 tag（`1.2.1` 或 `v1.2.1`）时，`.github/workflows/release.yml` 会调用 `scripts/release.sh` 完成打包与发布：`prepare` 先解析 tag 并校验版本，随后 `build-android`、`build-linux`、`build-apple` 并行构建。Android/Linux 产物汇总后上传自建平台并创建 GitHub Release，Apple 则由 `build-apple` 直接上传 App Store Connect。
+
+两条渠道相互独立：Apple 失败不会阻断 GitHub Release 与自建平台的发布，反之亦然——App Store 用户不该被 Android 的签名问题拖住，哪条红了看 job 名即可。Apple 用 `--channel appstore` 构建（App Store 版本关闭应用内更新检查），且不上传自建平台。
 
 ```bash
 git tag -a 1.2.2 -m '修复若干已知问题'   # tag 说明会作为发布说明同步到平台和 GitHub
@@ -167,7 +218,7 @@ git push github 1.2.2
 
 工作流只比较版本号里 `+` 之前的部分（`1.2.2` 对应 `1.2.2+2026090421`）。如果 tag 与 `pubspec.yaml` 的 `version` 不一致，会在任何上传发生之前直接失败——平台上的 `releaseId` 取自 tag、App 内上报的版本取自 `pubspec.yaml`，两者不一致会让更新检查失效。
 
-构建产物：`app-arm64-v8a-release.apk`、`app-armeabi-v7a-release.apk`、`app-x86_64-release.apk`、`app-release.aab`、`ios_club_app-linux-x64.tar.gz`。挂到 GitHub Release 上时会加上版本号前缀（如 `ios_club_app-1.2.2-android-arm64-v8a.apk`），传给自建平台的仍是原始文件名。
+构建产物：`app-arm64-v8a-release.apk`、`app-armeabi-v7a-release.apk`、`app-x86_64-release.apk`、`app-release.aab`、`ios_club_app-linux-x64.tar.gz`。挂到 GitHub Release 上时会加上版本号前缀（如 `ios_club_app-1.2.2-android-arm64-v8a.apk`），传给自建平台的仍是原始文件名。Apple 的 `.ipa` / `.pkg` 只送 App Store Connect，不挂到 GitHub Release。
 
 需要在仓库 Settings → Secrets and variables → Actions 中配置：
 
@@ -181,16 +232,22 @@ git push github 1.2.2
 | `ANDROID_KEYSTORE_PASSWORD` | 密钥库密码（`storePassword`） |
 | `ANDROID_KEY_ALIAS` | 密钥别名（`keyAlias`，如 `upload`） |
 | `ANDROID_KEY_PASSWORD` | 密钥密码（`keyPassword`） |
+| `ASC_API_KEY_ID` | App Store Connect API Key 的 Key ID |
+| `ASC_ISSUER_ID` | App Store Connect 的 Issuer ID |
+| `ASC_API_KEY_P8_BASE64` | `.p8` 私钥的 base64 |
 
 生成密钥库的 base64（macOS 用 `base64 -i`，Linux 用 `base64 -w0`）：
 
 ```bash
 base64 -i android/keys/upload-keystore.jks | tr -d '\n' | pbcopy
+base64 -i "$HOME/keys/AuthKey_ABC1234567.p8" | tr -d '\n' | pbcopy
 ```
 
 发布顺序是先上传自建平台、成功之后才创建 GitHub Release。平台上传失败时工作流会失败并且不会创建 Release，避免出现「GitHub 上能看到版本、App 内却检查不到更新」的状态。修复后在 Actions 页面 Re-run 即可；注意重跑会再建一条平台 Release 记录，如果上次已经建过需要先去平台删掉。
 
 也可以手动触发：Actions → Release → Run workflow，但必须选中一个 tag，选分支会在发布前直接报错。
+
+注意：上传到 App Store Connect 只是把构建送进 TestFlight/构建列表，**不会自动提交审核或发布**，这一步仍需在 App Store Connect 里手动完成。
 
 ## 贡献指南
 

@@ -1,9 +1,12 @@
 name: Release
 
 # 推送 tag（如 1.2.1 或 v1.2.1）时自动打包并发布：
-#   1. build-android / build-linux 两个 job 并行构建产物
-#   2. publish 先把产物上传到自建发布平台，成功之后才创建 GitHub Release
-# 手动触发（workflow_dispatch）时必须选中一个 tag，否则 publish 会直接失败。
+#   prepare       解析 tag、校验与 pubspec.yaml 的版本一致
+#   build-android / build-linux / build-apple  并行构建
+#   publish       上传自建发布平台，成功之后才创建 GitHub Release
+# build-apple 走 App Store Connect，与自建平台是两条独立的发布渠道，因此它失败
+# 不会阻断 publish，反之亦然；哪一条红了看 job 名即可。
+# 手动触发（workflow_dispatch）时必须选中一个 tag，否则 prepare 会直接失败。
 
 on:
   push:
@@ -23,8 +26,57 @@ env:
   FLUTTER_VERSION: '3.41.9'
 
 jobs:
+  prepare:
+    name: Resolve and verify version
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
+      description: ${{ steps.version.outputs.description }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Resolve version from tag
+        id: version
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" != refs/tags/* ]]; then
+            echo "::error::发布必须由 tag 触发（当前 ref：${GITHUB_REF}）。手动运行请在界面中选择一个 tag。"
+            exit 1
+          fi
+          tag="${GITHUB_REF#refs/tags/}"
+          version="${tag#v}"
+          # tag 可能是附注 tag，先把说明取出来作为发布说明；取不到就留空。
+          git fetch --depth=1 origin "+refs/tags/${tag}:refs/tags/${tag}" 2>/dev/null || true
+          description="$(git tag -l --format='%(contents)' "${tag}" 2>/dev/null || true)"
+          {
+            echo "tag=${tag}"
+            echo "version=${version}"
+            echo "description<<RELEASE_DESCRIPTION_EOF"
+            echo "${description}"
+            echo "RELEASE_DESCRIPTION_EOF"
+          } >> "${GITHUB_OUTPUT}"
+          echo "版本：${version}"
+
+      # 平台的 releaseId 取自 tag，App 内上报的版本取自 pubspec.yaml，
+      # 两者不一致会让更新检查失效，所以在这里先拦下来，且要在任何上传之前。
+      - name: Verify tag matches pubspec version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          pubspec_version="$(sed -n 's/^version:[[:space:]]*\([^+[:space:]]*\).*/\1/p' pubspec.yaml | head -1)"
+          if [[ "${pubspec_version}" != "${VERSION}" ]]; then
+            echo "::error::tag 版本 ${VERSION} 与 pubspec.yaml 的 ${pubspec_version} 不一致，请先同步版本号再重新打 tag"
+            exit 1
+          fi
+          echo "版本校验通过：${VERSION}"
+
   build-android:
     name: Build Android (APK + AAB)
+    needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -85,6 +137,7 @@ jobs:
 
   build-linux:
     name: Build Linux (x64 bundle)
+    needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -123,9 +176,74 @@ jobs:
           path: dist/*
           if-no-files-found: error
 
+  build-apple:
+    name: Build ${{ matrix.platform }} and upload to App Store Connect
+    needs: prepare
+    runs-on: macos-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [ios, macos]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      # xcodebuild 与 altool 都按固定文件名 AuthKey_<KEY_ID>.p8 找密钥，
+      # 所以这里按该命名写到固定目录，路径通过 GITHUB_ENV 传给后续步骤。
+      - name: Restore App Store Connect API key
+        env:
+          ASC_KEY_BASE64: ${{ secrets.ASC_API_KEY_P8_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+          ASC_KEY_ISSUER: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${ASC_KEY_BASE64}" ]]; then
+            echo "::error::缺少 Secrets：ASC_API_KEY_P8_BASE64"
+            exit 1
+          fi
+          if [[ -z "${ASC_KEY_ID}" || -z "${ASC_KEY_ISSUER}" ]]; then
+            echo "::error::缺少 Secrets：ASC_API_KEY_ID / ASC_ISSUER_ID"
+            exit 1
+          fi
+          key_dir="${RUNNER_TEMP}/asc-private-keys"
+          mkdir -p "${key_dir}"
+          printf '%s' "${ASC_KEY_BASE64}" | base64 -d > "${key_dir}/AuthKey_${ASC_KEY_ID}.p8"
+          chmod 600 "${key_dir}/AuthKey_${ASC_KEY_ID}.p8"
+          # 三个变量统一从这里导出，后续步骤不必各自重复声明。
+          {
+            echo "ASC_API_KEY_ID=${ASC_KEY_ID}"
+            echo "ASC_ISSUER_ID=${ASC_KEY_ISSUER}"
+            echo "ASC_API_KEY_PATH=${key_dir}/AuthKey_${ASC_KEY_ID}.p8"
+          } >> "${GITHUB_ENV}"
+
+      # 先花几秒确认 Key 可用：角色不够时云端签名要等十几分钟的构建才会失败。
+      # 这里不传 bundle id——app 记录缺失是本地搭建时的问题，不该在发布时误伤。
+      - name: Verify App Store Connect key
+        run: bash scripts/verify_asc_key.sh
+
+      # --asc-cloud-signing 用 API Key 云端签名，无需把证书和描述文件放进 Secrets。
+      # 用 appstore channel 构建：App Store 版本关闭应用内更新检查。
+      - name: Build ${{ matrix.platform }}
+        run: |
+          bash scripts/release.sh build "${{ matrix.platform }}" \
+            --asc-cloud-signing --channel appstore --output-dir dist
+          ls -l dist
+
+      # 上传只送到 App Store Connect（进入 TestFlight），不会自动提交审核。
+      - name: Upload ${{ matrix.platform }} to App Store Connect
+        run: bash scripts/release.sh upload-asc "${{ matrix.platform }}" --output-dir dist
+
   publish:
     name: Publish to release server and GitHub
-    needs: [build-android, build-linux]
+    needs: [prepare, build-android, build-linux]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -138,43 +256,6 @@ jobs:
           path: dist
           merge-multiple: true
 
-      - name: Resolve version from tag
-        id: version
-        run: |
-          set -euo pipefail
-          if [[ "${GITHUB_REF}" != refs/tags/* ]]; then
-            echo "::error::发布必须由 tag 触发（当前 ref：${GITHUB_REF}）。手动运行请在界面中选择一个 tag。"
-            exit 1
-          fi
-          tag="${GITHUB_REF#refs/tags/}"
-          version="${tag#v}"
-          # tag 可能是附注 tag，先把说明取出来作为发布说明；取不到就留空。
-          git fetch --depth=1 origin "+refs/tags/${tag}:refs/tags/${tag}" 2>/dev/null || true
-          description="$(git tag -l --format='%(contents)' "${tag}" 2>/dev/null || true)"
-          {
-            echo "tag=${tag}"
-            echo "version=${version}"
-            echo "description<<RELEASE_DESCRIPTION_EOF"
-            echo "${description}"
-            echo "RELEASE_DESCRIPTION_EOF"
-          } >> "${GITHUB_OUTPUT}"
-          echo "version=${version}"
-          ls -l dist
-
-      # 平台的 releaseId 来自 tag，App 内上报的版本来自 pubspec.yaml，
-      # 两者不一致会让更新检查失效，所以在这里先拦下来，且要在任何上传之前。
-      - name: Verify tag matches pubspec version
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          set -euo pipefail
-          pubspec_version="$(sed -n 's/^version:[[:space:]]*\([^+[:space:]]*\).*/\1/p' pubspec.yaml | head -1)"
-          if [[ "${pubspec_version}" != "${VERSION}" ]]; then
-            echo "::error::tag 版本 ${VERSION} 与 pubspec.yaml 的 ${pubspec_version} 不一致，请先同步版本号再重新打 tag"
-            exit 1
-          fi
-          echo "版本校验通过：${VERSION}"
-
       # 顺序很重要：先传自建平台，成功后才建 GitHub Release，
       # 避免出现「用户看得到版本、App 内却检查不到更新」的状态。
       - name: Upload to release server
@@ -184,16 +265,16 @@ jobs:
           RELEASE_SERVER_PASSWORD: ${{ secrets.RELEASE_SERVER_PASSWORD }}
           RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
           RELEASE_CHANNEL_ID: ${{ secrets.RELEASE_CHANNEL_ID }}
-          RELEASE_ID: ${{ steps.version.outputs.version }}
-          RELEASE_NAME: ${{ steps.version.outputs.version }}
-          RELEASE_DESCRIPTION: ${{ steps.version.outputs.description }}
+          RELEASE_ID: ${{ needs.prepare.outputs.version }}
+          RELEASE_NAME: ${{ needs.prepare.outputs.version }}
+          RELEASE_DESCRIPTION: ${{ needs.prepare.outputs.description }}
         run: bash scripts/release.sh upload-server --output-dir dist
 
       # release.sh 产出的文件名偏通用，这里复制成带版本号的副本挂到 GitHub Release 上。
       # 自建平台用的仍是 dist/ 里的原始文件名。
       - name: Stage GitHub release assets
         env:
-          VERSION: ${{ steps.version.outputs.version }}
+          VERSION: ${{ needs.prepare.outputs.version }}
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -218,20 +299,21 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: ${{ steps.version.outputs.tag }}
-          body: ${{ steps.version.outputs.description }}
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          name: ${{ needs.prepare.outputs.tag }}
+          body: ${{ needs.prepare.outputs.description }}
           generate_release_notes: true
-          prerelease: ${{ contains(steps.version.outputs.tag, '-') }}
+          prerelease: ${{ contains(needs.prepare.outputs.tag, '-') }}
           files: release-assets/*
           fail_on_unmatched_files: true
 
       - name: Summary
         run: |
           {
-            echo "### 发布完成：${{ steps.version.outputs.tag }}"
+            echo "### 发布完成：${{ needs.prepare.outputs.tag }}"
             echo
-            echo "产物已上传到自建发布平台，并在 GitHub 创建 Release。"
+            echo "Android / Linux 产物已上传到自建发布平台，并在 GitHub 创建 Release。"
+            echo "iOS / macOS 由 build-apple 上传到 App Store Connect（需在 ASC 侧提交审核）。"
             echo
             echo "| 文件 | 大小 |"
             echo "| --- | --- |"

@@ -47,6 +47,9 @@ app.*.map.json
 my-release-key.jks
 /android/key.properties
 
+# Apple 私钥（App Store Connect API Key / APNs Key）：只能下载一次，绝不可入库
+*.p8
+
 .env
 .env.example
 

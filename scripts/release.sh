@@ -11,6 +11,8 @@ OUTPUT_DIR="${RELEASE_OUTPUT_DIR:-${PROJECT_ROOT}/dist}"
 UPDATE_CHANNEL="${UPDATE_CHANNEL:-gitee}"
 DRY_RUN="false"
 SKIP_CLEAN="false"
+ASC_CLOUD_SIGNING="false"
+ASC_SIGNING_ARGS=()
 
 log() { printf '[release] %s\n' "$*"; }
 warn() { printf '[release] WARNING: %s\n' "$*" >&2; }
@@ -40,7 +42,7 @@ usage() {
 Usage:
   scripts/release.sh build <target> [options]
   scripts/release.sh upload-server [options]
-  scripts/release.sh upload-asc [options]
+  scripts/release.sh upload-asc [target] [options]
   scripts/release.sh release <target> [options]
 
 Targets:
@@ -57,6 +59,7 @@ Options:
   --output-dir DIR       Artifact directory (default: ./dist)
   --channel NAME         UPDATE_CHANNEL dart define (default: gitee)
   --skip-clean           Do not run flutter clean before building
+  --asc-cloud-signing    Build ios/macos via xcodebuild cloud signing (for CI)
   --dry-run              Print commands without executing them
   --help                 Show this help
 
@@ -74,7 +77,12 @@ App Store Connect environment variables:
   ASC_API_KEY_ID         App Store Connect API key ID
   ASC_ISSUER_ID          App Store Connect issuer ID
   ASC_API_KEY_PATH       Path to the .p8 private key file
-  ASC_BUNDLE_TYPE        ios (default) or osx
+  ASC_BUNDLE_TYPE        Override the altool --type value (ios or osx)
+  ASC_TEAM_ID            Apple team id (default: read from the Xcode project)
+
+upload-asc targets:
+  ios                    Upload the .ipa (default)
+  macos                  Upload the .pkg produced by an App Store export
 
 Examples:
   scripts/release.sh build android-aab --channel appstore
@@ -83,7 +91,10 @@ Examples:
     RELEASE_APP_ID=... RELEASE_CHANNEL_ID=... \
     scripts/release.sh upload-server
   ASC_API_KEY_ID=ABC ASC_ISSUER_ID=... ASC_API_KEY_PATH=./private/AuthKey_ABC.p8 \
-    scripts/release.sh upload-asc
+    scripts/release.sh upload-asc ios
+
+  ASC_API_KEY_ID=ABC ASC_ISSUER_ID=... ASC_API_KEY_PATH=./private/AuthKey_ABC.p8 \
+    scripts/release.sh build ios --asc-cloud-signing --channel appstore
 EOF
 }
 
@@ -93,9 +104,120 @@ require_command() {
 
 flutter_args=(--no-tree-shake-icons "--dart-define=UPDATE_CHANNEL=${UPDATE_CHANNEL}")
 
+require_asc_key() {
+  [[ -n "${ASC_API_KEY_ID:-}" ]] || die "Set ASC_API_KEY_ID before using --asc-cloud-signing"
+  [[ -n "${ASC_ISSUER_ID:-}" ]] || die "Set ASC_ISSUER_ID before using --asc-cloud-signing"
+  [[ -n "${ASC_API_KEY_PATH:-}" ]] || die "Set ASC_API_KEY_PATH before using --asc-cloud-signing"
+  [[ -f "${ASC_API_KEY_PATH}" ]] || die "ASC API key file not found: ${ASC_API_KEY_PATH}"
+  ASC_SIGNING_ARGS=(
+    -allowProvisioningUpdates
+    -authenticationKeyPath "$(cd "$(dirname "${ASC_API_KEY_PATH}")" && pwd)/$(basename "${ASC_API_KEY_PATH}")"
+    -authenticationKeyID "${ASC_API_KEY_ID}"
+    -authenticationKeyIssuerID "${ASC_ISSUER_ID}"
+  )
+}
+
+apple_team_id() {
+  local platform_dir="$1" team="${ASC_TEAM_ID:-}"
+  if [[ -z "${team}" ]]; then
+    team="$(sed -n 's/.*DEVELOPMENT_TEAM = \([A-Za-z0-9]*\);.*/\1/p' "${PROJECT_ROOT}/${platform_dir}/Runner.xcodeproj/project.pbxproj" | head -1)"
+  fi
+  [[ -n "${team}" ]] || die "Could not determine the Apple team id, set ASC_TEAM_ID"
+  printf '%s' "${team}"
+}
+
+write_export_options() {
+  local plist="$1" team="$2"
+  cat > "${plist}" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>method</key>
+	<string>app-store-connect</string>
+	<key>signingStyle</key>
+	<string>automatic</string>
+	<key>teamID</key>
+	<string>${team}</string>
+	<key>destination</key>
+	<string>export</string>
+	<key>uploadSymbols</key>
+	<true/>
+</dict>
+</plist>
+PLIST
+}
+
+# Cloud signing: xcodebuild asks App Store Connect to create or refresh the
+# certificates and provisioning profiles from the API key, so CI only needs the
+# .p8. flutter build ipa cannot pass the -authenticationKey* flags through, which
+# is why the archive is driven by xcodebuild directly.
+build_apple_cloud_signed() {
+  local target="$1"
+  local platform_dir="${target}"
+  local workspace="${platform_dir}/Runner.xcworkspace"
+  local archive_path="${PROJECT_ROOT}/build/${platform_dir}/Runner.xcarchive"
+  local export_dir="${PROJECT_ROOT}/build/${platform_dir}/asc-export"
+  local options_plist="${PROJECT_ROOT}/build/${platform_dir}/ExportOptions.plist"
+  local destination
+
+  [[ "$(uname -s)" == "Darwin" ]] || die "${target} builds require macOS and Xcode"
+  require_command flutter
+  require_command xcodebuild
+  require_asc_key
+
+  if [[ "${target}" == "ios" ]]; then
+    destination="generic/platform=iOS"
+  else
+    destination="generic/platform=macOS"
+  fi
+
+  # --config-only still runs pod install and writes Generated.xcconfig; the
+  # archive below performs the actual build, including the Dart AOT step.
+  run flutter build "${target}" --release --config-only "${flutter_args[@]}"
+
+  mkdir -p "$(dirname "${archive_path}")"
+  write_export_options "${options_plist}" "$(apple_team_id "${platform_dir}")"
+  run xcodebuild -workspace "${workspace}" -scheme Runner -configuration Release \
+    -destination "${destination}" -archivePath "${archive_path}" \
+    archive "${ASC_SIGNING_ARGS[@]}"
+
+  if [[ "${DRY_RUN}" != "true" ]]; then
+    rm -rf "${export_dir}"
+    mkdir -p "${export_dir}"
+  fi
+  run xcodebuild -exportArchive -archivePath "${archive_path}" \
+    -exportOptionsPlist "${options_plist}" -exportPath "${export_dir}" \
+    "${ASC_SIGNING_ARGS[@]}"
+
+  if [[ "${DRY_RUN}" == "true" ]]; then
+    printf '+ copy %s artifact from %q to %q\n' "${target}" "${export_dir}" "${OUTPUT_DIR}"
+    return 0
+  fi
+
+  local artifact
+  if [[ "${target}" == "ios" ]]; then
+    artifact="$(find "${export_dir}" -type f -name '*.ipa' -print -quit)"
+    [[ -n "${artifact}" ]] || die "No .ipa produced in ${export_dir}"
+    cp "${artifact}" "${OUTPUT_DIR}/"
+  else
+    # An App Store export for macOS emits a signed .pkg; keep an ASCII name for CI.
+    artifact="$(find "${export_dir}" -type f -name '*.pkg' -print -quit)"
+    [[ -n "${artifact}" ]] || die "No .pkg produced in ${export_dir}"
+    cp "${artifact}" "${OUTPUT_DIR}/ios_club_app-macos.pkg"
+  fi
+  log "Exported $(basename "${artifact}")"
+}
+
 build_target() {
   local target="$1"
   mkdir -p "${OUTPUT_DIR}"
+
+  if [[ "${ASC_CLOUD_SIGNING}" == "true" && ( "${target}" == "ios" || "${target}" == "macos" ) ]]; then
+    build_apple_cloud_signed "${target}"
+    log "Built ${target} artifacts in ${OUTPUT_DIR}"
+    return 0
+  fi
 
   case "${target}" in
     android-apk)
@@ -118,11 +240,14 @@ build_target() {
       [[ "$(uname -s)" == "Darwin" ]] || die "macOS builds require macOS"
       require_command flutter
       run flutter build macos --release "${flutter_args[@]}"
-      local app_path="${PROJECT_ROOT}/build/macos/Build/Products/Release/ios_club_app.app"
+      # The bundle is named after PRODUCT_NAME (macos/Runner/Configs/AppInfo.xcconfig),
+      # so look it up instead of assuming a fixed file name.
+      local app_path
+      app_path="$(find "${PROJECT_ROOT}/build/macos/Build/Products/Release" -maxdepth 1 -type d -name '*.app' -print -quit 2>/dev/null)"
       if [[ "${DRY_RUN}" == "true" ]]; then
-        printf '+ zip -qry %q %q\n' "${OUTPUT_DIR}/ios_club_app-macos.zip" "${app_path}"
+        printf '+ zip -qry %q %q\n' "${OUTPUT_DIR}/ios_club_app-macos.zip" "${app_path:-<product>.app}"
       else
-        [[ -d "${app_path}" ]] || die "macOS app not found at ${app_path}"
+        [[ -n "${app_path}" ]] || die "macOS app bundle not found under build/macos/Build/Products/Release"
         (cd "$(dirname "${app_path}")" && run zip -qry "${OUTPUT_DIR}/ios_club_app-macos.zip" "$(basename "${app_path}")")
       fi
       ;;
@@ -230,14 +355,20 @@ upload_server() {
 }
 
 upload_asc() {
+  local target="${1:-ios}" pattern bundle_type artifact
+  case "${target}" in
+    ios) pattern='*.ipa'; bundle_type='ios' ;;
+    macos) pattern='*.pkg'; bundle_type='osx' ;;
+    *) die "upload-asc supports ios or macos, got: ${target}" ;;
+  esac
+
   [[ -n "${ASC_API_KEY_ID:-}" ]] || die "Set ASC_API_KEY_ID before uploading"
   [[ -n "${ASC_ISSUER_ID:-}" ]] || die "Set ASC_ISSUER_ID before uploading"
   [[ -n "${ASC_API_KEY_PATH:-}" ]] || die "Set ASC_API_KEY_PATH before uploading"
   [[ -f "${ASC_API_KEY_PATH}" ]] || die "ASC API key file not found: ${ASC_API_KEY_PATH}"
   require_command xcrun
-  local ipa
-  ipa="$(find "${OUTPUT_DIR}" -maxdepth 1 -type f -name '*.ipa' -print -quit)"
-  [[ -n "${ipa}" ]] || die "No .ipa artifact found in ${OUTPUT_DIR}; build iOS first"
+  artifact="$(find "${OUTPUT_DIR}" -maxdepth 1 -type f -name "${pattern}" -print -quit)"
+  [[ -n "${artifact}" ]] || die "No ${pattern} artifact found in ${OUTPUT_DIR}; build ${target} first"
   # altool discovers AuthKey_<ID>.p8 from a fixed private_keys directory.
   # Use a temporary directory so callers can keep keys anywhere on disk.
   local auth_dir key_name
@@ -246,11 +377,11 @@ upload_asc() {
   mkdir -p "${auth_dir}/private_keys"
   ln -s "$(cd "$(dirname "${ASC_API_KEY_PATH}")" && pwd)/$(basename "${ASC_API_KEY_PATH}")" "${auth_dir}/private_keys/${key_name}"
   local upload_status=0
-  (cd "${auth_dir}" && run xcrun altool --upload-app --type "${ASC_BUNDLE_TYPE:-ios}" --file "${ipa}" \
+  (cd "${auth_dir}" && run xcrun altool --upload-app --type "${ASC_BUNDLE_TYPE:-${bundle_type}}" --file "${artifact}" \
     --api-key "${ASC_API_KEY_ID}" --api-issuer "${ASC_ISSUER_ID}") || upload_status=$?
   rm -rf "${auth_dir}"
   ((upload_status == 0)) || return "${upload_status}"
-  log "Uploaded ${ipa} to App Store Connect"
+  log "Uploaded ${artifact} to App Store Connect"
 }
 
 parse_options() {
@@ -259,6 +390,7 @@ parse_options() {
       --output-dir) (($# >= 2)) || die "--output-dir requires a value"; OUTPUT_DIR="$2"; shift 2 ;;
       --channel) (($# >= 2)) || die "--channel requires a value"; UPDATE_CHANNEL="$2"; flutter_args=(--no-tree-shake-icons "--dart-define=UPDATE_CHANNEL=${UPDATE_CHANNEL}"); shift 2 ;;
       --skip-clean) SKIP_CLEAN="true"; shift ;;
+      --asc-cloud-signing) ASC_CLOUD_SIGNING="true"; shift ;;
       --dry-run) DRY_RUN="true"; shift ;;
       --help|-h) usage; exit 0 ;;
       *) die "Unknown option: $1" ;;
@@ -273,6 +405,8 @@ main() {
   local target=""
   if [[ "${action}" == "build" || "${action}" == "release" ]]; then
     (($# > 0)) || die "${action} requires a target"
+    target="$1"; shift
+  elif [[ "${action}" == "upload-asc" && $# -gt 0 && "$1" != -* ]]; then
     target="$1"; shift
   fi
   parse_options "$@"
@@ -290,7 +424,7 @@ main() {
   case "${action}" in
     build) [[ "${target}" == "all" ]] && build_all || build_target "${target}" ;;
     upload-server) upload_server ;;
-    upload-asc) upload_asc ;;
+    upload-asc) upload_asc "${target:-ios}" ;;
     release)
       [[ "${target}" == "all" ]] && build_all || build_target "${target}"
       upload_server
