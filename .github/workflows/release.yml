@@ -258,11 +258,12 @@ jobs:
 
       # 顺序很重要：先传自建平台，成功后才建 GitHub Release，
       # 避免出现「用户看得到版本、App 内却检查不到更新」的状态。
+      # 用发布范围的 API Key 认证（请求头 X-API-Key），不再用账号密码换 JWT。
+      # 这把 Key 只能建版本、传安装包，拿不到管理权限；泄露后到后台停用或删除即可。
       - name: Upload to release server
         env:
           RELEASE_SERVER_API: ${{ secrets.RELEASE_SERVER_API }}
-          RELEASE_SERVER_USERNAME: ${{ secrets.RELEASE_SERVER_USERNAME }}
-          RELEASE_SERVER_PASSWORD: ${{ secrets.RELEASE_SERVER_PASSWORD }}
+          RELEASE_SERVER_API_KEY: ${{ secrets.RELEASE_SERVER_API_KEY }}
           RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
           RELEASE_CHANNEL_ID: ${{ secrets.RELEASE_CHANNEL_ID }}
           RELEASE_ID: ${{ needs.prepare.outputs.version }}

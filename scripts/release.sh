@@ -65,10 +65,9 @@ Options:
 
 Server API upload environment variables:
   RELEASE_SERVER_API       API root (default: http://localhost:5046)
-  RELEASE_SERVER_USERNAME  Login username
-  RELEASE_SERVER_PASSWORD  Login password
-  RELEASE_APP_ID           Application id from GET /api/App
-  RELEASE_CHANNEL_ID       Channel id from GET /api/Channel
+  RELEASE_SERVER_API_KEY   Publish API key from the admin console (sent as X-API-Key)
+  RELEASE_APP_ID           Application id, copy it from the admin console
+  RELEASE_CHANNEL_ID       Channel id, copy it from the admin console
   RELEASE_ID               Release id shown to users (default: pubspec version)
   RELEASE_NAME             Release name (default: <platform> <version>)
   RELEASE_DESCRIPTION      Release description (optional)
@@ -94,7 +93,7 @@ Distribution channels:
 Examples:
   scripts/release.sh build android-aab --channel appstore
   scripts/release.sh release ios --output-dir ./dist
-  RELEASE_SERVER_USERNAME=root RELEASE_SERVER_PASSWORD='***' \
+  RELEASE_SERVER_API_KEY='dlk_...' \
     RELEASE_APP_ID=... RELEASE_CHANNEL_ID=... \
     scripts/release.sh upload-server
   ASC_API_KEY_ID=ABC ASC_ISSUER_ID=... ASC_API_KEY_PATH=./private/AuthKey_ABC.p8 \
@@ -303,12 +302,27 @@ build_all() {
   done
 }
 
+# 发布平台用 X-API-Key 认证，不再是登录换 JWT。
+# 这里把状态码和响应体分开取出，好把「密钥无效」「权限不足」和平台自身故障区分开——
+# 这三种情况在 CI 里的排查方向完全不同，混成一句 curl 退出码会很难定位。
+api_post() {
+  local url="$1"; shift
+  local response http_code body
+  response="$(curl -sS -X POST -w $'\n%{http_code}' "${url}" \
+    -H "X-API-Key: ${RELEASE_SERVER_API_KEY}" "$@")" || die "Could not reach ${url}"
+  http_code="${response##*$'\n'}"
+  body="${response%$'\n'*}"
+  case "${http_code}" in
+    2*) printf '%s' "${body}" ;;
+    401) die "Publish server rejected the API key (401): the key is wrong, disabled or expired. Check RELEASE_SERVER_API_KEY" ;;
+    403) die "API key is not allowed to publish (403): it is not a publish-scoped key, check the admin console" ;;
+    *) die "POST ${url} failed (HTTP ${http_code}): ${body}" ;;
+  esac
+}
+
 upload_server() {
   local api="${RELEASE_SERVER_API:-http://localhost:5046}"
-  local username="${RELEASE_SERVER_USERNAME:-}"
-  local password="${RELEASE_SERVER_PASSWORD:-}"
-  [[ -n "${username}" ]] || die "Set RELEASE_SERVER_USERNAME before uploading"
-  [[ -n "${password}" ]] || die "Set RELEASE_SERVER_PASSWORD before uploading"
+  [[ -n "${RELEASE_SERVER_API_KEY:-}" ]] || die "Set RELEASE_SERVER_API_KEY before uploading"
   [[ -n "${RELEASE_APP_ID:-}" ]] || die "Set RELEASE_APP_ID before uploading"
   [[ -n "${RELEASE_CHANNEL_ID:-}" ]] || die "Set RELEASE_CHANNEL_ID before uploading"
   # 自建平台只服务 Android APK：App 内更新下载的就是 APK，AAB 只发 Google Play，
@@ -340,21 +354,14 @@ upload_server() {
   [[ -n "${release_name}" ]] || release_name="${release_id}"
 
   if [[ "${DRY_RUN}" == "true" ]]; then
-    printf '+ POST %s/api/Auth/login (credentials redacted)\n' "${api%/}"
-    printf '+ POST %s/api/Release (appId=%q releaseId=%q)\n' "${api%/}" "${RELEASE_APP_ID}" "${release_id}"
+    printf '+ POST %s/api/Release (X-API-Key redacted, appId=%q releaseId=%q)\n' "${api%/}" "${RELEASE_APP_ID}" "${release_id}"
     printf '+ POST %s/api/Soft/upload for %d artifact(s) matching %s (channelId=%q)\n' "${api%/}" "${#files[@]}" "${patterns[*]}" "${RELEASE_CHANNEL_ID}"
     return 0
   fi
 
-  local login_json token release_json release_db_id file platform upload_name
-  login_json="$(curl -fsS "${api%/}/api/Auth/login" \
+  local release_json release_db_id file platform upload_name
+  release_json="$(api_post "${api%/}/api/Release" \
     -H 'Content-Type: application/json' \
-    -d "$(jq -nc --arg username "${username}" --arg password "${password}" '{username:$username,password:$password}')")"
-  token="$(jq -r '.token // empty' <<<"${login_json}")"
-  [[ -n "${token}" && "${token}" != "null" ]] || die "Server login failed"
-
-  release_json="$(curl -fsS "${api%/}/api/Release" -X POST \
-    -H "Authorization: Bearer ${token}" -H 'Content-Type: application/json' \
     -d "$(jq -nc --arg name "${release_name}" --arg description "${RELEASE_DESCRIPTION:-}" \
       --arg releaseId "${release_id}" --arg appId "${RELEASE_APP_ID}" \
       '{name:$name,description:$description,releaseId:$releaseId,appId:$appId}')")"
@@ -364,8 +371,7 @@ upload_server() {
   for file in "${files[@]}"; do
     platform="$(basename "${file}")"
     upload_name="${RELEASE_UPLOAD_NAME_PREFIX:-Downloader} ${platform}"
-    curl -fsS "${api%/}/api/Soft/upload" -X POST \
-      -H "Authorization: Bearer ${token}" \
+    api_post "${api%/}/api/Soft/upload" \
       -F "name=${upload_name}" \
       -F "description=${RELEASE_SOFT_DESCRIPTION:-${platform}}" \
       -F "releaseId=${release_db_id}" \

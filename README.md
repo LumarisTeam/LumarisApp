@@ -116,14 +116,14 @@ scripts/release.sh build all --output-dir ./dist
 
 ### 上传到服务器
 
-产物上传到自建发布平台：先登录换 token，再创建 Release，最后逐个上传文件。默认只上传 Android APK——App 内更新下载的就是 APK，AAB 只发 Google Play，Apple 的 `.ipa` / `.pkg` 只走 App Store Connect。需要的环境变量：
+产物上传到自建发布平台：用 API Key 认证（请求头 `X-API-Key`），先创建 Release，再逐个上传文件。默认只上传 Android APK——App 内更新下载的就是 APK，AAB 只发 Google Play，Apple 的 `.ipa` / `.pkg` 只走 App Store Connect。需要的环境变量：
 
 | 变量 | 说明 |
 | --- | --- |
 | `RELEASE_SERVER_API` | API 根地址，默认 `http://localhost:5046` |
-| `RELEASE_SERVER_USERNAME` / `RELEASE_SERVER_PASSWORD` | 平台登录账号 |
-| `RELEASE_APP_ID` | 应用 id，取自 `GET /api/App` |
-| `RELEASE_CHANNEL_ID` | 渠道 id，取自 `GET /api/Channel` |
+| `RELEASE_SERVER_API_KEY` | 发布用 API Key（`dlk_` 开头），在管理后台「分发配置 → API 密钥」创建 |
+| `RELEASE_APP_ID` | 应用 id，在管理后台应用详情页复制 |
+| `RELEASE_CHANNEL_ID` | 渠道 id，在管理后台「渠道管理」复制 |
 | `RELEASE_ID` | 展示给用户的版本号，默认取 `pubspec.yaml` 里的 version |
 | `RELEASE_NAME` | Release 名称，默认为 `RELEASE_ID` |
 | `RELEASE_DESCRIPTION` | Release 说明，可留空 |
@@ -132,14 +132,15 @@ scripts/release.sh build all --output-dir ./dist
 
 ```bash
 RELEASE_SERVER_API='https://example.com' \
-RELEASE_SERVER_USERNAME='root' \
-RELEASE_SERVER_PASSWORD='***' \
+RELEASE_SERVER_API_KEY='dlk_...' \
 RELEASE_APP_ID='...' \
 RELEASE_CHANNEL_ID='...' \
   scripts/release.sh upload-server --output-dir ./dist
 ```
 
 上传依赖 `curl` 和 `jq`。每次执行都会在平台上新建一条 Release，重复执行会产生重复记录。
+
+API Key 只具备发布权限：能创建版本、上传安装包，**不能**删除或修改应用/版本/渠道，也不能管理用户，拿不到后台的管理能力。`RELEASE_APP_ID` 和 `RELEASE_CHANNEL_ID` 因此需要从管理后台复制，而不能用这把 Key 去查。创建时明文只显示一次，请立即存进 Secrets；泄露或轮换时，到管理后台停用或删除即可立即失效。
 
 ### 上传到 App Store Connect
 
@@ -223,7 +224,7 @@ git push github 1.2.2
 | Secret | 说明 |
 | --- | --- |
 | `RELEASE_SERVER_API` | 自建平台 API 根地址 |
-| `RELEASE_SERVER_USERNAME` / `RELEASE_SERVER_PASSWORD` | 平台登录账号 |
+| `RELEASE_SERVER_API_KEY` | 发布用 API Key（`dlk_` 开头），管理后台创建 |
 | `RELEASE_APP_ID` | 应用 id |
 | `RELEASE_CHANNEL_ID` | 渠道 id |
 | `ANDROID_KEYSTORE_BASE64` | `android/keys/upload-keystore.jks` 的 base64 |
