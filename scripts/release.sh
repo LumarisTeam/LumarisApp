@@ -72,6 +72,8 @@ Server API upload environment variables:
   RELEASE_ID               Release id shown to users (default: pubspec version)
   RELEASE_NAME             Release name (default: <platform> <version>)
   RELEASE_DESCRIPTION      Release description (optional)
+  RELEASE_UPLOAD_PATTERNS  Space separated globs to publish, e.g. '*.apk *.aab'
+                           (default: *.apk — the release server serves Android APK only)
 
 App Store Connect environment variables:
   ASC_API_KEY_ID         App Store Connect API key ID
@@ -83,6 +85,11 @@ App Store Connect environment variables:
 upload-asc targets:
   ios                    Upload the .ipa (default)
   macos                  Upload the .pkg produced by an App Store export
+
+Distribution channels:
+  release android-apk    Build, then publish to the release server
+  release ios | macos    Build, then upload to App Store Connect
+  release <other>        Build only — those targets are distributed elsewhere
 
 Examples:
   scripts/release.sh build android-aab --channel appstore
@@ -243,7 +250,7 @@ build_target() {
       # The bundle is named after PRODUCT_NAME (macos/Runner/Configs/AppInfo.xcconfig),
       # so look it up instead of assuming a fixed file name.
       local app_path
-      app_path="$(find "${PROJECT_ROOT}/build/macos/Build/Products/Release" -maxdepth 1 -type d -name '*.app' -print -quit 2>/dev/null)"
+      app_path="$(find "${PROJECT_ROOT}/build/macos/Build/Products/Release" -maxdepth 1 -type d -name '*.app' -print -quit 2>/dev/null || true)"
       if [[ "${DRY_RUN}" == "true" ]]; then
         printf '+ zip -qry %q %q\n' "${OUTPUT_DIR}/ios_club_app-macos.zip" "${app_path:-<product>.app}"
       else
@@ -304,9 +311,23 @@ upload_server() {
   [[ -n "${password}" ]] || die "Set RELEASE_SERVER_PASSWORD before uploading"
   [[ -n "${RELEASE_APP_ID:-}" ]] || die "Set RELEASE_APP_ID before uploading"
   [[ -n "${RELEASE_CHANNEL_ID:-}" ]] || die "Set RELEASE_CHANNEL_ID before uploading"
-  local files=()
-  while IFS= read -r -d '' file; do files+=("${file}"); done < <(find "${OUTPUT_DIR}" -maxdepth 1 -type f -print0)
-  ((${#files[@]} > 0)) || die "No artifacts found in ${OUTPUT_DIR}; run build first"
+  # 自建平台只服务 Android APK：App 内更新下载的就是 APK，AAB 只发 Google Play，
+  # Apple 的 ipa/pkg 只送 App Store Connect。要改收哪些产物时用下面这个变量。
+  local -a patterns=()
+  if [[ -n "${RELEASE_UPLOAD_PATTERNS:-}" ]]; then
+    read -r -a patterns <<<"${RELEASE_UPLOAD_PATTERNS}"
+  else
+    patterns=('*.apk')
+  fi
+  local files=() pattern
+  for pattern in "${patterns[@]}"; do
+    while IFS= read -r -d '' file; do files+=("${file}"); done \
+      < <(find "${OUTPUT_DIR}" -maxdepth 1 -type f -name "${pattern}" -print0)
+  done
+  # --dry-run 不产出任何产物，空目录不该在这里报错（和 upload_asc 的处理保持一致）。
+  if ((${#files[@]} == 0)) && [[ "${DRY_RUN}" != "true" ]]; then
+    die "No artifact matching ${patterns[*]} in ${OUTPUT_DIR}; run build first"
+  fi
   require_command curl
   require_command jq
 
@@ -321,7 +342,7 @@ upload_server() {
   if [[ "${DRY_RUN}" == "true" ]]; then
     printf '+ POST %s/api/Auth/login (credentials redacted)\n' "${api%/}"
     printf '+ POST %s/api/Release (appId=%q releaseId=%q)\n' "${api%/}" "${RELEASE_APP_ID}" "${release_id}"
-    printf '+ POST %s/api/Soft/upload for %d artifact(s) (channelId=%q)\n' "${api%/}" "${#files[@]}" "${RELEASE_CHANNEL_ID}"
+    printf '+ POST %s/api/Soft/upload for %d artifact(s) matching %s (channelId=%q)\n' "${api%/}" "${#files[@]}" "${patterns[*]}" "${RELEASE_CHANNEL_ID}"
     return 0
   fi
 
@@ -367,8 +388,18 @@ upload_asc() {
   [[ -n "${ASC_API_KEY_PATH:-}" ]] || die "Set ASC_API_KEY_PATH before uploading"
   [[ -f "${ASC_API_KEY_PATH}" ]] || die "ASC API key file not found: ${ASC_API_KEY_PATH}"
   require_command xcrun
-  artifact="$(find "${OUTPUT_DIR}" -maxdepth 1 -type f -name "${pattern}" -print -quit)"
-  [[ -n "${artifact}" ]] || die "No ${pattern} artifact found in ${OUTPUT_DIR}; build ${target} first"
+  artifact="$(find "${OUTPUT_DIR}" -maxdepth 1 -type f -name "${pattern}" -print -quit 2>/dev/null || true)"
+  if [[ -z "${artifact}" ]]; then
+    # --dry-run 不产出 .pkg，这里不该因此报错。
+    if [[ "${DRY_RUN}" == "true" ]]; then
+      printf '+ upload the first %s in %q to App Store Connect (not built in dry-run)\n' "${pattern}" "${OUTPUT_DIR}"
+      return 0
+    fi
+    if [[ "${target}" == "macos" ]]; then
+      die "No ${pattern} artifact found in ${OUTPUT_DIR}; macOS needs --asc-cloud-signing to export a .pkg"
+    fi
+    die "No ${pattern} artifact found in ${OUTPUT_DIR}; build ${target} first"
+  fi
   # altool discovers AuthKey_<ID>.p8 from a fixed private_keys directory.
   # Use a temporary directory so callers can keep keys anywhere on disk.
   local auth_dir key_name
@@ -382,6 +413,22 @@ upload_asc() {
   rm -rf "${auth_dir}"
   ((upload_status == 0)) || return "${upload_status}"
   log "Uploaded ${artifact} to App Store Connect"
+}
+
+# release all 时缺某个平台的产物是正常的，缺就跳过；显式指定单个目标时不走这里，
+# 交给 upload_asc 报错，免得静默漏掉一次发布。
+upload_asc_if_built() {
+  local target="$1" pattern
+  case "${target}" in
+    ios) pattern='*.ipa' ;;
+    macos) pattern='*.pkg' ;;
+    *) die "upload_asc_if_built only handles ios or macos, got: ${target}" ;;
+  esac
+  if [[ -n "$(find "${OUTPUT_DIR}" -maxdepth 1 -type f -name "${pattern}" -print -quit)" ]]; then
+    upload_asc "${target}"
+  else
+    log "Skipping App Store Connect upload: no ${pattern} in ${OUTPUT_DIR}"
+  fi
 }
 
 parse_options() {
@@ -426,11 +473,21 @@ main() {
     upload-server) upload_server ;;
     upload-asc) upload_asc "${target:-ios}" ;;
     release)
-      [[ "${target}" == "all" ]] && build_all || build_target "${target}"
-      upload_server
-      if [[ "${target}" == "ios" ]] || [[ "${target}" == "all" && -n "$(find "${OUTPUT_DIR}" -maxdepth 1 -type f -name '*.ipa' -print -quit)" ]]; then
-        upload_asc
+      if [[ "${target}" == "all" ]]; then build_all; else build_target "${target}"; fi
+      # 两条渠道彼此独立：自建平台只收 Android APK，Apple 的产物只送 App Store Connect，
+      # 其余目标只构建、不上传。
+      if [[ "${target}" == "android-apk" || "${target}" == "all" ]]; then
+        upload_server
+      else
+        log "Skipping release server upload: ${target} is not distributed there"
       fi
+      case "${target}" in
+        ios | macos) upload_asc "${target}" ;;
+        all)
+          upload_asc_if_built ios
+          upload_asc_if_built macos
+          ;;
+      esac
       ;;
     help) usage ;;
     *) die "Unknown action: ${action}" ;;

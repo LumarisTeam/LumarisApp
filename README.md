@@ -112,9 +112,11 @@ scripts/release.sh build all --output-dir ./dist
 
 支持的目标：`android-apk`、`android-aab`、`ios`、`macos`、`windows`、`linux`、`web` 和 `all`。`all` 会构建 Android、Web 以及当前主机的原生平台；iOS/macOS 需要 macOS + Xcode，Windows/Linux 需要对应操作系统。Windows 目标会在 `flutter build windows` 后运行 `msix:create --store`，Web 目标生成 WASM 压缩包。
 
+`release <target>` 会构建后按渠道分派：`android-apk` 传自建平台，`ios` / `macos` 传 App Store Connect，其余目标只构建不上传。
+
 ### 上传到服务器
 
-产物上传到自建发布平台：先登录换 token，再创建 Release，最后逐个上传文件。需要的环境变量：
+产物上传到自建发布平台：先登录换 token，再创建 Release，最后逐个上传文件。默认只上传 Android APK——App 内更新下载的就是 APK，AAB 只发 Google Play，Apple 的 `.ipa` / `.pkg` 只走 App Store Connect。需要的环境变量：
 
 | 变量 | 说明 |
 | --- | --- |
@@ -126,6 +128,7 @@ scripts/release.sh build all --output-dir ./dist
 | `RELEASE_NAME` | Release 名称，默认为 `RELEASE_ID` |
 | `RELEASE_DESCRIPTION` | Release 说明，可留空 |
 | `RELEASE_UPLOAD_NAME_PREFIX` | 上传文件名的前缀，默认 `Downloader` |
+| `RELEASE_UPLOAD_PATTERNS` | 上传哪些产物，空格分隔的 glob，默认 `*.apk`；填 `'*'` 可恢复成上传 `dist/` 里的全部文件 |
 
 ```bash
 RELEASE_SERVER_API='https://example.com' \
@@ -143,18 +146,13 @@ RELEASE_CHANNEL_ID='...' \
 需要在 App Store Connect 创建 API Key，并准备 `.p8` 文件。脚本通过临时目录让 `xcrun altool` 找到密钥，不会复制或提交密钥到仓库：
 
 ```bash
-RELEASE_SERVER_API='https://example.com' \
-RELEASE_SERVER_USERNAME='root' \
-RELEASE_SERVER_PASSWORD='***' \
-RELEASE_APP_ID='...' \
-RELEASE_CHANNEL_ID='...' \
 ASC_API_KEY_ID='ABC1234567' \
 ASC_ISSUER_ID='YOUR_ISSUER_UUID' \
 ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
   scripts/release.sh release ios
 ```
 
-`release ios` 会构建 IPA、上传服务器（需先配置上面的 `RELEASE_SERVER_*` 变量，账号没配好会直接报错），然后上传 App Store Connect。整个流程可先加 `--dry-run` 检查命令而不执行。
+`release ios` 会构建 IPA 后直接上传 App Store Connect，不经过自建平台。`release macos` 同理，但必须加 `--asc-cloud-signing`——不加时产物是 `.app` 打的 `.zip`，没有可上传的 `.pkg`，脚本会直接报错。整个流程可先加 `--dry-run` 检查命令而不执行。
 
 只上传已有产物时用 `upload-asc`，它按目标挑选文件并决定 altool 的 `--type`：
 
@@ -207,9 +205,9 @@ ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
 
 ### 推 tag 自动发布（GitHub Actions）
 
-推送 tag（`1.2.1` 或 `v1.2.1`）时，`.github/workflows/release.yml` 会调用 `scripts/release.sh` 完成打包与发布：`prepare` 先解析 tag 并校验版本，随后 `build-android`、`build-linux`、`build-apple` 并行构建。Android/Linux 产物汇总后上传自建平台并创建 GitHub Release，Apple 则由 `build-apple` 直接上传 App Store Connect。
+推送 tag（`1.2.1` 或 `v1.2.1`）时，`.github/workflows/release.yml` 会调用 `scripts/release.sh` 完成打包与发布：`prepare` 先解析 tag 并校验版本，随后 `build-android`、`build-linux`、`build-apple` 并行构建。Android 的 APK 汇总后上传自建平台并创建 GitHub Release，Linux 产物只挂 GitHub Release，Apple 则由 `build-apple` 直接上传 App Store Connect。
 
-两条渠道相互独立：Apple 失败不会阻断 GitHub Release 与自建平台的发布，反之亦然——App Store 用户不该被 Android 的签名问题拖住，哪条红了看 job 名即可。Apple 用 `--channel appstore` 构建（App Store 版本关闭应用内更新检查），且不上传自建平台。
+两条渠道相互独立：Apple 失败不会阻断 GitHub Release 与自建平台的发布，反之亦然——App Store 用户不该被 Android 的签名问题拖住，哪条红了看 job 名即可。Apple 用 `--channel appstore` 构建（App Store 版本关闭应用内更新检查），且不上传自建平台；自建平台也只收 Android APK，AAB 与 Linux 压缩包都不进（`RELEASE_UPLOAD_PATTERNS` 可调整）。
 
 ```bash
 git tag -a 1.2.2 -m '修复若干已知问题'   # tag 说明会作为发布说明同步到平台和 GitHub
@@ -218,7 +216,7 @@ git push github 1.2.2
 
 工作流只比较版本号里 `+` 之前的部分（`1.2.2` 对应 `1.2.2+2026090421`）。如果 tag 与 `pubspec.yaml` 的 `version` 不一致，会在任何上传发生之前直接失败——平台上的 `releaseId` 取自 tag、App 内上报的版本取自 `pubspec.yaml`，两者不一致会让更新检查失效。
 
-构建产物：`app-arm64-v8a-release.apk`、`app-armeabi-v7a-release.apk`、`app-x86_64-release.apk`、`app-release.aab`、`ios_club_app-linux-x64.tar.gz`。挂到 GitHub Release 上时会加上版本号前缀（如 `ios_club_app-1.2.2-android-arm64-v8a.apk`），传给自建平台的仍是原始文件名。Apple 的 `.ipa` / `.pkg` 只送 App Store Connect，不挂到 GitHub Release。
+构建产物：`app-arm64-v8a-release.apk`、`app-armeabi-v7a-release.apk`、`app-x86_64-release.apk`、`app-release.aab`、`ios_club_app-linux-x64.tar.gz`。挂到 GitHub Release 上时会加上版本号前缀（如 `ios_club_app-1.2.2-android-arm64-v8a.apk`），传给自建平台的仍是原始文件名（自建平台只收 APK）。Apple 的 `.ipa` / `.pkg` 只送 App Store Connect，不挂到 GitHub Release。
 
 需要在仓库 Settings → Secrets and variables → Actions 中配置：
 
