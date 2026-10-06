@@ -114,31 +114,83 @@ scripts/release.sh build all --output-dir ./dist
 
 ### 上传到服务器
 
-先构建产物，再设置目标地址。默认使用 `scp`，也支持 `rsync` 或 HTTP PUT（`curl`）：
+产物上传到自建发布平台：先登录换 token，再创建 Release，最后逐个上传文件。需要的环境变量：
+
+| 变量 | 说明 |
+| --- | --- |
+| `RELEASE_SERVER_API` | API 根地址，默认 `http://localhost:5046` |
+| `RELEASE_SERVER_USERNAME` / `RELEASE_SERVER_PASSWORD` | 平台登录账号 |
+| `RELEASE_APP_ID` | 应用 id，取自 `GET /api/App` |
+| `RELEASE_CHANNEL_ID` | 渠道 id，取自 `GET /api/Channel` |
+| `RELEASE_ID` | 展示给用户的版本号，默认取 `pubspec.yaml` 里的 version |
+| `RELEASE_NAME` | Release 名称，默认为 `RELEASE_ID` |
+| `RELEASE_DESCRIPTION` | Release 说明，可留空 |
+| `RELEASE_UPLOAD_NAME_PREFIX` | 上传文件名的前缀，默认 `Downloader` |
 
 ```bash
-RELEASE_SERVER_URL='user@example.com:/srv/releases/ios-club' \
-  scripts/release.sh upload-server
-
-RELEASE_SERVER_METHOD=curl \
-RELEASE_SERVER_URL='https://upload.example.com/releases' \
-RELEASE_SERVER_TOKEN="$UPLOAD_TOKEN" \
-  scripts/release.sh upload-server
+RELEASE_SERVER_API='https://example.com' \
+RELEASE_SERVER_USERNAME='root' \
+RELEASE_SERVER_PASSWORD='***' \
+RELEASE_APP_ID='...' \
+RELEASE_CHANNEL_ID='...' \
+  scripts/release.sh upload-server --output-dir ./dist
 ```
+
+上传依赖 `curl` 和 `jq`。每次执行都会在平台上新建一条 Release，重复执行会产生重复记录。
 
 ### 上传到 App Store Connect
 
 需要在 App Store Connect 创建 API Key，并准备 `.p8` 文件。脚本通过临时目录让 `xcrun altool` 找到密钥，不会复制或提交密钥到仓库：
 
 ```bash
-RELEASE_SERVER_URL='user@example.com:/srv/releases/ios-club' \
+RELEASE_SERVER_API='https://example.com' \
+RELEASE_SERVER_USERNAME='root' \
+RELEASE_SERVER_PASSWORD='***' \
+RELEASE_APP_ID='...' \
+RELEASE_CHANNEL_ID='...' \
 ASC_API_KEY_ID='ABC1234567' \
 ASC_ISSUER_ID='YOUR_ISSUER_UUID' \
 ASC_API_KEY_PATH="$HOME/keys/AuthKey_ABC1234567.p8" \
   scripts/release.sh release ios
 ```
 
-`release ios` 会构建 IPA、上传服务器（需同时设置 `RELEASE_SERVER_URL`），然后上传 App Store Connect。若只上传已有 IPA，使用 `scripts/release.sh upload-asc`。整个流程可先加 `--dry-run` 检查命令而不执行。
+`release ios` 会构建 IPA、上传服务器（需先配置上面的 `RELEASE_SERVER_*` 变量，账号没配好会直接报错），然后上传 App Store Connect。若只上传已有 IPA，使用 `scripts/release.sh upload-asc`。整个流程可先加 `--dry-run` 检查命令而不执行。
+
+### 推 tag 自动发布（GitHub Actions）
+
+推送 tag（`1.2.1` 或 `v1.2.1`）时，`.github/workflows/release.yml` 会调用 `scripts/release.sh` 完成打包与发布：Android 和 Linux 两个 job 并行构建，产物汇总后再上传自建平台、创建 GitHub Release。
+
+```bash
+git tag -a 1.2.2 -m '修复若干已知问题'   # tag 说明会作为发布说明同步到平台和 GitHub
+git push github 1.2.2
+```
+
+工作流只比较版本号里 `+` 之前的部分（`1.2.2` 对应 `1.2.2+2026090421`）。如果 tag 与 `pubspec.yaml` 的 `version` 不一致，会在任何上传发生之前直接失败——平台上的 `releaseId` 取自 tag、App 内上报的版本取自 `pubspec.yaml`，两者不一致会让更新检查失效。
+
+构建产物：`app-arm64-v8a-release.apk`、`app-armeabi-v7a-release.apk`、`app-x86_64-release.apk`、`app-release.aab`、`ios_club_app-linux-x64.tar.gz`。挂到 GitHub Release 上时会加上版本号前缀（如 `ios_club_app-1.2.2-android-arm64-v8a.apk`），传给自建平台的仍是原始文件名。
+
+需要在仓库 Settings → Secrets and variables → Actions 中配置：
+
+| Secret | 说明 |
+| --- | --- |
+| `RELEASE_SERVER_API` | 自建平台 API 根地址 |
+| `RELEASE_SERVER_USERNAME` / `RELEASE_SERVER_PASSWORD` | 平台登录账号 |
+| `RELEASE_APP_ID` | 应用 id |
+| `RELEASE_CHANNEL_ID` | 渠道 id |
+| `ANDROID_KEYSTORE_BASE64` | `android/keys/upload-keystore.jks` 的 base64 |
+| `ANDROID_KEYSTORE_PASSWORD` | 密钥库密码（`storePassword`） |
+| `ANDROID_KEY_ALIAS` | 密钥别名（`keyAlias`，如 `upload`） |
+| `ANDROID_KEY_PASSWORD` | 密钥密码（`keyPassword`） |
+
+生成密钥库的 base64（macOS 用 `base64 -i`，Linux 用 `base64 -w0`）：
+
+```bash
+base64 -i android/keys/upload-keystore.jks | tr -d '\n' | pbcopy
+```
+
+发布顺序是先上传自建平台、成功之后才创建 GitHub Release。平台上传失败时工作流会失败并且不会创建 Release，避免出现「GitHub 上能看到版本、App 内却检查不到更新」的状态。修复后在 Actions 页面 Re-run 即可；注意重跑会再建一条平台 Release 记录，如果上次已经建过需要先去平台删掉。
+
+也可以手动触发：Actions → Release → Run workflow，但必须选中一个 tag，选分支会在发布前直接报错。
 
 ## 贡献指南
 

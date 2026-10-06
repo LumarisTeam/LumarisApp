@@ -1,0 +1,241 @@
+name: Release
+
+# 推送 tag（如 1.2.1 或 v1.2.1）时自动打包并发布：
+#   1. build-android / build-linux 两个 job 并行构建产物
+#   2. publish 先把产物上传到自建发布平台，成功之后才创建 GitHub Release
+# 手动触发（workflow_dispatch）时必须选中一个 tag，否则 publish 会直接失败。
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  FLUTTER_VERSION: '3.41.9'
+
+jobs:
+  build-android:
+    name: Build Android (APK + AAB)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      # android/app/build.gradle 的 release 签名从 android/key.properties 读取，
+      # 密钥库本身不入库。这里从 Secrets 还原，保证产物是可用于覆盖安装的正式签名包。
+      - name: Restore Android signing config
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${KEYSTORE_BASE64}" ]]; then
+            echo "::error::缺少 Secrets：ANDROID_KEYSTORE_BASE64"
+            exit 1
+          fi
+          mkdir -p android/keys
+          printf '%s' "${KEYSTORE_BASE64}" | base64 -d > android/keys/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storeFile=keys/upload-keystore.jks
+          storePassword=${KEYSTORE_PASSWORD}
+          keyAlias=${KEY_ALIAS}
+          keyPassword=${KEY_PASSWORD}
+          EOF
+          chmod 600 android/key.properties android/keys/upload-keystore.jks
+
+      # 第一次调用会执行 flutter clean + flutter pub get，第二次跳过以复用 Gradle 增量产物。
+      - name: Build APK and AAB
+        run: |
+          bash scripts/release.sh build android-apk --output-dir dist
+          bash scripts/release.sh build android-aab --output-dir dist --skip-clean
+          ls -l dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-dist
+          path: dist/*
+          if-no-files-found: error
+
+  build-linux:
+    name: Build Linux (x64 bundle)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # libsecret-1-dev 供 flutter_secure_storage_linux 使用，
+      # libayatana-appindicator3-dev 供 tray_manager 使用（二者缺失会在 CMake 阶段直接报错）。
+      - name: Install Linux desktop dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang cmake ninja-build pkg-config \
+            libgtk-3-dev liblzma-dev \
+            libsecret-1-dev libayatana-appindicator3-dev
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Enable Linux desktop
+        run: flutter config --enable-linux-desktop
+
+      - name: Build Linux bundle
+        run: |
+          bash scripts/release.sh build linux --output-dir dist
+          ls -l dist
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-dist
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish to release server and GitHub
+    needs: [build-android, build-linux]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Resolve version from tag
+        id: version
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" != refs/tags/* ]]; then
+            echo "::error::发布必须由 tag 触发（当前 ref：${GITHUB_REF}）。手动运行请在界面中选择一个 tag。"
+            exit 1
+          fi
+          tag="${GITHUB_REF#refs/tags/}"
+          version="${tag#v}"
+          # tag 可能是附注 tag，先把说明取出来作为发布说明；取不到就留空。
+          git fetch --depth=1 origin "+refs/tags/${tag}:refs/tags/${tag}" 2>/dev/null || true
+          description="$(git tag -l --format='%(contents)' "${tag}" 2>/dev/null || true)"
+          {
+            echo "tag=${tag}"
+            echo "version=${version}"
+            echo "description<<RELEASE_DESCRIPTION_EOF"
+            echo "${description}"
+            echo "RELEASE_DESCRIPTION_EOF"
+          } >> "${GITHUB_OUTPUT}"
+          echo "version=${version}"
+          ls -l dist
+
+      # 平台的 releaseId 来自 tag，App 内上报的版本来自 pubspec.yaml，
+      # 两者不一致会让更新检查失效，所以在这里先拦下来，且要在任何上传之前。
+      - name: Verify tag matches pubspec version
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          pubspec_version="$(sed -n 's/^version:[[:space:]]*\([^+[:space:]]*\).*/\1/p' pubspec.yaml | head -1)"
+          if [[ "${pubspec_version}" != "${VERSION}" ]]; then
+            echo "::error::tag 版本 ${VERSION} 与 pubspec.yaml 的 ${pubspec_version} 不一致，请先同步版本号再重新打 tag"
+            exit 1
+          fi
+          echo "版本校验通过：${VERSION}"
+
+      # 顺序很重要：先传自建平台，成功后才建 GitHub Release，
+      # 避免出现「用户看得到版本、App 内却检查不到更新」的状态。
+      - name: Upload to release server
+        env:
+          RELEASE_SERVER_API: ${{ secrets.RELEASE_SERVER_API }}
+          RELEASE_SERVER_USERNAME: ${{ secrets.RELEASE_SERVER_USERNAME }}
+          RELEASE_SERVER_PASSWORD: ${{ secrets.RELEASE_SERVER_PASSWORD }}
+          RELEASE_APP_ID: ${{ secrets.RELEASE_APP_ID }}
+          RELEASE_CHANNEL_ID: ${{ secrets.RELEASE_CHANNEL_ID }}
+          RELEASE_ID: ${{ steps.version.outputs.version }}
+          RELEASE_NAME: ${{ steps.version.outputs.version }}
+          RELEASE_DESCRIPTION: ${{ steps.version.outputs.description }}
+        run: bash scripts/release.sh upload-server --output-dir dist
+
+      # release.sh 产出的文件名偏通用，这里复制成带版本号的副本挂到 GitHub Release 上。
+      # 自建平台用的仍是 dist/ 里的原始文件名。
+      - name: Stage GitHub release assets
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          mkdir -p release-assets
+          for f in dist/*.apk; do
+            case "$(basename "${f}")" in
+              *arm64-v8a*) abi=arm64-v8a ;;
+              *armeabi-v7a*) abi=armeabi-v7a ;;
+              *x86_64*) abi=x86_64 ;;
+              *) abi=universal ;;
+            esac
+            cp "${f}" "release-assets/ios_club_app-${VERSION}-android-${abi}.apk"
+          done
+          for f in dist/*.aab; do
+            cp "${f}" "release-assets/ios_club_app-${VERSION}-android.aab"
+          done
+          for f in dist/*.tar.gz; do
+            cp "${f}" "release-assets/$(basename "${f}" .tar.gz)-${VERSION}.tar.gz"
+          done
+          ls -l release-assets
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          body: ${{ steps.version.outputs.description }}
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.version.outputs.tag, '-') }}
+          files: release-assets/*
+          fail_on_unmatched_files: true
+
+      - name: Summary
+        run: |
+          {
+            echo "### 发布完成：${{ steps.version.outputs.tag }}"
+            echo
+            echo "产物已上传到自建发布平台，并在 GitHub 创建 Release。"
+            echo
+            echo "| 文件 | 大小 |"
+            echo "| --- | --- |"
+            for f in dist/*; do
+              printf '| %s | %s |\n' "$(basename "${f}")" "$(du -h "${f}" | cut -f1)"
+            done
+          } >> "${GITHUB_STEP_SUMMARY}"
