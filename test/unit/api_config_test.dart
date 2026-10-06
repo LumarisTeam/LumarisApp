@@ -8,7 +8,10 @@ void main() {
       expect(defaultSchool, isNotNull);
       expect(defaultSchool.code, equals(School.defaultCode));
       expect(defaultSchool.name, equals('西安建筑科技大学'));
-      expect(defaultSchool.website, equals('https://xauatapi.xauat.site'));
+      // 回归：兜底学校的 website 被直接当作 Dio 的 baseUrl，各接口 path 都不带
+      // `/v1`。这里少了 `/v1` 会让目录接口不可用时的教务请求全部打到
+      // `https://xauatapi.xauat.site/course/...` 并 404。
+      expect(defaultSchool.website, equals('https://xauatapi.xauat.site/v1'));
     });
 
     test('should find school by code', () {

@@ -53,10 +53,14 @@ class School {
   static const int defaultWeekStartDay = DateTime.sunday;
 
   static List<School> get fallbackList => [
+        // 兜底学校的 website 必须和目录接口返回的那份一致（带 `/v1`）：它被直接当作
+        // Dio 的 baseUrl，而各接口传的 path 都不含版本前缀（`/Course`、
+        // `/course/ScheduleTime`…），少了 `/v1` 就会请求到 `.../course/ScheduleTime`
+        // 并 404——目录接口不通时（首发无缓存、离线）所有教务请求都会这样悄悄失败。
         School(
           code: 'XAUAT',
           name: '西安建筑科技大学',
-          website: 'https://xauatapi.xauat.site',
+          website: 'https://xauatapi.xauat.site/v1',
           features: [
             Feature.timetable,
             Feature.gradeQuery,
