@@ -9,6 +9,7 @@ import 'package:ios_club_app/ui/theme/club_radii.dart';
 import 'package:ios_club_app/ui/theme/club_smooth_corners.dart';
 import 'package:ios_club_app/ui/theme/club_theme.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/ui/pages/protocol_page/protocol_page.dart';
 
 class AgreementPage extends ConsumerStatefulWidget {
   const AgreementPage({super.key});
@@ -30,18 +31,10 @@ class _AgreementPageState extends ConsumerState<AgreementPage> {
     exit(0);
   }
 
-  void _viewPrivacyPolicy() {
+  void _viewProtocol(ProtocolDocument document) {
     _navigatorKey.currentState?.push(
       MaterialPageRoute(
-        builder: (_) => const _PrivacyPolicyContentPage(),
-      ),
-    );
-  }
-
-  void _viewUserAgreement() {
-    _navigatorKey.currentState?.push(
-      MaterialPageRoute(
-        builder: (_) => const _UserAgreementContentPage(),
+        builder: (_) => ProtocolPage(document: document),
       ),
     );
   }
@@ -55,8 +48,10 @@ class _AgreementPageState extends ConsumerState<AgreementPage> {
           builder: (context) => _AgreementHomeView(
             onAgree: () => _onAgree(context, ref),
             onDisagree: _onDisagree,
-            onViewPrivacyPolicy: _viewPrivacyPolicy,
-            onViewUserAgreement: _viewUserAgreement,
+            onViewPrivacyPolicy: () =>
+                _viewProtocol(ProtocolDocument.privacyPolicy),
+            onViewUserAgreement: () =>
+                _viewProtocol(ProtocolDocument.userAgreement),
           ),
         );
       },
@@ -342,266 +337,4 @@ class _AgreementHomeView extends StatelessWidget {
       ),
     );
   }
-}
-
-/// 隐私协议内容页
-class _PrivacyPolicyContentPage extends StatelessWidget {
-  const _PrivacyPolicyContentPage();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final colors = context.clubColors;
-    final textColor = colors.label;
-    final titleColor = colors.label;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.privacyPolicyTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: _buildResponsiveContent(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(l10n.privacyPolicyTitle, titleColor),
-            const SizedBox(height: 8),
-            _buildSubtitle(context, l10n.privacyPolicyUpdatedAt),
-            const SizedBox(height: 8),
-            _buildSubtitle(context, l10n.privacyPolicyEffectiveAt),
-            const SizedBox(height: 20),
-            _buildBodyText(l10n.privacySection1_1, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection1Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection1_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection1_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection1_3, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection1_4, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection1_5, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection2Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection2_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection2_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection2_3, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection2_4, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection3Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection3_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection3_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection3_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection4Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection4_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection4_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection4_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection5Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection5_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection5_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection5_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection6Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection6_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection6_2, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection7Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection7_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.privacySection7_2, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.privacySection8Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.privacySection8_1, textColor),
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle(String text, Color color) => Text(text,
-      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold));
-
-  Widget _buildSubtitle(BuildContext context, String text) {
-    final colors = context.clubColors;
-    return Text(
-      text,
-      style: TextStyle(fontSize: 13, color: colors.secondaryLabel),
-    );
-  }
-
-  Widget _buildSectionTitle(String text, Color color) => Text(text,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600));
-
-  Widget _buildBodyText(String text, Color color) =>
-      Text(text, style: const TextStyle(fontSize: 15, height: 1.8));
-}
-
-/// 用户协议内容页
-class _UserAgreementContentPage extends StatelessWidget {
-  const _UserAgreementContentPage();
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.l10n;
-    final colors = context.clubColors;
-    final textColor = colors.label;
-    final titleColor = colors.label;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.userAgreementTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: _buildResponsiveContent(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(l10n.userAgreementTitle, titleColor),
-            const SizedBox(height: 8),
-            _buildSubtitle(context, l10n.userAgreementUpdatedAt),
-            const SizedBox(height: 8),
-            _buildSubtitle(context, l10n.userAgreementEffectiveAt),
-            const SizedBox(height: 20),
-            _buildBodyText(l10n.userAgreementIntro, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection1Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection1_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection1_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection1_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection2Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection2_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection2_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection2_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection3Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection3_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection3_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection3_3, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection3_4, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection4Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection4_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection4_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection4_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection5Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection5_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection5_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection5_3, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection5_4, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection6Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection6_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection6_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection6_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection7Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection7_1, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection7_2, textColor),
-            const SizedBox(height: 8),
-            _buildBodyText(l10n.userAgreementSection7_3, textColor),
-            const SizedBox(height: 24),
-            _buildSectionTitle(l10n.userAgreementSection8Title, titleColor),
-            const SizedBox(height: 12),
-            _buildBodyText(l10n.userAgreementSection8_1, textColor),
-            const SizedBox(height: 40),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle(String text, Color color) => Text(text,
-      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold));
-
-  Widget _buildSubtitle(BuildContext context, String text) {
-    final colors = context.clubColors;
-    return Text(
-      text,
-      style: TextStyle(fontSize: 13, color: colors.secondaryLabel),
-    );
-  }
-
-  Widget _buildSectionTitle(String text, Color color) => Text(text,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600));
-
-  Widget _buildBodyText(String text, Color color) =>
-      Text(text, style: const TextStyle(fontSize: 15, height: 1.8));
-}
-
-/// 响应式内容包裹器：桌面/平板端限制最大宽度并居中
-Widget _buildResponsiveContent({
-  required Widget child,
-}) {
-  return LayoutBuilder(
-    builder: (context, constraints) {
-      final isDesktop = PlatformUtils.isDesktop;
-      final isTablet = constraints.maxWidth > 600 && !isDesktop;
-      final maxWidth = isDesktop ? 720.0 : (isTablet ? 600.0 : double.infinity);
-      final padding = isDesktop ? 48.0 : (isTablet ? 32.0 : 20.0);
-
-      return SingleChildScrollView(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth),
-            child: Padding(
-              padding: EdgeInsets.all(padding),
-              child: child,
-            ),
-          ),
-        ),
-      );
-    },
-  );
 }

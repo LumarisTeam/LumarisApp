@@ -16,7 +16,7 @@ import '../ui/pages/license_page/license_page.dart';
 import '../ui/pages/link_page/link_page.dart';
 import '../ui/pages/login_page/login_page.dart';
 import '../ui/pages/payment_page/payment_page.dart';
-import '../ui/pages/privacy_policy_page/privacy_policy_page.dart';
+import '../ui/pages/protocol_page/protocol_page.dart';
 import '../ui/pages/profile_page/profile_page.dart';
 import '../ui/pages/program_page/program_page.dart';
 import '../ui/pages/schedule_list_page/custom_course_manage_page.dart';
@@ -27,7 +27,6 @@ import '../ui/pages/schedule_list_page/schedule_list_page.dart';
 import '../ui/pages/school_bus_page/school_bus_page.dart';
 import '../ui/pages/score_page/score_page.dart';
 import '../ui/pages/setting_page/setting_page.dart';
-import '../ui/pages/user_agreement_page/user_agreement_page.dart';
 
 class AppRoutes {
   const AppRoutes._();
@@ -141,10 +140,14 @@ class AppRouter {
                         'License', (context, state) => const LicensePage()),
                     _detailRoute(
                         'Agreement', (context, state) => const AgreementPage()),
-                    _detailRoute('PrivacyPolicy',
-                        (context, state) => const PrivacyPolicyPage()),
-                    _detailRoute('UserAgreement',
-                        (context, state) => const UserAgreementPage()),
+                    _detailRoute(
+                        'PrivacyPolicy',
+                        (context, state) => const ProtocolPage(
+                            document: ProtocolDocument.privacyPolicy)),
+                    _detailRoute(
+                        'UserAgreement',
+                        (context, state) => const ProtocolPage(
+                            document: ProtocolDocument.userAgreement)),
                     _detailRoute(
                         'Author', (context, state) => const AuthorPage()),
                     _detailRoute(

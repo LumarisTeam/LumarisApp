@@ -186,6 +186,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get userAgreementSubtitle => '本アプリの使用により本規約に同意したものとみなします';
 
   @override
+  String get protocolOpenInBrowser => 'ブラウザで開く';
+
+  @override
+  String get protocolInlineUnsupported =>
+      'このプラットフォームではアプリ内に表示できません。ブラウザでご確認ください。';
+
+  @override
+  String get protocolOpenFailed => 'ページを開けませんでした';
+
+  @override
   String get clearCache => 'キャッシュをクリア';
 
   @override
@@ -472,231 +482,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get loginAgreementRequired => '利用規約とプライバシーポリシーを必ずご確認の上、同意してください。';
 
   @override
-  String get privacyPolicyTitle => 'Lumaris プライバシーポリシー';
-
-  @override
-  String get privacyPolicyUpdatedAt => '更新日：2026年5月5日';
-
-  @override
-  String get privacyPolicyEffectiveAt => '発効日：2026年5月5日';
-
-  @override
-  String get privacyPolicyIntro =>
-      'Lumaris へようこそ。このプライバシーポリシーでは、個人情報の収集、使用、保存、保護方法について説明します。';
-
-  @override
-  String get privacySection1Title => '1. 収集する情報';
-
-  @override
-  String get privacySection1_1 =>
-      '1.1 アカウント情報：学務システムのログイン機能を使用する際、学籍番号とパスワードが必要です。この情報はお客様のデバイスにのみ保存されます。';
-
-  @override
-  String get privacySection1_2 =>
-      '1.2 授業・成績情報：ログイン後、アプリは学務システムから時間割、成績、履修計画などを取得します。';
-
-  @override
-  String get privacySection1_3 =>
-      '1.3 キャンパス生活情報：関連機能の使用時に、電気料金残高、食堂カード取引などを取得する場合があります。';
-
-  @override
-  String get privacySection1_4 =>
-      '1.4 デバイス情報：分析とトラブルシューティングのためにデバイスモデルとOSバージョンを収集する場合があります。';
-
-  @override
-  String get privacySection1_5 =>
-      '1.5 キャッシュデータ：パフォーマンス向上のため、一部のデータをローカルにキャッシュします。設定でいつでもクリアできます。';
-
-  @override
-  String get privacySection2Title => '2. 情報の利用方法';
-
-  @override
-  String get privacySection2_1 => '2.1 コアサービスの提供のため。';
-
-  @override
-  String get privacySection2_2 => '2.2 サービス品質向上のため。';
-
-  @override
-  String get privacySection2_3 => '2.3 ホーム画面ウィジェットのサポートのため。';
-
-  @override
-  String get privacySection2_4 => '2.4 ローカル通知のスケジュールのため。';
-
-  @override
-  String get privacySection3Title => '3. 保存とセキュリティ';
-
-  @override
-  String get privacySection3_1 => '3.1 個人情報はお客様のデバイスにローカル保存されます。';
-
-  @override
-  String get privacySection3_2 => '3.2 アプリと学校サーバー間のデータ通信は暗号化されています。';
-
-  @override
-  String get privacySection3_3 => '3.3 キャッシュデータのクリアやログアウトはいつでも可能です。';
-
-  @override
-  String get privacySection4Title => '4. サードパーティサービス';
-
-  @override
-  String get privacySection4_1 => '4.1 本アプリは学務機能を提供するために大学の学務システムと通信します。';
-
-  @override
-  String get privacySection4_2 => '4.2 本アプリはGiteeを通じて更新情報を確認します。';
-
-  @override
-  String get privacySection4_3 => '4.3 個人情報を第三者に販売または貸与することはありません。';
-
-  @override
-  String get privacySection5Title => '5. お客様の権利';
-
-  @override
-  String get privacySection5_1 => '5.1 アプリ内で情報の確認と訂正が可能です。';
-
-  @override
-  String get privacySection5_2 =>
-      '5.2 ログアウト、キャッシュクリア、またはアンインストールによりデータを削除できます。';
-
-  @override
-  String get privacySection5_3 => '5.3 ログアウトまたはアンインストールにより同意を撤回できます。';
-
-  @override
-  String get privacySection6Title => '6. 未成年者';
-
-  @override
-  String get privacySection6_1 => '6.1 本アプリは主に大学生を対象としています。';
-
-  @override
-  String get privacySection6_2 => '6.2 未成年者の個人情報を積極的に収集することはありません。';
-
-  @override
-  String get privacySection7Title => '7. 本ポリシーの更新';
-
-  @override
-  String get privacySection7_1 => '7.1 本ポリシーは随時更新される場合があります。';
-
-  @override
-  String get privacySection7_2 => '7.2 更新後の継続利用は更新されたポリシーに同意したものとみなします。';
-
-  @override
-  String get privacySection8Title => '8. お問い合わせ';
-
-  @override
-  String get privacySection8_1 => 'ご質問やご提案がございましたら、以下までご連絡ください：';
-
-  @override
   String get privacyContact =>
       '開発チーム：Lumaris Team\nリポジトリ：https://gitee.com/luckyfishisdashen/iOSClub.AppMobile';
-
-  @override
-  String get userAgreementTitle => 'Lumaris 利用規約';
-
-  @override
-  String get userAgreementUpdatedAt => '更新日：2026年5月5日';
-
-  @override
-  String get userAgreementEffectiveAt => '発効日：2026年5月5日';
-
-  @override
-  String get userAgreementIntro => 'Lumaris へようこそ。アプリを使用する前にこの利用規約をよくお読みください。';
-
-  @override
-  String get userAgreementSection1Title => '1. サービス説明';
-
-  @override
-  String get userAgreementSection1_1 => '1.1 本アプリは学生向けのキャンパスアシスタントアプリです。';
-
-  @override
-  String get userAgreementSection1_2 => '1.2 一部の機能は大学ネットワークへのアクセスが必要です。';
-
-  @override
-  String get userAgreementSection1_3 => '1.3 学務データは参考用です。公式の学校システムが優先されます。';
-
-  @override
-  String get userAgreementSection2Title => '2. アカウントとセキュリティ';
-
-  @override
-  String get userAgreementSection2_1 => '2.1 学務システムのアカウントでログインする必要があります。';
-
-  @override
-  String get userAgreementSection2_2 => '2.2 認証情報はお客様のデバイスにのみ保存されます。';
-
-  @override
-  String get userAgreementSection2_3 => '2.3 アカウントにリスクがある場合は直ちにパスワードを変更してください。';
-
-  @override
-  String get userAgreementSection3Title => '3. 利用者の行動';
-
-  @override
-  String get userAgreementSection3_1 => '3.1 適用法令を遵守する必要があります。';
-
-  @override
-  String get userAgreementSection3_2 => '3.2 MITライセンスの下でソースコードを使用できます。';
-
-  @override
-  String get userAgreementSection3_3 => '3.3 アプリの通常動作を妨害してはいけません。';
-
-  @override
-  String get userAgreementSection3_4 => '3.4 脆弱性を悪用して不正アクセスを行ってはいけません。';
-
-  @override
-  String get userAgreementSection4Title => '4. 知的財産権';
-
-  @override
-  String get userAgreementSection4_1 => '4.1 ソースコードはMITライセンスの下で公開されています。';
-
-  @override
-  String get userAgreementSection4_2 =>
-      '4.2 アプリ名、アイコン、UIデザインはLumaris Teamに帰属します。';
-
-  @override
-  String get userAgreementSection4_3 => '4.3 学校名とロゴは大学に帰属します。';
-
-  @override
-  String get userAgreementSection5Title => '5. 免責事項';
-
-  @override
-  String get userAgreementSection5_1 => '5.1 本アプリは現状有姿で提供されます。';
-
-  @override
-  String get userAgreementSection5_2 =>
-      '5.2 ネットワークや学校サーバーの問題による中断について責任を負いません。';
-
-  @override
-  String get userAgreementSection5_3 => '5.3 学務情報は参考用です。';
-
-  @override
-  String get userAgreementSection5_4 =>
-      '5.4 法令で義務付けられている場合を除き、アプリ使用による機器の損傷やデータ損失について責任を負いません。';
-
-  @override
-  String get userAgreementSection6Title => '6. 変更と終了';
-
-  @override
-  String get userAgreementSection6_1 => '6.1 本規約は随時変更される場合があります。';
-
-  @override
-  String get userAgreementSection6_2 => '6.2 変更後の継続利用は更新された規約に同意したものとみなします。';
-
-  @override
-  String get userAgreementSection6_3 => '6.3 必要に応じてサービスを終了する場合があります。';
-
-  @override
-  String get userAgreementSection7Title => '7. その他';
-
-  @override
-  String get userAgreementSection7_1 => '7.1 いずれかの条項が無効でも、残りの条項は有効に存続します。';
-
-  @override
-  String get userAgreementSection7_2 => '7.2 本規約は中華人民共和国の法律に準拠します。';
-
-  @override
-  String get userAgreementSection7_3 => '7.3 紛争は友好的な協議により解決するものとします。';
-
-  @override
-  String get userAgreementSection8Title => '8. お問い合わせ';
-
-  @override
-  String get userAgreementSection8_1 => '本規約に関するご質問は以下までご連絡ください：';
 
   @override
   String get userAgreementContact =>

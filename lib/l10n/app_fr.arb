@@ -66,6 +66,9 @@
   "privacyPolicySubtitle": "Découvrez comment nous protégeons votre vie privée",
   "userAgreement": "Conditions d'utilisation",
   "userAgreementSubtitle": "En utilisant l'app, vous acceptez ces conditions",
+  "protocolOpenInBrowser": "Ouvrir dans le navigateur",
+  "protocolInlineUnsupported": "Cette plateforme ne permet pas l'affichage dans l'application. Veuillez la consulter dans votre navigateur.",
+  "protocolOpenFailed": "Impossible d'ouvrir le document",
 
   "clearCache": "Vider le cache",
   "clearingCache": "Nettoyage du cache...",
@@ -169,95 +172,24 @@
   "agreeAndContinue": "Accepter et continuer",
   "disagree": "Refuser",
 
-  "privacyPolicyTitle": "Politique de confidentialité Lumaris",
-  "privacyPolicyUpdatedAt": "Mise à jour : 5 mai 2026",
-  "privacyPolicyEffectiveAt": "Entrée en vigueur : 5 mai 2026",
-  "privacyPolicyIntro": "Bienvenue dans Lumaris. Cette politique explique comment nous collectons, utilisons, stockons et protégeons vos informations.",
 
-  "privacySection1Title": "1. Informations collectées",
-  "privacySection1_1": "1.1 Informations de compte : Pour vous connecter au système académique, votre identifiant et mot de passe sont requis. Ces données sont stockées uniquement sur votre appareil.",
-  "privacySection1_2": "1.2 Données de cours et notes : Après connexion, l'application récupère votre emploi du temps, vos notes et votre parcours académique.",
-  "privacySection1_3": "1.3 Vie étudiante : L'application peut récupérer votre solde d'électricité et vos transactions de carte.",
-  "privacySection1_4": "1.4 Appareil : Modèle et version du système pour l'analyse et le dépannage.",
-  "privacySection1_5": "1.5 Cache : Pour améliorer les performances, certaines données sont mises en cache localement. Vous pouvez les effacer dans les paramètres.",
 
-  "privacySection2Title": "2. Utilisation des informations",
-  "privacySection2_1": "2.1 Fournir les services essentiels.",
-  "privacySection2_2": "2.2 Améliorer la qualité du service.",
-  "privacySection2_3": "2.3 Prendre en charge les widgets d'écran d'accueil.",
-  "privacySection2_4": "2.4 Planifier des notifications locales.",
 
-  "privacySection3Title": "3. Stockage et sécurité",
-  "privacySection3_1": "3.1 Vos informations sont stockées localement sur votre appareil.",
-  "privacySection3_2": "3.2 Les transmissions entre l'application et les serveurs sont chiffrées.",
-  "privacySection3_3": "3.3 Vous pouvez vider le cache ou vous déconnecter à tout moment.",
 
-  "privacySection4Title": "4. Services tiers",
-  "privacySection4_1": "4.1 L'application communique avec le système académique de l'université.",
-  "privacySection4_2": "4.2 L'application vérifie les mises à jour via Gitee.",
-  "privacySection4_3": "4.3 Nous ne vendons ni ne louons vos informations à des tiers.",
 
-  "privacySection5Title": "5. Vos droits",
-  "privacySection5_1": "5.1 Vous pouvez consulter et corriger vos informations dans l'application.",
-  "privacySection5_2": "5.2 Vous pouvez supprimer vos données en vous déconnectant ou en désinstallant l'application.",
-  "privacySection5_3": "5.3 Vous pouvez retirer votre consentement à tout moment.",
 
-  "privacySection6Title": "6. Mineurs",
-  "privacySection6_1": "6.1 Cette application est principalement destinée aux étudiants universitaires.",
-  "privacySection6_2": "6.2 Nous ne collectons pas activement d'informations sur les mineurs.",
 
-  "privacySection7Title": "7. Mises à jour de la politique",
-  "privacySection7_1": "7.1 Cette politique peut être mise à jour occasionnellement.",
-  "privacySection7_2": "7.2 L'utilisation continue signifie l'acceptation de la politique mise à jour.",
 
-  "privacySection8Title": "8. Nous contacter",
-  "privacySection8_1": "Pour toute question ou suggestion, contactez-nous :",
   "privacyContact": "Équipe : Lumaris Team\nDépôt : https://gitee.com/luckyfishisdashen/iOSClub.AppMobile",
 
-  "userAgreementTitle": "Conditions d'utilisation Lumaris",
-  "userAgreementUpdatedAt": "Mise à jour : 5 mai 2026",
-  "userAgreementEffectiveAt": "Entrée en vigueur : 5 mai 2026",
-  "userAgreementIntro": "Bienvenue dans Lumaris. Veuillez lire attentivement ces conditions avant d'utiliser l'application.",
 
-  "userAgreementSection1Title": "1. Description du service",
-  "userAgreementSection1_1": "1.1 Cette application est un assistant de campus pour les étudiants.",
-  "userAgreementSection1_2": "1.2 Certaines fonctions nécessitent l'accès au réseau universitaire.",
-  "userAgreementSection1_3": "1.3 Les données académiques sont fournies à titre indicatif seulement.",
 
-  "userAgreementSection2Title": "2. Compte et sécurité",
-  "userAgreementSection2_1": "2.1 Vous devez vous connecter avec votre compte du système académique.",
-  "userAgreementSection2_2": "2.2 Vos identifiants sont stockés uniquement sur votre appareil.",
-  "userAgreementSection2_3": "2.3 Changez immédiatement votre mot de passe en cas de risque.",
 
-  "userAgreementSection3Title": "3. Conduite de l'utilisateur",
-  "userAgreementSection3_1": "3.1 Vous devez respecter les lois et règlements applicables.",
-  "userAgreementSection3_2": "3.2 Le code source est disponible sous licence MIT.",
-  "userAgreementSection3_3": "3.3 Vous ne devez pas perturber le fonctionnement normal de l'application.",
-  "userAgreementSection3_4": "3.4 Vous ne devez pas exploiter les vulnérabilités pour un accès non autorisé.",
 
-  "userAgreementSection4Title": "4. Propriété intellectuelle",
-  "userAgreementSection4_1": "4.1 Le code source est publié sous licence MIT.",
-  "userAgreementSection4_2": "4.2 Le nom, l'icône et le design de l'interface appartiennent à Lumaris Team.",
-  "userAgreementSection4_3": "4.3 Les noms et logos de l'université appartiennent à l'université.",
 
-  "userAgreementSection5Title": "5. Avertissement",
-  "userAgreementSection5_1": "5.1 L'application est fournie « en l'état ».",
-  "userAgreementSection5_2": "5.2 Nous ne sommes pas responsables des interruptions dues au réseau ou aux serveurs.",
-  "userAgreementSection5_3": "5.3 Les informations académiques sont fournies à titre indicatif seulement.",
-  "userAgreementSection5_4": "5.4 Nous ne sommes pas responsables des dommages à l'appareil ou des pertes de données, sauf obligation légale.",
 
-  "userAgreementSection6Title": "6. Modifications et résiliation",
-  "userAgreementSection6_1": "6.1 Ces conditions peuvent être modifiées occasionnellement.",
-  "userAgreementSection6_2": "6.2 L'utilisation continue signifie l'acceptation des conditions mises à jour.",
-  "userAgreementSection6_3": "6.3 Nous pouvons mettre fin au service si nécessaire.",
 
-  "userAgreementSection7Title": "7. Divers",
-  "userAgreementSection7_1": "7.1 Si une clause est invalide, les autres restent en vigueur.",
-  "userAgreementSection7_2": "7.2 Les présentes conditions sont régies par le droit de la RPC.",
-  "userAgreementSection7_3": "7.3 Les litiges sont résolus par négociation amiable.",
 
-  "userAgreementSection8Title": "8. Nous contacter",
-  "userAgreementSection8_1": "Pour toute question concernant ces conditions, contactez-nous :",
   "userAgreementContact": "Équipe : Lumaris Team\nDépôt : https://gitee.com/luckyfishisdashen/iOSClub.AppMobile",
 
   "aboutAuthor": "À propos des auteurs",
