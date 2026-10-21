@@ -71,7 +71,8 @@ void main() async {
   await FeedbackSdk.init(
     FeedbackConfig(
       baseUrl: 'https://feedbackapi.luckyfishes.site',
-      appName: 'lumaris',
+      centerId: 'fc_xxx', // TODO: 待后端提供光序 prod 的 center_id
+      sn: 'lumaris-prod',
       school: initialSchool?.code.toLowerCase() ?? '',
     ),
   );
