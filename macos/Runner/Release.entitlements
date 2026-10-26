@@ -11,5 +11,8 @@
 	<key>com.apple.security.personal-information.location</key>
 	<true/>
 	<key>keychain-access-groups</key>
-	<array/></dict>
+	<array>
+		<string>$(AppIdentifierPrefix)$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	</array>
+</dict>
 </plist>

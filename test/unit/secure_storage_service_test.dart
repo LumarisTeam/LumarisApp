@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
+import 'package:ios_club_app/core/services/prefs_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -8,7 +12,13 @@ void main() {
   const channel = MethodChannel('plugins.it_nomads.com/flutter_secure_storage');
   final store = <String, String>{};
 
-  setUp(() {
+  setUpAll(() async {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    await PrefsService.init();
+  });
+
+  setUp(() async {
+    await PrefsService.instance.clear();
     store.clear();
   });
 
@@ -94,9 +104,9 @@ void main() {
             });
 
         final service = SecureStorageService.instance;
-        expect(await service.write(key: 'k3', value: 'v3'), isFalse);
-        expect(await service.delete(key: 'k3'), isFalse);
-        expect(await service.deleteAll(), isFalse);
+        expect(await service.write(key: 'k3', value: 'v3'), Platform.isMacOS);
+        expect(await service.delete(key: 'k3'), Platform.isMacOS);
+        expect(await service.deleteAll(), Platform.isMacOS);
 
         final result = await service.read(key: 'k3');
         expect(result, isNull);

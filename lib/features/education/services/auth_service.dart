@@ -37,8 +37,13 @@ class AuthService {
 
     final paymentNum = prefs.getString(PrefsKeys.PAYMENT_NUM);
     if (paymentNum != null && paymentNum.isNotEmpty) {
-      await secureStorage.write(key: PrefsKeys.PAYMENT_NUM, value: paymentNum);
-      await prefs.remove(PrefsKeys.PAYMENT_NUM);
+      final saved = await secureStorage.write(
+        key: PrefsKeys.PAYMENT_NUM,
+        value: paymentNum,
+      );
+      if (saved) {
+        await prefs.remove(PrefsKeys.PAYMENT_NUM);
+      }
     }
   }
 
@@ -53,7 +58,7 @@ class AuthService {
       return;
     }
 
-    await storage.write(key: key, value: value);
+    final saved = await storage.write(key: key, value: value);
 
     if (!AuthSessionGuard.isCurrent(epoch)) {
       // 迁移期间会话已被清空，撤销刚写入的凭证。
@@ -61,7 +66,9 @@ class AuthService {
       return;
     }
 
-    await PrefsService.instance.remove(key);
+    if (saved) {
+      await PrefsService.instance.remove(key);
+    }
   }
 
   static Future<bool> loginFromData(String username, String password) async {

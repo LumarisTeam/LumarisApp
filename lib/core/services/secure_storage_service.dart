@@ -22,7 +22,9 @@ class SecureStorageService {
     iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     mOptions: MacOsOptions(
       accessibility: KeychainAccessibility.first_unlock,
-      usesDataProtectionKeychain: true,
+      // Debug/Profile 在 Xcode 中禁用了签名，无法使用要求 entitlement 的
+      // Data Protection Keychain；这两种构建使用 macOS 登录钥匙串。
+      usesDataProtectionKeychain: kReleaseMode,
     ),
   );
 
@@ -115,6 +117,9 @@ class SecureStorageService {
       } else {
         await _storage.write(key: key, value: value);
       }
+      if (_shouldUseMacOsFallback) {
+        await _deleteFallback(key: key);
+      }
       return true;
     } catch (e, stackTrace) {
       AppLogger.error(
@@ -135,7 +140,18 @@ class SecureStorageService {
   /// 读取字符串
   Future<String?> read({required String key}) async {
     try {
-      return await _storage.read(key: key);
+      final value = await _storage.read(key: key);
+      if (value != null || !_shouldUseMacOsFallback) {
+        return value;
+      }
+
+      // 权限配置修复后，仍需接回旧版本降级保存的凭据。只有写入
+      // Keychain 成功后才能移除旧副本，避免迁移失败时丢失数据。
+      final fallbackValue = await _readFallback(key: key);
+      if (fallbackValue != null) {
+        await write(key: key, value: fallbackValue);
+      }
+      return fallbackValue;
     } catch (e, stackTrace) {
       AppLogger.error(
         'SecureStorage read error',
@@ -156,6 +172,9 @@ class SecureStorageService {
   Future<bool> delete({required String key}) async {
     try {
       await _storage.delete(key: key);
+      if (_shouldUseMacOsFallback) {
+        return await _deleteFallback(key: key);
+      }
       return true;
     } catch (e, stackTrace) {
       AppLogger.error(
@@ -177,6 +196,9 @@ class SecureStorageService {
   Future<bool> deleteAll() async {
     try {
       await _storage.deleteAll();
+      if (_shouldUseMacOsFallback) {
+        return await _deleteAllFallback();
+      }
       return true;
     } catch (e, stackTrace) {
       AppLogger.error(
