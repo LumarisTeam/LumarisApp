@@ -791,5 +791,13 @@
   "deleteColor": "Supprimer la couleur",
   "minOneColorHint": "Conservez au moins une couleur",
   "maxColorLimitHint": "Jusqu'à {max} couleurs",
-  "colorCount": "Couleurs : {count}"
+  "colorCount": "Couleurs : {count}",
+  "startWalkingNavigation": "Itinéraire à pied",
+  "chooseNavigationApp": "Choisir une application de cartes",
+  "otherNavigationMaps": "Autres cartes",
+  "navigationLaunchFailed": "Impossible d’ouvrir la carte. Veuillez réessayer.",
+  "navigationAppleMaps": "Plans Apple",
+  "navigationGoogleMaps": "Google Maps",
+  "navigationAmap": "Amap",
+  "navigationBaiduMaps": "Baidu Maps"
 }

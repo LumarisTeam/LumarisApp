@@ -2209,6 +2209,30 @@ class AppLocalizationsZh extends AppLocalizations {
   String colorCount(int count) {
     return '$count 种颜色';
   }
+
+  @override
+  String get startWalkingNavigation => '开始步行导航';
+
+  @override
+  String get chooseNavigationApp => '选择导航应用';
+
+  @override
+  String get otherNavigationMaps => '其他地图';
+
+  @override
+  String get navigationLaunchFailed => '无法打开地图，请稍后重试';
+
+  @override
+  String get navigationAppleMaps => 'Apple 地图';
+
+  @override
+  String get navigationGoogleMaps => 'Google 地图';
+
+  @override
+  String get navigationAmap => '高德地图';
+
+  @override
+  String get navigationBaiduMaps => '百度地图';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4417,4 +4441,28 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String colorCount(int count) {
     return '$count 種顏色';
   }
+
+  @override
+  String get startWalkingNavigation => '開始步行導航';
+
+  @override
+  String get chooseNavigationApp => '選擇導航應用程式';
+
+  @override
+  String get otherNavigationMaps => '其他地圖';
+
+  @override
+  String get navigationLaunchFailed => '無法開啟地圖，請稍後重試';
+
+  @override
+  String get navigationAppleMaps => 'Apple 地圖';
+
+  @override
+  String get navigationGoogleMaps => 'Google 地圖';
+
+  @override
+  String get navigationAmap => '高德地圖';
+
+  @override
+  String get navigationBaiduMaps => '百度地圖';
 }

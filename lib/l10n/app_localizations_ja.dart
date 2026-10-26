@@ -2219,4 +2219,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String colorCount(int count) {
     return '$count 色';
   }
+
+  @override
+  String get startWalkingNavigation => '徒歩ルートを開く';
+
+  @override
+  String get chooseNavigationApp => '地図アプリを選択';
+
+  @override
+  String get otherNavigationMaps => 'その他の地図';
+
+  @override
+  String get navigationLaunchFailed => '地図を開けません。もう一度お試しください。';
+
+  @override
+  String get navigationAppleMaps => 'Appleマップ';
+
+  @override
+  String get navigationGoogleMaps => 'Google マップ';
+
+  @override
+  String get navigationAmap => '高徳地図';
+
+  @override
+  String get navigationBaiduMaps => '百度地図';
 }

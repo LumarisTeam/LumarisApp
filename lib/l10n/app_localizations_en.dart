@@ -2303,4 +2303,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String colorCount(int count) {
     return 'Colors: $count';
   }
+
+  @override
+  String get startWalkingNavigation => 'Start walking directions';
+
+  @override
+  String get chooseNavigationApp => 'Choose a map app';
+
+  @override
+  String get otherNavigationMaps => 'Other maps';
+
+  @override
+  String get navigationLaunchFailed => 'Unable to open maps. Please try again.';
+
+  @override
+  String get navigationAppleMaps => 'Apple Maps';
+
+  @override
+  String get navigationGoogleMaps => 'Google Maps';
+
+  @override
+  String get navigationAmap => 'Amap';
+
+  @override
+  String get navigationBaiduMaps => 'Baidu Maps';
 }

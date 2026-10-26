@@ -12,6 +12,9 @@ import 'package:ios_club_app/state/map_state.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/state/school_store.dart';
+import '../../../core/services/external_navigation_service.dart';
+import '../../../core/utils/platform_utils.dart';
+import 'navigation_app_picker.dart';
 
 class CampusMapPage extends ConsumerStatefulWidget {
   const CampusMapPage({super.key});
@@ -31,6 +34,8 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
   bool _isSidebarOpen = true;
+  bool _isOpeningNavigation = false;
+  final ExternalNavigationService _navigation = ExternalNavigationService();
 
   @override
   void initState() {
@@ -785,6 +790,30 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
                           ),
                         ),
                       ),
+                      trailing: isSelected
+                          ? Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  tooltip: l10n.startWalkingNavigation,
+                                  onPressed: _isOpeningNavigation
+                                      ? null
+                                      : () => _openNavigation(destination: poi),
+                                  icon: const Icon(Icons.directions_walk),
+                                ),
+                                IconButton(
+                                  tooltip: l10n.otherNavigationMaps,
+                                  onPressed: _isOpeningNavigation
+                                      ? null
+                                      : () => _openNavigation(
+                                          destination: poi,
+                                          chooseApp: true,
+                                        ),
+                                  icon: const Icon(Icons.more_horiz),
+                                ),
+                              ],
+                            )
+                          : null,
                       onTap: () => _onPOITap(poi),
                     );
                   },
@@ -795,6 +824,57 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _openNavigation({
+    bool chooseApp = false,
+    CampusPOI? destination,
+  }) async {
+    final CampusPOI? poi = destination ?? _selectedPOI;
+    if (poi == null || _isOpeningNavigation) return;
+    setState(() => _isOpeningNavigation = true);
+    try {
+      final List<ExternalMap> maps = await _navigation.availableMaps();
+      ExternalMap? selected = await _navigation.preferredMap();
+      if (!maps.contains(selected)) selected = null;
+      if (!mounted) return;
+      if (maps.isEmpty) {
+        selected = PlatformUtils.isIOS ? ExternalMap.apple : ExternalMap.baidu;
+      } else if (chooseApp ||
+          (selected == null &&
+              maps.length > 1 &&
+              !(PlatformUtils.isIOS && maps.contains(ExternalMap.apple)))) {
+        selected = await showModalBottomSheet<ExternalMap>(
+          context: context,
+          builder: (sheetContext) => NavigationAppPicker(maps: maps),
+        );
+        if (selected == null) return;
+      } else {
+        selected ??= maps.first;
+      }
+      if (!mounted) return;
+      final bool opened = await _navigation.open(
+        map: selected,
+        latitude: poi.position.latitude,
+        longitude: poi.position.longitude,
+        name: poi.name,
+        webOnly: maps.isEmpty,
+      );
+      if (!opened && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.navigationLaunchFailed)),
+        );
+      }
+    } catch (error) {
+      debugPrint('CampusMapPage: navigation failed for ${poi.name}: $error');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.navigationLaunchFailed)),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isOpeningNavigation = false);
+    }
   }
 
   Widget _buildPOIBottomSheet(McColors colors) {
@@ -858,18 +938,27 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: colors.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.directions_rounded,
-                      color: colors.onAccent,
+                  IconButton.filled(
+                    onPressed: _isOpeningNavigation
+                        ? null
+                        : () => _openNavigation(),
+                    tooltip: l10n.startWalkingNavigation,
+                    icon: const Icon(Icons.directions_rounded),
+                    style: IconButton.styleFrom(
+                      backgroundColor: colors.primary,
+                      foregroundColor: colors.onAccent,
                     ),
                   ),
                 ],
+              ),
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: TextButton(
+                  onPressed: _isOpeningNavigation
+                      ? null
+                      : () => _openNavigation(chooseApp: true),
+                  child: Text(l10n.otherNavigationMaps),
+                ),
               ),
               const SizedBox(height: 24),
               _buildInfoSection(

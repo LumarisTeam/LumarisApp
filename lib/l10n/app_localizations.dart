@@ -4355,6 +4355,54 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'{count} 种颜色'**
   String colorCount(int count);
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'开始步行导航'**
+  String get startWalkingNavigation;
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'选择导航应用'**
+  String get chooseNavigationApp;
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'其他地图'**
+  String get otherNavigationMaps;
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'无法打开地图，请稍后重试'**
+  String get navigationLaunchFailed;
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'Apple 地图'**
+  String get navigationAppleMaps;
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'Google 地图'**
+  String get navigationGoogleMaps;
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'高德地图'**
+  String get navigationAmap;
+
+  /// 外部地图导航文案
+  ///
+  /// In zh, this message translates to:
+  /// **'百度地图'**
+  String get navigationBaiduMaps;
 }
 
 class _AppLocalizationsDelegate

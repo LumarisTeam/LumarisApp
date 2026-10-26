@@ -790,5 +790,13 @@
   "deleteColor": "Удалить цвет",
   "minOneColorHint": "Оставьте хотя бы один цвет",
   "maxColorLimitHint": "Не более {max} цветов",
-  "colorCount": "Цветов: {count}"
+  "colorCount": "Цветов: {count}",
+  "startWalkingNavigation": "Пеший маршрут",
+  "chooseNavigationApp": "Выберите приложение карт",
+  "otherNavigationMaps": "Другие карты",
+  "navigationLaunchFailed": "Не удалось открыть карту. Повторите попытку.",
+  "navigationAppleMaps": "Карты Apple",
+  "navigationGoogleMaps": "Google Карты",
+  "navigationAmap": "Amap",
+  "navigationBaiduMaps": "Baidu Maps"
 }

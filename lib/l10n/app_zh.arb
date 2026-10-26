@@ -1511,5 +1511,21 @@
   "maxColorLimitHint": "最多 {max} 种颜色",
   "@maxColorLimitHint": {"description": "", "placeholders": {"max": {"type": "int"}}},
   "colorCount": "{count} 种颜色",
-  "@colorCount": {"description": "", "placeholders": {"count": {"type": "int"}}}
+  "@colorCount": {"description": "", "placeholders": {"count": {"type": "int"}}},
+  "startWalkingNavigation": "开始步行导航",
+  "@startWalkingNavigation": {"description": "外部地图导航文案"},
+  "chooseNavigationApp": "选择导航应用",
+  "@chooseNavigationApp": {"description": "外部地图导航文案"},
+  "otherNavigationMaps": "其他地图",
+  "@otherNavigationMaps": {"description": "外部地图导航文案"},
+  "navigationLaunchFailed": "无法打开地图，请稍后重试",
+  "@navigationLaunchFailed": {"description": "外部地图导航文案"},
+  "navigationAppleMaps": "Apple 地图",
+  "@navigationAppleMaps": {"description": "外部地图导航文案"},
+  "navigationGoogleMaps": "Google 地图",
+  "@navigationGoogleMaps": {"description": "外部地图导航文案"},
+  "navigationAmap": "高德地图",
+  "@navigationAmap": {"description": "外部地图导航文案"},
+  "navigationBaiduMaps": "百度地图",
+  "@navigationBaiduMaps": {"description": "外部地图导航文案"}
 }

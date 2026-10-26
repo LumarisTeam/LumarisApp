@@ -2236,4 +2236,28 @@ class AppLocalizationsKo extends AppLocalizations {
   String colorCount(int count) {
     return '색상 $count개';
   }
+
+  @override
+  String get startWalkingNavigation => '도보 길찾기 시작';
+
+  @override
+  String get chooseNavigationApp => '지도 앱 선택';
+
+  @override
+  String get otherNavigationMaps => '다른 지도';
+
+  @override
+  String get navigationLaunchFailed => '지도를 열 수 없습니다. 다시 시도해 주세요.';
+
+  @override
+  String get navigationAppleMaps => 'Apple 지도';
+
+  @override
+  String get navigationGoogleMaps => 'Google 지도';
+
+  @override
+  String get navigationAmap => 'Amap';
+
+  @override
+  String get navigationBaiduMaps => 'Baidu 지도';
 }

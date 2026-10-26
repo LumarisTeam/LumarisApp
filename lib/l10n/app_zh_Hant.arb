@@ -793,5 +793,13 @@
   "deleteColor": "刪除顏色",
   "minOneColorHint": "至少保留一種顏色",
   "maxColorLimitHint": "最多 {max} 種顏色",
-  "colorCount": "{count} 種顏色"
+  "colorCount": "{count} 種顏色",
+  "startWalkingNavigation": "開始步行導航",
+  "chooseNavigationApp": "選擇導航應用程式",
+  "otherNavigationMaps": "其他地圖",
+  "navigationLaunchFailed": "無法開啟地圖，請稍後重試",
+  "navigationAppleMaps": "Apple 地圖",
+  "navigationGoogleMaps": "Google 地圖",
+  "navigationAmap": "高德地圖",
+  "navigationBaiduMaps": "百度地圖"
 }

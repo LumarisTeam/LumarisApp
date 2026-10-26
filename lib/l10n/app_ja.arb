@@ -794,5 +794,13 @@
   "deleteColor": "色を削除",
   "minOneColorHint": "少なくとも 1 色必要です",
   "maxColorLimitHint": "最大 {max} 色",
-  "colorCount": "{count} 色"
+  "colorCount": "{count} 色",
+  "startWalkingNavigation": "徒歩ルートを開く",
+  "chooseNavigationApp": "地図アプリを選択",
+  "otherNavigationMaps": "その他の地図",
+  "navigationLaunchFailed": "地図を開けません。もう一度お試しください。",
+  "navigationAppleMaps": "Appleマップ",
+  "navigationGoogleMaps": "Google マップ",
+  "navigationAmap": "高徳地図",
+  "navigationBaiduMaps": "百度地図"
 }

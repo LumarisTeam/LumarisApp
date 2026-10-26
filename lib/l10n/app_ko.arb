@@ -791,5 +791,13 @@
   "deleteColor": "색상 삭제",
   "minOneColorHint": "색상을 최소 1개 유지하세요",
   "maxColorLimitHint": "최대 {max}색",
-  "colorCount": "색상 {count}개"
+  "colorCount": "색상 {count}개",
+  "startWalkingNavigation": "도보 길찾기 시작",
+  "chooseNavigationApp": "지도 앱 선택",
+  "otherNavigationMaps": "다른 지도",
+  "navigationLaunchFailed": "지도를 열 수 없습니다. 다시 시도해 주세요.",
+  "navigationAppleMaps": "Apple 지도",
+  "navigationGoogleMaps": "Google 지도",
+  "navigationAmap": "Amap",
+  "navigationBaiduMaps": "Baidu 지도"
 }

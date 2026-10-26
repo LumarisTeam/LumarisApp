@@ -2310,4 +2310,29 @@ class AppLocalizationsRu extends AppLocalizations {
   String colorCount(int count) {
     return 'Цветов: $count';
   }
+
+  @override
+  String get startWalkingNavigation => 'Пеший маршрут';
+
+  @override
+  String get chooseNavigationApp => 'Выберите приложение карт';
+
+  @override
+  String get otherNavigationMaps => 'Другие карты';
+
+  @override
+  String get navigationLaunchFailed =>
+      'Не удалось открыть карту. Повторите попытку.';
+
+  @override
+  String get navigationAppleMaps => 'Карты Apple';
+
+  @override
+  String get navigationGoogleMaps => 'Google Карты';
+
+  @override
+  String get navigationAmap => 'Amap';
+
+  @override
+  String get navigationBaiduMaps => 'Baidu Maps';
 }

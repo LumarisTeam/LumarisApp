@@ -32,6 +32,10 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>weixin</string>
+		<string>maps</string>
+		<string>comgooglemaps</string>
+		<string>iosamap</string>
+		<string>baidumap</string>
 		<string>http</string>
 		<string>https</string>
 	</array>
