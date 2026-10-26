@@ -3,9 +3,28 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/services/course_color_manager.dart';
 import 'package:ios_club_app/core/services/schedule_color_resolver.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
+import 'package:ios_club_app/state/schedule_color_themes.dart';
 
 void main() {
   group('ScheduleColorResolver', () {
+    test('should restore the legacy Lumaris course color algorithm', () {
+      final course = CourseModel(
+        courseName: '高等数学',
+        weekIndexes: const [1],
+        teachers: const [],
+        room: '',
+        weekday: 1,
+        startUnit: 1,
+        endUnit: 2,
+      );
+      final actual = ScheduleColorResolver.colorForCourse(
+        course,
+        ScheduleColorThemeCatalog.lumarisPreviewColors,
+        const <String, Color>{},
+        themeId: ScheduleColorThemeCatalog.lumarisId,
+      );
+      expect(actual, CourseColorManager.generateSoftColor(course.courseName));
+    });
     test('stableHash should be stable for the same input', () {
       expect(
         ScheduleColorResolver.stableHash('高等数学'),

@@ -67,13 +67,22 @@ class ScheduleColorResolver {
   static Color colorForCourse(
     CourseModel course,
     List<Color> pool,
-    Map<String, Color> overrides,
-  ) {
+    Map<String, Color> overrides, {
+    String? themeId,
+  }) {
     final key = courseKey(
       lessonId: course.lessonId,
       courseName: course.courseName,
     );
-    return overrides[key] ?? colorFor(course.courseName, pool);
+    final override = overrides[key];
+    if (override != null) return override;
+
+    // Lumaris was the pre-personalization default: a soft HSL color derived
+    // directly from the course name rather than a shared palette.
+    if (themeId == 'lumaris') {
+      return CourseColorManager.generateSoftColor(course.courseName);
+    }
+    return colorFor(course.courseName, pool);
   }
 
   /// 根据背景色返回对比度更高的文字颜色（近黑或白）。

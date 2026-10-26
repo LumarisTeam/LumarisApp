@@ -462,7 +462,7 @@ class _ScheduleColorPoolCardState extends ConsumerState<ScheduleColorPoolCard> {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
-            _themeSectionTitle('Catppuccin'),
+            _themeSectionTitle('Lumaris / Catppuccin'),
             ...ScheduleColorThemeCatalog.builtInIds.map((id) {
               return McListTile(
                 key: ValueKey('schedule-color-theme-option-$id'),

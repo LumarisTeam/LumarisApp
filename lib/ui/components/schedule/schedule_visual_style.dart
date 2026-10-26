@@ -14,6 +14,7 @@ class ScheduleVisualStyle {
     required this.headerHeight,
     required this.brightness,
     required this.colorPool,
+    this.colorThemeId,
     required this.showGrid,
     this.hideSectionTime = false,
     this.hideDateUnderDay = false,
@@ -42,6 +43,7 @@ class ScheduleVisualStyle {
 
   /// 已按 [brightness] 选好的颜色池。
   final List<Color> colorPool;
+  final String? colorThemeId;
 
   final bool showGrid;
   final bool hideSectionTime;
@@ -81,6 +83,9 @@ class ScheduleVisualStyle {
       headerHeight: styleState.headerHeight,
       brightness: isDark ? Brightness.dark : Brightness.light,
       colorPool: isDark ? styleState.darkColorPool : styleState.lightColorPool,
+      colorThemeId: isDark
+          ? styleState.darkColorPoolThemeId
+          : styleState.lightColorPoolThemeId,
       showGrid: showGrid,
       hideSectionTime: styleState.hideSectionTime,
       hideDateUnderDay: styleState.hideDateUnderDay,
@@ -106,6 +111,7 @@ class ScheduleVisualStyle {
     course,
     colorPool,
     courseColorOverrides,
+    themeId: colorThemeId,
   );
 
   Color textFor(Color background) =>

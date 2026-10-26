@@ -319,6 +319,9 @@ class _CourseColorSwatch extends ConsumerWidget {
       course,
       colorPool,
       styleState.courseColorOverrides,
+      themeId: isDark
+          ? styleState.darkColorPoolThemeId
+          : styleState.lightColorPoolThemeId,
     );
     final colors = context.mc.colors;
     final canCustomize =
