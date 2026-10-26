@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/state/app_states.dart';
+import 'package:ios_club_app/state/schedule_color_themes.dart';
 import 'package:ios_club_app/ui/components/schedule/course_card.dart';
 import 'package:ios_club_app/ui/components/schedule/schedule_grid.dart';
 import 'package:ios_club_app/ui/components/schedule/schedule_visual_style.dart';
@@ -30,6 +31,56 @@ ScheduleVisualStyle _style() {
 
 void main() {
   setUp(TimeService.useBuiltInTables);
+
+  testWidgets(
+    'should update rendered text when switching between Latte and Macchiato',
+    (WidgetTester tester) async {
+      for (final McColors appColors in [McColors.light, McColors.dark]) {
+        for (final String themeId in ['latte', 'macchiato', 'latte']) {
+          final Color background =
+              ScheduleColorThemeCatalog.accentsById[themeId]![2];
+          final Color expectedText = themeId == 'latte'
+              ? McColors.dark.foreground
+              : McColors.light.foreground;
+          await tester.pumpWidget(
+            MaterialApp(
+              theme: McThemeData.materialTheme(appColors),
+              home: Scaffold(
+                body: SizedBox(
+                  width: 400,
+                  height: 600,
+                  child: ScheduleGrid(
+                    courses: [_course()],
+                    cellHeight: 50,
+                    visualStyle: ScheduleVisualStyle(
+                      cellHeight: 50,
+                      headerHeight: 45,
+                      brightness: appColors == McColors.dark
+                          ? Brightness.dark
+                          : Brightness.light,
+                      colorThemeId: themeId,
+                      colorPool: [background],
+                      showGrid: true,
+                    ),
+                    preview: true,
+                  ),
+                ),
+              ),
+            ),
+          );
+          for (final String label in ['高等数学', 'A101', '张老师']) {
+            final Text text = tester.widget<Text>(find.text(label));
+            expect(
+              text.style?.color,
+              expectedText.withValues(alpha: 0.92),
+              reason: '$themeId: $label',
+            );
+          }
+          expect(tester.takeException(), isNull);
+        }
+      }
+    },
+  );
 
   testWidgets('should render a course in section mode', (tester) async {
     await tester.pumpWidget(

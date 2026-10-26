@@ -104,6 +104,42 @@ void main() {
       },
     );
 
+    test('should use black text when any Macchiato accent is selected', () {
+      for (final Color background
+          in ScheduleColorThemeCatalog.macchiatoAccents) {
+        expect(
+          ScheduleColorResolver.autoContrast(background),
+          McColors.light.foreground,
+          reason: 'Macchiato background: $background',
+        );
+      }
+    });
+
+    test('should use white text when any Latte accent is selected', () {
+      for (final Color background in ScheduleColorThemeCatalog.latteAccents) {
+        expect(
+          ScheduleColorResolver.autoContrast(background),
+          McColors.dark.foreground,
+          reason: 'Latte background: $background',
+        );
+      }
+    });
+
+    test('should use white text when actual Lumaris colors are generated', () {
+      for (final String courseName in ['高等数学', '大学英语', '计算机组成原理']) {
+        final Color background = ScheduleColorResolver.colorForCourse(
+          CourseModel(courseName: courseName),
+          ScheduleColorThemeCatalog.lumarisPreviewColors,
+          const <String, Color>{},
+          themeId: ScheduleColorThemeCatalog.lumarisId,
+        );
+        expect(
+          ScheduleColorResolver.autoContrast(background),
+          McColors.dark.foreground,
+        );
+      }
+    });
+
     test('courseKey should prefer a non-empty lessonId', () {
       expect(
         ScheduleColorResolver.courseKey(

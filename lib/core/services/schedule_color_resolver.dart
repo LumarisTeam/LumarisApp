@@ -89,10 +89,14 @@ class ScheduleColorResolver {
 
   /// 明显偏浅的底色使用黑字，其余底色使用白字。
   ///
-  /// HSL 明度达到 75% 才视为浅色，避免中等明度的彩色课程块过早切换黑字。
+  /// 除 HSL 明度外，还要求 RGB 最暗通道达到 48%，识别偏白的浅色。
+  /// 单看 HSL 明度会把 Latte 鲜艳的粉色、薰衣草色也判为浅色。
+  /// 此规则按实际底色判断，同样适用于自定义颜色。
   static Color autoContrast(Color background) {
     final double lightness = HSLColor.fromColor(background).lightness;
-    return lightness >= 0.75
+    final bool isPale =
+        background.r >= 0.48 && background.g >= 0.48 && background.b >= 0.48;
+    return lightness >= 0.68 && isPale
         ? McColors.light.foreground
         : McColors.dark.foreground;
   }
