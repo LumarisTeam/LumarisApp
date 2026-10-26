@@ -13,6 +13,7 @@ import 'package:ios_club_app/ui/components/schedule/schedule_visual_style.dart';
 import 'package:ios_club_app/ui/components/schedule/timeline_column.dart';
 
 import '../../../core/services/course_color_manager.dart';
+import '../../../core/services/schedule_color_resolver.dart';
 
 /// 课表网格组件
 ///
@@ -194,7 +195,7 @@ class ScheduleGrid extends StatelessWidget {
         CourseColorManager.generateSoftColor(courses.first.courseName);
     final textColor =
         visualStyle?.textFor(courseColor) ??
-        context.mc.colors.onAccent.withValues(alpha: 0.9);
+        ScheduleColorResolver.autoContrast(courseColor);
 
     return Positioned(
       top: top,

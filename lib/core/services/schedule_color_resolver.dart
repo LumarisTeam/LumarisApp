@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:material_ui/material_ui.dart';
-import 'package:ios_club_app/core/services/course_color_manager.dart';
-import 'package:ios_club_app/features/education/models/course_model.dart';
+import 'package:luamris_ui/luamris_ui.dart';
+
+import '../../features/education/models/course_model.dart';
+import 'course_color_manager.dart';
 
 /// Stable color mapping for schedule course blocks.
 ///
@@ -85,27 +87,13 @@ class ScheduleColorResolver {
     return colorFor(course.courseName, pool);
   }
 
-  /// 根据背景色返回对比度更高的文字颜色（近黑或白）。
+  /// 明显偏浅的底色使用黑字，其余底色使用白字。
+  ///
+  /// HSL 明度达到 75% 才视为浅色，避免中等明度的彩色课程块过早切换黑字。
   static Color autoContrast(Color background) {
-    const darkText = Color(0xFF1C1C1E);
-    const lightText = Color(0xFFFFFFFF);
-
-    final backgroundLuminance = background.computeLuminance();
-    final darkContrast = _contrastRatio(
-      backgroundLuminance,
-      darkText.computeLuminance(),
-    );
-    final lightContrast = _contrastRatio(
-      backgroundLuminance,
-      lightText.computeLuminance(),
-    );
-
-    return darkContrast >= lightContrast ? darkText : lightText;
-  }
-
-  static double _contrastRatio(double first, double second) {
-    final lighter = first > second ? first : second;
-    final darker = first > second ? second : first;
-    return (lighter + 0.05) / (darker + 0.05);
+    final double lightness = HSLColor.fromColor(background).lightness;
+    return lightness >= 0.75
+        ? McColors.light.foreground
+        : McColors.dark.foreground;
   }
 }

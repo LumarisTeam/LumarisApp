@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/core/services/course_color_manager.dart';
 import 'package:ios_club_app/core/services/schedule_color_resolver.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
@@ -72,16 +73,36 @@ void main() {
     test('autoContrast should pick dark text on light backgrounds', () {
       expect(
         ScheduleColorResolver.autoContrast(const Color(0xFFFFCC99)),
-        const Color(0xFF1C1C1E),
+        McColors.light.foreground,
       );
     });
 
     test('autoContrast should pick white text on dark backgrounds', () {
       expect(
         ScheduleColorResolver.autoContrast(const Color(0xFF663300)),
-        const Color(0xFFFFFFFF),
+        McColors.dark.foreground,
       );
     });
+
+    test(
+      'should use white text when course backgrounds have medium lightness',
+      () {
+        const backgrounds = <Color>[
+          Color(0xFF70BF70),
+          Color(0xFFC0C070),
+          Color(0xFFBA70AF),
+          Color(0xFFA7C370),
+        ];
+
+        for (final Color background in backgrounds) {
+          expect(
+            ScheduleColorResolver.autoContrast(background),
+            McColors.dark.foreground,
+            reason: 'Medium-lightness course background: $background',
+          );
+        }
+      },
+    );
 
     test('courseKey should prefer a non-empty lessonId', () {
       expect(

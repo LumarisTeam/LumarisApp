@@ -84,17 +84,9 @@ class CourseCard extends StatelessWidget {
       alpha: opacity,
     );
 
-    final Color effectiveTextColor;
-    if (textColor != null) {
-      effectiveTextColor = textColor!.withValues(alpha: 0.92);
-    } else if (backgroundColor != null) {
-      effectiveTextColor = ScheduleColorResolver.autoContrast(
-        courseColor,
-      ).withValues(alpha: 0.92);
-    } else {
-      // 未接入个性化样式时保持旧版白字外观。
-      effectiveTextColor = colors.onAccent.withValues(alpha: 0.9);
-    }
+    final Color effectiveTextColor =
+        (textColor ?? ScheduleColorResolver.autoContrast(courseColor))
+            .withValues(alpha: 0.92);
 
     final textAlign = centerHorizontally ? TextAlign.center : TextAlign.start;
     final crossAxisAlignment = centerHorizontally
