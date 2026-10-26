@@ -103,7 +103,8 @@ class TileService {
 
   /// Save the complete tile configuration to local storage
   static Future<void> saveTileConfigurations(
-      TileConfigurationList config) async {
+    TileConfigurationList config,
+  ) async {
     final prefs = PrefsService.instance;
 
     try {
@@ -128,7 +129,10 @@ class TileService {
 
   /// Move a tile to a new position in the display order
   static Future<void> reorderTile(
-      String tileId, int oldIndex, int newIndex) async {
+    String tileId,
+    int oldIndex,
+    int newIndex,
+  ) async {
     try {
       final config = await getTileConfigurations();
       final reordered = config.reorderTile(tileId, oldIndex, newIndex);

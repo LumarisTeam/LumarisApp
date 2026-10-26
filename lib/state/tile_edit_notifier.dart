@@ -8,18 +8,19 @@ import 'package:ios_club_app/features/system/tile_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
 
 typedef TileConfigurationReader = Future<TileConfigurationList> Function();
-typedef TileConfigurationWriter = Future<void> Function(
-  TileConfigurationList config,
-);
+typedef TileConfigurationWriter =
+    Future<void> Function(TileConfigurationList config);
 typedef AvailableTilesReader = List<String> Function();
 
-final tileConfigurationReaderProvider =
-    Provider<TileConfigurationReader>((ref) {
+final tileConfigurationReaderProvider = Provider<TileConfigurationReader>((
+  ref,
+) {
   return TileService.getTileConfigurations;
 });
 
-final tileConfigurationWriterProvider =
-    Provider<TileConfigurationWriter>((ref) {
+final tileConfigurationWriterProvider = Provider<TileConfigurationWriter>((
+  ref,
+) {
   return TileService.saveTileConfigurations;
 });
 
@@ -28,9 +29,7 @@ final availableTilesReaderProvider = Provider<AvailableTilesReader>((ref) {
 });
 
 final tileEditControllerProvider =
-    NotifierProvider<TileEditNotifier, TileEditState>(
-  TileEditNotifier.new,
-);
+    NotifierProvider<TileEditNotifier, TileEditState>(TileEditNotifier.new);
 
 class TileEditNotifier extends Notifier<TileEditState> {
   Timer? _inactivityTimer;
@@ -63,16 +62,19 @@ class TileEditNotifier extends Notifier<TileEditState> {
       final existingIds = loadedConfig.configurations.map((t) => t.id).toSet();
 
       var hasChanges = false;
-      final newConfigs =
-          List<TileConfiguration>.from(loadedConfig.configurations);
+      final newConfigs = List<TileConfiguration>.from(
+        loadedConfig.configurations,
+      );
 
       for (final id in availableTiles) {
         if (!existingIds.contains(id)) {
-          newConfigs.add(TileConfiguration(
-            id: id,
-            order: newConfigs.length,
-            isVisible: false,
-          ));
+          newConfigs.add(
+            TileConfiguration(
+              id: id,
+              order: newConfigs.length,
+              isVisible: false,
+            ),
+          );
           hasChanges = true;
         }
       }

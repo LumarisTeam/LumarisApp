@@ -25,11 +25,11 @@ class ScheduleTable {
   final List<String> end;
 
   factory ScheduleTable.fromModel(ScheduleTimeModel model) => ScheduleTable(
-        campusName: model.campusName,
-        timeRange: model.time,
-        start: model.start,
-        end: model.end,
-      );
+    campusName: model.campusName,
+    timeRange: model.time,
+    start: model.start,
+    end: model.end,
+  );
 
   /// 这张表是否适用于 [date]。
   ///
@@ -76,7 +76,7 @@ class TimeService {
     "15:45",
     "16:35",
     "19:30",
-    "20:20"
+    "20:20",
   ];
 
   static const List<String> CanTangTimeEnd = [
@@ -92,7 +92,7 @@ class TimeService {
     "16:30",
     "17:20",
     "20:15",
-    "21:05"
+    "21:05",
   ];
 
   /// 内置兜底：雁塔冬季的时间表
@@ -109,7 +109,7 @@ class TimeService {
     "16:00",
     "17:00",
     "19:30",
-    "20:30"
+    "20:30",
   ];
 
   static const List<String> YanTaDongEnd = [
@@ -125,7 +125,7 @@ class TimeService {
     "16:50",
     "17:50",
     "20:20",
-    "21:20"
+    "21:20",
   ];
 
   /// 内置兜底：雁塔夏季的时间表
@@ -142,7 +142,7 @@ class TimeService {
     "16:30",
     "17:30",
     "20:00",
-    "21:00"
+    "21:00",
   ];
 
   static const List<String> YanTaXiaEnd = [
@@ -158,7 +158,7 @@ class TimeService {
     "17:30",
     "18:20",
     "20:50",
-    "21:50"
+    "21:50",
   ];
 
   /// 内置兜底表，内容与服务端 `ScheduleTimeService` 保持一致，仅用于
@@ -213,7 +213,8 @@ class TimeService {
   ///
   /// 教务的校区字段可能不准，教室名以「草堂」开头的也算草堂。
   static String resolveCampusName(CourseModel course) {
-    final isCaoTang = course.campus == caoTangCampus ||
+    final isCaoTang =
+        course.campus == caoTangCampus ||
         (course.room.length >= 2 && course.room.startsWith('草堂'));
     return isCaoTang ? caoTangCampus : yanTaCampus;
   }
@@ -242,11 +243,13 @@ class TimeService {
   }) {
     final now = date ?? DateTime.now();
     final table = _resolveTable(campus, now);
-    final fallback =
-        campus == caoTangCampus ? null : _resolveTable(caoTangCampus, now);
+    final fallback = campus == caoTangCampus
+        ? null
+        : _resolveTable(caoTangCampus, now);
 
     return StartAndEnd(
-      start: _lookup(table?.start, startUnit) ??
+      start:
+          _lookup(table?.start, startUnit) ??
           _lookup(fallback?.start, startUnit) ??
           '',
       end:
@@ -269,8 +272,9 @@ class TimeService {
     String campus,
     DateTime date,
   ) {
-    final candidates =
-        tables.where((table) => table.campusName == campus).toList();
+    final candidates = tables
+        .where((table) => table.campusName == campus)
+        .toList();
     if (candidates.isEmpty) {
       return null;
     }
@@ -295,25 +299,21 @@ class TimeService {
 
 /// 把 `MM/DD~MM/DD` 解析成 `[月, 日, 月, 日]`；格式不符时返回 null。
 List<int>? _parseRange(String text) {
-  final match = RegExp(r'^(\d{1,2})/(\d{1,2})\s*~\s*(\d{1,2})/(\d{1,2})$')
-      .firstMatch(text.trim());
+  final match = RegExp(
+    r'^(\d{1,2})/(\d{1,2})\s*~\s*(\d{1,2})/(\d{1,2})$',
+  ).firstMatch(text.trim());
   if (match == null) {
     return null;
   }
 
-  return [
-    for (var i = 1; i <= 4; i++) int.parse(match.group(i)!),
-  ];
+  return [for (var i = 1; i <= 4; i++) int.parse(match.group(i)!)];
 }
 
 class StartAndEnd {
   final String start;
   final String end;
 
-  StartAndEnd({
-    required this.start,
-    required this.end,
-  });
+  StartAndEnd({required this.start, required this.end});
 
   /// [start] 在 [date] 这一天对应的墙上时间；格式不对或该节次没有时间时为 null。
   ///

@@ -23,11 +23,7 @@ class IconUtil {
           return const SizedBox(
             width: 40,
             height: 40,
-            child: Icon(
-              Icons.link_rounded,
-              size: 20,
-              color: Colors.grey,
-            ),
+            child: Icon(Icons.link_rounded, size: 20, color: Colors.grey),
           );
         },
       ),
@@ -40,15 +36,17 @@ class IconUtil {
       return null;
     }
 
-    final dateList =
-        await rootBundle.loadString('assets/iconfont/iconfont.json');
+    final dateList = await rootBundle.loadString(
+      'assets/iconfont/iconfont.json',
+    );
     final dynamic iconMap = jsonDecode(dateList);
     final List<dynamic> glyphs = iconMap['glyphs'] as List<dynamic>;
-    final dynamic matchedGlyph =
-        glyphs.cast<Map<String, dynamic>?>().firstWhere(
-              (element) => element?['font_class'] == icon,
-              orElse: () => null,
-            );
+    final dynamic matchedGlyph = glyphs
+        .cast<Map<String, dynamic>?>()
+        .firstWhere(
+          (element) => element?['font_class'] == icon,
+          orElse: () => null,
+        );
 
     if (matchedGlyph == null) {
       return null;

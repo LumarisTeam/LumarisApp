@@ -42,16 +42,14 @@ class _AnimatedButtonState extends State<AnimatedButton>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: widget.duration,
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: widget.scaleOnPress,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: AppAnimations.defaultCurve),
-    );
+    _controller = AnimationController(duration: widget.duration, vsync: this);
+    _scaleAnimation = Tween<double>(begin: 1.0, end: widget.scaleOnPress)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: AppAnimations.defaultCurve,
+          ),
+        );
   }
 
   @override
@@ -134,22 +132,23 @@ class _BounceButtonState extends State<BounceButton>
       duration: AppAnimations.standard,
       vsync: this,
     );
-    _scaleAnimation = TweenSequence<double>([
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.0, end: 0.95),
-        weight: 50,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 0.95, end: 1.05),
-        weight: 25,
-      ),
-      TweenSequenceItem(
-        tween: Tween<double>(begin: 1.05, end: 1.0),
-        weight: 25,
-      ),
-    ]).animate(
-      CurvedAnimation(parent: _controller, curve: AppAnimations.spring),
-    );
+    _scaleAnimation =
+        TweenSequence<double>([
+          TweenSequenceItem(
+            tween: Tween<double>(begin: 1.0, end: 0.95),
+            weight: 50,
+          ),
+          TweenSequenceItem(
+            tween: Tween<double>(begin: 0.95, end: 1.05),
+            weight: 25,
+          ),
+          TweenSequenceItem(
+            tween: Tween<double>(begin: 1.05, end: 1.0),
+            weight: 25,
+          ),
+        ]).animate(
+          CurvedAnimation(parent: _controller, curve: AppAnimations.spring),
+        );
   }
 
   @override
@@ -219,12 +218,13 @@ class _FadeButtonState extends State<FadeButton>
       duration: AppAnimations.fast,
       vsync: this,
     );
-    _opacityAnimation = Tween<double>(
-      begin: 1.0,
-      end: widget.opacityOnPress,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: AppAnimations.defaultCurve),
-    );
+    _opacityAnimation = Tween<double>(begin: 1.0, end: widget.opacityOnPress)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: AppAnimations.defaultCurve,
+          ),
+        );
   }
 
   @override
@@ -312,9 +312,7 @@ class _ScaleTapContainerState extends State<ScaleTapContainer>
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: AppAnimations.pressScale,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override

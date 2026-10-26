@@ -72,7 +72,9 @@ class ErrorLogger {
 
   /// 写入日志文件
   static Future<void> _writeToFile(
-      String message, StackTrace? stackTrace) async {
+    String message,
+    StackTrace? stackTrace,
+  ) async {
     try {
       final buffer = StringBuffer();
       buffer.writeln(message);
@@ -81,10 +83,7 @@ class ErrorLogger {
       }
       buffer.writeln('---');
 
-      await _logFile!.writeAsString(
-        buffer.toString(),
-        mode: FileMode.append,
-      );
+      await _logFile!.writeAsString(buffer.toString(), mode: FileMode.append);
     } catch (e) {
       AppLogger.debug('Failed to write log: $e');
     }

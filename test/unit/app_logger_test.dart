@@ -21,10 +21,7 @@ void main() {
 
     test('应该能够输出带异常的 error 日志', () {
       final exception = Exception('测试异常');
-      expect(
-        () => AppLogger.error('发生错误', error: exception),
-        returnsNormally,
-      );
+      expect(() => AppLogger.error('发生错误', error: exception), returnsNormally);
     });
 
     test('应该能够输出 trace 日志', () {

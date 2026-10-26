@@ -3,17 +3,7 @@ import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
-enum AppLocaleCode {
-  system,
-  zh,
-  en,
-  ja,
-  ru,
-  fr,
-  de,
-  ko,
-  zhHant,
-}
+enum AppLocaleCode { system, zh, en, ja, ru, fr, de, ko, zhHant }
 
 class AppLocaleOption {
   const AppLocaleOption({

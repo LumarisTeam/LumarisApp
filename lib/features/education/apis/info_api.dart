@@ -22,10 +22,7 @@ class InfoApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '信息完成度请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '信息完成度请求失败', -1);
       }
       return apiResponse.data ?? <InfoModel>[];
     } catch (e) {
@@ -46,10 +43,7 @@ class InfoApi {
         (data) => TimeInfo.fromJson(Map<String, dynamic>.from(data as Map)),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '时间请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '时间请求失败', -1);
       }
       return apiResponse.data ?? TimeInfo();
     } catch (e) {

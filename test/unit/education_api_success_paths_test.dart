@@ -66,170 +66,176 @@ void main() {
   });
 
   group('education API success paths', () {
-    test('AppApi.getAppInfo should parse dynamic nested map releases',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            if (options.path != '/App/GetTag') {
-              handler.next(options);
-              return;
-            }
+    test(
+      'AppApi.getAppInfo should parse dynamic nested map releases',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              if (options.path != '/App/GetTag') {
+                handler.next(options);
+                return;
+              }
 
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: <dynamic>[
-                  Map<dynamic, dynamic>.from({
-                    'id': 1,
-                    'tag_name': 'v1.2.3',
-                    'name': 'Release 1',
-                    'body': 'Notes',
-                    'author': Map<dynamic, dynamic>.from({
-                      'id': 10,
-                      'name': 'Alice',
-                    }),
-                    'created_at': '2026-05-06T00:00:00Z',
-                    'assets': <dynamic>[
-                      Map<dynamic, dynamic>.from({
-                        'browser_download_url':
-                            'https://downloads.example.com/app.apk',
-                        'name': 'app-release.apk',
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: <dynamic>[
+                    Map<dynamic, dynamic>.from({
+                      'id': 1,
+                      'tag_name': 'v1.2.3',
+                      'name': 'Release 1',
+                      'body': 'Notes',
+                      'author': Map<dynamic, dynamic>.from({
+                        'id': 10,
+                        'name': 'Alice',
                       }),
-                    ],
-                  }),
-                ],
-              ),
-            );
-          },
-        ),
-      );
-    });
-
-    test('refresh-aware APIs should mark requests as bypassing cache',
-        () async {
-      final seenPaths = <String>{};
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            expect(
-              options.extra[CacheInterceptor.bypassCacheKey],
-              isTrue,
-              reason: 'Expected ${options.path} to bypass request cache',
-            );
-            seenPaths.add(options.path);
-
-            dynamic data;
-            switch (options.path) {
-              case '/Info/Completion':
-                data = <String, dynamic>{
-                  'data': <Map<String, dynamic>>[],
-                  'code': 0,
-                  'message': 'ok',
-                };
-              case '/Exam':
-                data = <String, dynamic>{
-                  'data': <Map<String, dynamic>>[],
-                  'code': 0,
-                  'message': 'ok',
-                };
-              case '/Program':
-                data = <String, dynamic>{
-                  'data': <Map<String, dynamic>>[],
-                  'code': 0,
-                  'message': 'ok',
-                };
-              case '/Program/GetDic':
-                data = <String, dynamic>{
-                  'data': <String, dynamic>{},
-                  'code': 0,
-                  'message': 'ok',
-                };
-              case '/course/ScheduleTime':
-                data = <dynamic>[
-                  <String, dynamic>{
-                    'campusName': '草堂校区',
-                    'start': <String>['8:00'],
-                    'end': <String>['8:20'],
-                  },
-                ];
-              case '/Bus/2026-04-27':
-                data = <String, dynamic>{
-                  'data': <dynamic>[],
-                  'code': 0,
-                  'message': 'ok',
-                  'total': 0,
-                };
-              default:
-                fail('Unexpected path ${options.path}');
-            }
-
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: data,
-              ),
-            );
-          },
-        ),
-      );
-
-      await InfoApi.getInfoCompletion(forceRefresh: true);
-      await ExamApi.getExam('2026001', forceRefresh: true);
-      await ProgramApi.getProgram('2026001', forceRefresh: true);
-      await ProgramApi.getProgramDic('2026001', forceRefresh: true);
-      await CourseApi.getScheduleTime(forceRefresh: true);
-      await BusApi.getBus(dayDate: '2026-04-27', forceRefresh: true);
-
-      expect(seenPaths, {
-        '/course/ScheduleTime',
-        '/Info/Completion',
-        '/Exam',
-        '/Program',
-        '/Program/GetDic',
-        '/Bus/2026-04-27',
-      });
-    });
-
-    test('BusApi.getBusNewData should pass time and loc query parameters',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            expect(options.path, '/Bus/NewData/2026-04-27');
-            expect(options.queryParameters, {'loc': '雁塔'});
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: {
-                  'data': [
-                    {
-                      'lineName': '雁塔-草堂',
-                      'description': 'A1',
-                      'departureStation': '雁塔',
-                      'arrivalStation': '草堂',
-                      'runTime': '10:00',
-                      'arrivalStationTime': '01:00',
-                    }
+                      'created_at': '2026-05-06T00:00:00Z',
+                      'assets': <dynamic>[
+                        Map<dynamic, dynamic>.from({
+                          'browser_download_url':
+                              'https://downloads.example.com/app.apk',
+                          'name': 'app-release.apk',
+                        }),
+                      ],
+                    }),
                   ],
-                  'code': 0,
-                  'message': 'ok',
-                  'total': 1,
-                },
-              ),
-            );
-          },
-        ),
-      );
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
 
-      final model = await BusApi.getBusNewData('2026-04-27', loc: '雁塔');
+    test(
+      'refresh-aware APIs should mark requests as bypassing cache',
+      () async {
+        final seenPaths = <String>{};
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              expect(
+                options.extra[CacheInterceptor.bypassCacheKey],
+                isTrue,
+                reason: 'Expected ${options.path} to bypass request cache',
+              );
+              seenPaths.add(options.path);
 
-      expect(model.records, hasLength(1));
-      expect(model.records.single.description, 'A1');
-    });
+              dynamic data;
+              switch (options.path) {
+                case '/Info/Completion':
+                  data = <String, dynamic>{
+                    'data': <Map<String, dynamic>>[],
+                    'code': 0,
+                    'message': 'ok',
+                  };
+                case '/Exam':
+                  data = <String, dynamic>{
+                    'data': <Map<String, dynamic>>[],
+                    'code': 0,
+                    'message': 'ok',
+                  };
+                case '/Program':
+                  data = <String, dynamic>{
+                    'data': <Map<String, dynamic>>[],
+                    'code': 0,
+                    'message': 'ok',
+                  };
+                case '/Program/GetDic':
+                  data = <String, dynamic>{
+                    'data': <String, dynamic>{},
+                    'code': 0,
+                    'message': 'ok',
+                  };
+                case '/course/ScheduleTime':
+                  data = <dynamic>[
+                    <String, dynamic>{
+                      'campusName': '草堂校区',
+                      'start': <String>['8:00'],
+                      'end': <String>['8:20'],
+                    },
+                  ];
+                case '/Bus/2026-04-27':
+                  data = <String, dynamic>{
+                    'data': <dynamic>[],
+                    'code': 0,
+                    'message': 'ok',
+                    'total': 0,
+                  };
+                default:
+                  fail('Unexpected path ${options.path}');
+              }
+
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: data,
+                ),
+              );
+            },
+          ),
+        );
+
+        await InfoApi.getInfoCompletion(forceRefresh: true);
+        await ExamApi.getExam('2026001', forceRefresh: true);
+        await ProgramApi.getProgram('2026001', forceRefresh: true);
+        await ProgramApi.getProgramDic('2026001', forceRefresh: true);
+        await CourseApi.getScheduleTime(forceRefresh: true);
+        await BusApi.getBus(dayDate: '2026-04-27', forceRefresh: true);
+
+        expect(seenPaths, {
+          '/course/ScheduleTime',
+          '/Info/Completion',
+          '/Exam',
+          '/Program',
+          '/Program/GetDic',
+          '/Bus/2026-04-27',
+        });
+      },
+    );
+
+    test(
+      'BusApi.getBusNewData should pass time and loc query parameters',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              expect(options.path, '/Bus/NewData/2026-04-27');
+              expect(options.queryParameters, {'loc': '雁塔'});
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: {
+                    'data': [
+                      {
+                        'lineName': '雁塔-草堂',
+                        'description': 'A1',
+                        'departureStation': '雁塔',
+                        'arrivalStation': '草堂',
+                        'runTime': '10:00',
+                        'arrivalStationTime': '01:00',
+                      },
+                    ],
+                    'code': 0,
+                    'message': 'ok',
+                    'total': 1,
+                  },
+                ),
+              );
+            },
+          ),
+        );
+
+        final model = await BusApi.getBusNewData('2026-04-27', loc: '雁塔');
+
+        expect(model.records, hasLength(1));
+        expect(model.records.single.description, 'A1');
+      },
+    );
 
     test('BusApi.getBusOldData should pass isShow query parameter', () async {
       EduHttpClientManager.instance.dio.interceptors.add(
@@ -259,117 +265,121 @@ void main() {
       expect(model.total, 0);
     });
 
-    test('PaymentApi should parse raw payment and turnover responses',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            if (options.path == '/Payment/card-1') {
-              handler.resolve(
-                Response<dynamic>(
-                  requestOptions: options,
-                  statusCode: 200,
-                  data: {
-                    'data': 'card-bound',
-                    'code': 0,
-                    'message': 'ok',
-                  },
-                ),
-              );
-              return;
-            }
-            if (options.path == '/Payment/card-1/turnover') {
-              handler.resolve(
-                Response<dynamic>(
-                  requestOptions: options,
-                  statusCode: 200,
-                  data: {
-                    'data': {
-                      'records': [
-                        {
-                          'turnoverType': '充值',
-                          'datetimeStr': '2026-04-27 10:00:00',
-                          'resume': '测试',
-                          'tranamt': '1000',
-                        }
-                      ],
-                      'balance': '1000',
+    test(
+      'PaymentApi should parse raw payment and turnover responses',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              if (options.path == '/Payment/card-1') {
+                handler.resolve(
+                  Response<dynamic>(
+                    requestOptions: options,
+                    statusCode: 200,
+                    data: {'data': 'card-bound', 'code': 0, 'message': 'ok'},
+                  ),
+                );
+                return;
+              }
+              if (options.path == '/Payment/card-1/turnover') {
+                handler.resolve(
+                  Response<dynamic>(
+                    requestOptions: options,
+                    statusCode: 200,
+                    data: {
+                      'data': {
+                        'records': [
+                          {
+                            'turnoverType': '充值',
+                            'datetimeStr': '2026-04-27 10:00:00',
+                            'resume': '测试',
+                            'tranamt': '1000',
+                          },
+                        ],
+                        'balance': '1000',
+                      },
+                      'code': 0,
+                      'message': 'ok',
                     },
-                    'code': 0,
-                    'message': 'ok',
-                  },
+                  ),
+                );
+                return;
+              }
+              handler.next(options);
+            },
+          ),
+        );
+
+        final raw = await PaymentApi.getPayment('card-1');
+        final turnover = await PaymentApi.getPaymentTurnover('card-1');
+
+        expect(raw.value, 'card-bound');
+        expect(turnover.payments.single.amount, 1000);
+        expect(turnover.balance, 1000);
+      },
+    );
+
+    test(
+      'PaymentApi.getPaymentTurnover should throw on invalid response',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: 'not-json',
                 ),
               );
-              return;
-            }
-            handler.next(options);
-          },
-        ),
-      );
+            },
+          ),
+        );
 
-      final raw = await PaymentApi.getPayment('card-1');
-      final turnover = await PaymentApi.getPaymentTurnover('card-1');
+        expect(
+          () => PaymentApi.getPaymentTurnover('card-1'),
+          throwsA(isA<NetworkException>()),
+        );
+      },
+    );
 
-      expect(raw.value, 'card-bound');
-      expect(turnover.payments.single.amount, 1000);
-      expect(turnover.balance, 1000);
-    });
+    test(
+      'PaymentApi.getPaymentQrCodePayload should fetch payload and bypass cache',
+      () async {
+        String? requestedPath;
+        Map<String, dynamic>? requestedQuery;
+        bool? bypassCache;
 
-    test('PaymentApi.getPaymentTurnover should throw on invalid response',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: 'not-json',
-              ),
-            );
-          },
-        ),
-      );
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              requestedPath = options.path;
+              requestedQuery = options.queryParameters;
+              bypassCache =
+                  options.extra[CacheInterceptor.bypassCacheKey] == true;
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: <String, dynamic>{'payload': 'payload-123'},
+                ),
+              );
+            },
+          ),
+        );
 
-      expect(
-        () => PaymentApi.getPaymentTurnover('card-1'),
-        throwsA(isA<NetworkException>()),
-      );
-    });
+        final payload = await PaymentApi.getPaymentQrCodePayload(
+          'card-1',
+          ' pw ',
+        );
 
-    test('PaymentApi.getPaymentQrCodePayload should fetch payload and bypass cache',
-        () async {
-      String? requestedPath;
-      Map<String, dynamic>? requestedQuery;
-      bool? bypassCache;
-
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            requestedPath = options.path;
-            requestedQuery = options.queryParameters;
-            bypassCache =
-                options.extra[CacheInterceptor.bypassCacheKey] == true;
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: <String, dynamic>{'payload': 'payload-123'},
-              ),
-            );
-          },
-        ),
-      );
-
-      final payload =
-          await PaymentApi.getPaymentQrCodePayload('card-1', ' pw ');
-
-      expect(requestedPath, '/Payment/card-1/qrcode');
-      expect(requestedQuery, {'password': 'pw'});
-      // 支付码有时效，缓存拦截器必须被绕过
-      expect(bypassCache, isTrue);
-      expect(payload, 'payload-123');
-    });
+        expect(requestedPath, '/Payment/card-1/qrcode');
+        expect(requestedQuery, {'password': 'pw'});
+        // 支付码有时效，缓存拦截器必须被绕过
+        expect(bypassCache, isTrue);
+        expect(payload, 'payload-123');
+      },
+    );
 
     test('LoginApi should parse map and string responses', () async {
       final client = EduHttpClient(baseUrl: 'http://api.test');
@@ -493,84 +503,85 @@ void main() {
       );
       LoginApi.setClientForTest(client);
 
-      expect(
-        () => LoginApi.login('u', 'p'),
-        throwsA(isA<NetworkException>()),
-      );
+      expect(() => LoginApi.login('u', 'p'), throwsA(isA<NetworkException>()));
     });
-    test('CourseApi.getScheduleTime should parse the bare array response',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            expect(options.path, '/course/ScheduleTime');
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: <dynamic>[
-                  <String, dynamic>{
-                    'campusName': '草堂校区',
-                    'start': <String>['8:00', '8:30'],
-                    'end': <String>['8:20', '9:15'],
-                  },
-                  <String, dynamic>{
-                    'campusName': '雁塔校区',
-                    'time': '05/01~09/30',
-                    'start': <String>['', '8:00'],
-                    'end': <String>['', '8:50'],
-                  },
-                ],
-              ),
-            );
-          },
-        ),
-      );
-
-      final tables = await CourseApi.getScheduleTime();
-
-      expect(tables, hasLength(2));
-      expect(tables.first.campusName, '草堂校区');
-      expect(tables.first.time, '');
-      expect(tables.last.time, '05/01~09/30');
-      expect(tables.last.start, <String>['', '8:00']);
-    });
-
-    test('CourseApi.getScheduleTime should parse the enveloped response',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            expect(options.path, '/course/ScheduleTime');
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: <String, dynamic>{
-                  'data': <dynamic>[
+    test(
+      'CourseApi.getScheduleTime should parse the bare array response',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              expect(options.path, '/course/ScheduleTime');
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: <dynamic>[
+                    <String, dynamic>{
+                      'campusName': '草堂校区',
+                      'start': <String>['8:00', '8:30'],
+                      'end': <String>['8:20', '9:15'],
+                    },
                     <String, dynamic>{
                       'campusName': '雁塔校区',
-                      'time': '10/01~04/30',
+                      'time': '05/01~09/30',
                       'start': <String>['', '8:00'],
                       'end': <String>['', '8:50'],
                     },
                   ],
-                  'code': 0,
-                  'message': 'ok',
-                  'total': 1,
-                },
-              ),
-            );
-          },
-        ),
-      );
+                ),
+              );
+            },
+          ),
+        );
 
-      final tables = await CourseApi.getScheduleTime();
+        final tables = await CourseApi.getScheduleTime();
 
-      expect(tables, hasLength(1));
-      expect(tables.single.campusName, '雁塔校区');
-      expect(tables.single.end, <String>['', '8:50']);
-    });
+        expect(tables, hasLength(2));
+        expect(tables.first.campusName, '草堂校区');
+        expect(tables.first.time, '');
+        expect(tables.last.time, '05/01~09/30');
+        expect(tables.last.start, <String>['', '8:00']);
+      },
+    );
+
+    test(
+      'CourseApi.getScheduleTime should parse the enveloped response',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              expect(options.path, '/course/ScheduleTime');
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: <String, dynamic>{
+                    'data': <dynamic>[
+                      <String, dynamic>{
+                        'campusName': '雁塔校区',
+                        'time': '10/01~04/30',
+                        'start': <String>['', '8:00'],
+                        'end': <String>['', '8:50'],
+                      },
+                    ],
+                    'code': 0,
+                    'message': 'ok',
+                    'total': 1,
+                  },
+                ),
+              );
+            },
+          ),
+        );
+
+        final tables = await CourseApi.getScheduleTime();
+
+        expect(tables, hasLength(1));
+        expect(tables.single.campusName, '雁塔校区');
+        expect(tables.single.end, <String>['', '8:50']);
+      },
+    );
   });
 
   group('BusService', () {

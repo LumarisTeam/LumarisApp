@@ -10,9 +10,10 @@ import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-SemesterModel _semester(
-        {String semester = '2024-2025-1', String name = '2024-2025学年第一学期'}) =>
-    SemesterModel(semester: semester, name: name);
+SemesterModel _semester({
+  String semester = '2024-2025-1',
+  String name = '2024-2025学年第一学期',
+}) => SemesterModel(semester: semester, name: name);
 
 ScoreModel _score({
   String lessonCode = 'CS001',
@@ -21,24 +22,22 @@ ScoreModel _score({
   String gpa = '4.0',
   String credit = '3.0',
   bool isMinor = false,
-}) =>
-    ScoreModel(
-      lessonCode: lessonCode,
-      lessonName: lessonName,
-      grade: grade,
-      gpa: gpa,
-      credit: credit,
-      isMinor: isMinor,
-    );
+}) => ScoreModel(
+  lessonCode: lessonCode,
+  lessonName: lessonName,
+  grade: grade,
+  gpa: gpa,
+  credit: credit,
+  isMinor: isMinor,
+);
 
 ScoreList _scoreList({
   String semester = '2024-2025-1',
   List<ScoreModel>? scores,
-}) =>
-    ScoreList(
-      semester: _semester(semester: semester),
-      list: scores ?? [_score()],
-    );
+}) => ScoreList(
+  semester: _semester(semester: semester),
+  list: scores ?? [_score()],
+);
 
 void main() {
   late Directory tempDir;
@@ -131,8 +130,10 @@ void main() {
 
     test('should_preserve_score_fields_after_round_trip', () async {
       final original = ScoreList(
-        semester:
-            SemesterModel(semester: '2024-2025-1', name: '2024-2025学年第一学期'),
+        semester: SemesterModel(
+          semester: '2024-2025-1',
+          name: '2024-2025学年第一学期',
+        ),
         list: [
           ScoreModel(
             lessonCode: 'CS001',
@@ -186,15 +187,20 @@ void main() {
       await PrefsService.instance.remove(PrefsKeys.ALL_SCORE_DATA);
     });
 
-    test('should_return_empty_list_when_prefs_migration_data_is_corrupt',
-        () async {
-      await PrefsService.instance.setString('all_score_data', 'not-valid-json');
+    test(
+      'should_return_empty_list_when_prefs_migration_data_is_corrupt',
+      () async {
+        await PrefsService.instance.setString(
+          'all_score_data',
+          'not-valid-json',
+        );
 
-      final result = await repo.getScores();
-      expect(result, isEmpty);
+        final result = await repo.getScores();
+        expect(result, isEmpty);
 
-      await PrefsService.instance.remove('all_score_data');
-    });
+        await PrefsService.instance.remove('all_score_data');
+      },
+    );
   });
 
   group('ScoreRepository.clear', () {
@@ -208,8 +214,10 @@ void main() {
     });
 
     test('should_return_empty_list_after_clear', () async {
-      await repo
-          .saveScores([_scoreList(), _scoreList(semester: '2023-2024-2')]);
+      await repo.saveScores([
+        _scoreList(),
+        _scoreList(semester: '2023-2024-2'),
+      ]);
 
       await repo.clear();
 

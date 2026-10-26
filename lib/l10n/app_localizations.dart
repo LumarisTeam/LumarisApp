@@ -1426,24 +1426,6 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'紧凑'**
-  String get compact;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'标准'**
-  String get standard;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'宽松'**
-  String get relaxed;
-
-  ///
-  ///
-  /// In zh, this message translates to:
   /// **'选择要查看的课程'**
   String get selectCourse;
 
@@ -4001,6 +3983,378 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'开启后台运行，确保桌面小组件按时刷新'**
   String get permissionWidgetFeatureDesc;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'个性化配置'**
+  String get schedulePersonalization;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认样式设置'**
+  String get resetToDefaultStyle;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认样式'**
+  String get resetStyleConfirmTitle;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'将重置颜色、文字、边框和尺寸设置，壁纸不会被清除。确定继续吗？'**
+  String get resetStyleConfirmMessage;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'界面显示'**
+  String get sectionInterface;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'课表背景壁纸'**
+  String get scheduleWallpaper;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置（点击选择图片）'**
+  String get wallpaperTapHint;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'已设置（长按可清除）'**
+  String get wallpaperClearHint;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏网格线'**
+  String get hideGridLines;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'课表页面文字颜色'**
+  String get schedulePageTextColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'网格尺寸'**
+  String get sectionGridSize;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'格子高度'**
+  String get gridHeight;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'顶部表头高度'**
+  String get topHeaderHeight;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'课程块配置'**
+  String get sectionCourseBlock;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'课程块文字颜色'**
+  String get courseBlockTextColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏授课老师'**
+  String get hideTeacher;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'文字水平居中'**
+  String get textAlignCenterH;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'文字垂直居中'**
+  String get textAlignCenterV;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'边框样式'**
+  String get borderStyle;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'无'**
+  String get borderStyleNone;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'实线'**
+  String get borderStyleSolid;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'虚线'**
+  String get borderStyleDashed;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'颜色方案'**
+  String get sectionColorScheme;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'浅色模式颜色池'**
+  String get lightColorPool;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'深色模式颜色池'**
+  String get darkColorPool;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'重置颜色'**
+  String get resetColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'跟随主题'**
+  String get useTheme;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏节次具体时间'**
+  String get hideSectionTime;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏周几下方日期'**
+  String get hideDateUnderDay;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'时间列宽度'**
+  String get timeColumnWidth;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'显示课程格开始时间'**
+  String get showStartTime;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏上课地点'**
+  String get hideLocation;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'文字缩放比例'**
+  String get fontScale;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'圆角半径'**
+  String get cornerRadius;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'内部填充'**
+  String get innerPadding;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'外部间距'**
+  String get outerPadding;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'不透明度'**
+  String get opacity;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'浅色模式'**
+  String get wallpaperEditingLight;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'深色模式'**
+  String get wallpaperEditingDark;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'输入数值'**
+  String get inputValue;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'更改课程颜色'**
+  String get changeCourseColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'恢复默认颜色'**
+  String get resetCourseColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'颜色主题'**
+  String get colorTheme;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'自定义主题'**
+  String get customThemes;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'新建自定义主题'**
+  String get newCustomTheme;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'复制为自定义主题'**
+  String get copyAsCustomTheme;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'{name} 副本'**
+  String copyThemeName(String name);
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑颜色'**
+  String get editColorPool;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'内置主题为只读，复制为自定义主题后可编辑。'**
+  String get builtInThemeReadOnly;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'输入主题名称'**
+  String get colorThemeNameHint;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'请输入主题名称'**
+  String get colorThemeNameRequired;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'该主题名称已存在或为内置主题保留'**
+  String get colorThemeNameDuplicate;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'主题名称不能超过 {max} 个字符'**
+  String colorThemeNameTooLong(int max);
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'重命名主题'**
+  String get renameTheme;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'删除主题'**
+  String get deleteTheme;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'确定删除主题“{name}”吗？正在使用它的颜色池将恢复为默认主题。'**
+  String deleteThemeConfirmMessage(String name);
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'添加颜色'**
+  String get addColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'编辑颜色'**
+  String get editColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'删除颜色'**
+  String get deleteColor;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'至少保留一种颜色'**
+  String get minOneColorHint;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'最多 {max} 种颜色'**
+  String maxColorLimitHint(int max);
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 种颜色'**
+  String colorCount(int count);
 }
 
 class _AppLocalizationsDelegate

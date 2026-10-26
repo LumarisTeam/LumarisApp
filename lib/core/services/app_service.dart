@@ -75,8 +75,9 @@ class AppService {
       return false;
     }
 
-    final releaseVersion =
-        releaseParts.length > 3 ? releaseParts.sublist(0, 3) : releaseParts;
+    final releaseVersion = releaseParts.length > 3
+        ? releaseParts.sublist(0, 3)
+        : releaseParts;
     final releaseBuild = releaseParts.length > 3 ? releaseParts[3] : 0;
     final versionLength = releaseVersion.length > currentParts.length
         ? releaseVersion.length
@@ -94,8 +95,10 @@ class AppService {
   }
 
   static List<int>? _parseVersion(String value) {
-    final normalized =
-        value.trim().replaceFirst(RegExp(r'^v', caseSensitive: false), '');
+    final normalized = value.trim().replaceFirst(
+      RegExp(r'^v', caseSensitive: false),
+      '',
+    );
     if (normalized.isEmpty) {
       return null;
     }

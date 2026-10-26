@@ -30,10 +30,7 @@ class PaymentApi {
         (data) => data?.toString() ?? '',
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '缴费信息请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '缴费信息请求失败', -1);
       }
       return RawStringResponse(apiResponse.data ?? '');
     } catch (e) {
@@ -58,10 +55,7 @@ class PaymentApi {
         (data) => Map<String, dynamic>.from(data as Map),
       );
       if (!apiResponse.isSuccess || apiResponse.data == null) {
-        throw NetworkException(
-          apiResponse.message ?? '缴费流水请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '缴费流水请求失败', -1);
       }
 
       final turnoverData = apiResponse.data!;
@@ -98,7 +92,10 @@ class PaymentApi {
       );
 
       // Old 端点直接返回 { payload }；同时兼容 V1 的 { data, code, message } 信封。
-      final apiResponse = ApiResponse<dynamic>.parsed(rawResponse, (data) => data);
+      final apiResponse = ApiResponse<dynamic>.parsed(
+        rawResponse,
+        (data) => data,
+      );
       final data = apiResponse.data;
       final payload = data is Map
           ? (data['payload']?.toString().trim() ?? '')

@@ -25,12 +25,9 @@ class Result<T> {
   final AppError? _error;
   final bool isSuccess;
 
-  const Result._({
-    T? data,
-    AppError? error,
-    required this.isSuccess,
-  })  : _data = data,
-        _error = error;
+  const Result._({T? data, AppError? error, required this.isSuccess})
+    : _data = data,
+      _error = error;
 
   /// 创建成功结果
   factory Result.success(T data) {
@@ -227,10 +224,7 @@ class AppError {
 
   /// 授权错误
   factory AppError.authorization(String message) {
-    return AppError(
-      type: AppErrorType.authorization,
-      message: message,
-    );
+    return AppError(type: AppErrorType.authorization, message: message);
   }
 
   /// 服务器错误

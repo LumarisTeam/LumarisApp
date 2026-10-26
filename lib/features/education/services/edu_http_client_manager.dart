@@ -68,10 +68,7 @@ class EduHttpClientManager {
   /// 重新初始化客户端。
   ///
   /// 用于完全重置客户端实例（例如在登出后）。
-  void reinitialize({
-    School? school,
-    AuthStateCallbacks? authStateCallbacks,
-  }) {
+  void reinitialize({School? school, AuthStateCallbacks? authStateCallbacks}) {
     _client.dispose();
     if (authStateCallbacks != null) {
       _authStateCallbacks = authStateCallbacks;

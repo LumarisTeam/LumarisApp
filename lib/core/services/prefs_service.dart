@@ -23,9 +23,7 @@ class PrefsService {
   /// 如果尚未初始化，会自动初始化（但建议在 main.dart 中提前初始化）
   static SharedPreferences get instance {
     if (_instance == null) {
-      throw StateError(
-        'PrefsService 尚未初始化，请先调用 PrefsService.init()',
-      );
+      throw StateError('PrefsService 尚未初始化，请先调用 PrefsService.init()');
     }
     return _instance!;
   }

@@ -24,10 +24,7 @@ void main() {
     });
 
     test('toJson should only include non-null fields', () {
-      final model = LoginResponse(
-        success: true,
-        cookie: 'session-cookie',
-      );
+      final model = LoginResponse(success: true, cookie: 'session-cookie');
 
       final json = model.toJson();
       expect(json['success'], isTrue);

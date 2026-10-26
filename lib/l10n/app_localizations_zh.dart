@@ -691,15 +691,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get scheduleSettingsTitle => '课表设置';
 
   @override
-  String get compact => '紧凑';
-
-  @override
-  String get standard => '标准';
-
-  @override
-  String get relaxed => '宽松';
-
-  @override
   String get selectCourse => '选择要查看的课程';
 
   @override
@@ -2022,6 +2013,202 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get permissionWidgetFeatureDesc => '开启后台运行，确保桌面小组件按时刷新';
+
+  @override
+  String get schedulePersonalization => '个性化配置';
+
+  @override
+  String get resetToDefaultStyle => '恢复默认样式设置';
+
+  @override
+  String get resetStyleConfirmTitle => '恢复默认样式';
+
+  @override
+  String get resetStyleConfirmMessage => '将重置颜色、文字、边框和尺寸设置，壁纸不会被清除。确定继续吗？';
+
+  @override
+  String get sectionInterface => '界面显示';
+
+  @override
+  String get scheduleWallpaper => '课表背景壁纸';
+
+  @override
+  String get wallpaperTapHint => '未设置（点击选择图片）';
+
+  @override
+  String get wallpaperClearHint => '已设置（长按可清除）';
+
+  @override
+  String get hideGridLines => '隐藏网格线';
+
+  @override
+  String get schedulePageTextColor => '课表页面文字颜色';
+
+  @override
+  String get sectionGridSize => '网格尺寸';
+
+  @override
+  String get gridHeight => '格子高度';
+
+  @override
+  String get topHeaderHeight => '顶部表头高度';
+
+  @override
+  String get sectionCourseBlock => '课程块配置';
+
+  @override
+  String get courseBlockTextColor => '课程块文字颜色';
+
+  @override
+  String get hideTeacher => '隐藏授课老师';
+
+  @override
+  String get textAlignCenterH => '文字水平居中';
+
+  @override
+  String get textAlignCenterV => '文字垂直居中';
+
+  @override
+  String get borderStyle => '边框样式';
+
+  @override
+  String get borderStyleNone => '无';
+
+  @override
+  String get borderStyleSolid => '实线';
+
+  @override
+  String get borderStyleDashed => '虚线';
+
+  @override
+  String get sectionColorScheme => '颜色方案';
+
+  @override
+  String get lightColorPool => '浅色模式颜色池';
+
+  @override
+  String get darkColorPool => '深色模式颜色池';
+
+  @override
+  String get resetColor => '重置颜色';
+
+  @override
+  String get useTheme => '跟随主题';
+
+  @override
+  String get hideSectionTime => '隐藏节次具体时间';
+
+  @override
+  String get hideDateUnderDay => '隐藏周几下方日期';
+
+  @override
+  String get timeColumnWidth => '时间列宽度';
+
+  @override
+  String get showStartTime => '显示课程格开始时间';
+
+  @override
+  String get hideLocation => '隐藏上课地点';
+
+  @override
+  String get fontScale => '文字缩放比例';
+
+  @override
+  String get cornerRadius => '圆角半径';
+
+  @override
+  String get innerPadding => '内部填充';
+
+  @override
+  String get outerPadding => '外部间距';
+
+  @override
+  String get opacity => '不透明度';
+
+  @override
+  String get wallpaperEditingLight => '浅色模式';
+
+  @override
+  String get wallpaperEditingDark => '深色模式';
+
+  @override
+  String get inputValue => '输入数值';
+
+  @override
+  String get changeCourseColor => '更改课程颜色';
+
+  @override
+  String get resetCourseColor => '恢复默认颜色';
+
+  @override
+  String get colorTheme => '颜色主题';
+
+  @override
+  String get customThemes => '自定义主题';
+
+  @override
+  String get newCustomTheme => '新建自定义主题';
+
+  @override
+  String get copyAsCustomTheme => '复制为自定义主题';
+
+  @override
+  String copyThemeName(String name) {
+    return '$name 副本';
+  }
+
+  @override
+  String get editColorPool => '编辑颜色';
+
+  @override
+  String get builtInThemeReadOnly => '内置主题为只读，复制为自定义主题后可编辑。';
+
+  @override
+  String get colorThemeNameHint => '输入主题名称';
+
+  @override
+  String get colorThemeNameRequired => '请输入主题名称';
+
+  @override
+  String get colorThemeNameDuplicate => '该主题名称已存在或为内置主题保留';
+
+  @override
+  String colorThemeNameTooLong(int max) {
+    return '主题名称不能超过 $max 个字符';
+  }
+
+  @override
+  String get renameTheme => '重命名主题';
+
+  @override
+  String get deleteTheme => '删除主题';
+
+  @override
+  String deleteThemeConfirmMessage(String name) {
+    return '确定删除主题“$name”吗？正在使用它的颜色池将恢复为默认主题。';
+  }
+
+  @override
+  String get addColor => '添加颜色';
+
+  @override
+  String get editColor => '编辑颜色';
+
+  @override
+  String get deleteColor => '删除颜色';
+
+  @override
+  String get minOneColorHint => '至少保留一种颜色';
+
+  @override
+  String maxColorLimitHint(int max) {
+    return '最多 $max 种颜色';
+  }
+
+  @override
+  String colorCount(int count) {
+    return '$count 种颜色';
+  }
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -2710,15 +2897,6 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get scheduleSettingsTitle => '課表設定';
-
-  @override
-  String get compact => '緊湊';
-
-  @override
-  String get standard => '標準';
-
-  @override
-  String get relaxed => '寬鬆';
 
   @override
   String get selectCourse => '選擇要檢視的課程';
@@ -4043,4 +4221,200 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get permissionWidgetFeatureDesc => '開啟背景執行，確保桌面小工具準時更新';
+
+  @override
+  String get schedulePersonalization => '個人化設定';
+
+  @override
+  String get resetToDefaultStyle => '恢復預設樣式設定';
+
+  @override
+  String get resetStyleConfirmTitle => '恢復預設樣式';
+
+  @override
+  String get resetStyleConfirmMessage => '將重設顏色、文字、邊框和尺寸設定，桌布不會被清除。確定繼續嗎？';
+
+  @override
+  String get sectionInterface => '介面顯示';
+
+  @override
+  String get scheduleWallpaper => '課表背景桌布';
+
+  @override
+  String get wallpaperTapHint => '未設定（點擊選擇圖片）';
+
+  @override
+  String get wallpaperClearHint => '已設定（長按可清除）';
+
+  @override
+  String get hideGridLines => '隱藏格線';
+
+  @override
+  String get schedulePageTextColor => '課表頁面文字顏色';
+
+  @override
+  String get sectionGridSize => '網格尺寸';
+
+  @override
+  String get gridHeight => '格子高度';
+
+  @override
+  String get topHeaderHeight => '頂部表頭高度';
+
+  @override
+  String get sectionCourseBlock => '課程區塊設定';
+
+  @override
+  String get courseBlockTextColor => '課程區塊文字顏色';
+
+  @override
+  String get hideTeacher => '隱藏授課老師';
+
+  @override
+  String get textAlignCenterH => '文字水平置中';
+
+  @override
+  String get textAlignCenterV => '文字垂直置中';
+
+  @override
+  String get borderStyle => '邊框樣式';
+
+  @override
+  String get borderStyleNone => '無';
+
+  @override
+  String get borderStyleSolid => '實線';
+
+  @override
+  String get borderStyleDashed => '虛線';
+
+  @override
+  String get sectionColorScheme => '顏色方案';
+
+  @override
+  String get lightColorPool => '淺色模式顏色池';
+
+  @override
+  String get darkColorPool => '深色模式顏色池';
+
+  @override
+  String get resetColor => '重設顏色';
+
+  @override
+  String get useTheme => '跟隨主題';
+
+  @override
+  String get hideSectionTime => '隱藏節次具體時間';
+
+  @override
+  String get hideDateUnderDay => '隱藏週幾下方日期';
+
+  @override
+  String get timeColumnWidth => '時間欄寬度';
+
+  @override
+  String get showStartTime => '顯示課程格開始時間';
+
+  @override
+  String get hideLocation => '隱藏上課地點';
+
+  @override
+  String get fontScale => '文字縮放比例';
+
+  @override
+  String get cornerRadius => '圓角半徑';
+
+  @override
+  String get innerPadding => '內部填充';
+
+  @override
+  String get outerPadding => '外部間距';
+
+  @override
+  String get opacity => '不透明度';
+
+  @override
+  String get wallpaperEditingLight => '淺色模式';
+
+  @override
+  String get wallpaperEditingDark => '深色模式';
+
+  @override
+  String get inputValue => '輸入數值';
+
+  @override
+  String get changeCourseColor => '變更課程顏色';
+
+  @override
+  String get resetCourseColor => '恢復預設顏色';
+
+  @override
+  String get colorTheme => '顏色主題';
+
+  @override
+  String get customThemes => '自訂主題';
+
+  @override
+  String get newCustomTheme => '新建自訂主題';
+
+  @override
+  String get copyAsCustomTheme => '複製為自訂主題';
+
+  @override
+  String copyThemeName(String name) {
+    return '$name 副本';
+  }
+
+  @override
+  String get editColorPool => '編輯顏色';
+
+  @override
+  String get builtInThemeReadOnly => '內建主題為唯讀，複製為自訂主題後可編輯。';
+
+  @override
+  String get colorThemeNameHint => '輸入主題名稱';
+
+  @override
+  String get colorThemeNameRequired => '請輸入主題名稱';
+
+  @override
+  String get colorThemeNameDuplicate => '該主題名稱已存在或為內建主題保留';
+
+  @override
+  String colorThemeNameTooLong(int max) {
+    return '主題名稱不能超過 $max 個字元';
+  }
+
+  @override
+  String get renameTheme => '重新命名主題';
+
+  @override
+  String get deleteTheme => '刪除主題';
+
+  @override
+  String deleteThemeConfirmMessage(String name) {
+    return '確定刪除主題「$name」嗎？正在使用它的顏色池將恢復為預設主題。';
+  }
+
+  @override
+  String get addColor => '新增顏色';
+
+  @override
+  String get editColor => '編輯顏色';
+
+  @override
+  String get deleteColor => '刪除顏色';
+
+  @override
+  String get minOneColorHint => '至少保留一種顏色';
+
+  @override
+  String maxColorLimitHint(int max) {
+    return '最多 $max 種顏色';
+  }
+
+  @override
+  String colorCount(int count) {
+    return '$count 種顏色';
+  }
 }

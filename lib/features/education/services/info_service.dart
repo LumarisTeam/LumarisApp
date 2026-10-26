@@ -33,8 +33,9 @@ class InfoService {
     }
   }
 
-  static Future<List<InfoModel>> getInfoList(
-      {bool forceRefresh = false}) async {
+  static Future<List<InfoModel>> getInfoList({
+    bool forceRefresh = false,
+  }) async {
     final prefs = PrefsService.instance;
     final jsonString = prefs.getString(PrefsKeys.INFO_DATA);
     final time = prefs.getInt(PrefsKeys.INFO_DATA_TIME);

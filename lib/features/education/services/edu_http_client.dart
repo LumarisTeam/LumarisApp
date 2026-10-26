@@ -54,124 +54,126 @@ class EduHttpClient extends BaseHttpClient {
 
   // Test hook: allows injecting deterministic login behavior in unit tests.
   static Future<Map<String, dynamic>> Function(String, String)?
-      _loginHandlerForTest;
+  _loginHandlerForTest;
   static int Function()? _nowProviderForTest;
 
   EduHttpClient({
     super.dio,
     String? baseUrl,
     AuthStateCallbacks authStateCallbacks = AuthStateCallbacks.noop,
-  })  : _authStateCallbacks = authStateCallbacks,
-        _baseUrl = baseUrl ?? School.fallbackList.first.website,
-        super(
-          baseUrl: baseUrl ?? School.fallbackList.first.website,
-          retryPolicy: const RetryPolicy(maxRetries: 2),
-          defaultHeaders: const <String, dynamic>{
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        ) {
+  }) : _authStateCallbacks = authStateCallbacks,
+       _baseUrl = baseUrl ?? School.fallbackList.first.website,
+       super(
+         baseUrl: baseUrl ?? School.fallbackList.first.website,
+         retryPolicy: const RetryPolicy(maxRetries: 2),
+         defaultHeaders: const <String, dynamic>{
+           'Accept': 'application/json',
+           'Content-Type': 'application/json',
+         },
+       ) {
     _setupEducationInterceptors();
   }
 
   void _setupEducationInterceptors() {
     // 添加认证拦截器
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final rateLimitException = _createRateLimitExceptionIfCoolingDown(
-          options,
-        );
-        if (rateLimitException != null) {
-          handler.reject(rateLimitException);
-          return;
-        }
-
-        // 自动添加认证cookie
-        final cookie = await _getCookie();
-        if (cookie != null) {
-          options.headers['Cookie'] = cookie;
-          options.headers['xauat'] = cookie;
-        }
-        options.headers.putIfAbsent('x-language', _resolveLanguageHeaderValue);
-        handler.next(options);
-      },
-      onError: (DioException e, handler) async {
-        final statusCode = e.response?.statusCode;
-
-        if (statusCode == 429) {
-          _recordRateLimit(e.requestOptions);
-          handler.next(
-            _buildRateLimitException(
-              e.requestOptions,
-              response: e.response,
-            ),
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final rateLimitException = _createRateLimitExceptionIfCoolingDown(
+            options,
           );
-          return;
-        }
+          if (rateLimitException != null) {
+            handler.reject(rateLimitException);
+            return;
+          }
 
-        // 只在认证相关错误（401/403）时尝试重登录
-        if (statusCode == 401 || statusCode == 403) {
-          final requestEpoch = AuthSessionGuard.epoch;
-          try {
-            AppLogger.info('检测到认证失败($statusCode)，正在尝试重新登录...');
+          // 自动添加认证cookie
+          final cookie = await _getCookie();
+          if (cookie != null) {
+            options.headers['Cookie'] = cookie;
+            options.headers['xauat'] = cookie;
+          }
+          options.headers.putIfAbsent(
+            'x-language',
+            _resolveLanguageHeaderValue,
+          );
+          handler.next(options);
+        },
+        onError: (DioException e, handler) async {
+          final statusCode = e.response?.statusCode;
 
-            // 通知UI层开始重登录
-            _notifyRelogging();
+          if (statusCode == 429) {
+            _recordRateLimit(e.requestOptions);
+            handler.next(
+              _buildRateLimitException(e.requestOptions, response: e.response),
+            );
+            return;
+          }
 
-            // 使用全局登录锁，确保同一时间只有一个登录请求
-            if (await _reLoginWithLock()) {
-              if (!AuthSessionGuard.isCurrent(requestEpoch)) {
-                // 重登录期间用户已登出，不再继续重试原请求。
-                AppLogger.info('重登录期间会话已被清空，放弃本次重试');
-                handler.next(e);
-                return;
+          // 只在认证相关错误（401/403）时尝试重登录
+          if (statusCode == 401 || statusCode == 403) {
+            final requestEpoch = AuthSessionGuard.epoch;
+            try {
+              AppLogger.info('检测到认证失败($statusCode)，正在尝试重新登录...');
+
+              // 通知UI层开始重登录
+              _notifyRelogging();
+
+              // 使用全局登录锁，确保同一时间只有一个登录请求
+              if (await _reLoginWithLock()) {
+                if (!AuthSessionGuard.isCurrent(requestEpoch)) {
+                  // 重登录期间用户已登出，不再继续重试原请求。
+                  AppLogger.info('重登录期间会话已被清空，放弃本次重试');
+                  handler.next(e);
+                  return;
+                }
+
+                AppLogger.info('重新登录成功，正在重试原请求...');
+
+                // 通知UI层重登录成功
+                _notifyRelogSuccess();
+
+                // 重登录成功，重新发送请求
+                final cookie = await _getCookie();
+                if (cookie != null) {
+                  e.requestOptions.headers['Cookie'] = cookie;
+                  e.requestOptions.headers['xauat'] = cookie;
+                }
+                final response = await dio.request(
+                  e.requestOptions.path,
+                  options: Options(
+                    method: e.requestOptions.method,
+                    headers: e.requestOptions.headers,
+                    contentType: e.requestOptions.contentType,
+                  ),
+                  data: e.requestOptions.data,
+                  queryParameters: e.requestOptions.queryParameters,
+                );
+                return handler.resolve(response);
+              } else {
+                AppLogger.warning('重新登录失败，请检查账号密码');
+
+                // 通知UI层重登录失败；已登出时不再提示，避免误导。
+                if (AuthSessionGuard.isCurrent(requestEpoch)) {
+                  _notifyRelogFailed('账号或密码错误');
+                }
               }
-
-              AppLogger.info('重新登录成功，正在重试原请求...');
-
-              // 通知UI层重登录成功
-              _notifyRelogSuccess();
-
-              // 重登录成功，重新发送请求
-              final cookie = await _getCookie();
-              if (cookie != null) {
-                e.requestOptions.headers['Cookie'] = cookie;
-                e.requestOptions.headers['xauat'] = cookie;
-              }
-              final response = await dio.request(
-                e.requestOptions.path,
-                options: Options(
-                  method: e.requestOptions.method,
-                  headers: e.requestOptions.headers,
-                  contentType: e.requestOptions.contentType,
-                ),
-                data: e.requestOptions.data,
-                queryParameters: e.requestOptions.queryParameters,
-              );
-              return handler.resolve(response);
-            } else {
-              AppLogger.warning('重新登录失败，请检查账号密码');
+            } catch (retryError) {
+              // 重新请求失败，继续处理原错误
+              AppLogger.debug('重登录后请求失败: $retryError');
 
               // 通知UI层重登录失败；已登出时不再提示，避免误导。
               if (AuthSessionGuard.isCurrent(requestEpoch)) {
-                _notifyRelogFailed('账号或密码错误');
+                _notifyRelogFailed(retryError.toString());
               }
             }
-          } catch (retryError) {
-            // 重新请求失败，继续处理原错误
-            AppLogger.debug('重登录后请求失败: $retryError');
-
-            // 通知UI层重登录失败；已登出时不再提示，避免误导。
-            if (AuthSessionGuard.isCurrent(requestEpoch)) {
-              _notifyRelogFailed(retryError.toString());
-            }
           }
-        }
 
-        // 处理其他错误
-        handler.next(e);
-      },
-    ));
+          // 处理其他错误
+          handler.next(e);
+        },
+      ),
+    );
   }
 
   /// 获取当前基础 URL
@@ -200,7 +202,8 @@ class EduHttpClient extends BaseHttpClient {
     final prefs = PrefsService.instance;
     final preference = prefs.getString(PrefsKeys.LOCALE_CODE);
     final localeCode = AppLocaleService.fromPreference(preference);
-    final locale = AppLocaleService.localeOf(localeCode) ??
+    final locale =
+        AppLocaleService.localeOf(localeCode) ??
         PlatformDispatcher.instance.locale;
     return _languageCodeFromLocale(locale);
   }
@@ -262,17 +265,21 @@ class EduHttpClient extends BaseHttpClient {
     if (value is FormData) {
       return <String, dynamic>{
         'fields': value.fields
-            .map((field) => <String, dynamic>{
-                  'key': field.key,
-                  'value': field.value,
-                })
+            .map(
+              (field) => <String, dynamic>{
+                'key': field.key,
+                'value': field.value,
+              },
+            )
             .toList(),
         'files': value.files
-            .map((file) => <String, dynamic>{
-                  'key': file.key,
-                  'filename': file.value.filename,
-                  'contentType': file.value.contentType?.toString(),
-                })
+            .map(
+              (file) => <String, dynamic>{
+                'key': file.key,
+                'filename': file.value.filename,
+                'contentType': file.value.contentType?.toString(),
+              },
+            )
             .toList(),
       };
     }
@@ -283,7 +290,8 @@ class EduHttpClient extends BaseHttpClient {
     RequestOptions options, {
     Response<dynamic>? response,
   }) {
-    final effectiveResponse = response ??
+    final effectiveResponse =
+        response ??
         Response<dynamic>(
           requestOptions: options,
           statusCode: 429,
@@ -398,10 +406,8 @@ class EduHttpClient extends BaseHttpClient {
 
       // 后台任务在独立 isolate 中运行，静态代际号不共享；登出会删除
       // SecureStorage 凭证，重新读取可识别跨 isolate 的登出。
-      final currentUsername =
-          await secureStorage.read(key: PrefsKeys.USERNAME);
-      final currentPassword =
-          await secureStorage.read(key: PrefsKeys.PASSWORD);
+      final currentUsername = await secureStorage.read(key: PrefsKeys.USERNAME);
+      final currentPassword = await secureStorage.read(key: PrefsKeys.PASSWORD);
       if (currentUsername != username || currentPassword != password) {
         AppLogger.info('重登录期间凭证已被清除，丢弃本次结果');
         return false;
@@ -476,7 +482,8 @@ class EduHttpClient extends BaseHttpClient {
     bool bypassCache = false,
   }) async {
     try {
-      final mergedOptions = options?.copyWith(
+      final mergedOptions =
+          options?.copyWith(
             extra: <String, dynamic>{
               ...?options.extra,
               if (bypassCache) CacheInterceptor.bypassCacheKey: true,
@@ -549,7 +556,8 @@ class EduHttpClient extends BaseHttpClient {
   }
 
   static void setLoginHandlerForTest(
-      Future<Map<String, dynamic>> Function(String, String)? handler) {
+    Future<Map<String, dynamic>> Function(String, String)? handler,
+  ) {
     _loginHandlerForTest = handler;
   }
 

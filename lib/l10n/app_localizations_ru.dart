@@ -717,15 +717,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get scheduleSettingsTitle => 'Настройки расписания';
 
   @override
-  String get compact => 'Компактный';
-
-  @override
-  String get standard => 'Стандартный';
-
-  @override
-  String get relaxed => 'Расширенный';
-
-  @override
   String get selectCourse => 'Выбрать курс';
 
   @override
@@ -2119,4 +2110,204 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get permissionWidgetFeatureDesc =>
       'Разрешите фоновую работу, чтобы виджет на главном экране обновлялся вовремя.';
+
+  @override
+  String get schedulePersonalization => 'Персонализация';
+
+  @override
+  String get resetToDefaultStyle => 'Сбросить стиль по умолчанию';
+
+  @override
+  String get resetStyleConfirmTitle => 'Сбросить стиль по умолчанию';
+
+  @override
+  String get resetStyleConfirmMessage =>
+      'Цвета, текст, границы и размеры будут сброшены. Обои останутся. Продолжить?';
+
+  @override
+  String get sectionInterface => 'Интерфейс';
+
+  @override
+  String get scheduleWallpaper => 'Фон расписания';
+
+  @override
+  String get wallpaperTapHint =>
+      'Не задано (нажмите, чтобы выбрать изображение)';
+
+  @override
+  String get wallpaperClearHint => 'Задано (долгое нажатие для очистки)';
+
+  @override
+  String get hideGridLines => 'Скрыть линии сетки';
+
+  @override
+  String get schedulePageTextColor => 'Цвет текста страницы расписания';
+
+  @override
+  String get sectionGridSize => 'Размер сетки';
+
+  @override
+  String get gridHeight => 'Высота ячейки';
+
+  @override
+  String get topHeaderHeight => 'Высота верхней панели';
+
+  @override
+  String get sectionCourseBlock => 'Настройки блоков курсов';
+
+  @override
+  String get courseBlockTextColor => 'Цвет текста блоков курсов';
+
+  @override
+  String get hideTeacher => 'Скрыть преподавателя';
+
+  @override
+  String get textAlignCenterH => 'Выравнивание по центру по горизонтали';
+
+  @override
+  String get textAlignCenterV => 'Выравнивание по центру по вертикали';
+
+  @override
+  String get borderStyle => 'Стиль рамки';
+
+  @override
+  String get borderStyleNone => 'Нет';
+
+  @override
+  String get borderStyleSolid => 'Сплошная';
+
+  @override
+  String get borderStyleDashed => 'Пунктирная';
+
+  @override
+  String get sectionColorScheme => 'Цветовая схема';
+
+  @override
+  String get lightColorPool => 'Светлая палитра';
+
+  @override
+  String get darkColorPool => 'Тёмная палитра';
+
+  @override
+  String get resetColor => 'Сбросить цвет';
+
+  @override
+  String get useTheme => 'Как в теме';
+
+  @override
+  String get hideSectionTime => 'Скрыть время пар';
+
+  @override
+  String get hideDateUnderDay => 'Скрыть дату под днём недели';
+
+  @override
+  String get timeColumnWidth => 'Ширина колонки времени';
+
+  @override
+  String get showStartTime => 'Показывать время начала';
+
+  @override
+  String get hideLocation => 'Скрыть место';
+
+  @override
+  String get fontScale => 'Масштаб текста';
+
+  @override
+  String get cornerRadius => 'Радиус углов';
+
+  @override
+  String get innerPadding => 'Внутренний отступ';
+
+  @override
+  String get outerPadding => 'Внешний отступ';
+
+  @override
+  String get opacity => 'Непрозрачность';
+
+  @override
+  String get wallpaperEditingLight => 'Светлая тема';
+
+  @override
+  String get wallpaperEditingDark => 'Тёмная тема';
+
+  @override
+  String get inputValue => 'Введите значение';
+
+  @override
+  String get changeCourseColor => 'Изменить цвет курса';
+
+  @override
+  String get resetCourseColor => 'Вернуть цвет по умолчанию';
+
+  @override
+  String get colorTheme => 'Цветовая тема';
+
+  @override
+  String get customThemes => 'Пользовательские темы';
+
+  @override
+  String get newCustomTheme => 'Новая пользовательская тема';
+
+  @override
+  String get copyAsCustomTheme => 'Скопировать как пользовательскую тему';
+
+  @override
+  String copyThemeName(String name) {
+    return 'Копия $name';
+  }
+
+  @override
+  String get editColorPool => 'Изменить цвета';
+
+  @override
+  String get builtInThemeReadOnly =>
+      'Встроенные темы доступны только для чтения. Скопируйте тему как пользовательскую, чтобы изменить её.';
+
+  @override
+  String get colorThemeNameHint => 'Введите название темы';
+
+  @override
+  String get colorThemeNameRequired => 'Введите название темы';
+
+  @override
+  String get colorThemeNameDuplicate =>
+      'Такое название темы уже существует или зарезервировано';
+
+  @override
+  String colorThemeNameTooLong(int max) {
+    return 'Название темы не должно превышать $max символов';
+  }
+
+  @override
+  String get renameTheme => 'Переименовать тему';
+
+  @override
+  String get deleteTheme => 'Удалить тему';
+
+  @override
+  String deleteThemeConfirmMessage(String name) {
+    return 'Удалить тему «$name»? Цветовые пулы, использующие её, вернутся к теме по умолчанию.';
+  }
+
+  @override
+  String get addColor => 'Добавить цвет';
+
+  @override
+  String get editColor => 'Изменить цвет';
+
+  @override
+  String get deleteColor => 'Удалить цвет';
+
+  @override
+  String get minOneColorHint => 'Оставьте хотя бы один цвет';
+
+  @override
+  String maxColorLimitHint(int max) {
+    return 'Не более $max цветов';
+  }
+
+  @override
+  String colorCount(int count) {
+    return 'Цветов: $count';
+  }
 }

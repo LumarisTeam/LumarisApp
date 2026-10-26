@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_grid_lines.dart';
 
 List<String> _getWeekdayShortNames(AppLocalizations l10n) => [
   l10n.sundayShort,
@@ -39,6 +40,10 @@ class WeekdayHeader extends StatelessWidget {
     this.showDate = true,
     this.highlightToday = true,
     this.showGrid = true,
+    this.height = 45,
+    this.timeColumnWidth = 45,
+    this.hideDateUnderDay = false,
+    this.textColor,
   });
 
   final DateTime weekStartDate;
@@ -47,12 +52,25 @@ class WeekdayHeader extends StatelessWidget {
   final bool highlightToday;
   final bool showGrid;
 
+  /// 顶部表头高度；无日期（全部课表页）时仍用 44。
+  final double height;
+
+  /// 时间列宽度，必须与 TimelineColumn 一致。
+  final double timeColumnWidth;
+
+  /// 隐藏周几下方的日期；表头高度低于 42 时也会自动隐藏。
+  final bool hideDateUnderDay;
+
+  /// 课表页面文字颜色；为空时跟随主题。
+  final Color? textColor;
+
   @override
   Widget build(BuildContext context) {
     final colors = context.mc.colors;
     final now = DateTime.now();
 
     final monthStr = _getMonthShortNames(context.l10n)[weekStartDate.month - 1];
+    final showDateBubble = showDate && !hideDateUnderDay && height >= 42;
 
     return Container(
       decoration: showGrid
@@ -62,102 +80,99 @@ class WeekdayHeader extends StatelessWidget {
               ),
             )
           : null,
-      height: showDate ? 60 : 44,
-      child: Row(
-        children: [
-          // 左侧占位（对应时间轴）
-          Container(
-            width: 56,
-            decoration: showGrid
-                ? BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: colors.separator, width: 0.5),
-                    ),
-                  )
-                : null,
-            child: Center(
-              child: showDate && currentWeek != null
-                  ? Text(
-                      monthStr,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: colors.secondaryLabel,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ),
-          // 星期几
-          ...List.generate(7, (index) {
-            final date = weekStartDate.add(Duration(days: index));
-            final isToday =
-                highlightToday &&
-                date.year == now.year &&
-                date.month == now.month &&
-                date.day == now.day;
-
-            return Expanded(
-              child: Container(
-                decoration: showGrid
-                    ? BoxDecoration(
-                        border: Border(
-                          left: BorderSide(color: colors.separator, width: 0.5),
-                          bottom: BorderSide(
-                            color: colors.separator,
-                            width: 0.5,
+      height: showDate ? height : 44,
+      child: CustomPaint(
+        foregroundPainter: showGrid
+            ? ScheduleHeaderLinesPainter(
+                color: colors.separator,
+                timeColumnWidth: timeColumnWidth,
+              )
+            : null,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 左侧占位（对应时间轴）
+            SizedBox(
+              width: timeColumnWidth,
+              child: Center(
+                child: showDate && currentWeek != null
+                    ? FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          monthStr,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: textColor ?? colors.secondaryLabel,
                           ),
                         ),
                       )
-                    : null,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // 星期几
-                    Text(
-                      _getWeekdayShortNames(context.l10n)[date.weekday % 7],
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: isToday ? FontWeight.w700 : FontWeight.w500,
-                        color: isToday
-                            ? Theme.of(context).colorScheme.primary
-                            : colors.label,
-                      ),
-                    ),
-                    if (showDate) ...[
-                      const SizedBox(height: 4),
-                      // 日期
-                      Container(
-                        width: 28,
-                        height: 28,
-                        decoration: BoxDecoration(
+                    : const SizedBox.shrink(),
+              ),
+            ),
+            // 星期几
+            ...List.generate(7, (index) {
+              final date = weekStartDate.add(Duration(days: index));
+              final isToday =
+                  highlightToday &&
+                  date.year == now.year &&
+                  date.month == now.month &&
+                  date.day == now.day;
+
+              return Expanded(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 星期几
+                      Text(
+                        _getWeekdayShortNames(context.l10n)[date.weekday % 7],
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: isToday
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           color: isToday
                               ? Theme.of(context).colorScheme.primary
-                              : Colors.transparent,
-                          shape: BoxShape.circle,
+                              : (textColor ?? colors.label),
                         ),
-                        child: Center(
-                          child: Text(
-                            date.day.toString(),
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: isToday
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                              color: isToday
-                                  ? colors.onAccent
-                                  : colors.secondaryLabel,
+                      ),
+                      if (showDateBubble) ...[
+                        const SizedBox(height: 4),
+                        // 日期
+                        Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: isToday
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.transparent,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Text(
+                              date.day.toString(),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: isToday
+                                    ? FontWeight.w600
+                                    : FontWeight.w400,
+                                color: isToday
+                                    ? colors.onAccent
+                                    : (textColor ?? colors.secondaryLabel),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            );
-          }),
-        ],
+              );
+            }),
+          ],
+        ),
       ),
     );
   }

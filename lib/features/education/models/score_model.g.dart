@@ -103,22 +103,21 @@ class ScoreListAdapter extends TypeAdapter<ScoreList> {
 // **************************************************************************
 
 ScoreModel _$ScoreModelFromJson(Map<String, dynamic> json) => ScoreModel(
-      name: json['name'] == null ? '' : parseSchemaString(json['name']),
-      lessonCode: json['lessonCode'] == null
-          ? ''
-          : parseSchemaString(json['lessonCode']),
-      lessonName: json['lessonName'] == null
-          ? ''
-          : parseSchemaString(json['lessonName']),
-      grade: json['grade'] == null ? '' : parseSchemaString(json['grade']),
-      gpa: json['gpa'] == null ? '' : parseSchemaString(json['gpa']),
-      gradeDetail: json['gradeDetail'] == null
-          ? ''
-          : parseSchemaString(json['gradeDetail']),
-      credit: json['credit'] == null ? '' : parseSchemaString(json['credit']),
-      isMinor:
-          json['isMinor'] == null ? false : parseSchemaBool(json['isMinor']),
-    );
+  name: json['name'] == null ? '' : parseSchemaString(json['name']),
+  lessonCode: json['lessonCode'] == null
+      ? ''
+      : parseSchemaString(json['lessonCode']),
+  lessonName: json['lessonName'] == null
+      ? ''
+      : parseSchemaString(json['lessonName']),
+  grade: json['grade'] == null ? '' : parseSchemaString(json['grade']),
+  gpa: json['gpa'] == null ? '' : parseSchemaString(json['gpa']),
+  gradeDetail: json['gradeDetail'] == null
+      ? ''
+      : parseSchemaString(json['gradeDetail']),
+  credit: json['credit'] == null ? '' : parseSchemaString(json['credit']),
+  isMinor: json['isMinor'] == null ? false : parseSchemaBool(json['isMinor']),
+);
 
 Map<String, dynamic> _$ScoreModelToJson(ScoreModel instance) =>
     <String, dynamic>{
@@ -133,14 +132,13 @@ Map<String, dynamic> _$ScoreModelToJson(ScoreModel instance) =>
     };
 
 ScoreList _$ScoreListFromJson(Map<String, dynamic> json) => ScoreList(
-      semester:
-          SemesterModel.fromJson(json['semester'] as Map<String, dynamic>),
-      list: (json['list'] as List<dynamic>)
-          .map((e) => ScoreModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+  semester: SemesterModel.fromJson(json['semester'] as Map<String, dynamic>),
+  list: (json['list'] as List<dynamic>)
+      .map((e) => ScoreModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
 Map<String, dynamic> _$ScoreListToJson(ScoreList instance) => <String, dynamic>{
-      'list': instance.list.map((e) => e.toJson()).toList(),
-      'semester': instance.semester.toJson(),
-    };
+  'list': instance.list.map((e) => e.toJson()).toList(),
+  'semester': instance.semester.toJson(),
+};

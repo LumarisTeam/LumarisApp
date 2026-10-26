@@ -53,8 +53,11 @@ class HiveManager {
       _initialized = true;
       AppLogger.info('Hive initialized successfully with adapters');
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to initialize Hive',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to initialize Hive',
+        error: e,
+        stackTrace: stackTrace,
+      );
       rethrow;
     } finally {
       _initializing = null;

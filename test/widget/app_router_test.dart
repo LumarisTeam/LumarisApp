@@ -50,10 +50,9 @@ void main() {
   }
 
   testWidgets('matches and builds the core route table', (tester) async {
-    await tester.pumpWidget(const Directionality(
-      textDirection: TextDirection.ltr,
-      child: SizedBox(),
-    ));
+    await tester.pumpWidget(
+      const Directionality(textDirection: TextDirection.ltr, child: SizedBox()),
+    );
     final context = tester.element(find.byType(SizedBox));
 
     expect(buildMatchedRoute(context, AppRoutes.home), isA<HomePage>());
@@ -87,8 +86,9 @@ void main() {
     await expectLater(resultFuture, completion(isTrue));
   });
 
-  testWidgets('go switches the active route without GetX routing',
-      (tester) async {
+  testWidgets('go switches the active route without GetX routing', (
+    tester,
+  ) async {
     AppRouter.go(AppRoutes.login);
     await tester.pumpWidget(buildRouterApp());
     await tester.pumpAndSettle();

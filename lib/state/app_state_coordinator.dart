@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/state/course_store.dart';
 import 'package:ios_club_app/state/program_page_notifier.dart';
@@ -19,7 +20,15 @@ final appStateCoordinatorProvider = Provider<void>((ref) {
     courseStoreProvider.select((state) => state.ignoreCourses),
     (previous, next) {
       if (previous != null && previous != next) {
-        unawaited(ref.read(scheduleStoreProvider.notifier).refreshCourseData());
+        ref.read(scheduleStoreProvider.notifier).refreshCourseData().catchError(
+          (error, stackTrace) {
+            AppLogger.error(
+              'Failed to refresh course data after ignore list change',
+              error: error,
+              stackTrace: stackTrace,
+            );
+          },
+        );
       }
     },
   );
@@ -30,28 +39,46 @@ final appStateCoordinatorProvider = Provider<void>((ref) {
     ),
     (previous, next) {
       if (previous != null && previous != next) {
-        unawaited(ref.read(scheduleStoreProvider.notifier).initializeData());
+        ref.read(scheduleStoreProvider.notifier).initializeData().catchError((
+          error,
+          stackTrace,
+        ) {
+          AppLogger.error(
+            'Failed to reinitialize schedule after week start day change',
+            error: error,
+            stackTrace: stackTrace,
+          );
+        });
       }
     },
   );
 
-  ref.listen<String>(
-    settingsStoreProvider.select((state) => state.schoolId),
-    (previous, next) {
-      if (previous != null && previous != next) {
-        unawaited(ref.read(schoolStoreProvider.notifier).fetchSchool(next));
-      }
-    },
-  );
+  ref.listen<String>(settingsStoreProvider.select((state) => state.schoolId), (
+    previous,
+    next,
+  ) {
+    if (previous != null && previous != next) {
+      ref.read(schoolStoreProvider.notifier).fetchSchool(next).catchError((
+        error,
+        stackTrace,
+      ) {
+        AppLogger.error(
+          'Failed to fetch school data after school ID change',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      });
+    }
+  });
 
-  ref.listen<bool>(
-    userStoreProvider.select((state) => state.isLogin),
-    (previous, next) {
-      if (previous == true && !next) {
-        ref.read(courseStoreProvider.notifier).clearCourseData();
-        ref.read(scheduleStoreProvider.notifier).clean();
-        ref.read(programControllerProvider.notifier).clean();
-      }
-    },
-  );
+  ref.listen<bool>(userStoreProvider.select((state) => state.isLogin), (
+    previous,
+    next,
+  ) {
+    if (previous == true && !next) {
+      ref.read(courseStoreProvider.notifier).clearCourseData();
+      ref.read(scheduleStoreProvider.notifier).clean();
+      ref.read(programControllerProvider.notifier).clean();
+    }
+  });
 });

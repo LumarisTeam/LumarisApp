@@ -61,10 +61,7 @@ class EducationLogoutService {
     await prefs.remove(PrefsKeys.GUEST_COURSE_DATA);
   }
 
-  static Future<void> _run(
-    String label,
-    Future<void> Function() action,
-  ) async {
+  static Future<void> _run(String label, Future<void> Function() action) async {
     try {
       await action();
     } catch (e, stackTrace) {

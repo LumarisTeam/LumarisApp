@@ -83,8 +83,7 @@ class EducationCacheService {
     try {
       await action();
     } catch (e, stackTrace) {
-      AppLogger.error('清理教务系统缓存失败: $label',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error('清理教务系统缓存失败: $label', error: e, stackTrace: stackTrace);
     }
   }
 }

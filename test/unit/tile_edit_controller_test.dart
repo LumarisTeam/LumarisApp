@@ -13,15 +13,17 @@ void main() {
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     await PrefsService.init();
-    container = ProviderContainer(overrides: [
-      tileConfigurationReaderProvider.overrideWithValue(
-        () async => TileConfigurationList.defaultConfig(),
-      ),
-      tileConfigurationWriterProvider.overrideWithValue((config) async {}),
-      availableTilesReaderProvider.overrideWithValue(
-        () => const ['电费', '校车', '饭卡'],
-      ),
-    ]);
+    container = ProviderContainer(
+      overrides: [
+        tileConfigurationReaderProvider.overrideWithValue(
+          () async => TileConfigurationList.defaultConfig(),
+        ),
+        tileConfigurationWriterProvider.overrideWithValue((config) async {}),
+        availableTilesReaderProvider.overrideWithValue(
+          () => const ['电费', '校车', '饭卡'],
+        ),
+      ],
+    );
     addTearDown(container.dispose);
   });
 

@@ -727,15 +727,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get scheduleSettingsTitle => 'Paramètres de l\'emploi du temps';
 
   @override
-  String get compact => 'Compact';
-
-  @override
-  String get standard => 'Standard';
-
-  @override
-  String get relaxed => 'Relaxé';
-
-  @override
   String get selectCourse => 'Sélectionner un cours';
 
   @override
@@ -2143,4 +2134,203 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get permissionWidgetFeatureDesc =>
       'Autorisez l\'exécution en arrière-plan pour que le widget de l\'écran d\'accueil se mette à jour à l\'heure.';
+
+  @override
+  String get schedulePersonalization => 'Personnalisation';
+
+  @override
+  String get resetToDefaultStyle => 'Rétablir le style par défaut';
+
+  @override
+  String get resetStyleConfirmTitle => 'Rétablir le style par défaut';
+
+  @override
+  String get resetStyleConfirmMessage =>
+      'Cela réinitialise les couleurs, le texte, les bordures et les tailles. Le fond d\'écran sera conservé. Continuer ?';
+
+  @override
+  String get sectionInterface => 'Interface';
+
+  @override
+  String get scheduleWallpaper => 'Fond d\'écran de l\'emploi du temps';
+
+  @override
+  String get wallpaperTapHint => 'Non défini (appuyez pour choisir une image)';
+
+  @override
+  String get wallpaperClearHint => 'Défini (appui long pour effacer)';
+
+  @override
+  String get hideGridLines => 'Masquer les lignes de grille';
+
+  @override
+  String get schedulePageTextColor => 'Couleur du texte de l\'emploi du temps';
+
+  @override
+  String get sectionGridSize => 'Taille de la grille';
+
+  @override
+  String get gridHeight => 'Hauteur des cellules';
+
+  @override
+  String get topHeaderHeight => 'Hauteur de l\'en-tête';
+
+  @override
+  String get sectionCourseBlock => 'Réglages des blocs de cours';
+
+  @override
+  String get courseBlockTextColor => 'Couleur du texte des blocs de cours';
+
+  @override
+  String get hideTeacher => 'Masquer l\'enseignant';
+
+  @override
+  String get textAlignCenterH => 'Centrer horizontalement';
+
+  @override
+  String get textAlignCenterV => 'Centrer verticalement';
+
+  @override
+  String get borderStyle => 'Style de bordure';
+
+  @override
+  String get borderStyleNone => 'Aucun';
+
+  @override
+  String get borderStyleSolid => 'Continu';
+
+  @override
+  String get borderStyleDashed => 'Pointillé';
+
+  @override
+  String get sectionColorScheme => 'Palette de couleurs';
+
+  @override
+  String get lightColorPool => 'Palette claire';
+
+  @override
+  String get darkColorPool => 'Palette sombre';
+
+  @override
+  String get resetColor => 'Réinitialiser la couleur';
+
+  @override
+  String get useTheme => 'Suivre le thème';
+
+  @override
+  String get hideSectionTime => 'Masquer les heures de cours';
+
+  @override
+  String get hideDateUnderDay => 'Masquer la date sous le jour';
+
+  @override
+  String get timeColumnWidth => 'Largeur de la colonne horaire';
+
+  @override
+  String get showStartTime => 'Afficher l\'heure de début';
+
+  @override
+  String get hideLocation => 'Masquer le lieu';
+
+  @override
+  String get fontScale => 'Échelle du texte';
+
+  @override
+  String get cornerRadius => 'Rayon des coins';
+
+  @override
+  String get innerPadding => 'Marge intérieure';
+
+  @override
+  String get outerPadding => 'Marge extérieure';
+
+  @override
+  String get opacity => 'Opacité';
+
+  @override
+  String get wallpaperEditingLight => 'Mode clair';
+
+  @override
+  String get wallpaperEditingDark => 'Mode sombre';
+
+  @override
+  String get inputValue => 'Saisir une valeur';
+
+  @override
+  String get changeCourseColor => 'Changer la couleur du cours';
+
+  @override
+  String get resetCourseColor => 'Rétablir la couleur par défaut';
+
+  @override
+  String get colorTheme => 'Thème de couleurs';
+
+  @override
+  String get customThemes => 'Thèmes personnalisés';
+
+  @override
+  String get newCustomTheme => 'Nouveau thème personnalisé';
+
+  @override
+  String get copyAsCustomTheme => 'Copier en thème personnalisé';
+
+  @override
+  String copyThemeName(String name) {
+    return 'Copie de $name';
+  }
+
+  @override
+  String get editColorPool => 'Modifier les couleurs';
+
+  @override
+  String get builtInThemeReadOnly =>
+      'Les thèmes intégrés sont en lecture seule. Copiez-en un en thème personnalisé pour le modifier.';
+
+  @override
+  String get colorThemeNameHint => 'Saisir un nom de thème';
+
+  @override
+  String get colorThemeNameRequired => 'Veuillez saisir un nom de thème';
+
+  @override
+  String get colorThemeNameDuplicate =>
+      'Ce nom de thème existe déjà ou est réservé';
+
+  @override
+  String colorThemeNameTooLong(int max) {
+    return 'Le nom du thème ne peut pas dépasser $max caractères';
+  }
+
+  @override
+  String get renameTheme => 'Renommer le thème';
+
+  @override
+  String get deleteTheme => 'Supprimer le thème';
+
+  @override
+  String deleteThemeConfirmMessage(String name) {
+    return 'Supprimer le thème « $name » ? Les palettes qui l\'utilisent reviendront au thème par défaut.';
+  }
+
+  @override
+  String get addColor => 'Ajouter une couleur';
+
+  @override
+  String get editColor => 'Modifier la couleur';
+
+  @override
+  String get deleteColor => 'Supprimer la couleur';
+
+  @override
+  String get minOneColorHint => 'Conservez au moins une couleur';
+
+  @override
+  String maxColorLimitHint(int max) {
+    return 'Jusqu\'à $max couleurs';
+  }
+
+  @override
+  String colorCount(int count) {
+    return 'Couleurs : $count';
+  }
 }

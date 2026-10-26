@@ -205,10 +205,7 @@ void main() {
 
     test('should create instance from JSON', () {
       final json = {
-        'semester': {
-          'value': '2020-2021-1',
-          'text': '2020-2021学年第一学期',
-        },
+        'semester': {'value': '2020-2021-1', 'text': '2020-2021学年第一学期'},
         'list': [
           {
             'name': '张三',
@@ -219,8 +216,8 @@ void main() {
             'gradeDetail': '良好',
             'credit': '3.0',
             'isMinor': false,
-          }
-        ]
+          },
+        ],
       };
 
       final scoreList = ScoreList.fromJson(json);
@@ -233,10 +230,7 @@ void main() {
     });
 
     test('should handle empty list correctly', () {
-      final scoreList = ScoreList(
-        semester: semester,
-        list: [],
-      );
+      final scoreList = ScoreList(semester: semester, list: []);
 
       expect(scoreList.totalCredit, 0.0);
       expect(scoreList.totalCourse, 0);
@@ -248,11 +242,15 @@ void main() {
         semester: semester,
         list: [
           ScoreModel(
-              credit: '3.0', gpa: '4.0', isMinor: false), // Regular course
+            credit: '3.0',
+            gpa: '4.0',
+            isMinor: false,
+          ), // Regular course
           ScoreModel(
-              credit: '2.0',
-              gpa: '3.0',
-              isMinor: true), // Minor course (should be ignored)
+            credit: '2.0',
+            gpa: '3.0',
+            isMinor: true,
+          ), // Minor course (should be ignored)
         ],
       );
 
@@ -265,9 +263,7 @@ void main() {
     test('should handle single course correctly', () {
       final scoreList = ScoreList(
         semester: semester,
-        list: [
-          ScoreModel(credit: '3.0', gpa: '4.0'),
-        ],
+        list: [ScoreModel(credit: '3.0', gpa: '4.0')],
       );
 
       expect(scoreList.totalCredit, 3.0);
@@ -294,9 +290,7 @@ void main() {
     test('should handle courses with empty gpa correctly', () {
       final scoreList = ScoreList(
         semester: semester,
-        list: [
-          ScoreModel(credit: '3.0', gpa: ''),
-        ],
+        list: [ScoreModel(credit: '3.0', gpa: '')],
       );
 
       expect(scoreList.totalCredit, 0.0);
@@ -364,16 +358,12 @@ void main() {
     test('should calculate total GPA across semesters with weights', () {
       final scoreList1 = ScoreList(
         semester: semester1,
-        list: [
-          ScoreModel(credit: '6.0', gpa: '2.0'),
-        ],
+        list: [ScoreModel(credit: '6.0', gpa: '2.0')],
       );
 
       final scoreList2 = ScoreList(
         semester: semester2,
-        list: [
-          ScoreModel(credit: '1.0', gpa: '4.0'),
-        ],
+        list: [ScoreModel(credit: '1.0', gpa: '4.0')],
       );
 
       final totalGpa = ScoreList.getTotalGpa([scoreList1, scoreList2]);
@@ -412,9 +402,7 @@ void main() {
     test('should handle single semester in static methods', () {
       final scoreList = ScoreList(
         semester: semester1,
-        list: [
-          ScoreModel(credit: '3.0', gpa: '4.0'),
-        ],
+        list: [ScoreModel(credit: '3.0', gpa: '4.0')],
       );
 
       expect(ScoreList.getTotalGpa([scoreList]), 4.0);

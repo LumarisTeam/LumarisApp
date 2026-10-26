@@ -87,42 +87,44 @@ void main() {
     expect(restored.isCustom, isTrue);
   });
 
-  test('Score adapters should round-trip ScoreList and nested score values',
-      () async {
-    final box = await Hive.openBox<ScoreList>('score_adapter_box');
-    final original = ScoreList(
-      semester: SemesterModel(
-        semester: '2025-2026-1',
-        name: '2025-2026学年第一学期',
-      ),
-      list: <ScoreModel>[
-        ScoreModel(
-          name: '张三',
-          lessonCode: 'CS101',
-          lessonName: '程序设计',
-          grade: '95',
-          gpa: '4.0',
-          gradeDetail: '优秀',
-          credit: '4.0',
-          isMinor: false,
+  test(
+    'Score adapters should round-trip ScoreList and nested score values',
+    () async {
+      final box = await Hive.openBox<ScoreList>('score_adapter_box');
+      final original = ScoreList(
+        semester: SemesterModel(
+          semester: '2025-2026-1',
+          name: '2025-2026学年第一学期',
         ),
-      ],
-    );
+        list: <ScoreModel>[
+          ScoreModel(
+            name: '张三',
+            lessonCode: 'CS101',
+            lessonName: '程序设计',
+            grade: '95',
+            gpa: '4.0',
+            gradeDetail: '优秀',
+            credit: '4.0',
+            isMinor: false,
+          ),
+        ],
+      );
 
-    await box.put('list', original);
-    final restored = box.get('list');
+      await box.put('list', original);
+      final restored = box.get('list');
 
-    expect(restored, isNotNull);
-    expect(restored!.semester.semester, original.semester.semester);
-    expect(restored.semester.name, original.semester.name);
-    expect(restored.list.length, 1);
-    expect(restored.list.first.name, '张三');
-    expect(restored.list.first.lessonCode, 'CS101');
-    expect(restored.list.first.lessonName, '程序设计');
-    expect(restored.list.first.grade, '95');
-    expect(restored.list.first.gpa, '4.0');
-    expect(restored.list.first.gradeDetail, '优秀');
-    expect(restored.list.first.credit, '4.0');
-    expect(restored.list.first.isMinor, isFalse);
-  });
+      expect(restored, isNotNull);
+      expect(restored!.semester.semester, original.semester.semester);
+      expect(restored.semester.name, original.semester.name);
+      expect(restored.list.length, 1);
+      expect(restored.list.first.name, '张三');
+      expect(restored.list.first.lessonCode, 'CS101');
+      expect(restored.list.first.lessonName, '程序设计');
+      expect(restored.list.first.grade, '95');
+      expect(restored.list.first.gpa, '4.0');
+      expect(restored.list.first.gradeDetail, '优秀');
+      expect(restored.list.first.credit, '4.0');
+      expect(restored.list.first.isMinor, isFalse);
+    },
+  );
 }

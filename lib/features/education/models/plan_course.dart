@@ -61,15 +61,12 @@ class PlanCourseList {
   List<PlanCourse> courses;
   String term;
 
-  PlanCourseList({
-    this.courses = const [],
-    this.term = "",
-  });
+  PlanCourseList({this.courses = const [], this.term = ""});
 
   // 将对象转换为Map以便JSON编码
   Map<String, dynamic> toJson() => {
-        term: courses.map((course) => course.toJson()).toList(),
-      };
+    term: courses.map((course) => course.toJson()).toList(),
+  };
 
   // 从Map创建PlanCourseList对象
   factory PlanCourseList.fromJson(Map<String, dynamic> json) {

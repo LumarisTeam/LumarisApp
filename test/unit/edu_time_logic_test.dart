@@ -32,14 +32,15 @@ void main() {
     });
 
     test(
-        'should correctly transition from Saturday to Sunday (start of new week)',
-        () {
-      final saturday = DateTime(2024, 3, 9);
-      final sunday = DateTime(2024, 3, 10);
+      'should correctly transition from Saturday to Sunday (start of new week)',
+      () {
+        final saturday = DateTime(2024, 3, 9);
+        final sunday = DateTime(2024, 3, 10);
 
-      expect(EduTimeService.getWeekIndexByStartTime(saturday, startTime), 1);
-      expect(EduTimeService.getWeekIndexByStartTime(sunday, startTime), 2);
-    });
+        expect(EduTimeService.getWeekIndexByStartTime(saturday, startTime), 1);
+        expect(EduTimeService.getWeekIndexByStartTime(sunday, startTime), 2);
+      },
+    );
 
     test('should keep dates before a Sunday semester start in week zero', () {
       final sundayStart = DateTime(2024, 3, 10);
@@ -47,18 +48,9 @@ void main() {
       final saturday = DateTime(2024, 3, 9);
       final sunday = DateTime(2024, 3, 10);
 
-      expect(
-        EduTimeService.getWeekIndexByStartTime(friday, sundayStart),
-        0,
-      );
-      expect(
-        EduTimeService.getWeekIndexByStartTime(saturday, sundayStart),
-        0,
-      );
-      expect(
-        EduTimeService.getWeekIndexByStartTime(sunday, sundayStart),
-        1,
-      );
+      expect(EduTimeService.getWeekIndexByStartTime(friday, sundayStart), 0);
+      expect(EduTimeService.getWeekIndexByStartTime(saturday, sundayStart), 0);
+      expect(EduTimeService.getWeekIndexByStartTime(sunday, sundayStart), 1);
     });
 
     test('should keep same week from Sunday to Monday', () {
@@ -100,69 +92,65 @@ void main() {
       );
     });
 
-    test('should align first week when semester does not start on week start',
-        () {
-      final wednesdayStart = DateTime(2024, 3, 6);
-      final monday = DateTime(2024, 3, 4);
-      final sunday = DateTime(2024, 3, 10);
-      final nextMonday = DateTime(2024, 3, 11);
+    test(
+      'should align first week when semester does not start on week start',
+      () {
+        final wednesdayStart = DateTime(2024, 3, 6);
+        final monday = DateTime(2024, 3, 4);
+        final sunday = DateTime(2024, 3, 10);
+        final nextMonday = DateTime(2024, 3, 11);
 
-      expect(
-        EduTimeService.getWeekIndexByStartTime(
-          monday,
-          wednesdayStart,
-          weekStartDay: DateTime.monday,
-        ),
-        1,
-      );
-      expect(
-        EduTimeService.getWeekIndexByStartTime(
-          sunday,
-          wednesdayStart,
-          weekStartDay: DateTime.monday,
-        ),
-        1,
-      );
-      expect(
-        EduTimeService.getWeekIndexByStartTime(
-          nextMonday,
-          wednesdayStart,
-          weekStartDay: DateTime.monday,
-        ),
-        2,
-      );
-    });
+        expect(
+          EduTimeService.getWeekIndexByStartTime(
+            monday,
+            wednesdayStart,
+            weekStartDay: DateTime.monday,
+          ),
+          1,
+        );
+        expect(
+          EduTimeService.getWeekIndexByStartTime(
+            sunday,
+            wednesdayStart,
+            weekStartDay: DateTime.monday,
+          ),
+          1,
+        );
+        expect(
+          EduTimeService.getWeekIndexByStartTime(
+            nextMonday,
+            wednesdayStart,
+            weekStartDay: DateTime.monday,
+          ),
+          2,
+        );
+      },
+    );
   });
 
   group('WeekStartUtils.orderedWeekdays', () {
     test('should order weekdays from Sunday by default', () {
-      expect(
-        WeekStartUtils.orderedWeekdays(DateTime.sunday),
-        [
-          DateTime.sunday,
-          DateTime.monday,
-          DateTime.tuesday,
-          DateTime.wednesday,
-          DateTime.thursday,
-          DateTime.friday,
-          DateTime.saturday,
-        ],
-      );
+      expect(WeekStartUtils.orderedWeekdays(DateTime.sunday), [
+        DateTime.sunday,
+        DateTime.monday,
+        DateTime.tuesday,
+        DateTime.wednesday,
+        DateTime.thursday,
+        DateTime.friday,
+        DateTime.saturday,
+      ]);
     });
 
     test('should order weekdays from Monday for Monday start', () {
-      expect(
-        WeekStartUtils.orderedWeekdays(DateTime.monday),
-        [
-          DateTime.monday,
-          DateTime.tuesday,
-          DateTime.wednesday,
-          DateTime.thursday,
-          DateTime.friday,
-          DateTime.saturday,
-          DateTime.sunday,
-        ],
-      );
+      expect(WeekStartUtils.orderedWeekdays(DateTime.monday), [
+        DateTime.monday,
+        DateTime.tuesday,
+        DateTime.wednesday,
+        DateTime.thursday,
+        DateTime.friday,
+        DateTime.saturday,
+        DateTime.sunday,
+      ]);
     });
   });
 }

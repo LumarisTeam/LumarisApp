@@ -92,8 +92,11 @@ class ImageLoader {
   /// [basePath] 图片基础路径（不包含扩展名）
   /// [context] BuildContext
   /// [extension] 图片扩展名
-  String getDeviceSpecificImagePath(String basePath, BuildContext context,
-      {String extension = 'webp'}) {
+  String getDeviceSpecificImagePath(
+    String basePath,
+    BuildContext context, {
+    String extension = 'webp',
+  }) {
     final devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
 
     // 根据设备像素比选择合适的图片分辨率

@@ -1,7 +1,9 @@
 import 'package:material_ui/material_ui.dart';
 
-Widget getImage(String path,
-    {BoxFit? fit,
-    Widget Function(BuildContext, Object, StackTrace?)? errorBuilder}) {
+Widget getImage(
+  String path, {
+  BoxFit? fit,
+  Widget Function(BuildContext, Object, StackTrace?)? errorBuilder,
+}) {
   return Container();
 }

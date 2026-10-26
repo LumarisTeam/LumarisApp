@@ -24,15 +24,9 @@ class ExamApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '考试请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '考试请求失败', -1);
       }
-      return ExamResponse(
-        exams: apiResponse.data ?? [],
-        canClick: true,
-      );
+      return ExamResponse(exams: apiResponse.data ?? [], canClick: true);
     } catch (e) {
       _handleError(e);
       rethrow;

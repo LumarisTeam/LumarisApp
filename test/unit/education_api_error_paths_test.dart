@@ -68,12 +68,12 @@ void main() {
         () => CourseApi.getCourse('2026001'),
         () => CourseApi.getScheduleTime(),
         () => ElectricityApi.createSubscription(
-              const CreateElectricitySubscriptionRequest(
-                url: 'https://example.com/wxAccount?id=1',
-                email: 'codex@example.com',
-                threshold: 10,
-              ),
-            ),
+          const CreateElectricitySubscriptionRequest(
+            url: 'https://example.com/wxAccount?id=1',
+            email: 'codex@example.com',
+            threshold: 10,
+          ),
+        ),
         () => ElectricityApi.getSubscription('codex@example.com'),
         () => ElectricityApi.deleteSubscription('sub-1'),
         () => ExamApi.getExam('2026001'),

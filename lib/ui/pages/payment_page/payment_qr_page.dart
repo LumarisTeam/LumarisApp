@@ -180,8 +180,10 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
   }
 
   Widget _buildQrCode(BuildContext context, AppLocalizations l10n) {
-    final size =
-        math.max(120.0, math.min(MediaQuery.sizeOf(context).width - 96, 320.0));
+    final size = math.max(
+      120.0,
+      math.min(MediaQuery.sizeOf(context).width - 96, 320.0),
+    );
 
     return Container(
       width: size + 32,

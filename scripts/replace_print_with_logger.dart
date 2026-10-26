@@ -42,10 +42,13 @@ Future<int> processFile(File file) async {
   int replacements = 0;
 
   // 检查是否已经导入 AppLogger
-  final hasAppLoggerImport = content.contains(
-          "import 'package:ios_club_app/core/utils/app_logger.dart'") ||
-      content
-          .contains('import "package:ios_club_app/core/utils/app_logger.dart"');
+  final hasAppLoggerImport =
+      content.contains(
+        "import 'package:ios_club_app/core/utils/app_logger.dart'",
+      ) ||
+      content.contains(
+        'import "package:ios_club_app/core/utils/app_logger.dart"',
+      );
 
   // 跳过 app_logger.dart 本身
   if (file.path.contains('app_logger.dart')) {
@@ -58,16 +61,22 @@ Future<int> processFile(File file) async {
   }
 
   // 替换 debugPrint 为 AppLogger.debug
-  final debugPrintPattern =
-      RegExp(r'debugPrint\((.*?)\);', multiLine: true, dotAll: true);
+  final debugPrintPattern = RegExp(
+    r'debugPrint\((.*?)\);',
+    multiLine: true,
+    dotAll: true,
+  );
   content = content.replaceAllMapped(debugPrintPattern, (match) {
     replacements++;
     return 'AppLogger.debug(${match.group(1)});';
   });
 
   // 替换 print 为 AppLogger（根据内容判断级别）
-  final printPattern =
-      RegExp(r'\bprint\((.*?)\);', multiLine: true, dotAll: true);
+  final printPattern = RegExp(
+    r'\bprint\((.*?)\);',
+    multiLine: true,
+    dotAll: true,
+  );
   content = content.replaceAllMapped(printPattern, (match) {
     final arg = match.group(1)!;
     // 判断是否是错误信息
@@ -105,8 +114,10 @@ Future<int> processFile(File file) async {
 
     if (lastImportIndex >= 0) {
       // 在最后一个 import 后面插入
-      lines.insert(lastImportIndex + 1,
-          "import 'package:ios_club_app/core/utils/app_logger.dart';");
+      lines.insert(
+        lastImportIndex + 1,
+        "import 'package:ios_club_app/core/utils/app_logger.dart';",
+      );
       content = lines.join('\n');
     } else {
       // 如果没有找到 import，在文件开头添加

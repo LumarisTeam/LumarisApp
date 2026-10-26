@@ -76,50 +76,57 @@ void main() {
       );
     });
 
-    test('should_keep_original_campus_value_when_station_contains_suffix',
-        () async {
-      final container = createContainer([
-        busPageAutoLoadProvider.overrideWithValue(false),
-        busPageFetcherProvider.overrideWithValue(
-          ({String? dayDate, bool forceRefresh = false}) async => BusModel(
-            total: 2,
-            records: [
-              BusItem(
-                lineName: '任意线路1',
-                description: '',
-                departureStation: '雁塔校区',
-                arrivalStation: '草堂校区',
-                runTime: '08:00:00',
-                arrivalStationTime: '01:00',
-              ),
-              BusItem(
-                lineName: '任意线路2',
-                description: '',
-                departureStation: '草堂校区',
-                arrivalStation: '雁塔校区',
-                runTime: '09:00:00',
-                arrivalStationTime: '01:00',
-              ),
-            ],
+    test(
+      'should_keep_original_campus_value_when_station_contains_suffix',
+      () async {
+        final container = createContainer([
+          busPageAutoLoadProvider.overrideWithValue(false),
+          busPageFetcherProvider.overrideWithValue(
+            ({String? dayDate, bool forceRefresh = false}) async => BusModel(
+              total: 2,
+              records: [
+                BusItem(
+                  lineName: '任意线路1',
+                  description: '',
+                  departureStation: '雁塔校区',
+                  arrivalStation: '草堂校区',
+                  runTime: '08:00:00',
+                  arrivalStationTime: '01:00',
+                ),
+                BusItem(
+                  lineName: '任意线路2',
+                  description: '',
+                  departureStation: '草堂校区',
+                  arrivalStation: '雁塔校区',
+                  runTime: '09:00:00',
+                  arrivalStationTime: '01:00',
+                ),
+              ],
+            ),
           ),
-        ),
-      ]);
+        ]);
 
-      await container.read(busControllerProvider.notifier).selectDateByIndex(0);
+        await container
+            .read(busControllerProvider.notifier)
+            .selectDateByIndex(0);
 
-      final state = container.read(busControllerProvider);
-      expect(state.campusOptions, ['雁塔校区', '草堂校区']);
-      expect(state.selectedCampus, '雁塔校区');
-      expect(state.busData.single.departureStation, '雁塔校区');
-    });
+        final state = container.read(busControllerProvider);
+        expect(state.campusOptions, ['雁塔校区', '草堂校区']);
+        expect(state.selectedCampus, '雁塔校区');
+        expect(state.busData.single.departureStation, '雁塔校区');
+      },
+    );
 
-    test('should_keep_selected_campus_when_available_after_date_switch',
-        () async {
-      var fetchCount = 0;
-      final container = createContainer([
-        busPageAutoLoadProvider.overrideWithValue(false),
-        busPageFetcherProvider.overrideWithValue(
-          ({String? dayDate, bool forceRefresh = false}) async {
+    test(
+      'should_keep_selected_campus_when_available_after_date_switch',
+      () async {
+        var fetchCount = 0;
+        final container = createContainer([
+          busPageAutoLoadProvider.overrideWithValue(false),
+          busPageFetcherProvider.overrideWithValue(({
+            String? dayDate,
+            bool forceRefresh = false,
+          }) async {
             fetchCount++;
             if (fetchCount == 2) {
               return BusModel(
@@ -165,21 +172,21 @@ void main() {
                 ),
               ],
             );
-          },
-        ),
-      ]);
+          }),
+        ]);
 
-      final notifier = container.read(busControllerProvider.notifier);
-      await notifier.selectDateByIndex(0);
-      notifier.selectCampus('草堂');
-      await notifier.selectDateByIndex(1);
+        final notifier = container.read(busControllerProvider.notifier);
+        await notifier.selectDateByIndex(0);
+        notifier.selectCampus('草堂');
+        await notifier.selectDateByIndex(1);
 
-      final state = container.read(busControllerProvider);
-      expect(state.selectedCampus, '草堂');
-      expect(state.campusOptions, ['草堂', '雁塔']);
-      expect(state.busData, hasLength(1));
-      expect(state.busData.single.departureStation, '草堂');
-    });
+        final state = container.read(busControllerProvider);
+        expect(state.selectedCampus, '草堂');
+        expect(state.campusOptions, ['草堂', '雁塔']);
+        expect(state.busData, hasLength(1));
+        expect(state.busData.single.departureStation, '草堂');
+      },
+    );
 
     test('should_use_tile_configuration_for_show_bus_setting', () async {
       await PrefsService.instance.setStringList(PrefsKeys.TILES, [

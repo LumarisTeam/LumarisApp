@@ -13,12 +13,11 @@ import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/course_store.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:file_picker/file_picker.dart';
 
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
-import 'package:ios_club_app/core/utils/image_brightness.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_background_picker.dart';
 
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
@@ -370,11 +369,21 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
 
   Widget _buildBackgroundSection(BuildContext context, McColors colors) {
     final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final activePath = settingsStore.backgroundImageFor(isDark: isDark);
     return McCard.elevated(
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          _buildBackgroundOption(context, l10n.noBackground, ''),
+          _buildBackgroundOption(
+            context,
+            l10n.noBackground,
+            '',
+            onTap: () async {
+              await clearScheduleBackgroundImage(ref, isDark: isDark);
+              if (mounted) setState(() {});
+            },
+          ),
           _buildBackgroundOption(context, l10n.customImage, 'custom'),
           if (settingsStore.scheduleBackground == 'custom') ...[
             Padding(
@@ -383,9 +392,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
                 children: [
                   Expanded(
                     child: Text(
-                      settingsStore.customBackgroundImage.isEmpty
-                          ? l10n.noImageSelected
-                          : settingsStore.customBackgroundImage,
+                      activePath.isEmpty ? l10n.noImageSelected : activePath,
                       style: TextStyle(
                         fontSize: 14,
                         color: colors.secondaryLabel,
@@ -409,8 +416,9 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
   Widget _buildBackgroundOption(
     BuildContext context,
     String title,
-    String value,
-  ) {
+    String value, {
+    VoidCallback? onTap,
+  }) {
     final colors = context.mc.colors;
     final isSelected = settingsStore.scheduleBackground == value;
     return Material(
@@ -420,11 +428,13 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
       child: InkWell(
         borderRadius: McRadii.cardBorder,
         customBorder: McSmoothCorners.shape(McRadii.cardBorder),
-        onTap: () {
-          setState(() {
-            settingsStore.setScheduleBackground(value);
-          });
-        },
+        onTap:
+            onTap ??
+            () {
+              setState(() {
+                settingsStore.setScheduleBackground(value);
+              });
+            },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           decoration: ShapeDecoration(
@@ -510,37 +520,13 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
   }
 
   Future<void> _pickCustomBackgroundImage() async {
-    try {
-      FilePickerResult? result = await FilePicker.pickFiles(
-        type: FileType.image,
-        withData: false,
-      );
-
-      if (result != null) {
-        String filePath = result.files.single.path ?? result.files.single.name;
-        await settingsStore.setCustomBackgroundImage(filePath);
-
-        // 异步计算图片亮暗，完成后更新 store
-        computeImageIsDark(filePath).then((isDark) {
-          settingsStore.setCustomBackgroundIsDark(isDark);
-        });
-
-        if (mounted) {
-          McFeedback.showMessage(
-            context,
-            message: context.l10n.bgImageSetSuccess,
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        McFeedback.showMessage(
-          context,
-          message: context.l10n.selectImageFailed,
-        );
-      }
-      AppLogger.debug('选择背景图片失败: $e');
-    }
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final picked = await pickScheduleBackgroundImage(
+      context,
+      ref,
+      isDark: isDark,
+    );
+    if (picked && mounted) setState(() {});
   }
 
   Future<void> _handleIgnoreChange(CourseIgnore ignore, bool value) async {

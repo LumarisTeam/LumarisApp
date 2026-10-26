@@ -11,10 +11,7 @@ class BusModel {
   @JsonKey(fromJson: parseSchemaInt)
   final int total;
 
-  BusModel({
-    required this.records,
-    required this.total,
-  });
+  BusModel({required this.records, required this.total});
 
   factory BusModel.fromJson(Map<String, dynamic> json) =>
       _$BusModelFromJson(json);
@@ -27,17 +24,21 @@ class BusItem {
   /// 线路名称
   @JsonKey(fromJson: parseSchemaString)
   final String lineName;
+
   /// 描述
   @JsonKey(fromJson: parseSchemaString)
   final String description;
+
   /// 出发站
   @JsonKey(fromJson: parseSchemaString)
   final String departureStation;
+
   /// 到达站
   @JsonKey(fromJson: parseSchemaString)
   final String arrivalStation;
   @JsonKey(fromJson: parseSchemaString)
   String runTime;
+
   /// 到达终点所需时间
   @JsonKey(fromJson: parseSchemaString)
   String arrivalStationTime;

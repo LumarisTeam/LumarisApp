@@ -61,29 +61,32 @@ void main() {
       }
     });
 
-    test('payment_data_from_json_large_payload_should_finish_within_budget',
-        () {
-      final records = List.generate(
+    test(
+      'payment_data_from_json_large_payload_should_finish_within_budget',
+      () {
+        final records = List.generate(
           10000,
           (index) => {
-                'turnoverType': index.isEven ? '消费' : '充值',
-                'datetimeStr': '2023-01-01 12:00:00',
-                'resume': '交易$index',
-                'tranamt': index,
-              });
+            'turnoverType': index.isEven ? '消费' : '充值',
+            'datetimeStr': '2023-01-01 12:00:00',
+            'resume': '交易$index',
+            'tranamt': index,
+          },
+        );
 
-      final payload = <String, dynamic>{
-        'records': records,
-        // PaymentData 的余额字段名为 balance（历史字段 total 已废弃）。
-        'balance': 49995000.0,
-      };
+        final payload = <String, dynamic>{
+          'records': records,
+          // PaymentData 的余额字段名为 balance（历史字段 total 已废弃）。
+          'balance': 49995000.0,
+        };
 
-      final sw = Stopwatch()..start();
-      final data = PaymentData.fromJson(payload);
-      sw.stop();
+        final sw = Stopwatch()..start();
+        final data = PaymentData.fromJson(payload);
+        sw.stop();
 
-      expect(sw.elapsedMilliseconds, lessThan(2000));
-      expect(data.payments.length, 10000);
-    });
+        expect(sw.elapsedMilliseconds, lessThan(2000));
+        expect(data.payments.length, 10000);
+      },
+    );
   });
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ios_club_app/core/constants/schedule_constants.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
@@ -17,12 +18,14 @@ import 'package:ios_club_app/platform/android/background_service.dart';
 import 'package:ios_club_app/platform/ios/background_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/course_store.dart';
+import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/state/user_store.dart';
 
-final scheduleStoreProvider =
-    NotifierProvider<ScheduleStore, ScheduleState>(ScheduleStore.new);
+final scheduleStoreProvider = NotifierProvider<ScheduleStore, ScheduleState>(
+  ScheduleStore.new,
+);
 
 class ScheduleStore extends Notifier<ScheduleState> {
   List<CourseModel> _allCoursesRemind = [];
@@ -30,7 +33,19 @@ class ScheduleStore extends Notifier<ScheduleState> {
 
   @override
   ScheduleState build() {
-    Future<void>.microtask(initializeData);
+    Future<void>.microtask(() async {
+      try {
+        await initializeData();
+      } catch (error, stackTrace) {
+        AppLogger.error(
+          'Failed to initialize schedule data',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        // Set error state so UI knows initialization failed
+        state = state.copyWith(isLoading: false);
+      }
+    });
     return const ScheduleState();
   }
 
@@ -136,8 +151,10 @@ class ScheduleStore extends Notifier<ScheduleState> {
     var isYanTa = state.isYanTa;
     if (courses.isNotEmpty) {
       final firstCourse = courses[0];
-      isYanTa = !(firstCourse.campus == '草堂校区' ||
-          (firstCourse.room.length >= 2 && firstCourse.room.startsWith('草堂')));
+      isYanTa =
+          !(firstCourse.campus == '草堂校区' ||
+              (firstCourse.room.length >= 2 &&
+                  firstCourse.room.startsWith('草堂')));
     }
 
     state = state.copyWith(
@@ -145,8 +162,8 @@ class ScheduleStore extends Notifier<ScheduleState> {
         return i == 0
             ? courses
             : courses
-                .where((course) => course.weekIndexes.contains(i))
-                .toList();
+                  .where((course) => course.weekIndexes.contains(i))
+                  .toList();
       }),
       isYanTa: isYanTa,
       isLoading: false,
@@ -154,10 +171,15 @@ class ScheduleStore extends Notifier<ScheduleState> {
   }
 
   Future<void> _loadPreferences() async {
-    final courseSize = PrefsService.instance.getDouble('course_size');
+    final courseSize = PrefsService.instance.getDouble(PrefsKeys.COURSE_SIZE);
 
     if (courseSize != null && courseSize != 0) {
-      state = state.copyWith(height: courseSize);
+      state = state.copyWith(
+        height: courseSize.clamp(
+          ScheduleConstants.minGridHeight,
+          ScheduleConstants.maxGridHeight,
+        ),
+      );
     }
   }
 
@@ -259,10 +281,23 @@ class ScheduleStore extends Notifier<ScheduleState> {
     state = state.copyWith(currentPage: nextPage);
   }
 
-  Future<void> setCourseHeight(double value) async {
-    state = state.copyWith(height: value);
-    await PrefsService.instance.setDouble('course_size', value);
+  /// 只更新内存中的格子高度，用于个性化页滑杆拖动时的实时预览。
+  void previewCourseHeight(double value) {
+    state = state.copyWith(
+      height: value.clamp(
+        ScheduleConstants.minGridHeight,
+        ScheduleConstants.maxGridHeight,
+      ),
+    );
   }
+
+  /// 更新并持久化格子高度。
+  Future<void> commitCourseHeight(double value) async {
+    previewCourseHeight(value);
+    await PrefsService.instance.setDouble(PrefsKeys.COURSE_SIZE, state.height);
+  }
+
+  Future<void> setCourseHeight(double value) => commitCourseHeight(value);
 
   void setCurrentPage(int page) {
     state = state.copyWith(currentPage: page);
@@ -290,10 +325,12 @@ class ScheduleStore extends Notifier<ScheduleState> {
     var filteredCourses = weekIndex == 0
         ? <CourseModel>[]
         : state.allCourses[weekIndex]
-            .where((course) =>
-                course.weekIndexes.contains(weekIndex) &&
-                course.weekday == weekDay)
-            .toList();
+              .where(
+                (course) =>
+                    course.weekIndexes.contains(weekIndex) &&
+                    course.weekday == weekDay,
+              )
+              .toList();
 
     filteredCourses = filteredCourses.where((course) {
       final time = TimeService.getStartAndEnd(course);
@@ -325,8 +362,9 @@ class ScheduleStore extends Notifier<ScheduleState> {
         tomorrow,
         _weekStartDay,
       );
-      final targetWeek =
-          tomorrowWeekStart == todayWeekStart ? weekIndex : weekIndex + 1;
+      final targetWeek = tomorrowWeekStart == todayWeekStart
+          ? weekIndex
+          : weekIndex + 1;
 
       if (targetWeek > 0 && targetWeek < state.allCourses.length) {
         final courses = state.allCourses[targetWeek];
@@ -339,9 +377,15 @@ class ScheduleStore extends Notifier<ScheduleState> {
       }
     }
 
-    Future<void>.microtask(() {
-      state = state.copyWith(showTomorrow: isShowingTomorrow);
-    });
+    // 仅在值真正变化时更新，避免 home 构建期间的 microtask 触发
+    // schedule store 的无限重建循环（Riverpod 按对象身份通知）。
+    if (state.showTomorrow != isShowingTomorrow) {
+      Future<void>.microtask(() {
+        if (state.showTomorrow != isShowingTomorrow) {
+          state = state.copyWith(showTomorrow: isShowingTomorrow);
+        }
+      });
+    }
 
     return filteredCourses;
   }

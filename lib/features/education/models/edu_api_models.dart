@@ -26,10 +26,7 @@ class ErrorWithMessageResponse {
   @JsonKey(fromJson: parseSchemaString)
   final String error;
 
-  const ErrorWithMessageResponse({
-    required this.message,
-    required this.error,
-  });
+  const ErrorWithMessageResponse({required this.message, required this.error});
 
   factory ErrorWithMessageResponse.fromJson(Map<String, dynamic> json) =>
       _$ErrorWithMessageResponseFromJson(json);
@@ -54,8 +51,7 @@ class CreateElectricitySubscriptionRequest {
 
   factory CreateElectricitySubscriptionRequest.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$CreateElectricitySubscriptionRequestFromJson(json);
+  ) => _$CreateElectricitySubscriptionRequestFromJson(json);
 
   Map<String, dynamic> toJson() =>
       _$CreateElectricitySubscriptionRequestToJson(this);
@@ -81,8 +77,7 @@ class ElectricitySubscriptionQueryResponse {
 
   factory ElectricitySubscriptionQueryResponse.fromJson(
     Map<String, dynamic> json,
-  ) =>
-      _$ElectricitySubscriptionQueryResponseFromJson(json);
+  ) => _$ElectricitySubscriptionQueryResponseFromJson(json);
 
   Map<String, dynamic> toJson() =>
       _$ElectricitySubscriptionQueryResponseToJson(this);
@@ -148,11 +143,7 @@ class ExamResponse {
   final bool canClick;
   final String? error;
 
-  const ExamResponse({
-    required this.exams,
-    required this.canClick,
-    this.error,
-  });
+  const ExamResponse({required this.exams, required this.canClick, this.error});
 
   factory ExamResponse.fromJson(Map<String, dynamic> json) =>
       _$ExamResponseFromJson(json);
@@ -178,10 +169,7 @@ class TimeModel {
   final String? startTime;
   final String? endTime;
 
-  const TimeModel({
-    this.startTime,
-    this.endTime,
-  });
+  const TimeModel({this.startTime, this.endTime});
 
   factory TimeModel.fromJson(Map<String, dynamic> json) =>
       _$TimeModelFromJson(json);

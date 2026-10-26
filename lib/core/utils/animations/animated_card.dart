@@ -40,10 +40,7 @@ class AnimatedCard extends StatelessWidget {
           offset: Offset(0, AppAnimations.cardSlideOffset * (1 - value)),
           child: Transform.scale(
             scale: AppAnimations.cardInitialScale + (0.1 * value),
-            child: Opacity(
-              opacity: value,
-              child: child,
-            ),
+            child: Opacity(opacity: value, child: child),
           ),
         );
       },
@@ -93,12 +90,13 @@ class _InteractiveCardState extends State<InteractiveCard>
       duration: AppAnimations.fast,
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: AppAnimations.pressScale,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: AppAnimations.defaultCurve),
-    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: AppAnimations.pressScale)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: AppAnimations.defaultCurve,
+          ),
+        );
   }
 
   @override
@@ -130,10 +128,7 @@ class _InteractiveCardState extends State<InteractiveCard>
       child: AnimatedBuilder(
         animation: _scaleAnimation,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
+          return Transform.scale(scale: _scaleAnimation.value, child: child);
         },
         child: widget.child,
       ),
@@ -173,16 +168,14 @@ class _HoverCardState extends State<HoverCard>
       duration: AppAnimations.fast,
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: AppAnimations.hoverScale,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: AppAnimations.defaultCurve),
-    );
-    _elevationAnimation = Tween<double>(
-      begin: 0.0,
-      end: -4.0,
-    ).animate(
+    _scaleAnimation = Tween<double>(begin: 1.0, end: AppAnimations.hoverScale)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: AppAnimations.defaultCurve,
+          ),
+        );
+    _elevationAnimation = Tween<double>(begin: 0.0, end: -4.0).animate(
       CurvedAnimation(parent: _controller, curve: AppAnimations.defaultCurve),
     );
   }

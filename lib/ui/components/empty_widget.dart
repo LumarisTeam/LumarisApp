@@ -3,11 +3,12 @@ import 'package:material_ui/material_ui.dart';
 import '../../core/services/course_color_manager.dart';
 
 class EmptyWidget extends StatelessWidget {
-  const EmptyWidget(
-      {super.key,
-      required this.title,
-      required this.subtitle,
-      required this.icon});
+  const EmptyWidget({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+  });
 
   final IconData icon;
   final String title;
@@ -29,19 +30,12 @@ class EmptyWidget extends StatelessWidget {
                 color: color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                size: 48,
-                color: color,
-              ),
+              child: Icon(icon, size: 48, color: color),
             ),
             const SizedBox(height: 16),
             Text(
               title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             if (subtitle.isNotEmpty)
@@ -49,10 +43,9 @@ class EmptyWidget extends StatelessWidget {
                 subtitle,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.6),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
           ],

@@ -6,15 +6,17 @@ import 'package:ios_club_app/ui/pages/payment_page/payment_qr_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {
-  testWidgets('PaymentQrPage should refresh the code every 50 seconds',
-      (tester) async {
+  testWidgets('PaymentQrPage should refresh the code every 50 seconds', (
+    tester,
+  ) async {
     var fetchCount = 0;
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          paymentStudentIdReaderProvider
-              .overrideWithValue(() async => 'student-1'),
+          paymentStudentIdReaderProvider.overrideWithValue(
+            () async => 'student-1',
+          ),
           paymentPasswordReaderProvider.overrideWithValue(() async => 'pw'),
           paymentQrFetcherProvider.overrideWithValue((_, _) async {
             fetchCount++;

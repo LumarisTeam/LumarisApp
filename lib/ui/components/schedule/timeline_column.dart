@@ -1,10 +1,11 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_grid_lines.dart';
 
-/// 时间轴列组件
+/// 时间轴列组件。
 ///
-/// 简约的苹果风格设计，展示课程节次和对应的时间
+/// 展示节次编号和对应的起止时间。
 class TimelineColumn extends StatelessWidget {
   const TimelineColumn({
     super.key,
@@ -12,62 +13,88 @@ class TimelineColumn extends StatelessWidget {
     required this.cellHeight,
     this.isYanTa = false,
     this.showGrid = true,
+    this.timeColumnWidth = 45,
+    this.hideSectionTime = false,
+    this.textColor,
   });
 
   final int periodCount;
   final double cellHeight;
   final bool isYanTa;
   final bool showGrid;
+  final double timeColumnWidth;
+  final bool hideSectionTime;
+
+  /// 课表页面文字颜色；为空时跟随主题。
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
     final colors = context.mc.colors;
 
     return SizedBox(
-      width: 56,
-      child: Column(
-        children: List.generate(periodCount, (index) {
-          final period = index + 1;
-          final timeInfo = _getTimeInfo(period);
+      width: timeColumnWidth,
+      child: CustomPaint(
+        foregroundPainter: showGrid
+            ? ScheduleHorizontalLinesPainter(
+                color: colors.separator,
+                cellHeight: cellHeight,
+                rowCount: periodCount,
+              )
+            : null,
+        child: Column(
+          children: List.generate(periodCount, (index) {
+            return SizedBox(
+              height: cellHeight,
+              child: _buildSectionCell(index + 1, colors),
+            );
+          }),
+        ),
+      ),
+    );
+  }
 
-          return Container(
-            height: cellHeight,
-            decoration: showGrid
-                ? BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: colors.separator, width: 0.5),
-                    ),
-                  )
-                : null,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 节次
-                  Text(
-                    '$period',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: colors.label,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  // 开始时间
-                  Text(
-                    timeInfo.start,
-                    style: TextStyle(fontSize: 9, color: colors.tertiaryLabel),
-                  ),
-                  // 结束时间
-                  Text(
-                    timeInfo.end,
-                    style: TextStyle(fontSize: 9, color: colors.tertiaryLabel),
-                  ),
-                ],
+  Widget _buildSectionCell(int period, McColors colors) {
+    final timeInfo = _getTimeInfo(period);
+
+    return Center(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 节次
+            Text(
+              '$period',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: textColor ?? colors.label,
               ),
             ),
-          );
-        }),
+            if (!hideSectionTime) ...[
+              const SizedBox(height: 2),
+              // 开始时间
+              Text(
+                timeInfo.start,
+                style: TextStyle(
+                  fontSize: 9,
+                  color:
+                      textColor?.withValues(alpha: 0.7) ?? colors.tertiaryLabel,
+                ),
+              ),
+              // 结束时间
+              Text(
+                timeInfo.end,
+                style: TextStyle(
+                  fontSize: 9,
+                  color:
+                      textColor?.withValues(alpha: 0.7) ?? colors.tertiaryLabel,
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

@@ -12,10 +12,8 @@ import 'package:ios_club_app/state/prefs_keys.dart' show PrefsKeys;
 import 'package:ios_club_app/state/tile_store_providers.dart';
 import 'package:ios_club_app/state/user_store.dart';
 
-typedef PaymentDataFetcher = Future<PaymentData> Function(
-  String cardNumber,
-  String? password,
-);
+typedef PaymentDataFetcher =
+    Future<PaymentData> Function(String cardNumber, String? password);
 typedef StudentIsLoginReader = bool Function();
 typedef PaymentStudentIdReader = Future<String?> Function();
 typedef PaymentPasswordReader = Future<String?> Function();
@@ -23,10 +21,8 @@ typedef TileVisibilityReader = Future<bool> Function(String tileId);
 typedef TileMutator = Future<void> Function(String tileId);
 typedef PaymentPasswordWriter = Future<bool> Function(String? password);
 
-typedef PaymentQrFetcher = Future<String> Function(
-  String cardNumber,
-  String? password,
-);
+typedef PaymentQrFetcher =
+    Future<String> Function(String cardNumber, String? password);
 
 final paymentDataFetcherProvider = Provider<PaymentDataFetcher>((ref) {
   return PaymentService.fetchData;
@@ -61,8 +57,9 @@ final paymentPasswordReaderProvider = Provider<PaymentPasswordReader>((ref) {
 final paymentPasswordWriterProvider = Provider<PaymentPasswordWriter>((ref) {
   return (password) async {
     final secureStorage = SecureStorageService.instance;
-    final normalizedPassword =
-        password == null || password.trim().isEmpty ? null : password.trim();
+    final normalizedPassword = password == null || password.trim().isEmpty
+        ? null
+        : password.trim();
     final writeSuccess = await secureStorage.write(
       key: PrefsKeys.PAYMENT_PASSWORD,
       value: normalizedPassword,
@@ -89,8 +86,9 @@ final tileRemoverProvider = Provider<TileMutator>((ref) {
   return TileService.removeTile;
 });
 
-final paymentStoreProvider =
-    NotifierProvider<PaymentStore, PaymentState>(PaymentStore.new);
+final paymentStoreProvider = NotifierProvider<PaymentStore, PaymentState>(
+  PaymentStore.new,
+);
 
 class PaymentStore extends Notifier<PaymentState> {
   @override
@@ -127,8 +125,10 @@ class PaymentStore extends Notifier<PaymentState> {
         return;
       }
 
-      final recordsResult =
-          await ref.read(paymentDataFetcherProvider)(studentId, password);
+      final recordsResult = await ref.read(paymentDataFetcherProvider)(
+        studentId,
+        password,
+      );
       final isVisible = await ref.read(tileVisibilityReaderProvider)('饭卡');
 
       if (!_loadGuard.isCurrent(requestId)) return;

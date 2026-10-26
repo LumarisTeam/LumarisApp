@@ -4,8 +4,9 @@ import 'package:ios_club_app/ui/components/empty_widget.dart';
 
 void main() {
   group('EmptyWidget', () {
-    testWidgets('should display title and subtitle',
-        (WidgetTester tester) async {
+    testWidgets('should display title and subtitle', (
+      WidgetTester tester,
+    ) async {
       const title = '暂无数据';
       const subtitle = '这里什么都没有';
       const icon = Icons.inbox;
@@ -13,11 +14,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: EmptyWidget(
-              title: title,
-              subtitle: subtitle,
-              icon: icon,
-            ),
+            body: EmptyWidget(title: title, subtitle: subtitle, icon: icon),
           ),
         ),
       );
@@ -27,16 +24,13 @@ void main() {
       expect(find.byIcon(icon), findsOneWidget);
     });
 
-    testWidgets('should display icon with circle background',
-        (WidgetTester tester) async {
+    testWidgets('should display icon with circle background', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: EmptyWidget(
-              title: '测试',
-              subtitle: '测试副标题',
-              icon: Icons.home,
-            ),
+            body: EmptyWidget(title: '测试', subtitle: '测试副标题', icon: Icons.home),
           ),
         ),
       );
@@ -52,8 +46,9 @@ void main() {
       expect(iconContainer, findsOneWidget);
     });
 
-    testWidgets('should not display subtitle when it is empty',
-        (WidgetTester tester) async {
+    testWidgets('should not display subtitle when it is empty', (
+      WidgetTester tester,
+    ) async {
       const emptySubtitle = '';
 
       await tester.pumpWidget(
@@ -69,9 +64,12 @@ void main() {
       );
 
       // 确保副标题小部件不存在
-      expect(find.byWidgetPredicate((Widget widget) {
-        return widget is Text && widget.data == emptySubtitle;
-      }), findsNothing);
+      expect(
+        find.byWidgetPredicate((Widget widget) {
+          return widget is Text && widget.data == emptySubtitle;
+        }),
+        findsNothing,
+      );
     });
   });
 }

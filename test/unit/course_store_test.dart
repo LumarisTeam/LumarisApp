@@ -139,10 +139,7 @@ void main() {
     });
 
     test('should_merge_guest_and_custom_courses', () async {
-      final guestCourse = buildCourse(
-        lessonId: 'guest-1',
-        courseName: '游客课程',
-      );
+      final guestCourse = buildCourse(lessonId: 'guest-1', courseName: '游客课程');
       final customCourse = buildCourse(
         lessonId: 'custom-1',
         courseName: '自定义课程',

@@ -156,10 +156,7 @@ void main() {
         ),
       );
 
-      expect(
-        ElectricityApi.getWeeklyData,
-        throwsA(isA<NetworkException>()),
-      );
+      expect(ElectricityApi.getWeeklyData, throwsA(isA<NetworkException>()));
     });
 
     test('should_return_recharge_url', () async {
@@ -271,10 +268,7 @@ void main() {
             expect(options.queryParameters, <String, dynamic>{
               'email': 'codex@example.com',
             });
-            expect(
-              options.extra[CacheInterceptor.bypassCacheKey],
-              isTrue,
-            );
+            expect(options.extra[CacheInterceptor.bypassCacheKey], isTrue);
             handler.resolve(
               Response<dynamic>(
                 requestOptions: options,
@@ -291,8 +285,9 @@ void main() {
         ),
       );
 
-      final result =
-          await ElectricityApi.getSubscription(' codex@example.com ');
+      final result = await ElectricityApi.getSubscription(
+        ' codex@example.com ',
+      );
 
       expect(result.email, 'codex@example.com');
       expect(result.hasSubscription, isTrue);

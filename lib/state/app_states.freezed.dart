@@ -12,7 +12,629 @@ part of 'app_states.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
+
+/// @nodoc
+mixin _$ScheduleStyleState {
+  double get headerHeight => throw _privateConstructorUsedError;
+  bool get hideSectionTime => throw _privateConstructorUsedError;
+  bool get hideDateUnderDay => throw _privateConstructorUsedError;
+  double get timeColumnWidth => throw _privateConstructorUsedError;
+  bool get showStartTime => throw _privateConstructorUsedError;
+  bool get hideLocation => throw _privateConstructorUsedError;
+  Color? get pageTextColor => throw _privateConstructorUsedError;
+  Color? get courseTextColor => throw _privateConstructorUsedError;
+  bool get hideTeacher => throw _privateConstructorUsedError;
+  bool get centerHorizontally => throw _privateConstructorUsedError;
+  bool get centerVertically => throw _privateConstructorUsedError;
+  ScheduleBorderStyle get borderStyle => throw _privateConstructorUsedError;
+  double get fontScale => throw _privateConstructorUsedError;
+  double get cornerRadius => throw _privateConstructorUsedError;
+  double get innerPadding => throw _privateConstructorUsedError;
+  double get outerPadding => throw _privateConstructorUsedError;
+  double get opacity => throw _privateConstructorUsedError;
+  String get lightColorPoolThemeId => throw _privateConstructorUsedError;
+  String get darkColorPoolThemeId => throw _privateConstructorUsedError;
+  Map<String, ScheduleColorTheme> get customColorPoolThemes =>
+      throw _privateConstructorUsedError;
+  Map<String, Color> get courseColorOverrides =>
+      throw _privateConstructorUsedError;
+
+  @JsonKey(ignore: true)
+  $ScheduleStyleStateCopyWith<ScheduleStyleState> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ScheduleStyleStateCopyWith<$Res> {
+  factory $ScheduleStyleStateCopyWith(
+    ScheduleStyleState value,
+    $Res Function(ScheduleStyleState) then,
+  ) = _$ScheduleStyleStateCopyWithImpl<$Res, ScheduleStyleState>;
+  @useResult
+  $Res call({
+    double headerHeight,
+    bool hideSectionTime,
+    bool hideDateUnderDay,
+    double timeColumnWidth,
+    bool showStartTime,
+    bool hideLocation,
+    Color? pageTextColor,
+    Color? courseTextColor,
+    bool hideTeacher,
+    bool centerHorizontally,
+    bool centerVertically,
+    ScheduleBorderStyle borderStyle,
+    double fontScale,
+    double cornerRadius,
+    double innerPadding,
+    double outerPadding,
+    double opacity,
+    String lightColorPoolThemeId,
+    String darkColorPoolThemeId,
+    Map<String, ScheduleColorTheme> customColorPoolThemes,
+    Map<String, Color> courseColorOverrides,
+  });
+}
+
+/// @nodoc
+class _$ScheduleStyleStateCopyWithImpl<$Res, $Val extends ScheduleStyleState>
+    implements $ScheduleStyleStateCopyWith<$Res> {
+  _$ScheduleStyleStateCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? headerHeight = null,
+    Object? hideSectionTime = null,
+    Object? hideDateUnderDay = null,
+    Object? timeColumnWidth = null,
+    Object? showStartTime = null,
+    Object? hideLocation = null,
+    Object? pageTextColor = freezed,
+    Object? courseTextColor = freezed,
+    Object? hideTeacher = null,
+    Object? centerHorizontally = null,
+    Object? centerVertically = null,
+    Object? borderStyle = null,
+    Object? fontScale = null,
+    Object? cornerRadius = null,
+    Object? innerPadding = null,
+    Object? outerPadding = null,
+    Object? opacity = null,
+    Object? lightColorPoolThemeId = null,
+    Object? darkColorPoolThemeId = null,
+    Object? customColorPoolThemes = null,
+    Object? courseColorOverrides = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            headerHeight: null == headerHeight
+                ? _value.headerHeight
+                : headerHeight // ignore: cast_nullable_to_non_nullable
+                      as double,
+            hideSectionTime: null == hideSectionTime
+                ? _value.hideSectionTime
+                : hideSectionTime // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            hideDateUnderDay: null == hideDateUnderDay
+                ? _value.hideDateUnderDay
+                : hideDateUnderDay // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            timeColumnWidth: null == timeColumnWidth
+                ? _value.timeColumnWidth
+                : timeColumnWidth // ignore: cast_nullable_to_non_nullable
+                      as double,
+            showStartTime: null == showStartTime
+                ? _value.showStartTime
+                : showStartTime // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            hideLocation: null == hideLocation
+                ? _value.hideLocation
+                : hideLocation // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            pageTextColor: freezed == pageTextColor
+                ? _value.pageTextColor
+                : pageTextColor // ignore: cast_nullable_to_non_nullable
+                      as Color?,
+            courseTextColor: freezed == courseTextColor
+                ? _value.courseTextColor
+                : courseTextColor // ignore: cast_nullable_to_non_nullable
+                      as Color?,
+            hideTeacher: null == hideTeacher
+                ? _value.hideTeacher
+                : hideTeacher // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            centerHorizontally: null == centerHorizontally
+                ? _value.centerHorizontally
+                : centerHorizontally // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            centerVertically: null == centerVertically
+                ? _value.centerVertically
+                : centerVertically // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            borderStyle: null == borderStyle
+                ? _value.borderStyle
+                : borderStyle // ignore: cast_nullable_to_non_nullable
+                      as ScheduleBorderStyle,
+            fontScale: null == fontScale
+                ? _value.fontScale
+                : fontScale // ignore: cast_nullable_to_non_nullable
+                      as double,
+            cornerRadius: null == cornerRadius
+                ? _value.cornerRadius
+                : cornerRadius // ignore: cast_nullable_to_non_nullable
+                      as double,
+            innerPadding: null == innerPadding
+                ? _value.innerPadding
+                : innerPadding // ignore: cast_nullable_to_non_nullable
+                      as double,
+            outerPadding: null == outerPadding
+                ? _value.outerPadding
+                : outerPadding // ignore: cast_nullable_to_non_nullable
+                      as double,
+            opacity: null == opacity
+                ? _value.opacity
+                : opacity // ignore: cast_nullable_to_non_nullable
+                      as double,
+            lightColorPoolThemeId: null == lightColorPoolThemeId
+                ? _value.lightColorPoolThemeId
+                : lightColorPoolThemeId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            darkColorPoolThemeId: null == darkColorPoolThemeId
+                ? _value.darkColorPoolThemeId
+                : darkColorPoolThemeId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            customColorPoolThemes: null == customColorPoolThemes
+                ? _value.customColorPoolThemes
+                : customColorPoolThemes // ignore: cast_nullable_to_non_nullable
+                      as Map<String, ScheduleColorTheme>,
+            courseColorOverrides: null == courseColorOverrides
+                ? _value.courseColorOverrides
+                : courseColorOverrides // ignore: cast_nullable_to_non_nullable
+                      as Map<String, Color>,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$ScheduleStyleStateImplCopyWith<$Res>
+    implements $ScheduleStyleStateCopyWith<$Res> {
+  factory _$$ScheduleStyleStateImplCopyWith(
+    _$ScheduleStyleStateImpl value,
+    $Res Function(_$ScheduleStyleStateImpl) then,
+  ) = __$$ScheduleStyleStateImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({
+    double headerHeight,
+    bool hideSectionTime,
+    bool hideDateUnderDay,
+    double timeColumnWidth,
+    bool showStartTime,
+    bool hideLocation,
+    Color? pageTextColor,
+    Color? courseTextColor,
+    bool hideTeacher,
+    bool centerHorizontally,
+    bool centerVertically,
+    ScheduleBorderStyle borderStyle,
+    double fontScale,
+    double cornerRadius,
+    double innerPadding,
+    double outerPadding,
+    double opacity,
+    String lightColorPoolThemeId,
+    String darkColorPoolThemeId,
+    Map<String, ScheduleColorTheme> customColorPoolThemes,
+    Map<String, Color> courseColorOverrides,
+  });
+}
+
+/// @nodoc
+class __$$ScheduleStyleStateImplCopyWithImpl<$Res>
+    extends _$ScheduleStyleStateCopyWithImpl<$Res, _$ScheduleStyleStateImpl>
+    implements _$$ScheduleStyleStateImplCopyWith<$Res> {
+  __$$ScheduleStyleStateImplCopyWithImpl(
+    _$ScheduleStyleStateImpl _value,
+    $Res Function(_$ScheduleStyleStateImpl) _then,
+  ) : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? headerHeight = null,
+    Object? hideSectionTime = null,
+    Object? hideDateUnderDay = null,
+    Object? timeColumnWidth = null,
+    Object? showStartTime = null,
+    Object? hideLocation = null,
+    Object? pageTextColor = freezed,
+    Object? courseTextColor = freezed,
+    Object? hideTeacher = null,
+    Object? centerHorizontally = null,
+    Object? centerVertically = null,
+    Object? borderStyle = null,
+    Object? fontScale = null,
+    Object? cornerRadius = null,
+    Object? innerPadding = null,
+    Object? outerPadding = null,
+    Object? opacity = null,
+    Object? lightColorPoolThemeId = null,
+    Object? darkColorPoolThemeId = null,
+    Object? customColorPoolThemes = null,
+    Object? courseColorOverrides = null,
+  }) {
+    return _then(
+      _$ScheduleStyleStateImpl(
+        headerHeight: null == headerHeight
+            ? _value.headerHeight
+            : headerHeight // ignore: cast_nullable_to_non_nullable
+                  as double,
+        hideSectionTime: null == hideSectionTime
+            ? _value.hideSectionTime
+            : hideSectionTime // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        hideDateUnderDay: null == hideDateUnderDay
+            ? _value.hideDateUnderDay
+            : hideDateUnderDay // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        timeColumnWidth: null == timeColumnWidth
+            ? _value.timeColumnWidth
+            : timeColumnWidth // ignore: cast_nullable_to_non_nullable
+                  as double,
+        showStartTime: null == showStartTime
+            ? _value.showStartTime
+            : showStartTime // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        hideLocation: null == hideLocation
+            ? _value.hideLocation
+            : hideLocation // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        pageTextColor: freezed == pageTextColor
+            ? _value.pageTextColor
+            : pageTextColor // ignore: cast_nullable_to_non_nullable
+                  as Color?,
+        courseTextColor: freezed == courseTextColor
+            ? _value.courseTextColor
+            : courseTextColor // ignore: cast_nullable_to_non_nullable
+                  as Color?,
+        hideTeacher: null == hideTeacher
+            ? _value.hideTeacher
+            : hideTeacher // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        centerHorizontally: null == centerHorizontally
+            ? _value.centerHorizontally
+            : centerHorizontally // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        centerVertically: null == centerVertically
+            ? _value.centerVertically
+            : centerVertically // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        borderStyle: null == borderStyle
+            ? _value.borderStyle
+            : borderStyle // ignore: cast_nullable_to_non_nullable
+                  as ScheduleBorderStyle,
+        fontScale: null == fontScale
+            ? _value.fontScale
+            : fontScale // ignore: cast_nullable_to_non_nullable
+                  as double,
+        cornerRadius: null == cornerRadius
+            ? _value.cornerRadius
+            : cornerRadius // ignore: cast_nullable_to_non_nullable
+                  as double,
+        innerPadding: null == innerPadding
+            ? _value.innerPadding
+            : innerPadding // ignore: cast_nullable_to_non_nullable
+                  as double,
+        outerPadding: null == outerPadding
+            ? _value.outerPadding
+            : outerPadding // ignore: cast_nullable_to_non_nullable
+                  as double,
+        opacity: null == opacity
+            ? _value.opacity
+            : opacity // ignore: cast_nullable_to_non_nullable
+                  as double,
+        lightColorPoolThemeId: null == lightColorPoolThemeId
+            ? _value.lightColorPoolThemeId
+            : lightColorPoolThemeId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        darkColorPoolThemeId: null == darkColorPoolThemeId
+            ? _value.darkColorPoolThemeId
+            : darkColorPoolThemeId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        customColorPoolThemes: null == customColorPoolThemes
+            ? _value._customColorPoolThemes
+            : customColorPoolThemes // ignore: cast_nullable_to_non_nullable
+                  as Map<String, ScheduleColorTheme>,
+        courseColorOverrides: null == courseColorOverrides
+            ? _value._courseColorOverrides
+            : courseColorOverrides // ignore: cast_nullable_to_non_nullable
+                  as Map<String, Color>,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$ScheduleStyleStateImpl extends _ScheduleStyleState {
+  const _$ScheduleStyleStateImpl({
+    this.headerHeight = 45.0,
+    this.hideSectionTime = false,
+    this.hideDateUnderDay = false,
+    this.timeColumnWidth = 45.0,
+    this.showStartTime = false,
+    this.hideLocation = false,
+    this.pageTextColor,
+    this.courseTextColor,
+    this.hideTeacher = false,
+    this.centerHorizontally = false,
+    this.centerVertically = false,
+    this.borderStyle = ScheduleBorderStyle.none,
+    this.fontScale = 1.0,
+    this.cornerRadius = 8.0,
+    this.innerPadding = 4.0,
+    this.outerPadding = 2.0,
+    this.opacity = 1.0,
+    this.lightColorPoolThemeId = scheduleDefaultLightThemeId,
+    this.darkColorPoolThemeId = scheduleDefaultDarkThemeId,
+    final Map<String, ScheduleColorTheme> customColorPoolThemes =
+        const <String, ScheduleColorTheme>{},
+    final Map<String, Color> courseColorOverrides = const <String, Color>{},
+  }) : _customColorPoolThemes = customColorPoolThemes,
+       _courseColorOverrides = courseColorOverrides,
+       super._();
+
+  @override
+  @JsonKey()
+  final double headerHeight;
+  @override
+  @JsonKey()
+  final bool hideSectionTime;
+  @override
+  @JsonKey()
+  final bool hideDateUnderDay;
+  @override
+  @JsonKey()
+  final double timeColumnWidth;
+  @override
+  @JsonKey()
+  final bool showStartTime;
+  @override
+  @JsonKey()
+  final bool hideLocation;
+  @override
+  final Color? pageTextColor;
+  @override
+  final Color? courseTextColor;
+  @override
+  @JsonKey()
+  final bool hideTeacher;
+  @override
+  @JsonKey()
+  final bool centerHorizontally;
+  @override
+  @JsonKey()
+  final bool centerVertically;
+  @override
+  @JsonKey()
+  final ScheduleBorderStyle borderStyle;
+  @override
+  @JsonKey()
+  final double fontScale;
+  @override
+  @JsonKey()
+  final double cornerRadius;
+  @override
+  @JsonKey()
+  final double innerPadding;
+  @override
+  @JsonKey()
+  final double outerPadding;
+  @override
+  @JsonKey()
+  final double opacity;
+  @override
+  @JsonKey()
+  final String lightColorPoolThemeId;
+  @override
+  @JsonKey()
+  final String darkColorPoolThemeId;
+  final Map<String, ScheduleColorTheme> _customColorPoolThemes;
+  @override
+  @JsonKey()
+  Map<String, ScheduleColorTheme> get customColorPoolThemes {
+    if (_customColorPoolThemes is EqualUnmodifiableMapView)
+      return _customColorPoolThemes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_customColorPoolThemes);
+  }
+
+  final Map<String, Color> _courseColorOverrides;
+  @override
+  @JsonKey()
+  Map<String, Color> get courseColorOverrides {
+    if (_courseColorOverrides is EqualUnmodifiableMapView)
+      return _courseColorOverrides;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_courseColorOverrides);
+  }
+
+  @override
+  String toString() {
+    return 'ScheduleStyleState(headerHeight: $headerHeight, hideSectionTime: $hideSectionTime, hideDateUnderDay: $hideDateUnderDay, timeColumnWidth: $timeColumnWidth, showStartTime: $showStartTime, hideLocation: $hideLocation, pageTextColor: $pageTextColor, courseTextColor: $courseTextColor, hideTeacher: $hideTeacher, centerHorizontally: $centerHorizontally, centerVertically: $centerVertically, borderStyle: $borderStyle, fontScale: $fontScale, cornerRadius: $cornerRadius, innerPadding: $innerPadding, outerPadding: $outerPadding, opacity: $opacity, lightColorPoolThemeId: $lightColorPoolThemeId, darkColorPoolThemeId: $darkColorPoolThemeId, customColorPoolThemes: $customColorPoolThemes, courseColorOverrides: $courseColorOverrides)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ScheduleStyleStateImpl &&
+            (identical(other.headerHeight, headerHeight) ||
+                other.headerHeight == headerHeight) &&
+            (identical(other.hideSectionTime, hideSectionTime) ||
+                other.hideSectionTime == hideSectionTime) &&
+            (identical(other.hideDateUnderDay, hideDateUnderDay) ||
+                other.hideDateUnderDay == hideDateUnderDay) &&
+            (identical(other.timeColumnWidth, timeColumnWidth) ||
+                other.timeColumnWidth == timeColumnWidth) &&
+            (identical(other.showStartTime, showStartTime) ||
+                other.showStartTime == showStartTime) &&
+            (identical(other.hideLocation, hideLocation) ||
+                other.hideLocation == hideLocation) &&
+            (identical(other.pageTextColor, pageTextColor) ||
+                other.pageTextColor == pageTextColor) &&
+            (identical(other.courseTextColor, courseTextColor) ||
+                other.courseTextColor == courseTextColor) &&
+            (identical(other.hideTeacher, hideTeacher) ||
+                other.hideTeacher == hideTeacher) &&
+            (identical(other.centerHorizontally, centerHorizontally) ||
+                other.centerHorizontally == centerHorizontally) &&
+            (identical(other.centerVertically, centerVertically) ||
+                other.centerVertically == centerVertically) &&
+            (identical(other.borderStyle, borderStyle) ||
+                other.borderStyle == borderStyle) &&
+            (identical(other.fontScale, fontScale) ||
+                other.fontScale == fontScale) &&
+            (identical(other.cornerRadius, cornerRadius) ||
+                other.cornerRadius == cornerRadius) &&
+            (identical(other.innerPadding, innerPadding) ||
+                other.innerPadding == innerPadding) &&
+            (identical(other.outerPadding, outerPadding) ||
+                other.outerPadding == outerPadding) &&
+            (identical(other.opacity, opacity) || other.opacity == opacity) &&
+            (identical(other.lightColorPoolThemeId, lightColorPoolThemeId) ||
+                other.lightColorPoolThemeId == lightColorPoolThemeId) &&
+            (identical(other.darkColorPoolThemeId, darkColorPoolThemeId) ||
+                other.darkColorPoolThemeId == darkColorPoolThemeId) &&
+            const DeepCollectionEquality().equals(
+              other._customColorPoolThemes,
+              _customColorPoolThemes,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._courseColorOverrides,
+              _courseColorOverrides,
+            ));
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    runtimeType,
+    headerHeight,
+    hideSectionTime,
+    hideDateUnderDay,
+    timeColumnWidth,
+    showStartTime,
+    hideLocation,
+    pageTextColor,
+    courseTextColor,
+    hideTeacher,
+    centerHorizontally,
+    centerVertically,
+    borderStyle,
+    fontScale,
+    cornerRadius,
+    innerPadding,
+    outerPadding,
+    opacity,
+    lightColorPoolThemeId,
+    darkColorPoolThemeId,
+    const DeepCollectionEquality().hash(_customColorPoolThemes),
+    const DeepCollectionEquality().hash(_courseColorOverrides),
+  ]);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ScheduleStyleStateImplCopyWith<_$ScheduleStyleStateImpl> get copyWith =>
+      __$$ScheduleStyleStateImplCopyWithImpl<_$ScheduleStyleStateImpl>(
+        this,
+        _$identity,
+      );
+}
+
+abstract class _ScheduleStyleState extends ScheduleStyleState {
+  const factory _ScheduleStyleState({
+    final double headerHeight,
+    final bool hideSectionTime,
+    final bool hideDateUnderDay,
+    final double timeColumnWidth,
+    final bool showStartTime,
+    final bool hideLocation,
+    final Color? pageTextColor,
+    final Color? courseTextColor,
+    final bool hideTeacher,
+    final bool centerHorizontally,
+    final bool centerVertically,
+    final ScheduleBorderStyle borderStyle,
+    final double fontScale,
+    final double cornerRadius,
+    final double innerPadding,
+    final double outerPadding,
+    final double opacity,
+    final String lightColorPoolThemeId,
+    final String darkColorPoolThemeId,
+    final Map<String, ScheduleColorTheme> customColorPoolThemes,
+    final Map<String, Color> courseColorOverrides,
+  }) = _$ScheduleStyleStateImpl;
+  const _ScheduleStyleState._() : super._();
+
+  @override
+  double get headerHeight;
+  @override
+  bool get hideSectionTime;
+  @override
+  bool get hideDateUnderDay;
+  @override
+  double get timeColumnWidth;
+  @override
+  bool get showStartTime;
+  @override
+  bool get hideLocation;
+  @override
+  Color? get pageTextColor;
+  @override
+  Color? get courseTextColor;
+  @override
+  bool get hideTeacher;
+  @override
+  bool get centerHorizontally;
+  @override
+  bool get centerVertically;
+  @override
+  ScheduleBorderStyle get borderStyle;
+  @override
+  double get fontScale;
+  @override
+  double get cornerRadius;
+  @override
+  double get innerPadding;
+  @override
+  double get outerPadding;
+  @override
+  double get opacity;
+  @override
+  String get lightColorPoolThemeId;
+  @override
+  String get darkColorPoolThemeId;
+  @override
+  Map<String, ScheduleColorTheme> get customColorPoolThemes;
+  @override
+  Map<String, Color> get courseColorOverrides;
+  @override
+  @JsonKey(ignore: true)
+  _$$ScheduleStyleStateImplCopyWith<_$ScheduleStyleStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
 
 /// @nodoc
 mixin _$SettingsState {
@@ -29,6 +651,10 @@ mixin _$SettingsState {
   String get scheduleBackground => throw _privateConstructorUsedError;
   String get customBackgroundImage => throw _privateConstructorUsedError;
   bool? get customBackgroundIsDark => throw _privateConstructorUsedError;
+  String get customBackgroundImageLight => throw _privateConstructorUsedError;
+  String get customBackgroundImageDark => throw _privateConstructorUsedError;
+  bool? get customBackgroundIsDarkLight => throw _privateConstructorUsedError;
+  bool? get customBackgroundIsDarkDark => throw _privateConstructorUsedError;
   String get schoolId => throw _privateConstructorUsedError;
   bool get hasAcceptedAgreement => throw _privateConstructorUsedError;
 
@@ -40,25 +666,31 @@ mixin _$SettingsState {
 /// @nodoc
 abstract class $SettingsStateCopyWith<$Res> {
   factory $SettingsStateCopyWith(
-          SettingsState value, $Res Function(SettingsState) then) =
-      _$SettingsStateCopyWithImpl<$Res, SettingsState>;
+    SettingsState value,
+    $Res Function(SettingsState) then,
+  ) = _$SettingsStateCopyWithImpl<$Res, SettingsState>;
   @useResult
-  $Res call(
-      {bool isRemind,
-      int remindTime,
-      bool isShowTomorrow,
-      int pageIndex,
-      bool enableHapticFeedback,
-      bool updateIgnored,
-      String fontFamily,
-      bool showCourseGrid,
-      ThemeMode themeMode,
-      AppLocaleCode localeCode,
-      String scheduleBackground,
-      String customBackgroundImage,
-      bool? customBackgroundIsDark,
-      String schoolId,
-      bool hasAcceptedAgreement});
+  $Res call({
+    bool isRemind,
+    int remindTime,
+    bool isShowTomorrow,
+    int pageIndex,
+    bool enableHapticFeedback,
+    bool updateIgnored,
+    String fontFamily,
+    bool showCourseGrid,
+    ThemeMode themeMode,
+    AppLocaleCode localeCode,
+    String scheduleBackground,
+    String customBackgroundImage,
+    bool? customBackgroundIsDark,
+    String customBackgroundImageLight,
+    String customBackgroundImageDark,
+    bool? customBackgroundIsDarkLight,
+    bool? customBackgroundIsDarkDark,
+    String schoolId,
+    bool hasAcceptedAgreement,
+  });
 }
 
 /// @nodoc
@@ -87,71 +719,94 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? scheduleBackground = null,
     Object? customBackgroundImage = null,
     Object? customBackgroundIsDark = freezed,
+    Object? customBackgroundImageLight = null,
+    Object? customBackgroundImageDark = null,
+    Object? customBackgroundIsDarkLight = freezed,
+    Object? customBackgroundIsDarkDark = freezed,
     Object? schoolId = null,
     Object? hasAcceptedAgreement = null,
   }) {
-    return _then(_value.copyWith(
-      isRemind: null == isRemind
-          ? _value.isRemind
-          : isRemind // ignore: cast_nullable_to_non_nullable
-              as bool,
-      remindTime: null == remindTime
-          ? _value.remindTime
-          : remindTime // ignore: cast_nullable_to_non_nullable
-              as int,
-      isShowTomorrow: null == isShowTomorrow
-          ? _value.isShowTomorrow
-          : isShowTomorrow // ignore: cast_nullable_to_non_nullable
-              as bool,
-      pageIndex: null == pageIndex
-          ? _value.pageIndex
-          : pageIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      enableHapticFeedback: null == enableHapticFeedback
-          ? _value.enableHapticFeedback
-          : enableHapticFeedback // ignore: cast_nullable_to_non_nullable
-              as bool,
-      updateIgnored: null == updateIgnored
-          ? _value.updateIgnored
-          : updateIgnored // ignore: cast_nullable_to_non_nullable
-              as bool,
-      fontFamily: null == fontFamily
-          ? _value.fontFamily
-          : fontFamily // ignore: cast_nullable_to_non_nullable
-              as String,
-      showCourseGrid: null == showCourseGrid
-          ? _value.showCourseGrid
-          : showCourseGrid // ignore: cast_nullable_to_non_nullable
-              as bool,
-      themeMode: null == themeMode
-          ? _value.themeMode
-          : themeMode // ignore: cast_nullable_to_non_nullable
-              as ThemeMode,
-      localeCode: null == localeCode
-          ? _value.localeCode
-          : localeCode // ignore: cast_nullable_to_non_nullable
-              as AppLocaleCode,
-      scheduleBackground: null == scheduleBackground
-          ? _value.scheduleBackground
-          : scheduleBackground // ignore: cast_nullable_to_non_nullable
-              as String,
-      customBackgroundImage: null == customBackgroundImage
-          ? _value.customBackgroundImage
-          : customBackgroundImage // ignore: cast_nullable_to_non_nullable
-              as String,
-      customBackgroundIsDark: freezed == customBackgroundIsDark
-          ? _value.customBackgroundIsDark
-          : customBackgroundIsDark // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      schoolId: null == schoolId
-          ? _value.schoolId
-          : schoolId // ignore: cast_nullable_to_non_nullable
-              as String,
-      hasAcceptedAgreement: null == hasAcceptedAgreement
-          ? _value.hasAcceptedAgreement
-          : hasAcceptedAgreement // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            isRemind: null == isRemind
+                ? _value.isRemind
+                : isRemind // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            remindTime: null == remindTime
+                ? _value.remindTime
+                : remindTime // ignore: cast_nullable_to_non_nullable
+                      as int,
+            isShowTomorrow: null == isShowTomorrow
+                ? _value.isShowTomorrow
+                : isShowTomorrow // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            pageIndex: null == pageIndex
+                ? _value.pageIndex
+                : pageIndex // ignore: cast_nullable_to_non_nullable
+                      as int,
+            enableHapticFeedback: null == enableHapticFeedback
+                ? _value.enableHapticFeedback
+                : enableHapticFeedback // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            updateIgnored: null == updateIgnored
+                ? _value.updateIgnored
+                : updateIgnored // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            fontFamily: null == fontFamily
+                ? _value.fontFamily
+                : fontFamily // ignore: cast_nullable_to_non_nullable
+                      as String,
+            showCourseGrid: null == showCourseGrid
+                ? _value.showCourseGrid
+                : showCourseGrid // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            themeMode: null == themeMode
+                ? _value.themeMode
+                : themeMode // ignore: cast_nullable_to_non_nullable
+                      as ThemeMode,
+            localeCode: null == localeCode
+                ? _value.localeCode
+                : localeCode // ignore: cast_nullable_to_non_nullable
+                      as AppLocaleCode,
+            scheduleBackground: null == scheduleBackground
+                ? _value.scheduleBackground
+                : scheduleBackground // ignore: cast_nullable_to_non_nullable
+                      as String,
+            customBackgroundImage: null == customBackgroundImage
+                ? _value.customBackgroundImage
+                : customBackgroundImage // ignore: cast_nullable_to_non_nullable
+                      as String,
+            customBackgroundIsDark: freezed == customBackgroundIsDark
+                ? _value.customBackgroundIsDark
+                : customBackgroundIsDark // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            customBackgroundImageLight: null == customBackgroundImageLight
+                ? _value.customBackgroundImageLight
+                : customBackgroundImageLight // ignore: cast_nullable_to_non_nullable
+                      as String,
+            customBackgroundImageDark: null == customBackgroundImageDark
+                ? _value.customBackgroundImageDark
+                : customBackgroundImageDark // ignore: cast_nullable_to_non_nullable
+                      as String,
+            customBackgroundIsDarkLight: freezed == customBackgroundIsDarkLight
+                ? _value.customBackgroundIsDarkLight
+                : customBackgroundIsDarkLight // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            customBackgroundIsDarkDark: freezed == customBackgroundIsDarkDark
+                ? _value.customBackgroundIsDarkDark
+                : customBackgroundIsDarkDark // ignore: cast_nullable_to_non_nullable
+                      as bool?,
+            schoolId: null == schoolId
+                ? _value.schoolId
+                : schoolId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            hasAcceptedAgreement: null == hasAcceptedAgreement
+                ? _value.hasAcceptedAgreement
+                : hasAcceptedAgreement // ignore: cast_nullable_to_non_nullable
+                      as bool,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -159,26 +814,32 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
 abstract class _$$SettingsStateImplCopyWith<$Res>
     implements $SettingsStateCopyWith<$Res> {
   factory _$$SettingsStateImplCopyWith(
-          _$SettingsStateImpl value, $Res Function(_$SettingsStateImpl) then) =
-      __$$SettingsStateImplCopyWithImpl<$Res>;
+    _$SettingsStateImpl value,
+    $Res Function(_$SettingsStateImpl) then,
+  ) = __$$SettingsStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {bool isRemind,
-      int remindTime,
-      bool isShowTomorrow,
-      int pageIndex,
-      bool enableHapticFeedback,
-      bool updateIgnored,
-      String fontFamily,
-      bool showCourseGrid,
-      ThemeMode themeMode,
-      AppLocaleCode localeCode,
-      String scheduleBackground,
-      String customBackgroundImage,
-      bool? customBackgroundIsDark,
-      String schoolId,
-      bool hasAcceptedAgreement});
+  $Res call({
+    bool isRemind,
+    int remindTime,
+    bool isShowTomorrow,
+    int pageIndex,
+    bool enableHapticFeedback,
+    bool updateIgnored,
+    String fontFamily,
+    bool showCourseGrid,
+    ThemeMode themeMode,
+    AppLocaleCode localeCode,
+    String scheduleBackground,
+    String customBackgroundImage,
+    bool? customBackgroundIsDark,
+    String customBackgroundImageLight,
+    String customBackgroundImageDark,
+    bool? customBackgroundIsDarkLight,
+    bool? customBackgroundIsDarkDark,
+    String schoolId,
+    bool hasAcceptedAgreement,
+  });
 }
 
 /// @nodoc
@@ -186,8 +847,9 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     extends _$SettingsStateCopyWithImpl<$Res, _$SettingsStateImpl>
     implements _$$SettingsStateImplCopyWith<$Res> {
   __$$SettingsStateImplCopyWithImpl(
-      _$SettingsStateImpl _value, $Res Function(_$SettingsStateImpl) _then)
-      : super(_value, _then);
+    _$SettingsStateImpl _value,
+    $Res Function(_$SettingsStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -205,93 +867,120 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? scheduleBackground = null,
     Object? customBackgroundImage = null,
     Object? customBackgroundIsDark = freezed,
+    Object? customBackgroundImageLight = null,
+    Object? customBackgroundImageDark = null,
+    Object? customBackgroundIsDarkLight = freezed,
+    Object? customBackgroundIsDarkDark = freezed,
     Object? schoolId = null,
     Object? hasAcceptedAgreement = null,
   }) {
-    return _then(_$SettingsStateImpl(
-      isRemind: null == isRemind
-          ? _value.isRemind
-          : isRemind // ignore: cast_nullable_to_non_nullable
-              as bool,
-      remindTime: null == remindTime
-          ? _value.remindTime
-          : remindTime // ignore: cast_nullable_to_non_nullable
-              as int,
-      isShowTomorrow: null == isShowTomorrow
-          ? _value.isShowTomorrow
-          : isShowTomorrow // ignore: cast_nullable_to_non_nullable
-              as bool,
-      pageIndex: null == pageIndex
-          ? _value.pageIndex
-          : pageIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      enableHapticFeedback: null == enableHapticFeedback
-          ? _value.enableHapticFeedback
-          : enableHapticFeedback // ignore: cast_nullable_to_non_nullable
-              as bool,
-      updateIgnored: null == updateIgnored
-          ? _value.updateIgnored
-          : updateIgnored // ignore: cast_nullable_to_non_nullable
-              as bool,
-      fontFamily: null == fontFamily
-          ? _value.fontFamily
-          : fontFamily // ignore: cast_nullable_to_non_nullable
-              as String,
-      showCourseGrid: null == showCourseGrid
-          ? _value.showCourseGrid
-          : showCourseGrid // ignore: cast_nullable_to_non_nullable
-              as bool,
-      themeMode: null == themeMode
-          ? _value.themeMode
-          : themeMode // ignore: cast_nullable_to_non_nullable
-              as ThemeMode,
-      localeCode: null == localeCode
-          ? _value.localeCode
-          : localeCode // ignore: cast_nullable_to_non_nullable
-              as AppLocaleCode,
-      scheduleBackground: null == scheduleBackground
-          ? _value.scheduleBackground
-          : scheduleBackground // ignore: cast_nullable_to_non_nullable
-              as String,
-      customBackgroundImage: null == customBackgroundImage
-          ? _value.customBackgroundImage
-          : customBackgroundImage // ignore: cast_nullable_to_non_nullable
-              as String,
-      customBackgroundIsDark: freezed == customBackgroundIsDark
-          ? _value.customBackgroundIsDark
-          : customBackgroundIsDark // ignore: cast_nullable_to_non_nullable
-              as bool?,
-      schoolId: null == schoolId
-          ? _value.schoolId
-          : schoolId // ignore: cast_nullable_to_non_nullable
-              as String,
-      hasAcceptedAgreement: null == hasAcceptedAgreement
-          ? _value.hasAcceptedAgreement
-          : hasAcceptedAgreement // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+    return _then(
+      _$SettingsStateImpl(
+        isRemind: null == isRemind
+            ? _value.isRemind
+            : isRemind // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        remindTime: null == remindTime
+            ? _value.remindTime
+            : remindTime // ignore: cast_nullable_to_non_nullable
+                  as int,
+        isShowTomorrow: null == isShowTomorrow
+            ? _value.isShowTomorrow
+            : isShowTomorrow // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        pageIndex: null == pageIndex
+            ? _value.pageIndex
+            : pageIndex // ignore: cast_nullable_to_non_nullable
+                  as int,
+        enableHapticFeedback: null == enableHapticFeedback
+            ? _value.enableHapticFeedback
+            : enableHapticFeedback // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        updateIgnored: null == updateIgnored
+            ? _value.updateIgnored
+            : updateIgnored // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        fontFamily: null == fontFamily
+            ? _value.fontFamily
+            : fontFamily // ignore: cast_nullable_to_non_nullable
+                  as String,
+        showCourseGrid: null == showCourseGrid
+            ? _value.showCourseGrid
+            : showCourseGrid // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        themeMode: null == themeMode
+            ? _value.themeMode
+            : themeMode // ignore: cast_nullable_to_non_nullable
+                  as ThemeMode,
+        localeCode: null == localeCode
+            ? _value.localeCode
+            : localeCode // ignore: cast_nullable_to_non_nullable
+                  as AppLocaleCode,
+        scheduleBackground: null == scheduleBackground
+            ? _value.scheduleBackground
+            : scheduleBackground // ignore: cast_nullable_to_non_nullable
+                  as String,
+        customBackgroundImage: null == customBackgroundImage
+            ? _value.customBackgroundImage
+            : customBackgroundImage // ignore: cast_nullable_to_non_nullable
+                  as String,
+        customBackgroundIsDark: freezed == customBackgroundIsDark
+            ? _value.customBackgroundIsDark
+            : customBackgroundIsDark // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        customBackgroundImageLight: null == customBackgroundImageLight
+            ? _value.customBackgroundImageLight
+            : customBackgroundImageLight // ignore: cast_nullable_to_non_nullable
+                  as String,
+        customBackgroundImageDark: null == customBackgroundImageDark
+            ? _value.customBackgroundImageDark
+            : customBackgroundImageDark // ignore: cast_nullable_to_non_nullable
+                  as String,
+        customBackgroundIsDarkLight: freezed == customBackgroundIsDarkLight
+            ? _value.customBackgroundIsDarkLight
+            : customBackgroundIsDarkLight // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        customBackgroundIsDarkDark: freezed == customBackgroundIsDarkDark
+            ? _value.customBackgroundIsDarkDark
+            : customBackgroundIsDarkDark // ignore: cast_nullable_to_non_nullable
+                  as bool?,
+        schoolId: null == schoolId
+            ? _value.schoolId
+            : schoolId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        hasAcceptedAgreement: null == hasAcceptedAgreement
+            ? _value.hasAcceptedAgreement
+            : hasAcceptedAgreement // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$SettingsStateImpl implements _SettingsState {
-  const _$SettingsStateImpl(
-      {this.isRemind = false,
-      this.remindTime = 15,
-      this.isShowTomorrow = false,
-      this.pageIndex = 0,
-      this.enableHapticFeedback = false,
-      this.updateIgnored = false,
-      this.fontFamily = '',
-      this.showCourseGrid = false,
-      this.themeMode = ThemeMode.system,
-      this.localeCode = AppLocaleCode.system,
-      this.scheduleBackground = '',
-      this.customBackgroundImage = '',
-      this.customBackgroundIsDark,
-      this.schoolId = School.defaultCode,
-      this.hasAcceptedAgreement = false});
+  const _$SettingsStateImpl({
+    this.isRemind = false,
+    this.remindTime = 15,
+    this.isShowTomorrow = false,
+    this.pageIndex = 0,
+    this.enableHapticFeedback = false,
+    this.updateIgnored = false,
+    this.fontFamily = '',
+    this.showCourseGrid = false,
+    this.themeMode = ThemeMode.system,
+    this.localeCode = AppLocaleCode.system,
+    this.scheduleBackground = '',
+    this.customBackgroundImage = '',
+    this.customBackgroundIsDark,
+    this.customBackgroundImageLight = '',
+    this.customBackgroundImageDark = '',
+    this.customBackgroundIsDarkLight,
+    this.customBackgroundIsDarkDark,
+    this.schoolId = School.defaultCode,
+    this.hasAcceptedAgreement = false,
+  });
 
   @override
   @JsonKey()
@@ -333,6 +1022,16 @@ class _$SettingsStateImpl implements _SettingsState {
   final bool? customBackgroundIsDark;
   @override
   @JsonKey()
+  final String customBackgroundImageLight;
+  @override
+  @JsonKey()
+  final String customBackgroundImageDark;
+  @override
+  final bool? customBackgroundIsDarkLight;
+  @override
+  final bool? customBackgroundIsDarkDark;
+  @override
+  @JsonKey()
   final String schoolId;
   @override
   @JsonKey()
@@ -340,7 +1039,7 @@ class _$SettingsStateImpl implements _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isRemind: $isRemind, remindTime: $remindTime, isShowTomorrow: $isShowTomorrow, pageIndex: $pageIndex, enableHapticFeedback: $enableHapticFeedback, updateIgnored: $updateIgnored, fontFamily: $fontFamily, showCourseGrid: $showCourseGrid, themeMode: $themeMode, localeCode: $localeCode, scheduleBackground: $scheduleBackground, customBackgroundImage: $customBackgroundImage, customBackgroundIsDark: $customBackgroundIsDark, schoolId: $schoolId, hasAcceptedAgreement: $hasAcceptedAgreement)';
+    return 'SettingsState(isRemind: $isRemind, remindTime: $remindTime, isShowTomorrow: $isShowTomorrow, pageIndex: $pageIndex, enableHapticFeedback: $enableHapticFeedback, updateIgnored: $updateIgnored, fontFamily: $fontFamily, showCourseGrid: $showCourseGrid, themeMode: $themeMode, localeCode: $localeCode, scheduleBackground: $scheduleBackground, customBackgroundImage: $customBackgroundImage, customBackgroundIsDark: $customBackgroundIsDark, customBackgroundImageLight: $customBackgroundImageLight, customBackgroundImageDark: $customBackgroundImageDark, customBackgroundIsDarkLight: $customBackgroundIsDarkLight, customBackgroundIsDarkDark: $customBackgroundIsDarkDark, schoolId: $schoolId, hasAcceptedAgreement: $hasAcceptedAgreement)';
   }
 
   @override
@@ -374,6 +1073,29 @@ class _$SettingsStateImpl implements _SettingsState {
                 other.customBackgroundImage == customBackgroundImage) &&
             (identical(other.customBackgroundIsDark, customBackgroundIsDark) ||
                 other.customBackgroundIsDark == customBackgroundIsDark) &&
+            (identical(
+                  other.customBackgroundImageLight,
+                  customBackgroundImageLight,
+                ) ||
+                other.customBackgroundImageLight ==
+                    customBackgroundImageLight) &&
+            (identical(
+                  other.customBackgroundImageDark,
+                  customBackgroundImageDark,
+                ) ||
+                other.customBackgroundImageDark == customBackgroundImageDark) &&
+            (identical(
+                  other.customBackgroundIsDarkLight,
+                  customBackgroundIsDarkLight,
+                ) ||
+                other.customBackgroundIsDarkLight ==
+                    customBackgroundIsDarkLight) &&
+            (identical(
+                  other.customBackgroundIsDarkDark,
+                  customBackgroundIsDarkDark,
+                ) ||
+                other.customBackgroundIsDarkDark ==
+                    customBackgroundIsDarkDark) &&
             (identical(other.schoolId, schoolId) ||
                 other.schoolId == schoolId) &&
             (identical(other.hasAcceptedAgreement, hasAcceptedAgreement) ||
@@ -381,23 +1103,28 @@ class _$SettingsStateImpl implements _SettingsState {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      isRemind,
-      remindTime,
-      isShowTomorrow,
-      pageIndex,
-      enableHapticFeedback,
-      updateIgnored,
-      fontFamily,
-      showCourseGrid,
-      themeMode,
-      localeCode,
-      scheduleBackground,
-      customBackgroundImage,
-      customBackgroundIsDark,
-      schoolId,
-      hasAcceptedAgreement);
+  int get hashCode => Object.hashAll([
+    runtimeType,
+    isRemind,
+    remindTime,
+    isShowTomorrow,
+    pageIndex,
+    enableHapticFeedback,
+    updateIgnored,
+    fontFamily,
+    showCourseGrid,
+    themeMode,
+    localeCode,
+    scheduleBackground,
+    customBackgroundImage,
+    customBackgroundIsDark,
+    customBackgroundImageLight,
+    customBackgroundImageDark,
+    customBackgroundIsDarkLight,
+    customBackgroundIsDarkDark,
+    schoolId,
+    hasAcceptedAgreement,
+  ]);
 
   @JsonKey(ignore: true)
   @override
@@ -407,22 +1134,27 @@ class _$SettingsStateImpl implements _SettingsState {
 }
 
 abstract class _SettingsState implements SettingsState {
-  const factory _SettingsState(
-      {final bool isRemind,
-      final int remindTime,
-      final bool isShowTomorrow,
-      final int pageIndex,
-      final bool enableHapticFeedback,
-      final bool updateIgnored,
-      final String fontFamily,
-      final bool showCourseGrid,
-      final ThemeMode themeMode,
-      final AppLocaleCode localeCode,
-      final String scheduleBackground,
-      final String customBackgroundImage,
-      final bool? customBackgroundIsDark,
-      final String schoolId,
-      final bool hasAcceptedAgreement}) = _$SettingsStateImpl;
+  const factory _SettingsState({
+    final bool isRemind,
+    final int remindTime,
+    final bool isShowTomorrow,
+    final int pageIndex,
+    final bool enableHapticFeedback,
+    final bool updateIgnored,
+    final String fontFamily,
+    final bool showCourseGrid,
+    final ThemeMode themeMode,
+    final AppLocaleCode localeCode,
+    final String scheduleBackground,
+    final String customBackgroundImage,
+    final bool? customBackgroundIsDark,
+    final String customBackgroundImageLight,
+    final String customBackgroundImageDark,
+    final bool? customBackgroundIsDarkLight,
+    final bool? customBackgroundIsDarkDark,
+    final String schoolId,
+    final bool hasAcceptedAgreement,
+  }) = _$SettingsStateImpl;
 
   @override
   bool get isRemind;
@@ -450,6 +1182,14 @@ abstract class _SettingsState implements SettingsState {
   String get customBackgroundImage;
   @override
   bool? get customBackgroundIsDark;
+  @override
+  String get customBackgroundImageLight;
+  @override
+  String get customBackgroundImageDark;
+  @override
+  bool? get customBackgroundIsDarkLight;
+  @override
+  bool? get customBackgroundIsDarkDark;
   @override
   String get schoolId;
   @override
@@ -490,20 +1230,20 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? isLogin = null,
-    Object? userData = freezed,
-  }) {
-    return _then(_value.copyWith(
-      isLogin: null == isLogin
-          ? _value.isLogin
-          : isLogin // ignore: cast_nullable_to_non_nullable
-              as bool,
-      userData: freezed == userData
-          ? _value.userData
-          : userData // ignore: cast_nullable_to_non_nullable
-              as UserData?,
-    ) as $Val);
+  $Res call({Object? isLogin = null, Object? userData = freezed}) {
+    return _then(
+      _value.copyWith(
+            isLogin: null == isLogin
+                ? _value.isLogin
+                : isLogin // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            userData: freezed == userData
+                ? _value.userData
+                : userData // ignore: cast_nullable_to_non_nullable
+                      as UserData?,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -511,8 +1251,9 @@ class _$UserStateCopyWithImpl<$Res, $Val extends UserState>
 abstract class _$$UserStateImplCopyWith<$Res>
     implements $UserStateCopyWith<$Res> {
   factory _$$UserStateImplCopyWith(
-          _$UserStateImpl value, $Res Function(_$UserStateImpl) then) =
-      __$$UserStateImplCopyWithImpl<$Res>;
+    _$UserStateImpl value,
+    $Res Function(_$UserStateImpl) then,
+  ) = __$$UserStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool isLogin, UserData? userData});
@@ -523,25 +1264,25 @@ class __$$UserStateImplCopyWithImpl<$Res>
     extends _$UserStateCopyWithImpl<$Res, _$UserStateImpl>
     implements _$$UserStateImplCopyWith<$Res> {
   __$$UserStateImplCopyWithImpl(
-      _$UserStateImpl _value, $Res Function(_$UserStateImpl) _then)
-      : super(_value, _then);
+    _$UserStateImpl _value,
+    $Res Function(_$UserStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? isLogin = null,
-    Object? userData = freezed,
-  }) {
-    return _then(_$UserStateImpl(
-      isLogin: null == isLogin
-          ? _value.isLogin
-          : isLogin // ignore: cast_nullable_to_non_nullable
-              as bool,
-      userData: freezed == userData
-          ? _value.userData
-          : userData // ignore: cast_nullable_to_non_nullable
-              as UserData?,
-    ));
+  $Res call({Object? isLogin = null, Object? userData = freezed}) {
+    return _then(
+      _$UserStateImpl(
+        isLogin: null == isLogin
+            ? _value.isLogin
+            : isLogin // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        userData: freezed == userData
+            ? _value.userData
+            : userData // ignore: cast_nullable_to_non_nullable
+                  as UserData?,
+      ),
+    );
   }
 }
 
@@ -608,8 +1349,9 @@ mixin _$CourseState {
 /// @nodoc
 abstract class $CourseStateCopyWith<$Res> {
   factory $CourseStateCopyWith(
-          CourseState value, $Res Function(CourseState) then) =
-      _$CourseStateCopyWithImpl<$Res, CourseState>;
+    CourseState value,
+    $Res Function(CourseState) then,
+  ) = _$CourseStateCopyWithImpl<$Res, CourseState>;
   @useResult
   $Res call({List<CourseModel> courses, List<String> ignoreCourses});
 }
@@ -626,20 +1368,20 @@ class _$CourseStateCopyWithImpl<$Res, $Val extends CourseState>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? courses = null,
-    Object? ignoreCourses = null,
-  }) {
-    return _then(_value.copyWith(
-      courses: null == courses
-          ? _value.courses
-          : courses // ignore: cast_nullable_to_non_nullable
-              as List<CourseModel>,
-      ignoreCourses: null == ignoreCourses
-          ? _value.ignoreCourses
-          : ignoreCourses // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ) as $Val);
+  $Res call({Object? courses = null, Object? ignoreCourses = null}) {
+    return _then(
+      _value.copyWith(
+            courses: null == courses
+                ? _value.courses
+                : courses // ignore: cast_nullable_to_non_nullable
+                      as List<CourseModel>,
+            ignoreCourses: null == ignoreCourses
+                ? _value.ignoreCourses
+                : ignoreCourses // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -647,8 +1389,9 @@ class _$CourseStateCopyWithImpl<$Res, $Val extends CourseState>
 abstract class _$$CourseStateImplCopyWith<$Res>
     implements $CourseStateCopyWith<$Res> {
   factory _$$CourseStateImplCopyWith(
-          _$CourseStateImpl value, $Res Function(_$CourseStateImpl) then) =
-      __$$CourseStateImplCopyWithImpl<$Res>;
+    _$CourseStateImpl value,
+    $Res Function(_$CourseStateImpl) then,
+  ) = __$$CourseStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<CourseModel> courses, List<String> ignoreCourses});
@@ -659,36 +1402,36 @@ class __$$CourseStateImplCopyWithImpl<$Res>
     extends _$CourseStateCopyWithImpl<$Res, _$CourseStateImpl>
     implements _$$CourseStateImplCopyWith<$Res> {
   __$$CourseStateImplCopyWithImpl(
-      _$CourseStateImpl _value, $Res Function(_$CourseStateImpl) _then)
-      : super(_value, _then);
+    _$CourseStateImpl _value,
+    $Res Function(_$CourseStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? courses = null,
-    Object? ignoreCourses = null,
-  }) {
-    return _then(_$CourseStateImpl(
-      courses: null == courses
-          ? _value._courses
-          : courses // ignore: cast_nullable_to_non_nullable
-              as List<CourseModel>,
-      ignoreCourses: null == ignoreCourses
-          ? _value._ignoreCourses
-          : ignoreCourses // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+  $Res call({Object? courses = null, Object? ignoreCourses = null}) {
+    return _then(
+      _$CourseStateImpl(
+        courses: null == courses
+            ? _value._courses
+            : courses // ignore: cast_nullable_to_non_nullable
+                  as List<CourseModel>,
+        ignoreCourses: null == ignoreCourses
+            ? _value._ignoreCourses
+            : ignoreCourses // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$CourseStateImpl implements _CourseState {
-  const _$CourseStateImpl(
-      {final List<CourseModel> courses = const <CourseModel>[],
-      final List<String> ignoreCourses = const <String>[]})
-      : _courses = courses,
-        _ignoreCourses = ignoreCourses;
+  const _$CourseStateImpl({
+    final List<CourseModel> courses = const <CourseModel>[],
+    final List<String> ignoreCourses = const <String>[],
+  }) : _courses = courses,
+       _ignoreCourses = ignoreCourses;
 
   final List<CourseModel> _courses;
   @override
@@ -719,15 +1462,18 @@ class _$CourseStateImpl implements _CourseState {
         (other.runtimeType == runtimeType &&
             other is _$CourseStateImpl &&
             const DeepCollectionEquality().equals(other._courses, _courses) &&
-            const DeepCollectionEquality()
-                .equals(other._ignoreCourses, _ignoreCourses));
+            const DeepCollectionEquality().equals(
+              other._ignoreCourses,
+              _ignoreCourses,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_courses),
-      const DeepCollectionEquality().hash(_ignoreCourses));
+    runtimeType,
+    const DeepCollectionEquality().hash(_courses),
+    const DeepCollectionEquality().hash(_ignoreCourses),
+  );
 
   @JsonKey(ignore: true)
   @override
@@ -737,9 +1483,10 @@ class _$CourseStateImpl implements _CourseState {
 }
 
 abstract class _CourseState implements CourseState {
-  const factory _CourseState(
-      {final List<CourseModel> courses,
-      final List<String> ignoreCourses}) = _$CourseStateImpl;
+  const factory _CourseState({
+    final List<CourseModel> courses,
+    final List<String> ignoreCourses,
+  }) = _$CourseStateImpl;
 
   @override
   List<CourseModel> get courses;
@@ -771,19 +1518,21 @@ mixin _$ScheduleState {
 /// @nodoc
 abstract class $ScheduleStateCopyWith<$Res> {
   factory $ScheduleStateCopyWith(
-          ScheduleState value, $Res Function(ScheduleState) then) =
-      _$ScheduleStateCopyWithImpl<$Res, ScheduleState>;
+    ScheduleState value,
+    $Res Function(ScheduleState) then,
+  ) = _$ScheduleStateCopyWithImpl<$Res, ScheduleState>;
   @useResult
-  $Res call(
-      {List<List<CourseModel>> allCourses,
-      bool isLoading,
-      int maxWeek,
-      int currentWeek,
-      int currentPage,
-      double height,
-      bool isYanTa,
-      bool showTomorrow,
-      int weekNow});
+  $Res call({
+    List<List<CourseModel>> allCourses,
+    bool isLoading,
+    int maxWeek,
+    int currentWeek,
+    int currentPage,
+    double height,
+    bool isYanTa,
+    bool showTomorrow,
+    int weekNow,
+  });
 }
 
 /// @nodoc
@@ -809,44 +1558,47 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
     Object? showTomorrow = null,
     Object? weekNow = null,
   }) {
-    return _then(_value.copyWith(
-      allCourses: null == allCourses
-          ? _value.allCourses
-          : allCourses // ignore: cast_nullable_to_non_nullable
-              as List<List<CourseModel>>,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      maxWeek: null == maxWeek
-          ? _value.maxWeek
-          : maxWeek // ignore: cast_nullable_to_non_nullable
-              as int,
-      currentWeek: null == currentWeek
-          ? _value.currentWeek
-          : currentWeek // ignore: cast_nullable_to_non_nullable
-              as int,
-      currentPage: null == currentPage
-          ? _value.currentPage
-          : currentPage // ignore: cast_nullable_to_non_nullable
-              as int,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as double,
-      isYanTa: null == isYanTa
-          ? _value.isYanTa
-          : isYanTa // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showTomorrow: null == showTomorrow
-          ? _value.showTomorrow
-          : showTomorrow // ignore: cast_nullable_to_non_nullable
-              as bool,
-      weekNow: null == weekNow
-          ? _value.weekNow
-          : weekNow // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            allCourses: null == allCourses
+                ? _value.allCourses
+                : allCourses // ignore: cast_nullable_to_non_nullable
+                      as List<List<CourseModel>>,
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            maxWeek: null == maxWeek
+                ? _value.maxWeek
+                : maxWeek // ignore: cast_nullable_to_non_nullable
+                      as int,
+            currentWeek: null == currentWeek
+                ? _value.currentWeek
+                : currentWeek // ignore: cast_nullable_to_non_nullable
+                      as int,
+            currentPage: null == currentPage
+                ? _value.currentPage
+                : currentPage // ignore: cast_nullable_to_non_nullable
+                      as int,
+            height: null == height
+                ? _value.height
+                : height // ignore: cast_nullable_to_non_nullable
+                      as double,
+            isYanTa: null == isYanTa
+                ? _value.isYanTa
+                : isYanTa // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            showTomorrow: null == showTomorrow
+                ? _value.showTomorrow
+                : showTomorrow // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            weekNow: null == weekNow
+                ? _value.weekNow
+                : weekNow // ignore: cast_nullable_to_non_nullable
+                      as int,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -854,20 +1606,22 @@ class _$ScheduleStateCopyWithImpl<$Res, $Val extends ScheduleState>
 abstract class _$$ScheduleStateImplCopyWith<$Res>
     implements $ScheduleStateCopyWith<$Res> {
   factory _$$ScheduleStateImplCopyWith(
-          _$ScheduleStateImpl value, $Res Function(_$ScheduleStateImpl) then) =
-      __$$ScheduleStateImplCopyWithImpl<$Res>;
+    _$ScheduleStateImpl value,
+    $Res Function(_$ScheduleStateImpl) then,
+  ) = __$$ScheduleStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {List<List<CourseModel>> allCourses,
-      bool isLoading,
-      int maxWeek,
-      int currentWeek,
-      int currentPage,
-      double height,
-      bool isYanTa,
-      bool showTomorrow,
-      int weekNow});
+  $Res call({
+    List<List<CourseModel>> allCourses,
+    bool isLoading,
+    int maxWeek,
+    int currentWeek,
+    int currentPage,
+    double height,
+    bool isYanTa,
+    bool showTomorrow,
+    int weekNow,
+  });
 }
 
 /// @nodoc
@@ -875,8 +1629,9 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     extends _$ScheduleStateCopyWithImpl<$Res, _$ScheduleStateImpl>
     implements _$$ScheduleStateImplCopyWith<$Res> {
   __$$ScheduleStateImplCopyWithImpl(
-      _$ScheduleStateImpl _value, $Res Function(_$ScheduleStateImpl) _then)
-      : super(_value, _then);
+    _$ScheduleStateImpl _value,
+    $Res Function(_$ScheduleStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -891,61 +1646,63 @@ class __$$ScheduleStateImplCopyWithImpl<$Res>
     Object? showTomorrow = null,
     Object? weekNow = null,
   }) {
-    return _then(_$ScheduleStateImpl(
-      allCourses: null == allCourses
-          ? _value._allCourses
-          : allCourses // ignore: cast_nullable_to_non_nullable
-              as List<List<CourseModel>>,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      maxWeek: null == maxWeek
-          ? _value.maxWeek
-          : maxWeek // ignore: cast_nullable_to_non_nullable
-              as int,
-      currentWeek: null == currentWeek
-          ? _value.currentWeek
-          : currentWeek // ignore: cast_nullable_to_non_nullable
-              as int,
-      currentPage: null == currentPage
-          ? _value.currentPage
-          : currentPage // ignore: cast_nullable_to_non_nullable
-              as int,
-      height: null == height
-          ? _value.height
-          : height // ignore: cast_nullable_to_non_nullable
-              as double,
-      isYanTa: null == isYanTa
-          ? _value.isYanTa
-          : isYanTa // ignore: cast_nullable_to_non_nullable
-              as bool,
-      showTomorrow: null == showTomorrow
-          ? _value.showTomorrow
-          : showTomorrow // ignore: cast_nullable_to_non_nullable
-              as bool,
-      weekNow: null == weekNow
-          ? _value.weekNow
-          : weekNow // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
+    return _then(
+      _$ScheduleStateImpl(
+        allCourses: null == allCourses
+            ? _value._allCourses
+            : allCourses // ignore: cast_nullable_to_non_nullable
+                  as List<List<CourseModel>>,
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        maxWeek: null == maxWeek
+            ? _value.maxWeek
+            : maxWeek // ignore: cast_nullable_to_non_nullable
+                  as int,
+        currentWeek: null == currentWeek
+            ? _value.currentWeek
+            : currentWeek // ignore: cast_nullable_to_non_nullable
+                  as int,
+        currentPage: null == currentPage
+            ? _value.currentPage
+            : currentPage // ignore: cast_nullable_to_non_nullable
+                  as int,
+        height: null == height
+            ? _value.height
+            : height // ignore: cast_nullable_to_non_nullable
+                  as double,
+        isYanTa: null == isYanTa
+            ? _value.isYanTa
+            : isYanTa // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        showTomorrow: null == showTomorrow
+            ? _value.showTomorrow
+            : showTomorrow // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        weekNow: null == weekNow
+            ? _value.weekNow
+            : weekNow // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$ScheduleStateImpl implements _ScheduleState {
-  const _$ScheduleStateImpl(
-      {final List<List<CourseModel>> allCourses = const <List<CourseModel>>[],
-      this.isLoading = true,
-      this.maxWeek = 0,
-      this.currentWeek = 0,
-      this.currentPage = 0,
-      this.height = 55.0,
-      this.isYanTa = false,
-      this.showTomorrow = false,
-      this.weekNow = 0})
-      : _allCourses = allCourses;
+  const _$ScheduleStateImpl({
+    final List<List<CourseModel>> allCourses = const <List<CourseModel>>[],
+    this.isLoading = true,
+    this.maxWeek = 0,
+    this.currentWeek = 0,
+    this.currentPage = 0,
+    this.height = 55.0,
+    this.isYanTa = false,
+    this.showTomorrow = false,
+    this.weekNow = 0,
+  }) : _allCourses = allCourses;
 
   final List<List<CourseModel>> _allCourses;
   @override
@@ -991,8 +1748,10 @@ class _$ScheduleStateImpl implements _ScheduleState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ScheduleStateImpl &&
-            const DeepCollectionEquality()
-                .equals(other._allCourses, _allCourses) &&
+            const DeepCollectionEquality().equals(
+              other._allCourses,
+              _allCourses,
+            ) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.maxWeek, maxWeek) || other.maxWeek == maxWeek) &&
@@ -1009,16 +1768,17 @@ class _$ScheduleStateImpl implements _ScheduleState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_allCourses),
-      isLoading,
-      maxWeek,
-      currentWeek,
-      currentPage,
-      height,
-      isYanTa,
-      showTomorrow,
-      weekNow);
+    runtimeType,
+    const DeepCollectionEquality().hash(_allCourses),
+    isLoading,
+    maxWeek,
+    currentWeek,
+    currentPage,
+    height,
+    isYanTa,
+    showTomorrow,
+    weekNow,
+  );
 
   @JsonKey(ignore: true)
   @override
@@ -1028,16 +1788,17 @@ class _$ScheduleStateImpl implements _ScheduleState {
 }
 
 abstract class _ScheduleState implements ScheduleState {
-  const factory _ScheduleState(
-      {final List<List<CourseModel>> allCourses,
-      final bool isLoading,
-      final int maxWeek,
-      final int currentWeek,
-      final int currentPage,
-      final double height,
-      final bool isYanTa,
-      final bool showTomorrow,
-      final int weekNow}) = _$ScheduleStateImpl;
+  const factory _ScheduleState({
+    final List<List<CourseModel>> allCourses,
+    final bool isLoading,
+    final int maxWeek,
+    final int currentWeek,
+    final int currentPage,
+    final double height,
+    final bool isYanTa,
+    final bool showTomorrow,
+    final int weekNow,
+  }) = _$ScheduleStateImpl;
 
   @override
   List<List<CourseModel>> get allCourses;
@@ -1080,16 +1841,18 @@ mixin _$ElectricityState {
 /// @nodoc
 abstract class $ElectricityStateCopyWith<$Res> {
   factory $ElectricityStateCopyWith(
-          ElectricityState value, $Res Function(ElectricityState) then) =
-      _$ElectricityStateCopyWithImpl<$Res, ElectricityState>;
+    ElectricityState value,
+    $Res Function(ElectricityState) then,
+  ) = _$ElectricityStateCopyWithImpl<$Res, ElectricityState>;
   @useResult
-  $Res call(
-      {bool isLoading,
-      bool hasData,
-      bool hasConfiguredSource,
-      double electricity,
-      List<String> tiles,
-      List<ElectricData> weeklyData});
+  $Res call({
+    bool isLoading,
+    bool hasData,
+    bool hasConfiguredSource,
+    double electricity,
+    List<String> tiles,
+    List<ElectricData> weeklyData,
+  });
 }
 
 /// @nodoc
@@ -1112,59 +1875,65 @@ class _$ElectricityStateCopyWithImpl<$Res, $Val extends ElectricityState>
     Object? tiles = null,
     Object? weeklyData = null,
   }) {
-    return _then(_value.copyWith(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasData: null == hasData
-          ? _value.hasData
-          : hasData // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasConfiguredSource: null == hasConfiguredSource
-          ? _value.hasConfiguredSource
-          : hasConfiguredSource // ignore: cast_nullable_to_non_nullable
-              as bool,
-      electricity: null == electricity
-          ? _value.electricity
-          : electricity // ignore: cast_nullable_to_non_nullable
-              as double,
-      tiles: null == tiles
-          ? _value.tiles
-          : tiles // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      weeklyData: null == weeklyData
-          ? _value.weeklyData
-          : weeklyData // ignore: cast_nullable_to_non_nullable
-              as List<ElectricData>,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            hasData: null == hasData
+                ? _value.hasData
+                : hasData // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            hasConfiguredSource: null == hasConfiguredSource
+                ? _value.hasConfiguredSource
+                : hasConfiguredSource // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            electricity: null == electricity
+                ? _value.electricity
+                : electricity // ignore: cast_nullable_to_non_nullable
+                      as double,
+            tiles: null == tiles
+                ? _value.tiles
+                : tiles // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            weeklyData: null == weeklyData
+                ? _value.weeklyData
+                : weeklyData // ignore: cast_nullable_to_non_nullable
+                      as List<ElectricData>,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$ElectricityStateImplCopyWith<$Res>
     implements $ElectricityStateCopyWith<$Res> {
-  factory _$$ElectricityStateImplCopyWith(_$ElectricityStateImpl value,
-          $Res Function(_$ElectricityStateImpl) then) =
-      __$$ElectricityStateImplCopyWithImpl<$Res>;
+  factory _$$ElectricityStateImplCopyWith(
+    _$ElectricityStateImpl value,
+    $Res Function(_$ElectricityStateImpl) then,
+  ) = __$$ElectricityStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {bool isLoading,
-      bool hasData,
-      bool hasConfiguredSource,
-      double electricity,
-      List<String> tiles,
-      List<ElectricData> weeklyData});
+  $Res call({
+    bool isLoading,
+    bool hasData,
+    bool hasConfiguredSource,
+    double electricity,
+    List<String> tiles,
+    List<ElectricData> weeklyData,
+  });
 }
 
 /// @nodoc
 class __$$ElectricityStateImplCopyWithImpl<$Res>
     extends _$ElectricityStateCopyWithImpl<$Res, _$ElectricityStateImpl>
     implements _$$ElectricityStateImplCopyWith<$Res> {
-  __$$ElectricityStateImplCopyWithImpl(_$ElectricityStateImpl _value,
-      $Res Function(_$ElectricityStateImpl) _then)
-      : super(_value, _then);
+  __$$ElectricityStateImplCopyWithImpl(
+    _$ElectricityStateImpl _value,
+    $Res Function(_$ElectricityStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -1176,47 +1945,49 @@ class __$$ElectricityStateImplCopyWithImpl<$Res>
     Object? tiles = null,
     Object? weeklyData = null,
   }) {
-    return _then(_$ElectricityStateImpl(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasData: null == hasData
-          ? _value.hasData
-          : hasData // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasConfiguredSource: null == hasConfiguredSource
-          ? _value.hasConfiguredSource
-          : hasConfiguredSource // ignore: cast_nullable_to_non_nullable
-              as bool,
-      electricity: null == electricity
-          ? _value.electricity
-          : electricity // ignore: cast_nullable_to_non_nullable
-              as double,
-      tiles: null == tiles
-          ? _value._tiles
-          : tiles // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      weeklyData: null == weeklyData
-          ? _value._weeklyData
-          : weeklyData // ignore: cast_nullable_to_non_nullable
-              as List<ElectricData>,
-    ));
+    return _then(
+      _$ElectricityStateImpl(
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        hasData: null == hasData
+            ? _value.hasData
+            : hasData // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        hasConfiguredSource: null == hasConfiguredSource
+            ? _value.hasConfiguredSource
+            : hasConfiguredSource // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        electricity: null == electricity
+            ? _value.electricity
+            : electricity // ignore: cast_nullable_to_non_nullable
+                  as double,
+        tiles: null == tiles
+            ? _value._tiles
+            : tiles // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        weeklyData: null == weeklyData
+            ? _value._weeklyData
+            : weeklyData // ignore: cast_nullable_to_non_nullable
+                  as List<ElectricData>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$ElectricityStateImpl implements _ElectricityState {
-  const _$ElectricityStateImpl(
-      {this.isLoading = true,
-      this.hasData = false,
-      this.hasConfiguredSource = false,
-      this.electricity = 0.0,
-      final List<String> tiles = const <String>[],
-      final List<ElectricData> weeklyData = const <ElectricData>[]})
-      : _tiles = tiles,
-        _weeklyData = weeklyData;
+  const _$ElectricityStateImpl({
+    this.isLoading = true,
+    this.hasData = false,
+    this.hasConfiguredSource = false,
+    this.electricity = 0.0,
+    final List<String> tiles = const <String>[],
+    final List<ElectricData> weeklyData = const <ElectricData>[],
+  }) : _tiles = tiles,
+       _weeklyData = weeklyData;
 
   @override
   @JsonKey()
@@ -1266,36 +2037,42 @@ class _$ElectricityStateImpl implements _ElectricityState {
             (identical(other.electricity, electricity) ||
                 other.electricity == electricity) &&
             const DeepCollectionEquality().equals(other._tiles, _tiles) &&
-            const DeepCollectionEquality()
-                .equals(other._weeklyData, _weeklyData));
+            const DeepCollectionEquality().equals(
+              other._weeklyData,
+              _weeklyData,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      hasData,
-      hasConfiguredSource,
-      electricity,
-      const DeepCollectionEquality().hash(_tiles),
-      const DeepCollectionEquality().hash(_weeklyData));
+    runtimeType,
+    isLoading,
+    hasData,
+    hasConfiguredSource,
+    electricity,
+    const DeepCollectionEquality().hash(_tiles),
+    const DeepCollectionEquality().hash(_weeklyData),
+  );
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ElectricityStateImplCopyWith<_$ElectricityStateImpl> get copyWith =>
       __$$ElectricityStateImplCopyWithImpl<_$ElectricityStateImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 }
 
 abstract class _ElectricityState implements ElectricityState {
-  const factory _ElectricityState(
-      {final bool isLoading,
-      final bool hasData,
-      final bool hasConfiguredSource,
-      final double electricity,
-      final List<String> tiles,
-      final List<ElectricData> weeklyData}) = _$ElectricityStateImpl;
+  const factory _ElectricityState({
+    final bool isLoading,
+    final bool hasData,
+    final bool hasConfiguredSource,
+    final double electricity,
+    final List<String> tiles,
+    final List<ElectricData> weeklyData,
+  }) = _$ElectricityStateImpl;
 
   @override
   bool get isLoading;
@@ -1333,17 +2110,19 @@ mixin _$PaymentState {
 /// @nodoc
 abstract class $PaymentStateCopyWith<$Res> {
   factory $PaymentStateCopyWith(
-          PaymentState value, $Res Function(PaymentState) then) =
-      _$PaymentStateCopyWithImpl<$Res, PaymentState>;
+    PaymentState value,
+    $Res Function(PaymentState) then,
+  ) = _$PaymentStateCopyWithImpl<$Res, PaymentState>;
   @useResult
-  $Res call(
-      {bool isLoading,
-      bool hasData,
-      String errorMessage,
-      List<PaymentModel> records,
-      double totalRecharge,
-      bool isShowTile,
-      String password});
+  $Res call({
+    bool isLoading,
+    bool hasData,
+    String errorMessage,
+    List<PaymentModel> records,
+    double totalRecharge,
+    bool isShowTile,
+    String password,
+  });
 }
 
 /// @nodoc
@@ -1367,36 +2146,39 @@ class _$PaymentStateCopyWithImpl<$Res, $Val extends PaymentState>
     Object? isShowTile = null,
     Object? password = null,
   }) {
-    return _then(_value.copyWith(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasData: null == hasData
-          ? _value.hasData
-          : hasData // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      records: null == records
-          ? _value.records
-          : records // ignore: cast_nullable_to_non_nullable
-              as List<PaymentModel>,
-      totalRecharge: null == totalRecharge
-          ? _value.totalRecharge
-          : totalRecharge // ignore: cast_nullable_to_non_nullable
-              as double,
-      isShowTile: null == isShowTile
-          ? _value.isShowTile
-          : isShowTile // ignore: cast_nullable_to_non_nullable
-              as bool,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            hasData: null == hasData
+                ? _value.hasData
+                : hasData // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            errorMessage: null == errorMessage
+                ? _value.errorMessage
+                : errorMessage // ignore: cast_nullable_to_non_nullable
+                      as String,
+            records: null == records
+                ? _value.records
+                : records // ignore: cast_nullable_to_non_nullable
+                      as List<PaymentModel>,
+            totalRecharge: null == totalRecharge
+                ? _value.totalRecharge
+                : totalRecharge // ignore: cast_nullable_to_non_nullable
+                      as double,
+            isShowTile: null == isShowTile
+                ? _value.isShowTile
+                : isShowTile // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            password: null == password
+                ? _value.password
+                : password // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -1404,18 +2186,20 @@ class _$PaymentStateCopyWithImpl<$Res, $Val extends PaymentState>
 abstract class _$$PaymentStateImplCopyWith<$Res>
     implements $PaymentStateCopyWith<$Res> {
   factory _$$PaymentStateImplCopyWith(
-          _$PaymentStateImpl value, $Res Function(_$PaymentStateImpl) then) =
-      __$$PaymentStateImplCopyWithImpl<$Res>;
+    _$PaymentStateImpl value,
+    $Res Function(_$PaymentStateImpl) then,
+  ) = __$$PaymentStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {bool isLoading,
-      bool hasData,
-      String errorMessage,
-      List<PaymentModel> records,
-      double totalRecharge,
-      bool isShowTile,
-      String password});
+  $Res call({
+    bool isLoading,
+    bool hasData,
+    String errorMessage,
+    List<PaymentModel> records,
+    double totalRecharge,
+    bool isShowTile,
+    String password,
+  });
 }
 
 /// @nodoc
@@ -1423,8 +2207,9 @@ class __$$PaymentStateImplCopyWithImpl<$Res>
     extends _$PaymentStateCopyWithImpl<$Res, _$PaymentStateImpl>
     implements _$$PaymentStateImplCopyWith<$Res> {
   __$$PaymentStateImplCopyWithImpl(
-      _$PaymentStateImpl _value, $Res Function(_$PaymentStateImpl) _then)
-      : super(_value, _then);
+    _$PaymentStateImpl _value,
+    $Res Function(_$PaymentStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -1437,51 +2222,53 @@ class __$$PaymentStateImplCopyWithImpl<$Res>
     Object? isShowTile = null,
     Object? password = null,
   }) {
-    return _then(_$PaymentStateImpl(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      hasData: null == hasData
-          ? _value.hasData
-          : hasData // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      records: null == records
-          ? _value._records
-          : records // ignore: cast_nullable_to_non_nullable
-              as List<PaymentModel>,
-      totalRecharge: null == totalRecharge
-          ? _value.totalRecharge
-          : totalRecharge // ignore: cast_nullable_to_non_nullable
-              as double,
-      isShowTile: null == isShowTile
-          ? _value.isShowTile
-          : isShowTile // ignore: cast_nullable_to_non_nullable
-              as bool,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+    return _then(
+      _$PaymentStateImpl(
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        hasData: null == hasData
+            ? _value.hasData
+            : hasData // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        errorMessage: null == errorMessage
+            ? _value.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+        records: null == records
+            ? _value._records
+            : records // ignore: cast_nullable_to_non_nullable
+                  as List<PaymentModel>,
+        totalRecharge: null == totalRecharge
+            ? _value.totalRecharge
+            : totalRecharge // ignore: cast_nullable_to_non_nullable
+                  as double,
+        isShowTile: null == isShowTile
+            ? _value.isShowTile
+            : isShowTile // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        password: null == password
+            ? _value.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$PaymentStateImpl implements _PaymentState {
-  const _$PaymentStateImpl(
-      {this.isLoading = true,
-      this.hasData = false,
-      this.errorMessage = '',
-      final List<PaymentModel> records = const <PaymentModel>[],
-      this.totalRecharge = 0.0,
-      this.isShowTile = false,
-      this.password = ''})
-      : _records = records;
+  const _$PaymentStateImpl({
+    this.isLoading = true,
+    this.hasData = false,
+    this.errorMessage = '',
+    final List<PaymentModel> records = const <PaymentModel>[],
+    this.totalRecharge = 0.0,
+    this.isShowTile = false,
+    this.password = '',
+  }) : _records = records;
 
   @override
   @JsonKey()
@@ -1537,14 +2324,15 @@ class _$PaymentStateImpl implements _PaymentState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      isLoading,
-      hasData,
-      errorMessage,
-      const DeepCollectionEquality().hash(_records),
-      totalRecharge,
-      isShowTile,
-      password);
+    runtimeType,
+    isLoading,
+    hasData,
+    errorMessage,
+    const DeepCollectionEquality().hash(_records),
+    totalRecharge,
+    isShowTile,
+    password,
+  );
 
   @JsonKey(ignore: true)
   @override
@@ -1554,14 +2342,15 @@ class _$PaymentStateImpl implements _PaymentState {
 }
 
 abstract class _PaymentState implements PaymentState {
-  const factory _PaymentState(
-      {final bool isLoading,
-      final bool hasData,
-      final String errorMessage,
-      final List<PaymentModel> records,
-      final double totalRecharge,
-      final bool isShowTile,
-      final String password}) = _$PaymentStateImpl;
+  const factory _PaymentState({
+    final bool isLoading,
+    final bool hasData,
+    final String errorMessage,
+    final List<PaymentModel> records,
+    final double totalRecharge,
+    final bool isShowTile,
+    final String password,
+  }) = _$PaymentStateImpl;
 
   @override
   bool get isLoading;
@@ -1596,8 +2385,9 @@ mixin _$BusTileState {
 /// @nodoc
 abstract class $BusTileStateCopyWith<$Res> {
   factory $BusTileStateCopyWith(
-          BusTileState value, $Res Function(BusTileState) then) =
-      _$BusTileStateCopyWithImpl<$Res, BusTileState>;
+    BusTileState value,
+    $Res Function(BusTileState) then,
+  ) = _$BusTileStateCopyWithImpl<$Res, BusTileState>;
   @useResult
   $Res call({bool isLoading, int busCount});
 }
@@ -1614,20 +2404,20 @@ class _$BusTileStateCopyWithImpl<$Res, $Val extends BusTileState>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? isLoading = null,
-    Object? busCount = null,
-  }) {
-    return _then(_value.copyWith(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      busCount: null == busCount
-          ? _value.busCount
-          : busCount // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
+  $Res call({Object? isLoading = null, Object? busCount = null}) {
+    return _then(
+      _value.copyWith(
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            busCount: null == busCount
+                ? _value.busCount
+                : busCount // ignore: cast_nullable_to_non_nullable
+                      as int,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -1635,8 +2425,9 @@ class _$BusTileStateCopyWithImpl<$Res, $Val extends BusTileState>
 abstract class _$$BusTileStateImplCopyWith<$Res>
     implements $BusTileStateCopyWith<$Res> {
   factory _$$BusTileStateImplCopyWith(
-          _$BusTileStateImpl value, $Res Function(_$BusTileStateImpl) then) =
-      __$$BusTileStateImplCopyWithImpl<$Res>;
+    _$BusTileStateImpl value,
+    $Res Function(_$BusTileStateImpl) then,
+  ) = __$$BusTileStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool isLoading, int busCount});
@@ -1647,25 +2438,25 @@ class __$$BusTileStateImplCopyWithImpl<$Res>
     extends _$BusTileStateCopyWithImpl<$Res, _$BusTileStateImpl>
     implements _$$BusTileStateImplCopyWith<$Res> {
   __$$BusTileStateImplCopyWithImpl(
-      _$BusTileStateImpl _value, $Res Function(_$BusTileStateImpl) _then)
-      : super(_value, _then);
+    _$BusTileStateImpl _value,
+    $Res Function(_$BusTileStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? isLoading = null,
-    Object? busCount = null,
-  }) {
-    return _then(_$BusTileStateImpl(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      busCount: null == busCount
-          ? _value.busCount
-          : busCount // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
+  $Res call({Object? isLoading = null, Object? busCount = null}) {
+    return _then(
+      _$BusTileStateImpl(
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        busCount: null == busCount
+            ? _value.busCount
+            : busCount // ignore: cast_nullable_to_non_nullable
+                  as int,
+      ),
+    );
   }
 }
 
@@ -1735,8 +2526,9 @@ mixin _$TileEditState {
 /// @nodoc
 abstract class $TileEditStateCopyWith<$Res> {
   factory $TileEditStateCopyWith(
-          TileEditState value, $Res Function(TileEditState) then) =
-      _$TileEditStateCopyWithImpl<$Res, TileEditState>;
+    TileEditState value,
+    $Res Function(TileEditState) then,
+  ) = _$TileEditStateCopyWithImpl<$Res, TileEditState>;
   @useResult
   $Res call({bool isEditMode, TileConfigurationList config, bool isLoading});
 }
@@ -1758,20 +2550,23 @@ class _$TileEditStateCopyWithImpl<$Res, $Val extends TileEditState>
     Object? config = null,
     Object? isLoading = null,
   }) {
-    return _then(_value.copyWith(
-      isEditMode: null == isEditMode
-          ? _value.isEditMode
-          : isEditMode // ignore: cast_nullable_to_non_nullable
-              as bool,
-      config: null == config
-          ? _value.config
-          : config // ignore: cast_nullable_to_non_nullable
-              as TileConfigurationList,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            isEditMode: null == isEditMode
+                ? _value.isEditMode
+                : isEditMode // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            config: null == config
+                ? _value.config
+                : config // ignore: cast_nullable_to_non_nullable
+                      as TileConfigurationList,
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -1779,8 +2574,9 @@ class _$TileEditStateCopyWithImpl<$Res, $Val extends TileEditState>
 abstract class _$$TileEditStateImplCopyWith<$Res>
     implements $TileEditStateCopyWith<$Res> {
   factory _$$TileEditStateImplCopyWith(
-          _$TileEditStateImpl value, $Res Function(_$TileEditStateImpl) then) =
-      __$$TileEditStateImplCopyWithImpl<$Res>;
+    _$TileEditStateImpl value,
+    $Res Function(_$TileEditStateImpl) then,
+  ) = __$$TileEditStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool isEditMode, TileConfigurationList config, bool isLoading});
@@ -1791,8 +2587,9 @@ class __$$TileEditStateImplCopyWithImpl<$Res>
     extends _$TileEditStateCopyWithImpl<$Res, _$TileEditStateImpl>
     implements _$$TileEditStateImplCopyWith<$Res> {
   __$$TileEditStateImplCopyWithImpl(
-      _$TileEditStateImpl _value, $Res Function(_$TileEditStateImpl) _then)
-      : super(_value, _then);
+    _$TileEditStateImpl _value,
+    $Res Function(_$TileEditStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -1801,28 +2598,33 @@ class __$$TileEditStateImplCopyWithImpl<$Res>
     Object? config = null,
     Object? isLoading = null,
   }) {
-    return _then(_$TileEditStateImpl(
-      isEditMode: null == isEditMode
-          ? _value.isEditMode
-          : isEditMode // ignore: cast_nullable_to_non_nullable
-              as bool,
-      config: null == config
-          ? _value.config
-          : config // ignore: cast_nullable_to_non_nullable
-              as TileConfigurationList,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+    return _then(
+      _$TileEditStateImpl(
+        isEditMode: null == isEditMode
+            ? _value.isEditMode
+            : isEditMode // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        config: null == config
+            ? _value.config
+            : config // ignore: cast_nullable_to_non_nullable
+                  as TileConfigurationList,
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$TileEditStateImpl implements _TileEditState {
-  const _$TileEditStateImpl(
-      {this.isEditMode = false, required this.config, this.isLoading = false});
+  const _$TileEditStateImpl({
+    this.isEditMode = false,
+    required this.config,
+    this.isLoading = false,
+  });
 
   @override
   @JsonKey()
@@ -1861,10 +2663,11 @@ class _$TileEditStateImpl implements _TileEditState {
 }
 
 abstract class _TileEditState implements TileEditState {
-  const factory _TileEditState(
-      {final bool isEditMode,
-      required final TileConfigurationList config,
-      final bool isLoading}) = _$TileEditStateImpl;
+  const factory _TileEditState({
+    final bool isEditMode,
+    required final TileConfigurationList config,
+    final bool isLoading,
+  }) = _$TileEditStateImpl;
 
   @override
   bool get isEditMode;
@@ -1891,8 +2694,9 @@ mixin _$AuthStateView {
 /// @nodoc
 abstract class $AuthStateViewCopyWith<$Res> {
   factory $AuthStateViewCopyWith(
-          AuthStateView value, $Res Function(AuthStateView) then) =
-      _$AuthStateViewCopyWithImpl<$Res, AuthStateView>;
+    AuthStateView value,
+    $Res Function(AuthStateView) then,
+  ) = _$AuthStateViewCopyWithImpl<$Res, AuthStateView>;
   @useResult
   $Res call({AuthState authState, String relogMessage});
 }
@@ -1909,20 +2713,20 @@ class _$AuthStateViewCopyWithImpl<$Res, $Val extends AuthStateView>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? authState = null,
-    Object? relogMessage = null,
-  }) {
-    return _then(_value.copyWith(
-      authState: null == authState
-          ? _value.authState
-          : authState // ignore: cast_nullable_to_non_nullable
-              as AuthState,
-      relogMessage: null == relogMessage
-          ? _value.relogMessage
-          : relogMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  $Res call({Object? authState = null, Object? relogMessage = null}) {
+    return _then(
+      _value.copyWith(
+            authState: null == authState
+                ? _value.authState
+                : authState // ignore: cast_nullable_to_non_nullable
+                      as AuthState,
+            relogMessage: null == relogMessage
+                ? _value.relogMessage
+                : relogMessage // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -1930,8 +2734,9 @@ class _$AuthStateViewCopyWithImpl<$Res, $Val extends AuthStateView>
 abstract class _$$AuthStateViewImplCopyWith<$Res>
     implements $AuthStateViewCopyWith<$Res> {
   factory _$$AuthStateViewImplCopyWith(
-          _$AuthStateViewImpl value, $Res Function(_$AuthStateViewImpl) then) =
-      __$$AuthStateViewImplCopyWithImpl<$Res>;
+    _$AuthStateViewImpl value,
+    $Res Function(_$AuthStateViewImpl) then,
+  ) = __$$AuthStateViewImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({AuthState authState, String relogMessage});
@@ -1942,33 +2747,35 @@ class __$$AuthStateViewImplCopyWithImpl<$Res>
     extends _$AuthStateViewCopyWithImpl<$Res, _$AuthStateViewImpl>
     implements _$$AuthStateViewImplCopyWith<$Res> {
   __$$AuthStateViewImplCopyWithImpl(
-      _$AuthStateViewImpl _value, $Res Function(_$AuthStateViewImpl) _then)
-      : super(_value, _then);
+    _$AuthStateViewImpl _value,
+    $Res Function(_$AuthStateViewImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? authState = null,
-    Object? relogMessage = null,
-  }) {
-    return _then(_$AuthStateViewImpl(
-      authState: null == authState
-          ? _value.authState
-          : authState // ignore: cast_nullable_to_non_nullable
-              as AuthState,
-      relogMessage: null == relogMessage
-          ? _value.relogMessage
-          : relogMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? authState = null, Object? relogMessage = null}) {
+    return _then(
+      _$AuthStateViewImpl(
+        authState: null == authState
+            ? _value.authState
+            : authState // ignore: cast_nullable_to_non_nullable
+                  as AuthState,
+        relogMessage: null == relogMessage
+            ? _value.relogMessage
+            : relogMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$AuthStateViewImpl implements _AuthStateView {
-  const _$AuthStateViewImpl(
-      {this.authState = AuthState.normal, this.relogMessage = ''});
+  const _$AuthStateViewImpl({
+    this.authState = AuthState.normal,
+    this.relogMessage = '',
+  });
 
   @override
   @JsonKey()
@@ -2004,9 +2811,10 @@ class _$AuthStateViewImpl implements _AuthStateView {
 }
 
 abstract class _AuthStateView implements AuthStateView {
-  const factory _AuthStateView(
-      {final AuthState authState,
-      final String relogMessage}) = _$AuthStateViewImpl;
+  const factory _AuthStateView({
+    final AuthState authState,
+    final String relogMessage,
+  }) = _$AuthStateViewImpl;
 
   @override
   AuthState get authState;
@@ -2031,8 +2839,9 @@ mixin _$BaseStoreState {
 /// @nodoc
 abstract class $BaseStoreStateCopyWith<$Res> {
   factory $BaseStoreStateCopyWith(
-          BaseStoreState value, $Res Function(BaseStoreState) then) =
-      _$BaseStoreStateCopyWithImpl<$Res, BaseStoreState>;
+    BaseStoreState value,
+    $Res Function(BaseStoreState) then,
+  ) = _$BaseStoreStateCopyWithImpl<$Res, BaseStoreState>;
   @useResult
   $Res call({bool isLoading, String errorMessage});
 }
@@ -2049,29 +2858,30 @@ class _$BaseStoreStateCopyWithImpl<$Res, $Val extends BaseStoreState>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? isLoading = null,
-    Object? errorMessage = null,
-  }) {
-    return _then(_value.copyWith(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  $Res call({Object? isLoading = null, Object? errorMessage = null}) {
+    return _then(
+      _value.copyWith(
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            errorMessage: null == errorMessage
+                ? _value.errorMessage
+                : errorMessage // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$BaseStoreStateImplCopyWith<$Res>
     implements $BaseStoreStateCopyWith<$Res> {
-  factory _$$BaseStoreStateImplCopyWith(_$BaseStoreStateImpl value,
-          $Res Function(_$BaseStoreStateImpl) then) =
-      __$$BaseStoreStateImplCopyWithImpl<$Res>;
+  factory _$$BaseStoreStateImplCopyWith(
+    _$BaseStoreStateImpl value,
+    $Res Function(_$BaseStoreStateImpl) then,
+  ) = __$$BaseStoreStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool isLoading, String errorMessage});
@@ -2082,25 +2892,25 @@ class __$$BaseStoreStateImplCopyWithImpl<$Res>
     extends _$BaseStoreStateCopyWithImpl<$Res, _$BaseStoreStateImpl>
     implements _$$BaseStoreStateImplCopyWith<$Res> {
   __$$BaseStoreStateImplCopyWithImpl(
-      _$BaseStoreStateImpl _value, $Res Function(_$BaseStoreStateImpl) _then)
-      : super(_value, _then);
+    _$BaseStoreStateImpl _value,
+    $Res Function(_$BaseStoreStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? isLoading = null,
-    Object? errorMessage = null,
-  }) {
-    return _then(_$BaseStoreStateImpl(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? isLoading = null, Object? errorMessage = null}) {
+    return _then(
+      _$BaseStoreStateImpl(
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        errorMessage: null == errorMessage
+            ? _value.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -2140,12 +2950,16 @@ class _$BaseStoreStateImpl implements _BaseStoreState {
   @pragma('vm:prefer-inline')
   _$$BaseStoreStateImplCopyWith<_$BaseStoreStateImpl> get copyWith =>
       __$$BaseStoreStateImplCopyWithImpl<_$BaseStoreStateImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 }
 
 abstract class _BaseStoreState implements BaseStoreState {
-  const factory _BaseStoreState(
-      {final bool isLoading, final String errorMessage}) = _$BaseStoreStateImpl;
+  const factory _BaseStoreState({
+    final bool isLoading,
+    final String errorMessage,
+  }) = _$BaseStoreStateImpl;
 
   @override
   bool get isLoading;
@@ -2172,14 +2986,16 @@ mixin _$ProgramState {
 /// @nodoc
 abstract class $ProgramStateCopyWith<$Res> {
   factory $ProgramStateCopyWith(
-          ProgramState value, $Res Function(ProgramState) then) =
-      _$ProgramStateCopyWithImpl<$Res, ProgramState>;
+    ProgramState value,
+    $Res Function(ProgramState) then,
+  ) = _$ProgramStateCopyWithImpl<$Res, ProgramState>;
   @useResult
-  $Res call(
-      {List<PlanCourseList> programs,
-      bool isLoading,
-      bool isError,
-      String errorMessage});
+  $Res call({
+    List<PlanCourseList> programs,
+    bool isLoading,
+    bool isError,
+    String errorMessage,
+  });
 }
 
 /// @nodoc
@@ -2200,24 +3016,27 @@ class _$ProgramStateCopyWithImpl<$Res, $Val extends ProgramState>
     Object? isError = null,
     Object? errorMessage = null,
   }) {
-    return _then(_value.copyWith(
-      programs: null == programs
-          ? _value.programs
-          : programs // ignore: cast_nullable_to_non_nullable
-              as List<PlanCourseList>,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isError: null == isError
-          ? _value.isError
-          : isError // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            programs: null == programs
+                ? _value.programs
+                : programs // ignore: cast_nullable_to_non_nullable
+                      as List<PlanCourseList>,
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            isError: null == isError
+                ? _value.isError
+                : isError // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            errorMessage: null == errorMessage
+                ? _value.errorMessage
+                : errorMessage // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -2225,15 +3044,17 @@ class _$ProgramStateCopyWithImpl<$Res, $Val extends ProgramState>
 abstract class _$$ProgramStateImplCopyWith<$Res>
     implements $ProgramStateCopyWith<$Res> {
   factory _$$ProgramStateImplCopyWith(
-          _$ProgramStateImpl value, $Res Function(_$ProgramStateImpl) then) =
-      __$$ProgramStateImplCopyWithImpl<$Res>;
+    _$ProgramStateImpl value,
+    $Res Function(_$ProgramStateImpl) then,
+  ) = __$$ProgramStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {List<PlanCourseList> programs,
-      bool isLoading,
-      bool isError,
-      String errorMessage});
+  $Res call({
+    List<PlanCourseList> programs,
+    bool isLoading,
+    bool isError,
+    String errorMessage,
+  });
 }
 
 /// @nodoc
@@ -2241,8 +3062,9 @@ class __$$ProgramStateImplCopyWithImpl<$Res>
     extends _$ProgramStateCopyWithImpl<$Res, _$ProgramStateImpl>
     implements _$$ProgramStateImplCopyWith<$Res> {
   __$$ProgramStateImplCopyWithImpl(
-      _$ProgramStateImpl _value, $Res Function(_$ProgramStateImpl) _then)
-      : super(_value, _then);
+    _$ProgramStateImpl _value,
+    $Res Function(_$ProgramStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -2252,36 +3074,38 @@ class __$$ProgramStateImplCopyWithImpl<$Res>
     Object? isError = null,
     Object? errorMessage = null,
   }) {
-    return _then(_$ProgramStateImpl(
-      programs: null == programs
-          ? _value._programs
-          : programs // ignore: cast_nullable_to_non_nullable
-              as List<PlanCourseList>,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isError: null == isError
-          ? _value.isError
-          : isError // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+    return _then(
+      _$ProgramStateImpl(
+        programs: null == programs
+            ? _value._programs
+            : programs // ignore: cast_nullable_to_non_nullable
+                  as List<PlanCourseList>,
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isError: null == isError
+            ? _value.isError
+            : isError // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        errorMessage: null == errorMessage
+            ? _value.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$ProgramStateImpl implements _ProgramState {
-  const _$ProgramStateImpl(
-      {final List<PlanCourseList> programs = const <PlanCourseList>[],
-      this.isLoading = true,
-      this.isError = false,
-      this.errorMessage = ''})
-      : _programs = programs;
+  const _$ProgramStateImpl({
+    final List<PlanCourseList> programs = const <PlanCourseList>[],
+    this.isLoading = true,
+    this.isError = false,
+    this.errorMessage = '',
+  }) : _programs = programs;
 
   final List<PlanCourseList> _programs;
   @override
@@ -2322,11 +3146,12 @@ class _$ProgramStateImpl implements _ProgramState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_programs),
-      isLoading,
-      isError,
-      errorMessage);
+    runtimeType,
+    const DeepCollectionEquality().hash(_programs),
+    isLoading,
+    isError,
+    errorMessage,
+  );
 
   @JsonKey(ignore: true)
   @override
@@ -2336,11 +3161,12 @@ class _$ProgramStateImpl implements _ProgramState {
 }
 
 abstract class _ProgramState implements ProgramState {
-  const factory _ProgramState(
-      {final List<PlanCourseList> programs,
-      final bool isLoading,
-      final bool isError,
-      final String errorMessage}) = _$ProgramStateImpl;
+  const factory _ProgramState({
+    final List<PlanCourseList> programs,
+    final bool isLoading,
+    final bool isError,
+    final String errorMessage,
+  }) = _$ProgramStateImpl;
 
   @override
   List<PlanCourseList> get programs;
@@ -2376,19 +3202,21 @@ mixin _$BusPageState {
 /// @nodoc
 abstract class $BusPageStateCopyWith<$Res> {
   factory $BusPageStateCopyWith(
-          BusPageState value, $Res Function(BusPageState) then) =
-      _$BusPageStateCopyWithImpl<$Res, BusPageState>;
+    BusPageState value,
+    $Res Function(BusPageState) then,
+  ) = _$BusPageStateCopyWithImpl<$Res, BusPageState>;
   @useResult
-  $Res call(
-      {String selectedDate,
-      String selectedCampus,
-      List<String> campusOptions,
-      List<BusItem> busData,
-      List<BusItem> todayBusData,
-      bool isLoading,
-      String errorMessage,
-      bool isShowBus,
-      List<String> tiles});
+  $Res call({
+    String selectedDate,
+    String selectedCampus,
+    List<String> campusOptions,
+    List<BusItem> busData,
+    List<BusItem> todayBusData,
+    bool isLoading,
+    String errorMessage,
+    bool isShowBus,
+    List<String> tiles,
+  });
 }
 
 /// @nodoc
@@ -2414,44 +3242,47 @@ class _$BusPageStateCopyWithImpl<$Res, $Val extends BusPageState>
     Object? isShowBus = null,
     Object? tiles = null,
   }) {
-    return _then(_value.copyWith(
-      selectedDate: null == selectedDate
-          ? _value.selectedDate
-          : selectedDate // ignore: cast_nullable_to_non_nullable
-              as String,
-      selectedCampus: null == selectedCampus
-          ? _value.selectedCampus
-          : selectedCampus // ignore: cast_nullable_to_non_nullable
-              as String,
-      campusOptions: null == campusOptions
-          ? _value.campusOptions
-          : campusOptions // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      busData: null == busData
-          ? _value.busData
-          : busData // ignore: cast_nullable_to_non_nullable
-              as List<BusItem>,
-      todayBusData: null == todayBusData
-          ? _value.todayBusData
-          : todayBusData // ignore: cast_nullable_to_non_nullable
-              as List<BusItem>,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      isShowBus: null == isShowBus
-          ? _value.isShowBus
-          : isShowBus // ignore: cast_nullable_to_non_nullable
-              as bool,
-      tiles: null == tiles
-          ? _value.tiles
-          : tiles // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            selectedDate: null == selectedDate
+                ? _value.selectedDate
+                : selectedDate // ignore: cast_nullable_to_non_nullable
+                      as String,
+            selectedCampus: null == selectedCampus
+                ? _value.selectedCampus
+                : selectedCampus // ignore: cast_nullable_to_non_nullable
+                      as String,
+            campusOptions: null == campusOptions
+                ? _value.campusOptions
+                : campusOptions // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+            busData: null == busData
+                ? _value.busData
+                : busData // ignore: cast_nullable_to_non_nullable
+                      as List<BusItem>,
+            todayBusData: null == todayBusData
+                ? _value.todayBusData
+                : todayBusData // ignore: cast_nullable_to_non_nullable
+                      as List<BusItem>,
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            errorMessage: null == errorMessage
+                ? _value.errorMessage
+                : errorMessage // ignore: cast_nullable_to_non_nullable
+                      as String,
+            isShowBus: null == isShowBus
+                ? _value.isShowBus
+                : isShowBus // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            tiles: null == tiles
+                ? _value.tiles
+                : tiles // ignore: cast_nullable_to_non_nullable
+                      as List<String>,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -2459,20 +3290,22 @@ class _$BusPageStateCopyWithImpl<$Res, $Val extends BusPageState>
 abstract class _$$BusPageStateImplCopyWith<$Res>
     implements $BusPageStateCopyWith<$Res> {
   factory _$$BusPageStateImplCopyWith(
-          _$BusPageStateImpl value, $Res Function(_$BusPageStateImpl) then) =
-      __$$BusPageStateImplCopyWithImpl<$Res>;
+    _$BusPageStateImpl value,
+    $Res Function(_$BusPageStateImpl) then,
+  ) = __$$BusPageStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String selectedDate,
-      String selectedCampus,
-      List<String> campusOptions,
-      List<BusItem> busData,
-      List<BusItem> todayBusData,
-      bool isLoading,
-      String errorMessage,
-      bool isShowBus,
-      List<String> tiles});
+  $Res call({
+    String selectedDate,
+    String selectedCampus,
+    List<String> campusOptions,
+    List<BusItem> busData,
+    List<BusItem> todayBusData,
+    bool isLoading,
+    String errorMessage,
+    bool isShowBus,
+    List<String> tiles,
+  });
 }
 
 /// @nodoc
@@ -2480,8 +3313,9 @@ class __$$BusPageStateImplCopyWithImpl<$Res>
     extends _$BusPageStateCopyWithImpl<$Res, _$BusPageStateImpl>
     implements _$$BusPageStateImplCopyWith<$Res> {
   __$$BusPageStateImplCopyWithImpl(
-      _$BusPageStateImpl _value, $Res Function(_$BusPageStateImpl) _then)
-      : super(_value, _then);
+    _$BusPageStateImpl _value,
+    $Res Function(_$BusPageStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -2496,64 +3330,66 @@ class __$$BusPageStateImplCopyWithImpl<$Res>
     Object? isShowBus = null,
     Object? tiles = null,
   }) {
-    return _then(_$BusPageStateImpl(
-      selectedDate: null == selectedDate
-          ? _value.selectedDate
-          : selectedDate // ignore: cast_nullable_to_non_nullable
-              as String,
-      selectedCampus: null == selectedCampus
-          ? _value.selectedCampus
-          : selectedCampus // ignore: cast_nullable_to_non_nullable
-              as String,
-      campusOptions: null == campusOptions
-          ? _value._campusOptions
-          : campusOptions // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      busData: null == busData
-          ? _value._busData
-          : busData // ignore: cast_nullable_to_non_nullable
-              as List<BusItem>,
-      todayBusData: null == todayBusData
-          ? _value._todayBusData
-          : todayBusData // ignore: cast_nullable_to_non_nullable
-              as List<BusItem>,
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      isShowBus: null == isShowBus
-          ? _value.isShowBus
-          : isShowBus // ignore: cast_nullable_to_non_nullable
-              as bool,
-      tiles: null == tiles
-          ? _value._tiles
-          : tiles // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
+    return _then(
+      _$BusPageStateImpl(
+        selectedDate: null == selectedDate
+            ? _value.selectedDate
+            : selectedDate // ignore: cast_nullable_to_non_nullable
+                  as String,
+        selectedCampus: null == selectedCampus
+            ? _value.selectedCampus
+            : selectedCampus // ignore: cast_nullable_to_non_nullable
+                  as String,
+        campusOptions: null == campusOptions
+            ? _value._campusOptions
+            : campusOptions // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+        busData: null == busData
+            ? _value._busData
+            : busData // ignore: cast_nullable_to_non_nullable
+                  as List<BusItem>,
+        todayBusData: null == todayBusData
+            ? _value._todayBusData
+            : todayBusData // ignore: cast_nullable_to_non_nullable
+                  as List<BusItem>,
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        errorMessage: null == errorMessage
+            ? _value.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+        isShowBus: null == isShowBus
+            ? _value.isShowBus
+            : isShowBus // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        tiles: null == tiles
+            ? _value._tiles
+            : tiles // ignore: cast_nullable_to_non_nullable
+                  as List<String>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$BusPageStateImpl implements _BusPageState {
-  const _$BusPageStateImpl(
-      {this.selectedDate = '',
-      this.selectedCampus = '',
-      final List<String> campusOptions = const <String>[],
-      final List<BusItem> busData = const <BusItem>[],
-      final List<BusItem> todayBusData = const <BusItem>[],
-      this.isLoading = false,
-      this.errorMessage = '',
-      this.isShowBus = false,
-      final List<String> tiles = const <String>[]})
-      : _campusOptions = campusOptions,
-        _busData = busData,
-        _todayBusData = todayBusData,
-        _tiles = tiles;
+  const _$BusPageStateImpl({
+    this.selectedDate = '',
+    this.selectedCampus = '',
+    final List<String> campusOptions = const <String>[],
+    final List<BusItem> busData = const <BusItem>[],
+    final List<BusItem> todayBusData = const <BusItem>[],
+    this.isLoading = false,
+    this.errorMessage = '',
+    this.isShowBus = false,
+    final List<String> tiles = const <String>[],
+  }) : _campusOptions = campusOptions,
+       _busData = busData,
+       _todayBusData = todayBusData,
+       _tiles = tiles;
 
   @override
   @JsonKey()
@@ -2620,11 +3456,15 @@ class _$BusPageStateImpl implements _BusPageState {
                 other.selectedDate == selectedDate) &&
             (identical(other.selectedCampus, selectedCampus) ||
                 other.selectedCampus == selectedCampus) &&
-            const DeepCollectionEquality()
-                .equals(other._campusOptions, _campusOptions) &&
+            const DeepCollectionEquality().equals(
+              other._campusOptions,
+              _campusOptions,
+            ) &&
             const DeepCollectionEquality().equals(other._busData, _busData) &&
-            const DeepCollectionEquality()
-                .equals(other._todayBusData, _todayBusData) &&
+            const DeepCollectionEquality().equals(
+              other._todayBusData,
+              _todayBusData,
+            ) &&
             (identical(other.isLoading, isLoading) ||
                 other.isLoading == isLoading) &&
             (identical(other.errorMessage, errorMessage) ||
@@ -2636,16 +3476,17 @@ class _$BusPageStateImpl implements _BusPageState {
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      selectedDate,
-      selectedCampus,
-      const DeepCollectionEquality().hash(_campusOptions),
-      const DeepCollectionEquality().hash(_busData),
-      const DeepCollectionEquality().hash(_todayBusData),
-      isLoading,
-      errorMessage,
-      isShowBus,
-      const DeepCollectionEquality().hash(_tiles));
+    runtimeType,
+    selectedDate,
+    selectedCampus,
+    const DeepCollectionEquality().hash(_campusOptions),
+    const DeepCollectionEquality().hash(_busData),
+    const DeepCollectionEquality().hash(_todayBusData),
+    isLoading,
+    errorMessage,
+    isShowBus,
+    const DeepCollectionEquality().hash(_tiles),
+  );
 
   @JsonKey(ignore: true)
   @override
@@ -2655,16 +3496,17 @@ class _$BusPageStateImpl implements _BusPageState {
 }
 
 abstract class _BusPageState implements BusPageState {
-  const factory _BusPageState(
-      {final String selectedDate,
-      final String selectedCampus,
-      final List<String> campusOptions,
-      final List<BusItem> busData,
-      final List<BusItem> todayBusData,
-      final bool isLoading,
-      final String errorMessage,
-      final bool isShowBus,
-      final List<String> tiles}) = _$BusPageStateImpl;
+  const factory _BusPageState({
+    final String selectedDate,
+    final String selectedCampus,
+    final List<String> campusOptions,
+    final List<BusItem> busData,
+    final List<BusItem> todayBusData,
+    final bool isLoading,
+    final String errorMessage,
+    final bool isShowBus,
+    final List<String> tiles,
+  }) = _$BusPageStateImpl;
 
   @override
   String get selectedDate;
@@ -2704,8 +3546,9 @@ mixin _$SchoolStoreState {
 /// @nodoc
 abstract class $SchoolStoreStateCopyWith<$Res> {
   factory $SchoolStoreStateCopyWith(
-          SchoolStoreState value, $Res Function(SchoolStoreState) then) =
-      _$SchoolStoreStateCopyWithImpl<$Res, SchoolStoreState>;
+    SchoolStoreState value,
+    $Res Function(SchoolStoreState) then,
+  ) = _$SchoolStoreStateCopyWithImpl<$Res, SchoolStoreState>;
   @useResult
   $Res call({bool isLoading, String errorMessage, School? school});
 }
@@ -2727,29 +3570,33 @@ class _$SchoolStoreStateCopyWithImpl<$Res, $Val extends SchoolStoreState>
     Object? errorMessage = null,
     Object? school = freezed,
   }) {
-    return _then(_value.copyWith(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      school: freezed == school
-          ? _value.school
-          : school // ignore: cast_nullable_to_non_nullable
-              as School?,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            isLoading: null == isLoading
+                ? _value.isLoading
+                : isLoading // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            errorMessage: null == errorMessage
+                ? _value.errorMessage
+                : errorMessage // ignore: cast_nullable_to_non_nullable
+                      as String,
+            school: freezed == school
+                ? _value.school
+                : school // ignore: cast_nullable_to_non_nullable
+                      as School?,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$SchoolStoreStateImplCopyWith<$Res>
     implements $SchoolStoreStateCopyWith<$Res> {
-  factory _$$SchoolStoreStateImplCopyWith(_$SchoolStoreStateImpl value,
-          $Res Function(_$SchoolStoreStateImpl) then) =
-      __$$SchoolStoreStateImplCopyWithImpl<$Res>;
+  factory _$$SchoolStoreStateImplCopyWith(
+    _$SchoolStoreStateImpl value,
+    $Res Function(_$SchoolStoreStateImpl) then,
+  ) = __$$SchoolStoreStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool isLoading, String errorMessage, School? school});
@@ -2759,9 +3606,10 @@ abstract class _$$SchoolStoreStateImplCopyWith<$Res>
 class __$$SchoolStoreStateImplCopyWithImpl<$Res>
     extends _$SchoolStoreStateCopyWithImpl<$Res, _$SchoolStoreStateImpl>
     implements _$$SchoolStoreStateImplCopyWith<$Res> {
-  __$$SchoolStoreStateImplCopyWithImpl(_$SchoolStoreStateImpl _value,
-      $Res Function(_$SchoolStoreStateImpl) _then)
-      : super(_value, _then);
+  __$$SchoolStoreStateImplCopyWithImpl(
+    _$SchoolStoreStateImpl _value,
+    $Res Function(_$SchoolStoreStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -2770,28 +3618,33 @@ class __$$SchoolStoreStateImplCopyWithImpl<$Res>
     Object? errorMessage = null,
     Object? school = freezed,
   }) {
-    return _then(_$SchoolStoreStateImpl(
-      isLoading: null == isLoading
-          ? _value.isLoading
-          : isLoading // ignore: cast_nullable_to_non_nullable
-              as bool,
-      errorMessage: null == errorMessage
-          ? _value.errorMessage
-          : errorMessage // ignore: cast_nullable_to_non_nullable
-              as String,
-      school: freezed == school
-          ? _value.school
-          : school // ignore: cast_nullable_to_non_nullable
-              as School?,
-    ));
+    return _then(
+      _$SchoolStoreStateImpl(
+        isLoading: null == isLoading
+            ? _value.isLoading
+            : isLoading // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        errorMessage: null == errorMessage
+            ? _value.errorMessage
+            : errorMessage // ignore: cast_nullable_to_non_nullable
+                  as String,
+        school: freezed == school
+            ? _value.school
+            : school // ignore: cast_nullable_to_non_nullable
+                  as School?,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$SchoolStoreStateImpl implements _SchoolStoreState {
-  const _$SchoolStoreStateImpl(
-      {this.isLoading = false, this.errorMessage = '', this.school});
+  const _$SchoolStoreStateImpl({
+    this.isLoading = false,
+    this.errorMessage = '',
+    this.school,
+  });
 
   @override
   @JsonKey()
@@ -2827,14 +3680,17 @@ class _$SchoolStoreStateImpl implements _SchoolStoreState {
   @pragma('vm:prefer-inline')
   _$$SchoolStoreStateImplCopyWith<_$SchoolStoreStateImpl> get copyWith =>
       __$$SchoolStoreStateImplCopyWithImpl<_$SchoolStoreStateImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 }
 
 abstract class _SchoolStoreState implements SchoolStoreState {
-  const factory _SchoolStoreState(
-      {final bool isLoading,
-      final String errorMessage,
-      final School? school}) = _$SchoolStoreStateImpl;
+  const factory _SchoolStoreState({
+    final bool isLoading,
+    final String errorMessage,
+    final School? school,
+  }) = _$SchoolStoreStateImpl;
 
   @override
   bool get isLoading;

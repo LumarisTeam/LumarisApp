@@ -75,10 +75,7 @@ void main() {
         amount: 10000,
       );
 
-      expect(
-        payment1.toString(),
-        '2023-01-01 12:00:00 | 消费 | 0.15 元 | 食堂午餐',
-      );
+      expect(payment1.toString(), '2023-01-01 12:00:00 | 消费 | 0.15 元 | 食堂午餐');
       expect(
         payment2.toString(),
         '2023-01-01 10:00:00 | 充值 | 100.00 元 | 支付宝充值',
@@ -93,10 +90,7 @@ void main() {
         amount: 0,
       );
 
-      expect(
-        payment.toString(),
-        '2023-01-01 12:00:00 | 消费 | 0.00 元 | 免费餐',
-      );
+      expect(payment.toString(), '2023-01-01 12:00:00 | 消费 | 0.00 元 | 免费餐');
     });
 
     test('should handle large amount correctly', () {
@@ -121,10 +115,7 @@ void main() {
         amount: 15.50,
       );
 
-      expect(
-        payment.toString(),
-        '2023-01-01 12:00:00 | 消费 | 0.15 元 | 食堂午餐',
-      );
+      expect(payment.toString(), '2023-01-01 12:00:00 | 消费 | 0.15 元 | 食堂午餐');
     });
 
     test('should handle negative amount correctly', () {
@@ -135,10 +126,7 @@ void main() {
         amount: -15.50,
       );
 
-      expect(
-        payment.toString(),
-        '2023-01-01 12:00:00 | 消费 | -0.15 元 | 退款',
-      );
+      expect(payment.toString(), '2023-01-01 12:00:00 | 消费 | -0.15 元 | 退款');
     });
   });
 
@@ -150,7 +138,7 @@ void main() {
           datetimeStr: '2023-01-01 12:00:00',
           resume: '食堂午餐',
           amount: 15.50,
-        )
+        ),
       ];
       final paymentData = PaymentData(payments, 100.0);
 
@@ -166,7 +154,7 @@ void main() {
             'datetimeStr': '2023-01-01 12:00:00',
             'resume': '食堂午餐',
             'tranamt': 15.50,
-          }
+          },
         ],
         'balance': 100.0,
       };
@@ -180,10 +168,7 @@ void main() {
     });
 
     test('should handle empty records list in JSON', () {
-      final json = {
-        'records': [],
-        'balance': 0.0,
-      };
+      final json = {'records': [], 'balance': 0.0};
 
       final paymentData = PaymentData.fromJson(json);
 
@@ -193,18 +178,16 @@ void main() {
 
     test('should handle large number of records in JSON', () {
       final records = List.generate(
-          100,
-          (index) => {
-                'turnoverType': index % 2 == 0 ? '消费' : '充值',
-                'datetimeStr': '2023-01-01 12:00:00',
-                'resume': '交易$index',
-                'tranamt': index * 10,
-              });
+        100,
+        (index) => {
+          'turnoverType': index % 2 == 0 ? '消费' : '充值',
+          'datetimeStr': '2023-01-01 12:00:00',
+          'resume': '交易$index',
+          'tranamt': index * 10,
+        },
+      );
 
-      final json = {
-        'records': records,
-        'balance': 1000.0,
-      };
+      final json = {'records': records, 'balance': 1000.0};
 
       final paymentData = PaymentData.fromJson(json);
 
@@ -216,18 +199,16 @@ void main() {
 
     test('should handle extreme record count in JSON', () {
       final records = List.generate(
-          10000,
-          (index) => {
-                'turnoverType': index.isEven ? '消费' : '充值',
-                'datetimeStr': '2023-01-01 12:00:00',
-                'resume': '极限交易$index',
-                'tranamt': index,
-              });
+        10000,
+        (index) => {
+          'turnoverType': index.isEven ? '消费' : '充值',
+          'datetimeStr': '2023-01-01 12:00:00',
+          'resume': '极限交易$index',
+          'tranamt': index,
+        },
+      );
 
-      final json = {
-        'records': records,
-        'balance': 49995000.0,
-      };
+      final json = {'records': records, 'balance': 49995000.0};
 
       final paymentData = PaymentData.fromJson(json);
       expect(paymentData.payments.length, 10000);
@@ -243,7 +224,7 @@ void main() {
             'datetimeStr': '2023-01-01 12:00:00',
             'resume': '食堂午餐',
             'tranamt': 15.50,
-          }
+          },
         ],
         // 'balance' field missing
       };
@@ -259,7 +240,7 @@ void main() {
             'datetimeStr': '2023-01-01 12:00:00',
             'resume': '食堂午餐',
             'tranamt': 15.50,
-          }
+          },
         ],
         'balance': 'not_a_number',
       };
@@ -268,19 +249,13 @@ void main() {
     });
 
     test('should throw when records type is invalid', () {
-      final json = {
-        'records': 'invalid-records',
-        'balance': 1.0,
-      };
+      final json = {'records': 'invalid-records', 'balance': 1.0};
 
       expect(() => PaymentData.fromJson(json), throwsA(isA<TypeError>()));
     });
 
     test('should handle zero total correctly', () {
-      final json = {
-        'records': [],
-        'balance': 0.0,
-      };
+      final json = {'records': [], 'balance': 0.0};
 
       final paymentData = PaymentData.fromJson(json);
       expect(paymentData.balance, 0.0);
@@ -288,10 +263,7 @@ void main() {
     });
 
     test('should handle negative total correctly', () {
-      final json = {
-        'records': [],
-        'balance': -100.0,
-      };
+      final json = {'records': [], 'balance': -100.0};
 
       final paymentData = PaymentData.fromJson(json);
       expect(paymentData.balance, -100.0);

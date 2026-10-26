@@ -26,7 +26,7 @@ void main() {
               'endUnit': '2',
               'credits': '3.0',
               'lessonId': 'L1',
-            }
+            },
           ],
         },
         (data) => (data as List<dynamic>)
@@ -55,7 +55,7 @@ void main() {
             'endUnit': 4,
             'credits': '4.0',
             'lessonId': 'L2',
-          }
+          },
         ],
         (data) => (data as List<dynamic>)
             .map((e) => CourseModel.fromJson(Map<String, dynamic>.from(e)))
@@ -76,7 +76,7 @@ void main() {
             'time': '2026-01-10 08:00~10:00',
             'location': 'A101',
             'seat': '08',
-          }
+          },
         ],
         'canClick': true,
         'error': null,
@@ -92,8 +92,8 @@ void main() {
     test('should parse value-text items only', () {
       final result = SemesterResult.fromJson(<String, dynamic>{
         'data': <Map<String, dynamic>>[
-          <String, dynamic>{'value': '2025-2', 'text': '2025-2026-2'}
-        ]
+          <String, dynamic>{'value': '2025-2', 'text': '2025-2026-2'},
+        ],
       });
 
       expect(result.data.single.semester, '2025-2');
@@ -110,7 +110,7 @@ void main() {
             'datetimeStr': '2026-03-23 12:00:00',
             'resume': '食堂',
             'tranamt': '1500',
-          }
+          },
         ],
         'balance': '88.5',
       });
@@ -136,14 +136,13 @@ void main() {
     });
 
     test('should deserialize subscription query response', () {
-      final response = ElectricitySubscriptionQueryResponse.fromJson(
-        <String, dynamic>{
-          'email': 'codex@example.com',
-          'hasSubscription': true,
-          'subscriptionId': 'sub-1',
-          'threshold': '12.5',
-        },
-      );
+      final response =
+          ElectricitySubscriptionQueryResponse.fromJson(<String, dynamic>{
+            'email': 'codex@example.com',
+            'hasSubscription': true,
+            'subscriptionId': 'sub-1',
+            'threshold': '12.5',
+          });
 
       expect(response.email, 'codex@example.com');
       expect(response.hasSubscription, isTrue);
@@ -153,23 +152,22 @@ void main() {
     });
 
     test('should deserialize subscription response with nullable fields', () {
-      final response = ElectricitySubscriptionResponse.fromJson(
-        <String, dynamic>{
-          'id': 'sub-1',
-          'url': 'https://example.com/wxAccount?id=1',
-          'email': 'codex@example.com',
-          'threshold': '10.5',
-          'isActive': true,
-          'createdAt': '2026-05-01T10:00:00Z',
-          'updatedAt': '2026-05-01T10:30:00Z',
-          'nextCheckAt': '2026-05-01T11:00:00Z',
-          'lastCheckedAt': null,
-          'lastKnownBalance': '15.0',
-          'lastAlertedAt': null,
-          'lastAlertedBalance': null,
-          'lastErrorMessage': '',
-        },
-      );
+      final response =
+          ElectricitySubscriptionResponse.fromJson(<String, dynamic>{
+            'id': 'sub-1',
+            'url': 'https://example.com/wxAccount?id=1',
+            'email': 'codex@example.com',
+            'threshold': '10.5',
+            'isActive': true,
+            'createdAt': '2026-05-01T10:00:00Z',
+            'updatedAt': '2026-05-01T10:30:00Z',
+            'nextCheckAt': '2026-05-01T11:00:00Z',
+            'lastCheckedAt': null,
+            'lastKnownBalance': '15.0',
+            'lastAlertedAt': null,
+            'lastAlertedBalance': null,
+            'lastErrorMessage': '',
+          });
 
       expect(response.id, 'sub-1');
       expect(response.threshold, 10.5);
@@ -184,8 +182,9 @@ void main() {
     test('should wrap raw string responses', () {
       final result = RawStringResponse.fromResponse('plain-text-response');
       expect(result.value, 'plain-text-response');
-      expect(
-          result.toJson(), <String, dynamic>{'value': 'plain-text-response'});
+      expect(result.toJson(), <String, dynamic>{
+        'value': 'plain-text-response',
+      });
     });
   });
 }

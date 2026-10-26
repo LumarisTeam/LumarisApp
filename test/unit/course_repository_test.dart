@@ -16,18 +16,17 @@ CourseModel _course({
   int startUnit = 1,
   List<int>? weekIndexes,
   bool isCustom = false,
-}) =>
-    CourseModel(
-      lessonId: lessonId,
-      courseName: courseName,
-      isCustom: isCustom,
-      weekIndexes: weekIndexes ?? [1, 2, 3],
-      teachers: ['张老师'],
-      room: 'A101',
-      weekday: weekday,
-      startUnit: startUnit,
-      endUnit: startUnit + 1,
-    );
+}) => CourseModel(
+  lessonId: lessonId,
+  courseName: courseName,
+  isCustom: isCustom,
+  weekIndexes: weekIndexes ?? [1, 2, 3],
+  teachers: ['张老师'],
+  room: 'A101',
+  weekday: weekday,
+  startUnit: startUnit,
+  endUnit: startUnit + 1,
+);
 
 void main() {
   late Directory tempDir;
@@ -76,11 +75,23 @@ void main() {
       // 同一 lessonId 不同时间段的课程不应互相覆盖
       await repo.saveCourses([
         _course(
-            lessonId: 'L001', weekday: 1, startUnit: 1, weekIndexes: [1, 2]),
+          lessonId: 'L001',
+          weekday: 1,
+          startUnit: 1,
+          weekIndexes: [1, 2],
+        ),
         _course(
-            lessonId: 'L001', weekday: 3, startUnit: 3, weekIndexes: [3, 4]),
+          lessonId: 'L001',
+          weekday: 3,
+          startUnit: 3,
+          weekIndexes: [3, 4],
+        ),
         _course(
-            lessonId: 'L001', weekday: 5, startUnit: 5, weekIndexes: [5, 6]),
+          lessonId: 'L001',
+          weekday: 5,
+          startUnit: 5,
+          weekIndexes: [5, 6],
+        ),
       ]);
 
       final result = await repo.getCourses();
@@ -107,8 +118,9 @@ void main() {
       await repo.saveCourses([_course(lessonId: 'L003', courseName: '英语')]);
 
       final box = await Hive.openBox(HiveManager.courseBoxName);
-      final courseKeys =
-          box.keys.where((k) => k.toString().startsWith('course_')).toList();
+      final courseKeys = box.keys
+          .where((k) => k.toString().startsWith('course_'))
+          .toList();
       // 只剩 course_0，不应有 course_1
       expect(courseKeys, hasLength(1));
       expect(courseKeys.first, 'course_0');

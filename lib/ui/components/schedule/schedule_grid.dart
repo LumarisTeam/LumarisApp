@@ -4,7 +4,12 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/utils/week_start_utils.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
+import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/ui/components/schedule/course_card.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_block_surface.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_grid_lines.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_time_axis.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_visual_style.dart';
 import 'package:ios_club_app/ui/components/schedule/timeline_column.dart';
 
 import '../../../core/services/course_color_manager.dart';
@@ -17,11 +22,11 @@ class ScheduleGrid extends StatelessWidget {
     super.key,
     required this.courses,
     required this.cellHeight,
-    this.periodCount = 12,
     this.weekStartDay = School.defaultWeekStartDay,
     this.isYanTa = false,
-    this.cardStyle = CourseCardStyle.normal,
     this.showGrid = true,
+    this.visualStyle,
+    this.preview = false,
     this.onCourseTap,
     this.onCourseLongPress,
     this.onConflictCourseTap,
@@ -29,35 +34,51 @@ class ScheduleGrid extends StatelessWidget {
 
   final List<CourseModel> courses;
   final double cellHeight;
-  final int periodCount;
   final int weekStartDay;
   final bool isYanTa;
-  final CourseCardStyle cardStyle;
   final bool showGrid;
+
+  /// 个性化外观；传入时以其中的尺寸/颜色/文字规则为准。
+  final ScheduleVisualStyle? visualStyle;
+
+  /// 个性化页预览用：跳过卡片交互和滚动布局。
+  final bool preview;
+
   final void Function(CourseModel)? onCourseTap;
   final void Function(CourseModel)? onCourseLongPress;
   final void Function(List<CourseModel>)? onConflictCourseTap;
 
+  int get _rowCount =>
+      visualStyle?.rowCount ?? ScheduleTimeAxis.sectionRowCount;
+
+  double get _timeColumnWidth => visualStyle?.timeColumnWidth ?? 45;
+
   @override
   Widget build(BuildContext context) {
+    final effectiveCellHeight = visualStyle?.cellHeight ?? cellHeight;
+    final effectiveShowGrid = visualStyle?.showGrid ?? showGrid;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 左侧时间轴
         TimelineColumn(
-          periodCount: periodCount,
-          cellHeight: cellHeight,
+          periodCount: _rowCount,
+          cellHeight: effectiveCellHeight,
           isYanTa: isYanTa,
-          showGrid: showGrid,
+          showGrid: effectiveShowGrid,
+          timeColumnWidth: _timeColumnWidth,
+          hideSectionTime: visualStyle?.hideSectionTime ?? false,
+          textColor: visualStyle?.pageTextColor,
         ),
         // 右侧课程网格
         Expanded(
           child: CustomPaint(
-            painter: showGrid
-                ? _ScheduleGridPainter(
+            painter: effectiveShowGrid
+                ? ScheduleDayGridPainter(
                     color: context.mc.colors.separator,
-                    cellHeight: cellHeight,
-                    periodCount: periodCount,
+                    cellHeight: effectiveCellHeight,
+                    rowCount: _rowCount,
                   )
                 : null,
             child: Row(
@@ -87,7 +108,7 @@ class ScheduleGrid extends StatelessWidget {
         // 课程卡片
         ...conflictGroups.expand((group) {
           if (group.length == 1) {
-            return [_buildSingleCourseCard(group.first)];
+            return [_buildSingleCourseCard(context, group.first)];
           } else {
             return _buildConflictingCourseCards(context, group);
           }
@@ -97,19 +118,37 @@ class ScheduleGrid extends StatelessWidget {
   }
 
   /// 构建单个课程卡片
-  Widget _buildSingleCourseCard(CourseModel course) {
-    final top = (course.startUnit - 1) * cellHeight;
-    final height = (course.endUnit - course.startUnit + 1) * cellHeight;
+  Widget _buildSingleCourseCard(BuildContext context, CourseModel course) {
+    final effectiveCellHeight = visualStyle?.cellHeight ?? cellHeight;
+    final geometry = ScheduleTimeAxis.geometryFor(
+      course,
+      effectiveCellHeight,
+      showStartTime: visualStyle?.showStartTime ?? false,
+    );
 
     return Positioned(
-      top: top,
+      top: geometry.top,
       left: 0,
       right: 0,
-      height: height,
+      height: geometry.height,
       child: CourseCard(
         course: course,
-        height: height,
-        style: cardStyle,
+        height: geometry.height,
+        backgroundColor: visualStyle?.colorFor(course),
+        textColor: visualStyle?.courseTextColor,
+        timeLabel: geometry.timeLabel,
+        hideTeacher: visualStyle?.hideTeacher ?? false,
+        hideLocation: visualStyle?.hideLocation ?? false,
+        centerHorizontally: visualStyle?.centerHorizontally ?? false,
+        centerVertically: visualStyle?.centerVertically ?? false,
+        borderStyle: visualStyle?.borderStyle ?? ScheduleBorderStyle.none,
+        borderColor: context.mc.colors.separator,
+        fontScale: visualStyle?.fontScale ?? 1,
+        cornerRadius: visualStyle?.cornerRadius ?? 8,
+        innerPadding: visualStyle?.innerPadding ?? 4,
+        outerPadding: visualStyle?.outerPadding ?? 2,
+        opacity: visualStyle?.opacity ?? 1,
+        preview: preview,
         onTap: onCourseTap != null ? () => onCourseTap!(course) : null,
         onLongPress: onCourseLongPress != null
             ? () => onCourseLongPress!(course)
@@ -132,35 +171,45 @@ class ScheduleGrid extends StatelessWidget {
     List<CourseModel> courses,
   ) {
     final isTablet = MediaQuery.of(context).size.width > 600;
+    final effectiveCellHeight = visualStyle?.cellHeight ?? cellHeight;
+    final cornerRadius = visualStyle?.cornerRadius ?? 8;
+    final innerPadding = visualStyle?.innerPadding ?? 4;
+    final outerPadding = visualStyle?.outerPadding ?? 2;
+    final opacity = visualStyle?.opacity ?? 1;
+    final fontScale = visualStyle?.fontScale ?? 1;
+    final radius = BorderRadius.circular(cornerRadius);
+
     var minStart = courses.first.startUnit;
     var maxEnd = courses.first.endUnit;
-
-    for (var course in courses) {
+    for (final course in courses) {
       if (course.startUnit < minStart) minStart = course.startUnit;
       if (course.endUnit > maxEnd) maxEnd = course.endUnit;
     }
+    final top = (minStart - 1) * effectiveCellHeight;
+    final height = (maxEnd - minStart + 1) * effectiveCellHeight;
 
-    final top = (minStart - 1) * cellHeight;
-    final height = (maxEnd - minStart + 1) * cellHeight;
     // 使用第一个课程的颜色作为背景
-    final courseColor = CourseColorManager.generateSoftColor(
-      courses.first.courseName,
-    );
+    final courseColor =
+        visualStyle?.colorFor(courses.first) ??
+        CourseColorManager.generateSoftColor(courses.first.courseName);
+    final textColor =
+        visualStyle?.textFor(courseColor) ??
+        context.mc.colors.onAccent.withValues(alpha: 0.9);
 
     return Positioned(
       top: top,
       left: 0,
       right: 0,
       height: height,
-      child: Container(
-        margin: const EdgeInsets.all(2),
-        decoration: ShapeDecoration(
-          shape: McSmoothCorners.shape(McRadii.controlBorder),
-          color: courseColor,
-        ),
+      child: ScheduleBlockSurface(
+        color: courseColor.withValues(alpha: opacity),
+        borderStyle: visualStyle?.borderStyle ?? ScheduleBorderStyle.none,
+        borderColor: context.mc.colors.separator.withValues(alpha: opacity),
+        margin: EdgeInsets.all(outerPadding),
+        borderRadius: radius,
         child: InkWell(
-          borderRadius: McRadii.controlBorder,
-          customBorder: McSmoothCorners.shape(McRadii.controlBorder),
+          borderRadius: radius,
+          customBorder: McSmoothCorners.shape(radius),
           onTap: onConflictCourseTap != null
               ? () => onConflictCourseTap!(courses)
               : (onCourseTap != null
@@ -168,13 +217,13 @@ class ScheduleGrid extends StatelessWidget {
                     : null),
           onLongPress: null,
           child: Padding(
-            padding: EdgeInsets.all(isTablet ? 8 : 4),
+            padding: EdgeInsets.all(isTablet ? innerPadding + 4 : innerPadding),
             child: Center(
               child: Text(
                 context.l10n.courseConflict,
                 style: TextStyle(
-                  fontSize: 10,
-                  color: context.mc.colors.onAccent.withValues(alpha: 0.9),
+                  fontSize: 10 * fontScale,
+                  color: textColor.withValues(alpha: 0.9),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -226,44 +275,5 @@ class ScheduleGrid extends StatelessWidget {
     // 检查两个课程的上课节次是否有时间重叠
     // 注意：同名课程已经在 _mergeSameNameCourses 中合并了，这里不会出现同名课程
     return (a.startUnit <= b.endUnit && a.endUnit >= b.startUnit);
-  }
-}
-
-/// Draws the static timetable grid in one paint operation instead of creating
-/// a widget for every cell border.
-class _ScheduleGridPainter extends CustomPainter {
-  const _ScheduleGridPainter({
-    required this.color,
-    required this.cellHeight,
-    required this.periodCount,
-  });
-
-  final Color color;
-  final double cellHeight;
-  final int periodCount;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 0.5
-      ..style = PaintingStyle.stroke;
-
-    final dayWidth = size.width / 7;
-    for (var day = 0; day <= 7; day++) {
-      final x = day * dayWidth;
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    }
-    for (var period = 1; period <= periodCount; period++) {
-      final y = period * cellHeight;
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _ScheduleGridPainter oldDelegate) {
-    return color != oldDelegate.color ||
-        cellHeight != oldDelegate.cellHeight ||
-        periodCount != oldDelegate.periodCount;
   }
 }

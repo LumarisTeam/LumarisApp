@@ -25,6 +25,7 @@ import '../ui/pages/program_page/program_page.dart';
 import '../ui/pages/schedule_list_page/custom_course_manage_page.dart';
 import '../ui/pages/schedule_list_page/html_import_page.dart';
 import '../ui/pages/schedule_list_page/html_import_webview_page.dart';
+import '../ui/pages/schedule_list_page/schedule_personalization_page.dart';
 import '../ui/pages/schedule_list_page/schedule_setting_page.dart';
 import '../ui/pages/schedule_list_page/schedule_list_page.dart';
 import '../ui/pages/school_bus_page/school_bus_page.dart';
@@ -42,6 +43,7 @@ class AppRoutes {
   static const link = '/Link';
   static const about = '/Profile/About';
   static const scheduleSetting = '/Schedule/ScheduleSetting';
+  static const schedulePersonalization = '/Schedule/Personalization';
   static const customCourseManage =
       '/Schedule/ScheduleSetting/CustomCourseManage';
   static const schoolBus = '/SchoolBus';
@@ -78,123 +80,168 @@ class AppRouter {
         builder: (context, state, navigationShell) =>
             MainApp(navigationShell: navigationShell),
         branches: [
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.home,
-              builder: (context, state) => const HomePage(),
-              routes: [
-                _detailRoute('Login', (context, state) => const LoginPage()),
-                _detailRoute('Link', (context, state) => const LinkPage()),
-              ],
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.schedule,
-              builder: (context, state) => const ScheduleListPage(),
-              routes: [
-                GoRoute(
-                  path: 'ScheduleSetting',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) => const ScheduleSettingPage(),
-                  routes: [
-                    _detailRoute(
-                      'CustomCourseManage',
-                      (context, state) => const CustomCourseManagePage(),
-                    ),
-                  ],
-                ),
-                GoRoute(
-                  path: 'HtmlImport',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) => const HtmlImportPage(),
-                  routes: [
-                    _detailRoute(
-                      'Webview',
-                      (context, state) => HtmlImportWebViewPage(
-                        url: state.extra as String,
-                        // 选中学校时由导入页带过来，解析时优先用该校适配器。
-                        schoolCode: state.uri.queryParameters['school'],
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.home,
+                builder: (context, state) => const HomePage(),
+                routes: [
+                  _detailRoute('Login', (context, state) => const LoginPage()),
+                  _detailRoute('Link', (context, state) => const LinkPage()),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.schedule,
+                builder: (context, state) => const ScheduleListPage(),
+                routes: [
+                  GoRoute(
+                    path: 'ScheduleSetting',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const ScheduleSettingPage(),
+                    routes: [
+                      _detailRoute(
+                        'CustomCourseManage',
+                        (context, state) => const CustomCourseManagePage(),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'Personalization',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) =>
+                        const SchedulePersonalizationPage(),
+                  ),
+                  GoRoute(
+                    path: 'HtmlImport',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const HtmlImportPage(),
+                    routes: [
+                      _detailRoute(
+                        'Webview',
+                        (context, state) => HtmlImportWebViewPage(
+                          url: state.extra as String,
+                          // 选中学校时由导入页带过来，解析时优先用该校适配器。
+                          schoolCode: state.uri.queryParameters['school'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: AppRoutes.score,
-                builder: (context, state) => const ScorePage()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.profile,
-              builder: (context, state) => const ProfilePage(),
-              routes: [
-                _detailRoute(
-                    'Program', (context, state) => const ProgramPage()),
-                _detailRoute('Helper', (context, state) => const HelperPage()),
-                GoRoute(
-                  path: 'About',
-                  parentNavigatorKey: rootNavigatorKey,
-                  builder: (context, state) => const SettingPage(),
-                  routes: [
-                    _detailRoute(
-                        'Egg', (context, state) => const EasterEggPage()),
-                    _detailRoute(
-                        'License', (context, state) => const LicensePage()),
-                    _detailRoute(
-                        'Agreement', (context, state) => const AgreementPage()),
-                    _detailRoute(
+                builder: (context, state) => const ScorePage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.profile,
+                builder: (context, state) => const ProfilePage(),
+                routes: [
+                  _detailRoute(
+                    'Program',
+                    (context, state) => const ProgramPage(),
+                  ),
+                  _detailRoute(
+                    'Helper',
+                    (context, state) => const HelperPage(),
+                  ),
+                  GoRoute(
+                    path: 'About',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const SettingPage(),
+                    routes: [
+                      _detailRoute(
+                        'Egg',
+                        (context, state) => const EasterEggPage(),
+                      ),
+                      _detailRoute(
+                        'License',
+                        (context, state) => const LicensePage(),
+                      ),
+                      _detailRoute(
+                        'Agreement',
+                        (context, state) => const AgreementPage(),
+                      ),
+                      _detailRoute(
                         'PrivacyPolicy',
                         (context, state) => const ProtocolPage(
-                            document: ProtocolDocument.privacyPolicy)),
-                    _detailRoute(
+                          document: ProtocolDocument.privacyPolicy,
+                        ),
+                      ),
+                      _detailRoute(
                         'UserAgreement',
                         (context, state) => const ProtocolPage(
-                            document: ProtocolDocument.userAgreement)),
-                    _detailRoute(
-                        'Author', (context, state) => const AuthorPage()),
-                    _detailRoute(
-                        'Feedback', (context, state) => const FeedbackPage()),
-                    _detailRoute(
-                        'Mcp', (context, state) => const McpPage()),
-                    _detailRoute('Permissions',
-                        (context, state) => const PermissionPage()),
-                  ],
-                ),
-              ],
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.electricity,
-              builder: (context, state) => const ElectricityPage(),
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
+                          document: ProtocolDocument.userAgreement,
+                        ),
+                      ),
+                      _detailRoute(
+                        'Author',
+                        (context, state) => const AuthorPage(),
+                      ),
+                      _detailRoute(
+                        'Feedback',
+                        (context, state) => const FeedbackPage(),
+                      ),
+                      _detailRoute('Mcp', (context, state) => const McpPage()),
+                      _detailRoute(
+                        'Permissions',
+                        (context, state) => const PermissionPage(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.electricity,
+                builder: (context, state) => const ElectricityPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: AppRoutes.schoolBus,
-                builder: (context, state) => const SchoolBusPage()),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
-              path: AppRoutes.payment,
-              builder: (context, state) => PaymentPage(),
-              routes: [
-                _detailRoute(
-                  'QrCode',
-                  (context, state) => const PaymentQrPage(),
-                ),
-              ],
-            ),
-          ]),
-          StatefulShellBranch(routes: [
-            GoRoute(
+                builder: (context, state) => const SchoolBusPage(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.payment,
+                builder: (context, state) => PaymentPage(),
+                routes: [
+                  _detailRoute(
+                    'QrCode',
+                    (context, state) => const PaymentQrPage(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: AppRoutes.campusMap,
-                builder: (context, state) => const CampusMapPage()),
-          ]),
+                builder: (context, state) => const CampusMapPage(),
+              ),
+            ],
+          ),
         ],
       ),
     ],
@@ -221,7 +268,9 @@ class AppRouter {
   }
 
   static GoRoute _detailRoute(
-      String path, Widget Function(BuildContext, GoRouterState) builder) {
+    String path,
+    Widget Function(BuildContext, GoRouterState) builder,
+  ) {
     return GoRoute(
       path: path,
       parentNavigatorKey: rootNavigatorKey,

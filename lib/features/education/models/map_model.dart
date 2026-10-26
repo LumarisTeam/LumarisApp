@@ -6,7 +6,6 @@ part 'map_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class MapModel {
-
   @JsonKey(fromJson: parseSchemaString)
   String id;
   @JsonKey(fromJson: parseSchemaString)

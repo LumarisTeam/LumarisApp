@@ -78,10 +78,12 @@ class ExamService {
       hasUpcomingExams = upcomingExams.isNotEmpty;
     }
 
-    final cacheDuration =
-        hasUpcomingExams ? const Duration(hours: 2) : const Duration(hours: 24);
+    final cacheDuration = hasUpcomingExams
+        ? const Duration(hours: 2)
+        : const Duration(hours: 24);
 
-    final isCached = examTime != null &&
+    final isCached =
+        examTime != null &&
         now.difference(DateTime.fromMicrosecondsSinceEpoch(examTime)) <
             cacheDuration &&
         jsonString.isNotEmpty;
@@ -163,7 +165,15 @@ class ExamService {
       try {
         final endTime = _parseExamTime(item.examTime, now);
         if (endTime != null && !now.isAfter(endTime)) {
-          list.add(ExamItemAndEndTime(name: item.name, examTime: item.examTime, room: item.room, seatNo: item.seatNo, endTime: endTime));
+          list.add(
+            ExamItemAndEndTime(
+              name: item.name,
+              examTime: item.examTime,
+              room: item.room,
+              seatNo: item.seatNo,
+              endTime: endTime,
+            ),
+          );
         }
       } catch (e) {
         AppLogger.debug('时间解析失败: $e');
@@ -206,10 +216,7 @@ class ExamService {
     }
   }
 
-  static ExamResponse _filterExpiredExams(
-    ExamResponse response,
-    DateTime now,
-  ) {
+  static ExamResponse _filterExpiredExams(ExamResponse response, DateTime now) {
     final validExams = response.exams.where((item) {
       final endTime = _parseExamTime(item.examTime, now);
       return endTime != null && !now.isAfter(endTime);
@@ -222,13 +229,13 @@ class ExamService {
   }
 
   static DateTime? _parseExamTime(String examTime, DateTime now) {
-    final match =
-        RegExp(r'(\d{4})-(\d{2})-(\d{2}).*?(\d{2}):(\d{2})-(\d{2}):(\d{2})')
-            .firstMatch(examTime);
+    final match = RegExp(
+      r'(\d{4})-(\d{2})-(\d{2}).*?(\d{2}):(\d{2})-(\d{2}):(\d{2})',
+    ).firstMatch(examTime);
     if (match == null) {
-      final matchType2 =
-          RegExp(r'(\d{4})-(\d{2})-(\d{2}).*?(\d{2}):(\d{2})~(\d{2}):(\d{2})')
-              .firstMatch(examTime);
+      final matchType2 = RegExp(
+        r'(\d{4})-(\d{2})-(\d{2}).*?(\d{2}):(\d{2})~(\d{2}):(\d{2})',
+      ).firstMatch(examTime);
       if (matchType2 == null) {
         return null;
       }

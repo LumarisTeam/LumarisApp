@@ -24,18 +24,12 @@ class ExamResult {
 
   /// 成功状态 - 有考试数据
   factory ExamResult.success(List<ExamItem> exams) {
-    return ExamResult._(
-      isSuccess: true,
-      exams: exams,
-    );
+    return ExamResult._(isSuccess: true, exams: exams);
   }
 
   /// 成功状态 - 无考试数据（正常情况，不是错误）
   factory ExamResult.empty() {
-    return ExamResult._(
-      isSuccess: true,
-      exams: [],
-    );
+    return ExamResult._(isSuccess: true, exams: []);
   }
 
   /// 失败状态 - 网络错误

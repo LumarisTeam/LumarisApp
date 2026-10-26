@@ -24,10 +24,7 @@ class CourseApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '课程请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '课程请求失败', -1);
       }
       return apiResponse.data ?? <CourseModel>[];
     } catch (e) {
@@ -65,10 +62,7 @@ class CourseApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '时间表请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '时间表请求失败', -1);
       }
       return apiResponse.data ?? <ScheduleTimeModel>[];
     } catch (e) {

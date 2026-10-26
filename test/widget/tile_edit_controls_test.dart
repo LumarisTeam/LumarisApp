@@ -9,14 +9,14 @@ import 'package:ios_club_app/ui/components/tiles/tile_edit_controls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<Override> _tileOverrides() => [
-      tileConfigurationReaderProvider.overrideWithValue(
-        () async => TileConfigurationList.defaultConfig(),
-      ),
-      tileConfigurationWriterProvider.overrideWithValue((config) async {}),
-      availableTilesReaderProvider.overrideWithValue(
-        () => const ['电费', '校车', '饭卡'],
-      ),
-    ];
+  tileConfigurationReaderProvider.overrideWithValue(
+    () async => TileConfigurationList.defaultConfig(),
+  ),
+  tileConfigurationWriterProvider.overrideWithValue((config) async {}),
+  availableTilesReaderProvider.overrideWithValue(
+    () => const ['电费', '校车', '饭卡'],
+  ),
+];
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -49,8 +49,9 @@ void main() {
     expect(find.text('完成'), findsOneWidget);
   });
 
-  testWidgets('available_tiles_list_is_hidden_when_no_hidden_tiles',
-      (tester) async {
+  testWidgets('available_tiles_list_is_hidden_when_no_hidden_tiles', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: _tileOverrides(),

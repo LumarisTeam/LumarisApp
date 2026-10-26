@@ -8,15 +8,15 @@ import '../../../state/prefs_keys.dart';
 import '../apis/electricity_api.dart';
 
 typedef ElectricityBalanceReader = Future<double?> Function({String? url});
-typedef ElectricityWeeklyDataReader = Future<List<ElectricData>> Function(
-    {String? url});
+typedef ElectricityWeeklyDataReader =
+    Future<List<ElectricData>> Function({String? url});
 typedef ElectricityRechargeUrlReader = Future<String?> Function({String? url});
-typedef ElectricitySubscriptionCreator = Future<ElectricitySubscriptionResponse>
-    Function(
-  CreateElectricitySubscriptionRequest request,
-);
-typedef ElectricitySubscriptionQueryReader
-    = Future<ElectricitySubscriptionQueryResponse> Function(String email);
+typedef ElectricitySubscriptionCreator =
+    Future<ElectricitySubscriptionResponse> Function(
+      CreateElectricitySubscriptionRequest request,
+    );
+typedef ElectricitySubscriptionQueryReader =
+    Future<ElectricitySubscriptionQueryResponse> Function(String email);
 typedef ElectricitySubscriptionDeleter = Future<void> Function(String id);
 
 /// 电费数据服务
@@ -30,15 +30,15 @@ class ElectricityService {
     ElectricitySubscriptionCreator? subscriptionCreator,
     ElectricitySubscriptionQueryReader? subscriptionQueryReader,
     ElectricitySubscriptionDeleter? subscriptionDeleter,
-  })  : _balanceReader = balanceReader ?? ElectricityApi.getCurrentBalance,
-        _weeklyDataReader = weeklyDataReader ?? ElectricityApi.getWeeklyData,
-        _rechargeUrlReader = rechargeUrlReader ?? ElectricityApi.getRechargeUrl,
-        _subscriptionCreator =
-            subscriptionCreator ?? ElectricityApi.createSubscription,
-        _subscriptionQueryReader =
-            subscriptionQueryReader ?? ElectricityApi.getSubscription,
-        _subscriptionDeleter =
-            subscriptionDeleter ?? ElectricityApi.deleteSubscription;
+  }) : _balanceReader = balanceReader ?? ElectricityApi.getCurrentBalance,
+       _weeklyDataReader = weeklyDataReader ?? ElectricityApi.getWeeklyData,
+       _rechargeUrlReader = rechargeUrlReader ?? ElectricityApi.getRechargeUrl,
+       _subscriptionCreator =
+           subscriptionCreator ?? ElectricityApi.createSubscription,
+       _subscriptionQueryReader =
+           subscriptionQueryReader ?? ElectricityApi.getSubscription,
+       _subscriptionDeleter =
+           subscriptionDeleter ?? ElectricityApi.deleteSubscription;
 
   final ElectricityBalanceReader _balanceReader;
   final ElectricityWeeklyDataReader _weeklyDataReader;
@@ -50,10 +50,7 @@ class ElectricityService {
   Future<double?> fetchCurrentBalance({String? url}) async {
     try {
       if (url != null) {
-        await PrefsService.instance.setString(
-          PrefsKeys.ELECTRICITY_URL,
-          url,
-        );
+        await PrefsService.instance.setString(PrefsKeys.ELECTRICITY_URL, url);
       }
       final resolvedUrl = await _resolveSourceUrl();
       if (resolvedUrl.isEmpty) {
@@ -114,16 +111,18 @@ class ElectricityService {
   }
 
   Future<String> getSavedSubscriptionEmail() async {
-    return PrefsService.instance
-            .getString(PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL) ??
+    return PrefsService.instance.getString(
+          PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL,
+        ) ??
         '';
   }
 
   Future<void> saveSubscriptionEmail(String email) async {
     final trimmedEmail = email.trim();
     if (trimmedEmail.isEmpty) {
-      await PrefsService.instance
-          .remove(PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL);
+      await PrefsService.instance.remove(
+        PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL,
+      );
       return;
     }
 
@@ -174,10 +173,7 @@ class ElectricityService {
 
   Future<String> _resolveSourceUrl({String? url}) async {
     if (url != null) {
-      await PrefsService.instance.setString(
-        PrefsKeys.ELECTRICITY_URL,
-        url,
-      );
+      await PrefsService.instance.setString(PrefsKeys.ELECTRICITY_URL, url);
 
       return url;
     }

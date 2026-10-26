@@ -12,12 +12,7 @@ class TimeInfo {
   @JsonKey(includeFromJson: false, includeToJson: false)
   final Map<String, String>? extra;
 
-  TimeInfo({
-    this.startTime,
-    this.endTime,
-    this.semester,
-    this.extra,
-  });
+  TimeInfo({this.startTime, this.endTime, this.semester, this.extra});
 
   factory TimeInfo.fromJson(Map<String, dynamic> json) {
     final generated = _$TimeInfoFromJson(json);

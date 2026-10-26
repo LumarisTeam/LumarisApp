@@ -20,10 +20,7 @@ class LoginApi {
       final client = _clientForTest ?? EduHttpClientManager.instance;
       final response = await client.post(
         '/Login',
-        data: {
-          'username': username,
-          'password': password,
-        },
+        data: {'username': username, 'password': password},
       );
       Map<String, dynamic> responseData;
       if (response is String) {
@@ -40,10 +37,7 @@ class LoginApi {
             LoginResponse.fromJson(Map<String, dynamic>.from(data as Map)),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '登录失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '登录失败', -1);
       }
       final loginResponse = apiResponse.data;
       if (loginResponse == null) {

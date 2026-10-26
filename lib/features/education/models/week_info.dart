@@ -11,10 +11,7 @@ class WeekInfo {
   @JsonKey(fromJson: parseSchemaInt)
   final int maxWeek;
 
-  WeekInfo({
-    required this.week,
-    required this.maxWeek,
-  });
+  WeekInfo({required this.week, required this.maxWeek});
 
   factory WeekInfo.fromJson(Map<String, dynamic> json) =>
       _$WeekInfoFromJson(json);

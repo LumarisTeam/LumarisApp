@@ -76,31 +76,37 @@ void main() {
     });
 
     test('should_open_a_box_successfully', () async {
-      final box = await HiveManager.instance
-          .openBox<CourseModel>(HiveManager.courseBoxName);
+      final box = await HiveManager.instance.openBox<CourseModel>(
+        HiveManager.courseBoxName,
+      );
       expect(box, isNotNull);
       expect(box.isOpen, isTrue);
     });
 
     test('should_return_same_box_instance_when_already_open', () async {
-      final box1 = await HiveManager.instance
-          .openBox<CourseModel>(HiveManager.courseBoxName);
-      final box2 = await HiveManager.instance
-          .openBox<CourseModel>(HiveManager.courseBoxName);
+      final box1 = await HiveManager.instance.openBox<CourseModel>(
+        HiveManager.courseBoxName,
+      );
+      final box2 = await HiveManager.instance.openBox<CourseModel>(
+        HiveManager.courseBoxName,
+      );
       expect(identical(box1, box2), isTrue);
     });
 
     test('should_open_dynamic_box_without_type_parameter', () async {
-      final box =
-          await HiveManager.instance.openBox(HiveManager.requestCacheBoxName);
+      final box = await HiveManager.instance.openBox(
+        HiveManager.requestCacheBoxName,
+      );
       expect(box.isOpen, isTrue);
     });
 
     test('should_open_multiple_different_boxes', () async {
-      final courseBox = await HiveManager.instance
-          .openBox<CourseModel>(HiveManager.courseBoxName);
-      final cacheBox =
-          await HiveManager.instance.openBox(HiveManager.requestCacheBoxName);
+      final courseBox = await HiveManager.instance.openBox<CourseModel>(
+        HiveManager.courseBoxName,
+      );
+      final cacheBox = await HiveManager.instance.openBox(
+        HiveManager.requestCacheBoxName,
+      );
 
       expect(courseBox.isOpen, isTrue);
       expect(cacheBox.isOpen, isTrue);
@@ -112,8 +118,9 @@ void main() {
       if (!Hive.isAdapterRegistered(0)) {
         Hive.registerAdapter(CourseModelAdapter());
       }
-      final box = await HiveManager.instance
-          .openBox<CourseModel>(HiveManager.courseBoxName);
+      final box = await HiveManager.instance.openBox<CourseModel>(
+        HiveManager.courseBoxName,
+      );
       final course = CourseModel(lessonId: 'T001', courseName: '测试课程');
 
       await box.put('T001', course);
@@ -140,10 +147,12 @@ void main() {
 
   group('HiveManager.closeAll', () {
     test('should_close_all_open_boxes', () async {
-      final box1 =
-          await HiveManager.instance.openBox(HiveManager.requestCacheBoxName);
-      final box2 =
-          await HiveManager.instance.openBox(HiveManager.courseBoxName);
+      final box1 = await HiveManager.instance.openBox(
+        HiveManager.requestCacheBoxName,
+      );
+      final box2 = await HiveManager.instance.openBox(
+        HiveManager.courseBoxName,
+      );
 
       expect(box1.isOpen, isTrue);
       expect(box2.isOpen, isTrue);

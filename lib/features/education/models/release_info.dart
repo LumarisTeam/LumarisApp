@@ -39,10 +39,7 @@ class AuthorInfo {
   final int id;
   final String? name;
 
-  AuthorInfo({
-    required this.id,
-    this.name,
-  });
+  AuthorInfo({required this.id, this.name});
 
   factory AuthorInfo.fromJson(Map<String, dynamic> json) =>
       _$AuthorInfoFromJson(json);
@@ -57,10 +54,7 @@ class AssetInfo {
 
   final String? name;
 
-  AssetInfo({
-    this.browserDownloadUrl,
-    this.name,
-  });
+  AssetInfo({this.browserDownloadUrl, this.name});
 
   factory AssetInfo.fromJson(Map<String, dynamic> json) =>
       _$AssetInfoFromJson(json);
@@ -70,10 +64,8 @@ class AssetInfo {
 
 Map<String, dynamic> _normalizeJsonMap(Map<dynamic, dynamic> json) {
   return json.map(
-    (key, value) => MapEntry<String, dynamic>(
-      key.toString(),
-      _normalizeJsonValue(value),
-    ),
+    (key, value) =>
+        MapEntry<String, dynamic>(key.toString(), _normalizeJsonValue(value)),
   );
 }
 

@@ -54,7 +54,4 @@ SemesterModel _$SemesterModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$SemesterModelToJson(SemesterModel instance) =>
-    <String, dynamic>{
-      'value': instance.semester,
-      'text': instance.name,
-    };
+    <String, dynamic>{'value': instance.semester, 'text': instance.name};

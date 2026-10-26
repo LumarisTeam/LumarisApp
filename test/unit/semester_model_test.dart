@@ -7,20 +7,14 @@ void main() {
       const testSemester = '2023-2024-1';
       const testName = '2023-2024学年第一学期';
 
-      final semester = SemesterModel(
-        semester: testSemester,
-        name: testName,
-      );
+      final semester = SemesterModel(semester: testSemester, name: testName);
 
       expect(semester.semester, testSemester);
       expect(semester.name, testName);
     });
 
     test('should create instance from JSON', () {
-      final json = {
-        'value': '2023-2024-2',
-        'text': '2023-2024学年第二学期',
-      };
+      final json = {'value': '2023-2024-2', 'text': '2023-2024学年第二学期'};
 
       final semester = SemesterModel.fromJson(json);
 
@@ -32,10 +26,7 @@ void main() {
       const testSemester = '2022-2023-1';
       const testName = '2022-2023学年第一学期';
 
-      final semester = SemesterModel(
-        semester: testSemester,
-        name: testName,
-      );
+      final semester = SemesterModel(semester: testSemester, name: testName);
 
       final json = semester.toJson();
 
@@ -47,10 +38,7 @@ void main() {
     test('should handle empty strings', () {
       const emptyString = '';
 
-      final semester = SemesterModel(
-        semester: emptyString,
-        name: emptyString,
-      );
+      final semester = SemesterModel(semester: emptyString, name: emptyString);
 
       expect(semester.semester, emptyString);
       expect(semester.name, emptyString);
@@ -83,10 +71,7 @@ void main() {
       final longSemester = '2023-2024-1'.padRight(1000, 'x');
       final longName = '2023-2024学年第一学期'.padRight(1000, 'x');
 
-      final semester = SemesterModel(
-        semester: longSemester,
-        name: longName,
-      );
+      final semester = SemesterModel(semester: longSemester, name: longName);
 
       expect(semester.semester, longSemester);
       expect(semester.name, longName);
@@ -141,14 +126,10 @@ void main() {
 
     test('should handle missing JSON keys by fallback to empty string', () {
       // Test with missing value key
-      final jsonMissingValue = {
-        'text': '2023-2024学年第一学期',
-      };
+      final jsonMissingValue = {'text': '2023-2024学年第一学期'};
 
       // Test with missing text key
-      final jsonMissingText = {
-        'value': '2023-2024-1',
-      };
+      final jsonMissingText = {'value': '2023-2024-1'};
 
       final missingValue = SemesterModel.fromJson(jsonMissingValue);
       final missingText = SemesterModel.fromJson(jsonMissingText);

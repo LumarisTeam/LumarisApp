@@ -7,11 +7,11 @@ part of 'user_data.dart';
 // **************************************************************************
 
 UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
-      studentId: parseSchemaString(json['studentId']),
-      cookie: parseSchemaString(json['cookie']),
-    );
+  studentId: parseSchemaString(json['studentId']),
+  cookie: parseSchemaString(json['cookie']),
+);
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
-      'studentId': instance.studentId,
-      'cookie': instance.cookie,
-    };
+  'studentId': instance.studentId,
+  'cookie': instance.cookie,
+};

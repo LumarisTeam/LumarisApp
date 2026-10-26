@@ -7,8 +7,9 @@ import 'package:ios_club_app/features/education/services/edu_http_client_manager
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
-final schoolStoreProvider =
-    NotifierProvider<SchoolStore, SchoolStoreState>(SchoolStore.new);
+final schoolStoreProvider = NotifierProvider<SchoolStore, SchoolStoreState>(
+  SchoolStore.new,
+);
 
 class SchoolStore extends Notifier<SchoolStoreState> {
   @override
@@ -45,7 +46,8 @@ class SchoolStore extends Notifier<SchoolStoreState> {
   }
 
   School _fallbackSchool() {
-    final schoolId = PrefsService.instance.getString(PrefsKeys.SCHOOL_ID) ??
+    final schoolId =
+        PrefsService.instance.getString(PrefsKeys.SCHOOL_ID) ??
         School.defaultCode;
     return School.findByCode(School.fallbackList, schoolId) ??
         School.fallbackList.first;

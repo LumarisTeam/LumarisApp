@@ -92,6 +92,58 @@ class SettingsStore extends Notifier<SettingsState> {
   String get scheduleBackground => state.scheduleBackground;
   String get customBackgroundImage => state.customBackgroundImage;
   bool? get customBackgroundIsDark => state.customBackgroundIsDark;
+  String get customBackgroundImageLight => state.customBackgroundImageLight;
+  String get customBackgroundImageDark => state.customBackgroundImageDark;
+
+  /// Returns the wallpaper path for the given mode (light/dark).
+  ///
+  /// **Migration strategy**:
+  /// 1. If mode-specific path exists (e.g., `customBackgroundImageLight`), use it.
+  /// 2. If the OTHER mode has a path set, return empty string to avoid showing
+  ///    the wrong wallpaper (e.g., dark wallpaper in light mode).
+  /// 3. Fall back to legacy `customBackgroundImage` only if BOTH mode-specific
+  ///    paths are empty (handles users upgrading from single-wallpaper version).
+  ///
+  /// This ensures:
+  /// - New users get independent light/dark wallpapers
+  /// - Upgrading users see their legacy wallpaper until they set mode-specific ones
+  /// - Setting one mode-specific wallpaper doesn't leak to the other mode
+  String backgroundImageFor({required bool isDark}) {
+    final modePath = isDark
+        ? state.customBackgroundImageDark
+        : state.customBackgroundImageLight;
+    if (modePath.isNotEmpty) return modePath;
+
+    final otherPath = isDark
+        ? state.customBackgroundImageLight
+        : state.customBackgroundImageDark;
+    if (otherPath.isNotEmpty) return '';
+
+    return state.customBackgroundImage;
+  }
+
+  /// Returns the brightness flag for the wallpaper in the given mode.
+  ///
+  /// Uses the same migration fallback strategy as [backgroundImageFor].
+  bool? backgroundIsDarkFor({required bool isDark}) {
+    final modeValue = isDark
+        ? state.customBackgroundIsDarkDark
+        : state.customBackgroundIsDarkLight;
+    if (modeValue != null) return modeValue;
+
+    final otherValue = isDark
+        ? state.customBackgroundIsDarkLight
+        : state.customBackgroundIsDarkDark;
+    if (otherValue != null) return null;
+
+    return state.customBackgroundIsDark;
+  }
+
+  bool hasBackgroundFor({required bool isDark}) {
+    return state.scheduleBackground == 'custom' &&
+        backgroundImageFor(isDark: isDark).isNotEmpty;
+  }
+
   String get schoolId => state.schoolId;
   bool get hasAcceptedAgreement => state.hasAcceptedAgreement;
   AppLocaleCode get localeCode => state.localeCode;
@@ -133,6 +185,16 @@ class SettingsStore extends Notifier<SettingsState> {
           prefs.getString(PrefsKeys.CUSTOM_BACKGROUND_IMAGE) ?? '',
       customBackgroundIsDark: prefs.getBool(
         PrefsKeys.CUSTOM_BACKGROUND_IS_DARK,
+      ),
+      customBackgroundImageLight:
+          prefs.getString(PrefsKeys.CUSTOM_BACKGROUND_IMAGE_LIGHT) ?? '',
+      customBackgroundImageDark:
+          prefs.getString(PrefsKeys.CUSTOM_BACKGROUND_IMAGE_DARK) ?? '',
+      customBackgroundIsDarkLight: prefs.getBool(
+        PrefsKeys.CUSTOM_BACKGROUND_IS_DARK_LIGHT,
+      ),
+      customBackgroundIsDarkDark: prefs.getBool(
+        PrefsKeys.CUSTOM_BACKGROUND_IS_DARK_DARK,
       ),
       schoolId: prefs.getString(PrefsKeys.SCHOOL_ID) ?? School.defaultCode,
       hasAcceptedAgreement:
@@ -233,6 +295,75 @@ class SettingsStore extends Notifier<SettingsState> {
     } else {
       await prefs.setBool(PrefsKeys.CUSTOM_BACKGROUND_IS_DARK, value);
     }
+  }
+
+  /// 写入浅色/深色模式各自的壁纸路径。
+  Future<void> setBackgroundImageFor({
+    required bool isDark,
+    required String path,
+  }) async {
+    state = isDark
+        ? state.copyWith(customBackgroundImageDark: path)
+        : state.copyWith(customBackgroundImageLight: path);
+
+    await PrefsService.instance.setString(
+      isDark
+          ? PrefsKeys.CUSTOM_BACKGROUND_IMAGE_DARK
+          : PrefsKeys.CUSTOM_BACKGROUND_IMAGE_LIGHT,
+      path,
+    );
+
+    final otherPath = isDark
+        ? state.customBackgroundImageLight
+        : state.customBackgroundImageDark;
+    final hasAnyBackground =
+        path.isNotEmpty ||
+        otherPath.isNotEmpty ||
+        state.customBackgroundImage.isNotEmpty;
+    await setScheduleBackground(hasAnyBackground ? 'custom' : '');
+  }
+
+  /// 写入浅色/深色模式壁纸的亮暗判定。
+  Future<void> setBackgroundIsDarkFor({
+    required bool isDark,
+    required bool? value,
+  }) async {
+    state = isDark
+        ? state.copyWith(customBackgroundIsDarkDark: value)
+        : state.copyWith(customBackgroundIsDarkLight: value);
+
+    final prefs = PrefsService.instance;
+    final key = isDark
+        ? PrefsKeys.CUSTOM_BACKGROUND_IS_DARK_DARK
+        : PrefsKeys.CUSTOM_BACKGROUND_IS_DARK_LIGHT;
+    if (value == null) {
+      await prefs.remove(key);
+    } else {
+      await prefs.setBool(key, value);
+    }
+  }
+
+  /// 清除指定模式的壁纸（不影响另一模式）。
+  Future<void> clearBackgroundFor({required bool isDark}) async {
+    final otherPath = isDark
+        ? state.customBackgroundImageLight
+        : state.customBackgroundImageDark;
+
+    // 旧版单壁纸同时服务两种模式：先把另一模式落成显式路径，再只清当前模式，
+    // 避免清除后又被旧字段回退出来。
+    if (otherPath.isEmpty && state.customBackgroundImage.isNotEmpty) {
+      await setBackgroundImageFor(
+        isDark: !isDark,
+        path: state.customBackgroundImage,
+      );
+      // 旧字段已经落成另一模式的显式路径，之后不应再作为回退源，
+      // 否则依次清除两套模式时旧壁纸会被重新回退出来。
+      await setCustomBackgroundImage('');
+      await setCustomBackgroundIsDark(null);
+    }
+
+    await setBackgroundImageFor(isDark: isDark, path: '');
+    await setBackgroundIsDarkFor(isDark: isDark, value: null);
   }
 
   Future<void> setSchoolId(String schoolId) async {

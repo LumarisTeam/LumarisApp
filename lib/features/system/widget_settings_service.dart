@@ -1,9 +1,6 @@
 import 'package:flutter/services.dart';
 
-enum WidgetSetupType {
-  today,
-  tomorrow,
-}
+enum WidgetSetupType { today, tomorrow }
 
 enum WidgetSetupLaunchResult {
   widgetPickerOpened,
@@ -21,12 +18,9 @@ class WidgetSettingsService {
     WidgetSetupType type = WidgetSetupType.today,
   }) async {
     try {
-      final result = await _channel.invokeMethod<String>(
-        'openWidgetSetup',
-        {
-          'type': type.name,
-        },
-      );
+      final result = await _channel.invokeMethod<String>('openWidgetSetup', {
+        'type': type.name,
+      });
       return switch (result) {
         'widgetPickerOpened' => WidgetSetupLaunchResult.widgetPickerOpened,
         'appSettingsOpened' => WidgetSetupLaunchResult.appSettingsOpened,

@@ -17,13 +17,16 @@ class CachePolicy {
 
   // 常用缓存策略
   static const CachePolicy defaultPolicy = CachePolicy();
-  static const CachePolicy shortTerm =
-      CachePolicy(maxAge: Duration(minutes: 1));
-  static const CachePolicy mediumTerm =
-      CachePolicy(maxAge: Duration(minutes: 15));
+  static const CachePolicy shortTerm = CachePolicy(
+    maxAge: Duration(minutes: 1),
+  );
+  static const CachePolicy mediumTerm = CachePolicy(
+    maxAge: Duration(minutes: 15),
+  );
   static const CachePolicy longTerm = CachePolicy(maxAge: Duration(hours: 1));
-  static const CachePolicy veryLongTerm =
-      CachePolicy(maxAge: Duration(days: 1));
+  static const CachePolicy veryLongTerm = CachePolicy(
+    maxAge: Duration(days: 1),
+  );
 }
 
 /// 缓存条目模型
@@ -32,23 +35,19 @@ class CacheEntry {
   final int expiryTime; // millisecondsSinceEpoch
   final String? requestUrl;
 
-  CacheEntry({
-    required this.data,
-    required this.expiryTime,
-    this.requestUrl,
-  });
+  CacheEntry({required this.data, required this.expiryTime, this.requestUrl});
 
   Map<String, dynamic> toJson() => {
-        'data': data,
-        'expiryTime': expiryTime,
-        if (requestUrl != null) 'requestUrl': requestUrl,
-      };
+    'data': data,
+    'expiryTime': expiryTime,
+    if (requestUrl != null) 'requestUrl': requestUrl,
+  };
 
   factory CacheEntry.fromJson(Map<String, dynamic> json) => CacheEntry(
-        data: json['data'],
-        expiryTime: json['expiryTime'] as int,
-        requestUrl: json['requestUrl'] as String?,
-      );
+    data: json['data'],
+    expiryTime: json['expiryTime'] as int,
+    requestUrl: json['requestUrl'] as String?,
+  );
 
   bool get isExpired => DateTime.now().millisecondsSinceEpoch > expiryTime;
 }
@@ -101,15 +100,19 @@ class RequestCache {
     if (_isInitialized) return;
 
     try {
-      _box =
-          await HiveManager.instance.openBox(HiveManager.requestCacheBoxName);
+      _box = await HiveManager.instance.openBox(
+        HiveManager.requestCacheBoxName,
+      );
       _isInitialized = true;
 
       // 尝试迁移旧数据
       await _migrateFromSharedPreferences();
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to initialize RequestCache box',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to initialize RequestCache box',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -120,13 +123,15 @@ class RequestCache {
       final keys = prefs.getKeys();
       final cacheKeys = keys
           .where(
-              (k) => k.startsWith('request_cache_') && !k.endsWith('_expiry'))
+            (k) => k.startsWith('request_cache_') && !k.endsWith('_expiry'),
+          )
           .toList();
 
       if (cacheKeys.isEmpty) return;
 
       AppLogger.info(
-          'Migrating ${cacheKeys.length} cache entries from SharedPreferences to Hive...');
+        'Migrating ${cacheKeys.length} cache entries from SharedPreferences to Hive...',
+      );
 
       int migratedCount = 0;
       for (final key in cacheKeys) {
@@ -166,8 +171,11 @@ class RequestCache {
 
       AppLogger.info('Migrated $migratedCount cache entries to Hive.');
     } catch (e, stackTrace) {
-      AppLogger.error('Error during cache migration',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Error during cache migration',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -190,16 +198,18 @@ class RequestCache {
   /// 旧版缓存键生成逻辑，用于兼容读取历史缓存
   String _generateLegacyCacheKey(String url, {Map<String, dynamic>? params}) {
     // 空 map 与 null 视为等价，统一序列化为空字符串，避免 key 不一致
-    final paramsString =
-        (params != null && params.isNotEmpty) ? jsonEncode(params) : '';
+    final paramsString = (params != null && params.isNotEmpty)
+        ? jsonEncode(params)
+        : '';
     return '$_cacheKeyPrefix${Uri.encodeComponent(url)}_${Uri.encodeComponent(paramsString)}';
   }
 
   static const String _cacheKeyPrefix = 'request_cache_';
 
   String _buildRequestIdentity(String url, {Map<String, dynamic>? params}) {
-    final paramsString =
-        (params != null && params.isNotEmpty) ? jsonEncode(params) : '';
+    final paramsString = (params != null && params.isNotEmpty)
+        ? jsonEncode(params)
+        : '';
     return '$url::$paramsString';
   }
 
@@ -256,7 +266,8 @@ class RequestCache {
   }
 
   ({String url, Map<String, dynamic>? params})? _parseLegacyCacheKey(
-      String key) {
+    String key,
+  ) {
     if (!key.startsWith(_cacheKeyPrefix)) return null;
 
     final rawKey = key.substring(_cacheKeyPrefix.length);
@@ -302,8 +313,11 @@ class RequestCache {
   }
 
   /// 获取缓存数据
-  Future<T?> get<T>(String url,
-      {Map<String, dynamic>? params, Duration? maxAge}) async {
+  Future<T?> get<T>(
+    String url, {
+    Map<String, dynamic>? params,
+    Duration? maxAge,
+  }) async {
     if (!_isInitialized) await initialize();
 
     final foundEntry = _findRawCacheEntry(url, params: params);
@@ -348,8 +362,12 @@ class RequestCache {
   }
 
   /// 设置缓存数据
-  Future<void> set<T>(String url, T data,
-      {Map<String, dynamic>? params, Duration? maxAge}) async {
+  Future<void> set<T>(
+    String url,
+    T data, {
+    Map<String, dynamic>? params,
+    Duration? maxAge,
+  }) async {
     if (!_isInitialized) await initialize();
 
     final cacheKey = _generateCacheKey(url, params: params);
@@ -358,8 +376,9 @@ class RequestCache {
     final effectiveMaxAge = maxAge ?? _getCachePolicyForUrl(url).maxAge;
 
     // 计算过期时间
-    final expiryTime =
-        DateTime.now().add(effectiveMaxAge).millisecondsSinceEpoch;
+    final expiryTime = DateTime.now()
+        .add(effectiveMaxAge)
+        .millisecondsSinceEpoch;
 
     // 存储
     final entry = CacheEntry(
@@ -425,8 +444,11 @@ class RequestCache {
         }
       } catch (e, stackTrace) {
         // 无法解析的条目视为损坏，一并清除
-        AppLogger.warning('Corrupt cache entry removed: key="$key"',
-            error: e, stackTrace: stackTrace);
+        AppLogger.warning(
+          'Corrupt cache entry removed: key="$key"',
+          error: e,
+          stackTrace: stackTrace,
+        );
         await _box?.delete(key);
         removed++;
       }
@@ -458,14 +480,18 @@ class CacheInterceptor extends Interceptor {
 
   @override
   void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
     final bypassCache = options.extra[bypassCacheKey] == true;
 
     // 只有GET请求才使用缓存
     if (options.method == 'GET' && !bypassCache && _cache.isInitialized) {
       try {
-        final cachedData = await _cache.get(options.uri.toString(),
-            params: options.queryParameters);
+        final cachedData = await _cache.get(
+          options.uri.toString(),
+          params: options.queryParameters,
+        );
         if (cachedData != null) {
           // 使用缓存数据
           final response = Response(
@@ -478,8 +504,11 @@ class CacheInterceptor extends Interceptor {
         }
       } catch (error, stackTrace) {
         // 缓存是可选能力：初始化失败时必须继续走网络请求。
-        AppLogger.warning('读取请求缓存失败，已跳过缓存',
-            error: error, stackTrace: stackTrace);
+        AppLogger.warning(
+          '读取请求缓存失败，已跳过缓存',
+          error: error,
+          stackTrace: stackTrace,
+        );
       }
     }
     handler.next(options);
@@ -498,8 +527,11 @@ class CacheInterceptor extends Interceptor {
           params: response.requestOptions.queryParameters,
         );
       } catch (error, stackTrace) {
-        AppLogger.warning('写入请求缓存失败，已忽略缓存',
-            error: error, stackTrace: stackTrace);
+        AppLogger.warning(
+          '写入请求缓存失败，已忽略缓存',
+          error: error,
+          stackTrace: stackTrace,
+        );
       }
     }
     handler.next(response);
@@ -514,8 +546,9 @@ class CacheInterceptor extends Interceptor {
         err.type == DioExceptionType.connectionError) {
       // 只有GET请求才尝试使用过期缓存
       if (err.requestOptions.method == 'GET') {
-        final policy =
-            _cache._getCachePolicyForUrl(err.requestOptions.uri.toString());
+        final policy = _cache._getCachePolicyForUrl(
+          err.requestOptions.uri.toString(),
+        );
         if (policy.allowStale) {
           // 尝试获取过期缓存
           final cacheKey = _cache._generateCacheKey(
@@ -524,7 +557,8 @@ class CacheInterceptor extends Interceptor {
           );
 
           if (!_cache._isInitialized) await _cache.initialize();
-          final rawData = _cache._box?.get(cacheKey) ??
+          final rawData =
+              _cache._box?.get(cacheKey) ??
               _cache._box?.get(
                 _cache._generateLegacyCacheKey(
                   err.requestOptions.uri.toString(),
@@ -534,8 +568,9 @@ class CacheInterceptor extends Interceptor {
 
           if (rawData != null) {
             try {
-              final entry =
-                  CacheEntry.fromJson(Map<String, dynamic>.from(rawData));
+              final entry = CacheEntry.fromJson(
+                Map<String, dynamic>.from(rawData),
+              );
               // 不检查过期时间，直接使用
               final response = Response(
                 data: entry.data,

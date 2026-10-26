@@ -30,17 +30,19 @@ BusModel _busModel(int count) {
 }
 
 ProviderContainer _container(List<Override> overrides) {
-  final container = ProviderContainer(overrides: [
-    tileConfigurationReaderProvider.overrideWithValue(
-      () async => TileConfigurationList.defaultConfig(),
-    ),
-    tileConfigurationWriterProvider.overrideWithValue((config) async {}),
-    availableTilesReaderProvider.overrideWithValue(
-      () => const ['电费', '校车', '饭卡'],
-    ),
-    tileStoreAutoLoadProvider.overrideWithValue(false),
-    ...overrides,
-  ]);
+  final container = ProviderContainer(
+    overrides: [
+      tileConfigurationReaderProvider.overrideWithValue(
+        () async => TileConfigurationList.defaultConfig(),
+      ),
+      tileConfigurationWriterProvider.overrideWithValue((config) async {}),
+      availableTilesReaderProvider.overrideWithValue(
+        () => const ['电费', '校车', '饭卡'],
+      ),
+      tileStoreAutoLoadProvider.overrideWithValue(false),
+      ...overrides,
+    ],
+  );
   addTearDown(container.dispose);
   return container;
 }
@@ -84,56 +86,61 @@ void main() {
       expect(state.records, isEmpty);
     });
 
-    test('should_load_payment_records_and_tile_visibility_when_student_exists',
-        () async {
-      final container = _container([
-        studentIsLoginReaderProvider.overrideWithValue(() => true),
-        paymentStudentIdReaderProvider
-            .overrideWithValue(() async => 'student-1'),
-        paymentPasswordReaderProvider
-            .overrideWithValue(() async => 'meal-card-secret'),
-        paymentDataFetcherProvider
-            .overrideWithValue((cardNumber, password) async {
-          expect(cardNumber, 'student-1');
-          expect(password, 'meal-card-secret');
-          return const PaymentData(
-            [
+    test(
+      'should_load_payment_records_and_tile_visibility_when_student_exists',
+      () async {
+        final container = _container([
+          studentIsLoginReaderProvider.overrideWithValue(() => true),
+          paymentStudentIdReaderProvider.overrideWithValue(
+            () async => 'student-1',
+          ),
+          paymentPasswordReaderProvider.overrideWithValue(
+            () async => 'meal-card-secret',
+          ),
+          paymentDataFetcherProvider.overrideWithValue((
+            cardNumber,
+            password,
+          ) async {
+            expect(cardNumber, 'student-1');
+            expect(password, 'meal-card-secret');
+            return const PaymentData([
               PaymentModel(
                 turnoverType: '充值',
                 datetimeStr: '2026-04-27 10:00:00',
                 resume: '测试充值',
                 amount: 1000,
               ),
-            ],
-            1000,
-          );
-        }),
-        tileVisibilityReaderProvider.overrideWithValue((tileId) async {
-          expect(tileId, '饭卡');
-          return true;
-        }),
-      ]);
-      final store = container.read(paymentStoreProvider.notifier);
+            ], 1000);
+          }),
+          tileVisibilityReaderProvider.overrideWithValue((tileId) async {
+            expect(tileId, '饭卡');
+            return true;
+          }),
+        ]);
+        final store = container.read(paymentStoreProvider.notifier);
 
-      await store.loadData();
+        await store.loadData();
 
-      final state = container.read(paymentStoreProvider);
-      expect(state.isLoading, isFalse);
-      expect(state.errorMessage, '');
-      expect(state.records, hasLength(1));
-      expect(state.totalRecharge, 1000);
-      expect(state.isShowTile, isTrue);
-      expect(state.hasData, isTrue);
-      expect(state.password, 'meal-card-secret');
-    });
+        final state = container.read(paymentStoreProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.errorMessage, '');
+        expect(state.records, hasLength(1));
+        expect(state.totalRecharge, 1000);
+        expect(state.isShowTile, isTrue);
+        expect(state.hasData, isTrue);
+        expect(state.password, 'meal-card-secret');
+      },
+    );
 
     test('should_set_error_message_when_fetch_throws', () async {
       final container = _container([
         studentIsLoginReaderProvider.overrideWithValue(() => true),
-        paymentStudentIdReaderProvider
-            .overrideWithValue(() async => 'student-1'),
-        paymentPasswordReaderProvider
-            .overrideWithValue(() async => 'meal-card-secret'),
+        paymentStudentIdReaderProvider.overrideWithValue(
+          () async => 'student-1',
+        ),
+        paymentPasswordReaderProvider.overrideWithValue(
+          () async => 'meal-card-secret',
+        ),
         paymentDataFetcherProvider.overrideWithValue((_, _) async {
           throw Exception('network error');
         }),
@@ -154,7 +161,8 @@ void main() {
       final touchedTiles = <String>[];
       final container = _container([
         tileAdderProvider.overrideWithValue(
-            (tileId) async => touchedTiles.add('add:$tileId')),
+          (tileId) async => touchedTiles.add('add:$tileId'),
+        ),
         tileRemoverProvider.overrideWithValue(
           (tileId) async => touchedTiles.add('remove:$tileId'),
         ),
@@ -187,74 +195,83 @@ void main() {
   });
 
   group('ElectricityStore', () {
-    test('should_load_electricity_value_weekly_data_and_visible_tile',
-        () async {
-      final weekly = [
-        ElectricData(timestamp: DateTime(2026, 4, 27, 8), value: 1.5),
-      ];
-      final container = _container([
-        electricityReaderProvider.overrideWithValue(() async => 23.5),
-        electricityWeeklyReaderProvider.overrideWithValue(() async => weekly),
-        electricityTileVisibilityReaderProvider
-            .overrideWithValue((_) async => true),
-      ]);
-      final store = container.read(electricityStoreProvider.notifier);
+    test(
+      'should_load_electricity_value_weekly_data_and_visible_tile',
+      () async {
+        final weekly = [
+          ElectricData(timestamp: DateTime(2026, 4, 27, 8), value: 1.5),
+        ];
+        final container = _container([
+          electricityReaderProvider.overrideWithValue(() async => 23.5),
+          electricityWeeklyReaderProvider.overrideWithValue(() async => weekly),
+          electricityTileVisibilityReaderProvider.overrideWithValue(
+            (_) async => true,
+          ),
+        ]);
+        final store = container.read(electricityStoreProvider.notifier);
 
-      await store.loadElectricityData();
+        await store.loadElectricityData();
 
-      final state = container.read(electricityStoreProvider);
-      expect(state.isLoading, isFalse);
-      expect(state.hasData, isTrue);
-      expect(state.electricity, 23.5);
-      expect(state.tiles, contains('电费'));
-      expect(state.weeklyData, weekly);
-    });
+        final state = container.read(electricityStoreProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.hasData, isTrue);
+        expect(state.electricity, 23.5);
+        expect(state.tiles, contains('电费'));
+        expect(state.weeklyData, weekly);
+      },
+    );
 
-    test('should_keep_has_data_false_when_electricity_value_is_missing',
-        () async {
-      final container = _container([
-        electricityReaderProvider.overrideWithValue(() async => null),
-        electricityWeeklyReaderProvider.overrideWithValue(() async => []),
-        electricityTileVisibilityReaderProvider
-            .overrideWithValue((_) async => false),
-      ]);
-      final store = container.read(electricityStoreProvider.notifier);
+    test(
+      'should_keep_has_data_false_when_electricity_value_is_missing',
+      () async {
+        final container = _container([
+          electricityReaderProvider.overrideWithValue(() async => null),
+          electricityWeeklyReaderProvider.overrideWithValue(() async => []),
+          electricityTileVisibilityReaderProvider.overrideWithValue(
+            (_) async => false,
+          ),
+        ]);
+        final store = container.read(electricityStoreProvider.notifier);
 
-      await store.loadElectricityData();
+        await store.loadElectricityData();
 
-      final state = container.read(electricityStoreProvider);
-      expect(state.isLoading, isFalse);
-      expect(state.hasData, isFalse);
-      expect(state.tiles, isNot(contains('电费')));
-      expect(state.weeklyData, isEmpty);
-    });
+        final state = container.read(electricityStoreProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.hasData, isFalse);
+        expect(state.tiles, isNot(contains('电费')));
+        expect(state.weeklyData, isEmpty);
+      },
+    );
 
-    test('should_refresh_electricity_without_touching_tile_visibility',
-        () async {
-      final container = _container([
-        electricityReaderProvider.overrideWithValue(() async => 18.0),
-        electricityWeeklyReaderProvider.overrideWithValue(
-          () async => [
-            ElectricData(timestamp: DateTime(2026, 4, 27, 9), value: 2),
-          ],
-        ),
-      ]);
-      final store = container.read(electricityStoreProvider.notifier);
+    test(
+      'should_refresh_electricity_without_touching_tile_visibility',
+      () async {
+        final container = _container([
+          electricityReaderProvider.overrideWithValue(() async => 18.0),
+          electricityWeeklyReaderProvider.overrideWithValue(
+            () async => [
+              ElectricData(timestamp: DateTime(2026, 4, 27, 9), value: 2),
+            ],
+          ),
+        ]);
+        final store = container.read(electricityStoreProvider.notifier);
 
-      await store.refreshElectricityData();
+        await store.refreshElectricityData();
 
-      final state = container.read(electricityStoreProvider);
-      expect(state.isLoading, isFalse);
-      expect(state.hasData, isTrue);
-      expect(state.electricity, 18.0);
-      expect(state.weeklyData.single.value, 2);
-    });
+        final state = container.read(electricityStoreProvider);
+        expect(state.isLoading, isFalse);
+        expect(state.hasData, isTrue);
+        expect(state.electricity, 18.0);
+        expect(state.weeklyData.single.value, 2);
+      },
+    );
 
     test('should_toggle_tile_and_reload_tile_edit_controller', () async {
       final touchedTiles = <String>[];
       final container = _container([
         electricityTileAdderProvider.overrideWithValue(
-            (tileId) async => touchedTiles.add('add:$tileId')),
+          (tileId) async => touchedTiles.add('add:$tileId'),
+        ),
         electricityTileRemoverProvider.overrideWithValue(
           (tileId) async => touchedTiles.add('remove:$tileId'),
         ),
@@ -264,8 +281,10 @@ void main() {
       await store.toggleTile('电费', true);
       await store.toggleTile('电费', false);
 
-      expect(container.read(electricityStoreProvider).tiles,
-          isNot(contains('电费')));
+      expect(
+        container.read(electricityStoreProvider).tiles,
+        isNot(contains('电费')),
+      );
       expect(touchedTiles, ['add:电费', 'remove:电费']);
     });
   });

@@ -77,13 +77,10 @@ void main() {
     });
 
     test('fromMap should build courses with provided term', () {
-      final list = PlanCourseList.fromMap(
-        '2026-2027-2',
-        <Map<String, dynamic>>[
-          <String, dynamic>{'name': '编译原理', 'credits': 3},
-          <String, dynamic>{'name': '人工智能', 'credits': 2},
-        ],
-      );
+      final list = PlanCourseList.fromMap('2026-2027-2', <Map<String, dynamic>>[
+        <String, dynamic>{'name': '编译原理', 'credits': 3},
+        <String, dynamic>{'name': '人工智能', 'credits': 2},
+      ]);
 
       expect(list.term, '2026-2027-2');
       expect(list.courses.length, 2);

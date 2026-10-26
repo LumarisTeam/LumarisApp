@@ -693,15 +693,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get scheduleSettingsTitle => '時間割設定';
 
   @override
-  String get compact => 'コンパクト';
-
-  @override
-  String get standard => '標準';
-
-  @override
-  String get relaxed => 'リラックス';
-
-  @override
   String get selectCourse => '授業を選択';
 
   @override
@@ -2031,4 +2022,201 @@ class AppLocalizationsJa extends AppLocalizations {
   @override
   String get permissionWidgetFeatureDesc =>
       'バックグラウンド実行を許可し、ホーム画面ウィジェットを時間どおりに更新します';
+
+  @override
+  String get schedulePersonalization => 'パーソナライズ';
+
+  @override
+  String get resetToDefaultStyle => 'デフォルトスタイルに戻す';
+
+  @override
+  String get resetStyleConfirmTitle => 'デフォルトスタイルに戻す';
+
+  @override
+  String get resetStyleConfirmMessage =>
+      '色、文字、枠線、サイズの設定をリセットします。壁紙は保持されます。続行しますか？';
+
+  @override
+  String get sectionInterface => 'インターフェース';
+
+  @override
+  String get scheduleWallpaper => '時間割の背景画像';
+
+  @override
+  String get wallpaperTapHint => '未設定（タップして画像を選択）';
+
+  @override
+  String get wallpaperClearHint => '設定済み（長押しで削除）';
+
+  @override
+  String get hideGridLines => 'グリッド線を隠す';
+
+  @override
+  String get schedulePageTextColor => '時間割ページの文字色';
+
+  @override
+  String get sectionGridSize => 'グリッドサイズ';
+
+  @override
+  String get gridHeight => 'マス目の高さ';
+
+  @override
+  String get topHeaderHeight => '上部ヘッダーの高さ';
+
+  @override
+  String get sectionCourseBlock => '授業ブロックの設定';
+
+  @override
+  String get courseBlockTextColor => '授業ブロックの文字色';
+
+  @override
+  String get hideTeacher => '教員を隠す';
+
+  @override
+  String get textAlignCenterH => '文字を水平中央揃え';
+
+  @override
+  String get textAlignCenterV => '文字を垂直中央揃え';
+
+  @override
+  String get borderStyle => '枠線スタイル';
+
+  @override
+  String get borderStyleNone => 'なし';
+
+  @override
+  String get borderStyleSolid => '実線';
+
+  @override
+  String get borderStyleDashed => '破線';
+
+  @override
+  String get sectionColorScheme => 'カラースキーム';
+
+  @override
+  String get lightColorPool => 'ライトモードのカラープール';
+
+  @override
+  String get darkColorPool => 'ダークモードのカラープール';
+
+  @override
+  String get resetColor => '色をリセット';
+
+  @override
+  String get useTheme => 'テーマに従う';
+
+  @override
+  String get hideSectionTime => '節次の時刻を隠す';
+
+  @override
+  String get hideDateUnderDay => '曜日下の日付を隠す';
+
+  @override
+  String get timeColumnWidth => '時間列の幅';
+
+  @override
+  String get showStartTime => '開始時刻を表示';
+
+  @override
+  String get hideLocation => '場所を隠す';
+
+  @override
+  String get fontScale => '文字の拡大率';
+
+  @override
+  String get cornerRadius => '角丸半径';
+
+  @override
+  String get innerPadding => '内側の余白';
+
+  @override
+  String get outerPadding => '外側の余白';
+
+  @override
+  String get opacity => '不透明度';
+
+  @override
+  String get wallpaperEditingLight => 'ライトモード';
+
+  @override
+  String get wallpaperEditingDark => 'ダークモード';
+
+  @override
+  String get inputValue => '数値を入力';
+
+  @override
+  String get changeCourseColor => '授業の色を変更';
+
+  @override
+  String get resetCourseColor => '既定の色に戻す';
+
+  @override
+  String get colorTheme => 'カラーテーマ';
+
+  @override
+  String get customThemes => 'カスタムテーマ';
+
+  @override
+  String get newCustomTheme => '新しいカスタムテーマ';
+
+  @override
+  String get copyAsCustomTheme => 'カスタムテーマとしてコピー';
+
+  @override
+  String copyThemeName(String name) {
+    return '$name のコピー';
+  }
+
+  @override
+  String get editColorPool => '色を編集';
+
+  @override
+  String get builtInThemeReadOnly => '組み込みテーマは読み取り専用です。カスタムテーマとしてコピーすると編集できます。';
+
+  @override
+  String get colorThemeNameHint => 'テーマ名を入力';
+
+  @override
+  String get colorThemeNameRequired => 'テーマ名を入力してください';
+
+  @override
+  String get colorThemeNameDuplicate => 'このテーマ名は既に存在するか、予約されています';
+
+  @override
+  String colorThemeNameTooLong(int max) {
+    return 'テーマ名は $max 文字以内で入力してください';
+  }
+
+  @override
+  String get renameTheme => 'テーマ名を変更';
+
+  @override
+  String get deleteTheme => 'テーマを削除';
+
+  @override
+  String deleteThemeConfirmMessage(String name) {
+    return 'テーマ「$name」を削除しますか？使用中のカラープールは既定のテーマに戻ります。';
+  }
+
+  @override
+  String get addColor => '色を追加';
+
+  @override
+  String get editColor => '色を編集';
+
+  @override
+  String get deleteColor => '色を削除';
+
+  @override
+  String get minOneColorHint => '少なくとも 1 色必要です';
+
+  @override
+  String maxColorLimitHint(int max) {
+    return '最大 $max 色';
+  }
+
+  @override
+  String colorCount(int count) {
+    return '$count 色';
+  }
 }

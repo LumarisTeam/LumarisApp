@@ -8,11 +8,7 @@ class LoginResponse {
   final String? studentId;
   final String? cookie;
 
-  LoginResponse({
-    this.success,
-    this.studentId,
-    this.cookie,
-  });
+  LoginResponse({this.success, this.studentId, this.cookie});
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) =>
       _$LoginResponseFromJson(json);

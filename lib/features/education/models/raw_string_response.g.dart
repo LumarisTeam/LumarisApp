@@ -7,6 +7,4 @@ part of 'raw_string_response.dart';
 // **************************************************************************
 
 Map<String, dynamic> _$RawStringResponseToJson(RawStringResponse instance) =>
-    <String, dynamic>{
-      'value': instance.value,
-    };
+    <String, dynamic>{'value': instance.value};

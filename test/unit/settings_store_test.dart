@@ -118,6 +118,113 @@ void main() {
       );
     });
 
+    test('should fall back to the legacy wallpaper for both modes', () async {
+      await PrefsService.instance.setString(
+        PrefsKeys.CUSTOM_BACKGROUND_IMAGE,
+        '/legacy.jpg',
+      );
+      await PrefsService.instance.setBool(
+        PrefsKeys.CUSTOM_BACKGROUND_IS_DARK,
+        true,
+      );
+
+      container.dispose();
+      container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final settingsStore = store();
+      expect(settingsStore.backgroundImageFor(isDark: false), '/legacy.jpg');
+      expect(settingsStore.backgroundImageFor(isDark: true), '/legacy.jpg');
+      expect(settingsStore.backgroundIsDarkFor(isDark: false), isTrue);
+      expect(settingsStore.backgroundIsDarkFor(isDark: true), isTrue);
+    });
+
+    test('should store separate light and dark wallpapers', () async {
+      final settingsStore = store();
+
+      await settingsStore.setBackgroundImageFor(
+        isDark: false,
+        path: '/light.jpg',
+      );
+      await settingsStore.setBackgroundImageFor(
+        isDark: true,
+        path: '/dark.jpg',
+      );
+
+      expect(settingsStore.backgroundImageFor(isDark: false), '/light.jpg');
+      expect(settingsStore.backgroundImageFor(isDark: true), '/dark.jpg');
+      expect(settingsStore.scheduleBackground, 'custom');
+      expect(
+        PrefsService.instance.getString(
+          PrefsKeys.CUSTOM_BACKGROUND_IMAGE_LIGHT,
+        ),
+        '/light.jpg',
+      );
+      expect(
+        PrefsService.instance.getString(PrefsKeys.CUSTOM_BACKGROUND_IMAGE_DARK),
+        '/dark.jpg',
+      );
+    });
+
+    test('should clear only the selected mode wallpaper', () async {
+      // 前一个测试可能写入了旧版单壁纸键，这里先清掉以保证回退不干扰。
+      await PrefsService.instance.remove(PrefsKeys.CUSTOM_BACKGROUND_IMAGE);
+      await PrefsService.instance.remove(PrefsKeys.CUSTOM_BACKGROUND_IS_DARK);
+
+      final settingsStore = store();
+
+      await settingsStore.setBackgroundImageFor(
+        isDark: false,
+        path: '/light.jpg',
+      );
+      await settingsStore.setBackgroundImageFor(
+        isDark: true,
+        path: '/dark.jpg',
+      );
+
+      await settingsStore.clearBackgroundFor(isDark: false);
+      expect(settingsStore.backgroundImageFor(isDark: false), '');
+      expect(settingsStore.backgroundImageFor(isDark: true), '/dark.jpg');
+      expect(settingsStore.scheduleBackground, 'custom');
+
+      await settingsStore.clearBackgroundFor(isDark: true);
+      expect(settingsStore.backgroundImageFor(isDark: true), '');
+      expect(settingsStore.scheduleBackground, '');
+    });
+
+    test(
+      'should clear a legacy wallpaper without clearing the other mode',
+      () async {
+        for (final key in <String>[
+          PrefsKeys.CUSTOM_BACKGROUND_IMAGE_LIGHT,
+          PrefsKeys.CUSTOM_BACKGROUND_IMAGE_DARK,
+          PrefsKeys.CUSTOM_BACKGROUND_IS_DARK_LIGHT,
+          PrefsKeys.CUSTOM_BACKGROUND_IS_DARK_DARK,
+        ]) {
+          await PrefsService.instance.remove(key);
+        }
+        await PrefsService.instance.setString(
+          PrefsKeys.CUSTOM_BACKGROUND_IMAGE,
+          '/legacy.jpg',
+        );
+
+        container.dispose();
+        container = ProviderContainer();
+        addTearDown(container.dispose);
+
+        final settingsStore = store();
+        await settingsStore.clearBackgroundFor(isDark: false);
+
+        expect(settingsStore.backgroundImageFor(isDark: false), '');
+        expect(settingsStore.backgroundImageFor(isDark: true), '/legacy.jpg');
+
+        await settingsStore.clearBackgroundFor(isDark: true);
+        expect(settingsStore.backgroundImageFor(isDark: false), '');
+        expect(settingsStore.backgroundImageFor(isDark: true), '');
+        expect(settingsStore.scheduleBackground, '');
+      },
+    );
+
     test('should throw when setting invalid school id', () async {
       final settingsStore = store();
 
@@ -127,29 +234,35 @@ void main() {
       );
     });
 
-    test('should fallback currentSchool to default when school id is unknown',
-        () async {
-      await PrefsService.instance
-          .setString(PrefsKeys.SCHOOL_ID, 'unknown-school');
-      container.dispose();
-      container = ProviderContainer();
-      addTearDown(container.dispose);
-      final settingsStore = store();
+    test(
+      'should fallback currentSchool to default when school id is unknown',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.SCHOOL_ID,
+          'unknown-school',
+        );
+        container.dispose();
+        container = ProviderContainer();
+        addTearDown(container.dispose);
+        final settingsStore = store();
 
-      expect(settingsStore.schoolId, 'unknown-school');
-      expect(settingsStore.currentSchool?.code, School.defaultCode);
-    });
+        expect(settingsStore.schoolId, 'unknown-school');
+        expect(settingsStore.currentSchool?.code, School.defaultCode);
+      },
+    );
 
-    test('should fallback theme mode to system when prefs value is invalid',
-        () async {
-      await PrefsService.instance.setString(PrefsKeys.THEME_MODE, 'neon');
-      container.dispose();
-      container = ProviderContainer();
-      addTearDown(container.dispose);
+    test(
+      'should fallback theme mode to system when prefs value is invalid',
+      () async {
+        await PrefsService.instance.setString(PrefsKeys.THEME_MODE, 'neon');
+        container.dispose();
+        container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      final settingsStore = store();
+        final settingsStore = store();
 
-      expect(settingsStore.themeMode, ThemeMode.system);
-    });
+        expect(settingsStore.themeMode, ThemeMode.system);
+      },
+    );
   });
 }

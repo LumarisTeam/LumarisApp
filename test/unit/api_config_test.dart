@@ -15,10 +15,7 @@ void main() {
     });
 
     test('should find school by code', () {
-      final school = School.findByCode(
-        School.fallbackList,
-        School.defaultCode,
-      );
+      final school = School.findByCode(School.fallbackList, School.defaultCode);
       expect(school, isNotNull);
       expect(school!.code, equals(School.defaultCode));
     });
@@ -32,10 +29,7 @@ void main() {
     });
 
     test('should return null for invalid school code', () {
-      final school = School.findByCode(
-        School.fallbackList,
-        'invalid_code',
-      );
+      final school = School.findByCode(School.fallbackList, 'invalid_code');
       expect(school, isNull);
     });
 
@@ -46,10 +40,7 @@ void main() {
     });
 
     test('default school code should be valid', () {
-      final school = School.findByCode(
-        School.fallbackList,
-        School.defaultCode,
-      );
+      final school = School.findByCode(School.fallbackList, School.defaultCode);
       expect(school, isNotNull);
     });
   });
@@ -145,15 +136,15 @@ void main() {
 
   group('School.eduSystemUrl', () {
     Map<String, dynamic> jsonWith(Object? eduSystemUrl) => {
-          'code': 'test',
-          'name': '测试大学',
-          'website': 'https://api.test.edu.cn',
-          'features': <String>['timetable'],
-          'enabled': true,
-          'created_at': '2024-01-01T00:00:00.000',
-          'updated_at': '2024-01-01T00:00:00.000',
-          'edu_system_url': ?eduSystemUrl,
-        };
+      'code': 'test',
+      'name': '测试大学',
+      'website': 'https://api.test.edu.cn',
+      'features': <String>['timetable'],
+      'enabled': true,
+      'created_at': '2024-01-01T00:00:00.000',
+      'updated_at': '2024-01-01T00:00:00.000',
+      'edu_system_url': ?eduSystemUrl,
+    };
 
     test('should read edu system url from json', () {
       final json = jsonWith('https://jwc.test.edu.cn');
@@ -175,8 +166,10 @@ void main() {
 
     test('should convert edu system url to json', () {
       final school = School.fromJson(jsonWith('https://jwc.test.edu.cn'));
-      expect(school.toJson()['edu_system_url'],
-          equals('https://jwc.test.edu.cn'));
+      expect(
+        school.toJson()['edu_system_url'],
+        equals('https://jwc.test.edu.cn'),
+      );
     });
 
     test('htmlImportUrl should prefer edu system url', () {

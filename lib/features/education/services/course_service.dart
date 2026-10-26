@@ -95,10 +95,7 @@ class CourseService {
     UserData? userData,
     bool isRefresh = false,
   }) async {
-    await fetchCoursesFromRemote(
-      userData: userData,
-      forceRefresh: isRefresh,
-    );
+    await fetchCoursesFromRemote(userData: userData, forceRefresh: isRefresh);
   }
 
   static Future<List<CourseModel>> fetchCoursesFromRemote({
@@ -192,7 +189,10 @@ class CourseService {
     }
 
     filteredCourses = filteredCourses.where((course) {
-      final end = TimeService.getStartAndEnd(course, date: now).endDateTime(now);
+      final end = TimeService.getStartAndEnd(
+        course,
+        date: now,
+      ).endDateTime(now);
       return end == null || now.isBefore(end);
     }).toList();
 
@@ -201,7 +201,7 @@ class CourseService {
   }
 
   static Future<Map<String, List<CourseModel>>>
-      getTodayAndTomorrowCourses() async {
+  getTodayAndTomorrowCourses() async {
     final allCourse = await getAllCourse();
     final time = await EduTimeService.getTime();
     var now = DateTime.now();
@@ -226,7 +226,10 @@ class CourseService {
     }).toList();
 
     todayCourses = todayCourses.where((course) {
-      final end = TimeService.getStartAndEnd(course, date: now).endDateTime(now);
+      final end = TimeService.getStartAndEnd(
+        course,
+        date: now,
+      ).endDateTime(now);
       return end == null || now.isBefore(end);
     }).toList();
 
@@ -243,8 +246,7 @@ class CourseService {
     final tomorrowCourses = allCourse.where((course) {
       return course.weekIndexes.contains(weekTomorrow) &&
           course.weekday == tomorrowWeekday;
-    }).toList()
-      ..sort((a, b) => a.startUnit.compareTo(b.startUnit));
+    }).toList()..sort((a, b) => a.startUnit.compareTo(b.startUnit));
 
     return {'today': todayCourses, 'tomorrow': tomorrowCourses};
   }
@@ -262,8 +264,7 @@ class CourseService {
     for (var j = now.weekday; j < 7; j++) {
       final dayCourses = weekCourses.where((course) {
         return course.weekday == j;
-      }).toList()
-        ..sort((a, b) => a.startUnit.compareTo(b.startUnit));
+      }).toList()..sort((a, b) => a.startUnit.compareTo(b.startUnit));
 
       for (final courseToday in dayCourses) {
         final time = TimeService.getStartAndEnd(courseToday);

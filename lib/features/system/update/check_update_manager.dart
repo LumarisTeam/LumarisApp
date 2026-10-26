@@ -25,8 +25,10 @@ class CheckUpdateManager {
       return false;
     }
 
-    const updateChannel =
-        String.fromEnvironment('UPDATE_CHANNEL', defaultValue: 'gitee');
+    const updateChannel = String.fromEnvironment(
+      'UPDATE_CHANNEL',
+      defaultValue: 'gitee',
+    );
     if (updateChannel == 'appstore') {
       return false;
     }

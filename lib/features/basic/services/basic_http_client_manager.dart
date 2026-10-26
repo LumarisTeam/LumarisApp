@@ -1,7 +1,7 @@
 import 'package:ios_club_app/features/basic/services/basic_http_client.dart';
 
 class BasicHttpClientManager {
-  BasicHttpClientManager._(){
+  BasicHttpClientManager._() {
     _client = BasicHttpClient();
   }
 

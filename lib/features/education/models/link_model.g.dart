@@ -7,22 +7,22 @@ part of 'link_model.dart';
 // **************************************************************************
 
 LinkModel _$LinkModelFromJson(Map<String, dynamic> json) => LinkModel(
-      key: json['key'] as String,
-      name: json['name'] as String,
-      icon: json['icon'] as String?,
-      url: json['url'] as String,
-      description: json['description'] as String?,
-      index: (json['index'] as num).toInt(),
-    );
+  key: json['key'] as String,
+  name: json['name'] as String,
+  icon: json['icon'] as String?,
+  url: json['url'] as String,
+  description: json['description'] as String?,
+  index: (json['index'] as num).toInt(),
+);
 
 Map<String, dynamic> _$LinkModelToJson(LinkModel instance) => <String, dynamic>{
-      'key': instance.key,
-      'name': instance.name,
-      'icon': instance.icon,
-      'url': instance.url,
-      'description': instance.description,
-      'index': instance.index,
-    };
+  'key': instance.key,
+  'name': instance.name,
+  'icon': instance.icon,
+  'url': instance.url,
+  'description': instance.description,
+  'index': instance.index,
+};
 
 CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) =>
     CategoryModel(
@@ -31,7 +31,8 @@ CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) =>
       description: json['description'] as String?,
       icon: json['icon'] as String,
       index: (json['index'] as num).toInt(),
-      links: (json['links'] as List<dynamic>?)
+      links:
+          (json['links'] as List<dynamic>?)
               ?.map((e) => LinkModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <LinkModel>[],

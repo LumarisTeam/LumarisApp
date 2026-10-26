@@ -11,8 +11,9 @@ final courseRepositoryProvider = Provider<CourseRepository>((ref) {
   return CourseRepository();
 });
 
-final courseStoreProvider =
-    NotifierProvider<CourseStore, CourseState>(CourseStore.new);
+final courseStoreProvider = NotifierProvider<CourseStore, CourseState>(
+  CourseStore.new,
+);
 
 class CourseStore extends Notifier<CourseState> {
   CourseRepository get _repository => ref.read(courseRepositoryProvider);
@@ -78,8 +79,9 @@ class CourseStore extends Notifier<CourseState> {
 
   Future<void> removeIgnoreCourse(String courseName) async {
     if (state.ignoreCourses.contains(courseName)) {
-      final next =
-          state.ignoreCourses.where((course) => course != courseName).toList();
+      final next = state.ignoreCourses
+          .where((course) => course != courseName)
+          .toList();
       setIgnoreCourses(next);
       await saveCourseData(next);
     }
@@ -136,8 +138,9 @@ class CourseStore extends Notifier<CourseState> {
 
   Future<List<CourseModel>> loadGuestAndCustomCourses() async {
     await loadGuestCourses();
-    final guestCourses =
-        state.courses.where((course) => !course.isCustom).toList();
+    final guestCourses = state.courses
+        .where((course) => !course.isCustom)
+        .toList();
     final customCourses = await loadCustomCourses();
     final mergedCourses = [...guestCourses, ...customCourses];
     state = state.copyWith(courses: mergedCourses);

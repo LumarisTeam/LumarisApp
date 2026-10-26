@@ -9,7 +9,11 @@ part 'api_response.g.dart';
 ///
 /// Also handles bare responses (no envelope) by treating the entire
 /// JSON as [data] for backward compatibility with non-conformant APIs.
-@JsonSerializable(explicitToJson: true, genericArgumentFactories: true, createFactory: false)
+@JsonSerializable(
+  explicitToJson: true,
+  genericArgumentFactories: true,
+  createFactory: false,
+)
 class ApiResponse<T> {
   final T? data;
   final dynamic code;

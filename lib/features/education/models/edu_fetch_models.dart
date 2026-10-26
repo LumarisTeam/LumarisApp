@@ -1,8 +1,4 @@
-enum FetchPolicy {
-  localFirst,
-  refresh,
-  fallbackToLocal,
-}
+enum FetchPolicy { localFirst, refresh, fallbackToLocal }
 
 class FetchSnapshot<T> {
   const FetchSnapshot({

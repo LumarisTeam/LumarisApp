@@ -4,8 +4,8 @@ import 'package:ios_club_app/features/education/services/program_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/core/utils/stale_request_guard.dart';
 
-typedef ProgramsFetcher = Future<List<PlanCourseList>> Function(
-    {bool forceRefresh});
+typedef ProgramsFetcher =
+    Future<List<PlanCourseList>> Function({bool forceRefresh});
 
 final programAutoLoadProvider = Provider<bool>((ref) => true);
 final programsFetcherProvider = Provider<ProgramsFetcher>((ref) {
@@ -16,7 +16,8 @@ final programsFetcherProvider = Provider<ProgramsFetcher>((ref) {
 
 final programControllerProvider =
     NotifierProvider<ProgramPageNotifier, ProgramState>(
-        ProgramPageNotifier.new);
+      ProgramPageNotifier.new,
+    );
 
 class ProgramPageNotifier extends Notifier<ProgramState> {
   final _loadGuard = StaleRequestGuard();

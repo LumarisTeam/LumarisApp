@@ -6,23 +6,19 @@ import 'package:ios_club_app/features/system/tile_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/tile_edit_notifier.dart';
 
-typedef BusPageFetcher = Future<BusModel> Function({
-  String? dayDate,
-  bool forceRefresh,
-});
+typedef BusPageFetcher =
+    Future<BusModel> Function({String? dayDate, bool forceRefresh});
 
 final busPageAutoLoadProvider = Provider<bool>((ref) => true);
 final busPageFetcherProvider = Provider<BusPageFetcher>((ref) {
   return ({String? dayDate, bool forceRefresh = false}) {
-    return BusService.getBus(
-      dayDate: dayDate,
-      forceRefresh: forceRefresh,
-    );
+    return BusService.getBus(dayDate: dayDate, forceRefresh: forceRefresh);
   };
 });
 
-final busControllerProvider =
-    NotifierProvider<BusPageNotifier, BusPageState>(BusPageNotifier.new);
+final busControllerProvider = NotifierProvider<BusPageNotifier, BusPageState>(
+  BusPageNotifier.new,
+);
 
 class BusPageNotifier extends Notifier<BusPageState> {
   final Map<String, String> availableDates = {};
@@ -30,8 +26,9 @@ class BusPageNotifier extends Notifier<BusPageState> {
   @override
   BusPageState build() {
     _generateWeeklyDates();
-    final selectedDate =
-        availableDates.isNotEmpty ? availableDates.keys.first : '';
+    final selectedDate = availableDates.isNotEmpty
+        ? availableDates.keys.first
+        : '';
     if (ref.read(busPageAutoLoadProvider)) {
       Future<void>.microtask(() async {
         state = state.copyWith(selectedDate: selectedDate);
@@ -49,8 +46,9 @@ class BusPageNotifier extends Notifier<BusPageState> {
     final now = DateTime.now();
     for (var i = 0; i < 7; i++) {
       final date = now.add(Duration(days: i));
-      availableDates[DateFormat('yyyy-MM-dd').format(date)] =
-          DateFormat('M月d日').format(date);
+      availableDates[DateFormat('yyyy-MM-dd').format(date)] = DateFormat(
+        'M月d日',
+      ).format(date);
     }
   }
 
@@ -65,10 +63,7 @@ class BusPageNotifier extends Notifier<BusPageState> {
   Future<void> _loadTiles() async {
     final config = await TileService.getTileConfigurations();
     final tiles = config.getVisibleTiles().map((tile) => tile.id).toList();
-    state = state.copyWith(
-      tiles: tiles,
-      isShowBus: tiles.contains('校车'),
-    );
+    state = state.copyWith(tiles: tiles, isShowBus: tiles.contains('校车'));
   }
 
   Future<void> _fetchBusData({
@@ -93,7 +88,8 @@ class BusPageNotifier extends Notifier<BusPageState> {
 
       final todayBusData = data.records;
       final campusOptions = _extractCampusOptions(todayBusData);
-      final selectedCampus = campusOptions.contains(state.selectedCampus) &&
+      final selectedCampus =
+          campusOptions.contains(state.selectedCampus) &&
               state.selectedCampus.isNotEmpty
           ? state.selectedCampus
           : (campusOptions.isNotEmpty ? campusOptions.first : '');

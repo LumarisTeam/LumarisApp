@@ -21,26 +21,26 @@ void main() {
     test('should write read delete and deleteAll successfully', () async {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (call) async {
-        switch (call.method) {
-          case 'write':
-            final key = call.arguments['key'] as String;
-            final value = call.arguments['value'] as String?;
-            if (value != null) {
-              store[key] = value;
+            switch (call.method) {
+              case 'write':
+                final key = call.arguments['key'] as String;
+                final value = call.arguments['value'] as String?;
+                if (value != null) {
+                  store[key] = value;
+                }
+                return null;
+              case 'read':
+                return store[call.arguments['key'] as String];
+              case 'delete':
+                store.remove(call.arguments['key'] as String);
+                return null;
+              case 'deleteAll':
+                store.clear();
+                return null;
+              default:
+                return null;
             }
-            return null;
-          case 'read':
-            return store[call.arguments['key'] as String];
-          case 'delete':
-            store.remove(call.arguments['key'] as String);
-            return null;
-          case 'deleteAll':
-            store.clear();
-            return null;
-          default:
-            return null;
-        }
-      });
+          });
 
       final service = SecureStorageService.instance;
       expect(await service.write(key: 'k1', value: 'v1'), isTrue);
@@ -59,23 +59,23 @@ void main() {
     test('write with null should fallback to delete behavior', () async {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (call) async {
-        if (call.method == 'write') {
-          final key = call.arguments['key'] as String;
-          final value = call.arguments['value'] as String?;
-          if (value == null) {
-            store.remove(key);
-          } else {
-            store[key] = value;
-          }
-        }
-        if (call.method == 'delete') {
-          store.remove(call.arguments['key'] as String);
-        }
-        if (call.method == 'read') {
-          return store[call.arguments['key'] as String];
-        }
-        return null;
-      });
+            if (call.method == 'write') {
+              final key = call.arguments['key'] as String;
+              final value = call.arguments['value'] as String?;
+              if (value == null) {
+                store.remove(key);
+              } else {
+                store[key] = value;
+              }
+            }
+            if (call.method == 'delete') {
+              store.remove(call.arguments['key'] as String);
+            }
+            if (call.method == 'read') {
+              return store[call.arguments['key'] as String];
+            }
+            return null;
+          });
 
       final service = SecureStorageService.instance;
       expect(await service.write(key: 'k2', value: 'v2'), isTrue);
@@ -85,20 +85,22 @@ void main() {
       expect(await service.read(key: 'k2'), isNull);
     });
 
-    test('should swallow platform exceptions and expose failure status',
-        () async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(channel, (call) async {
-        throw PlatformException(code: 'err', message: 'mock error');
-      });
+    test(
+      'should swallow platform exceptions and expose failure status',
+      () async {
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+            .setMockMethodCallHandler(channel, (call) async {
+              throw PlatformException(code: 'err', message: 'mock error');
+            });
 
-      final service = SecureStorageService.instance;
-      expect(await service.write(key: 'k3', value: 'v3'), isFalse);
-      expect(await service.delete(key: 'k3'), isFalse);
-      expect(await service.deleteAll(), isFalse);
+        final service = SecureStorageService.instance;
+        expect(await service.write(key: 'k3', value: 'v3'), isFalse);
+        expect(await service.delete(key: 'k3'), isFalse);
+        expect(await service.deleteAll(), isFalse);
 
-      final result = await service.read(key: 'k3');
-      expect(result, isNull);
-    });
+        final result = await service.read(key: 'k3');
+        expect(result, isNull);
+      },
+    );
   });
 }

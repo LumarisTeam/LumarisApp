@@ -12,11 +12,7 @@ void main() {
   group('AnimatedCard', () {
     testWidgets('should_render_child_and_finish_animation', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          const AnimatedCard(
-            child: Text('card-child'),
-          ),
-        ),
+        _wrap(const AnimatedCard(child: Text('card-child'))),
       );
 
       expect(find.text('card-child'), findsOneWidget);
@@ -76,25 +72,24 @@ void main() {
         ),
       );
 
-      final detector =
-          tester.widget<GestureDetector>(find.byType(GestureDetector));
+      final detector = tester.widget<GestureDetector>(
+        find.byType(GestureDetector),
+      );
       expect(detector.onTapDown, isNull);
       expect(detector.onTapUp, isNull);
       expect(detector.onTapCancel, isNull);
     });
 
-    testWidgets('should_handle_tap_down_and_cancel_without_errors',
-        (tester) async {
+    testWidgets('should_handle_tap_down_and_cancel_without_errors', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        _wrap(
-          const InteractiveCard(
-            child: Text('gesture'),
-          ),
-        ),
+        _wrap(const InteractiveCard(child: Text('gesture'))),
       );
 
-      final gesture =
-          await tester.startGesture(tester.getCenter(find.text('gesture')));
+      final gesture = await tester.startGesture(
+        tester.getCenter(find.text('gesture')),
+      );
       await tester.pump(const Duration(milliseconds: 50));
       await gesture.cancel();
       await tester.pump(const Duration(milliseconds: 250));
@@ -105,13 +100,7 @@ void main() {
 
   group('HoverCard', () {
     testWidgets('should_enable_hover_handlers_by_default', (tester) async {
-      await tester.pumpWidget(
-        _wrap(
-          const HoverCard(
-            child: Text('hover'),
-          ),
-        ),
-      );
+      await tester.pumpWidget(_wrap(const HoverCard(child: Text('hover'))));
 
       final mouseRegionFinder = find.descendant(
         of: find.byType(HoverCard),
@@ -122,15 +111,11 @@ void main() {
       expect(mouseRegion.onExit, isNotNull);
     });
 
-    testWidgets('should_disable_hover_handlers_when_flag_false',
-        (tester) async {
+    testWidgets('should_disable_hover_handlers_when_flag_false', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        _wrap(
-          const HoverCard(
-            enableHover: false,
-            child: Text('hover-off'),
-          ),
-        ),
+        _wrap(const HoverCard(enableHover: false, child: Text('hover-off'))),
       );
 
       final mouseRegionFinder = find.descendant(
@@ -143,8 +128,9 @@ void main() {
     });
   });
 
-  testWidgets('AnimatedInteractiveCard should compose both wrappers',
-      (tester) async {
+  testWidgets('AnimatedInteractiveCard should compose both wrappers', (
+    tester,
+  ) async {
     var tapped = false;
 
     await tester.pumpWidget(

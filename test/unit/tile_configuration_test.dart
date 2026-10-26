@@ -4,11 +4,7 @@ import 'package:ios_club_app/core/models/tile_configuration.dart';
 void main() {
   group('TileConfiguration', () {
     test('should_create_tile_configuration_with_required_fields', () {
-      const tile = TileConfiguration(
-        id: '电费',
-        order: 0,
-        isVisible: true,
-      );
+      const tile = TileConfiguration(id: '电费', order: 0, isVisible: true);
 
       expect(tile.id, '电费');
       expect(tile.order, 0);
@@ -16,11 +12,7 @@ void main() {
     });
 
     test('should_serialize_to_json_correctly', () {
-      const tile = TileConfiguration(
-        id: '校车',
-        order: 1,
-        isVisible: false,
-      );
+      const tile = TileConfiguration(id: '校车', order: 1, isVisible: false);
 
       final json = tile.toJson();
 
@@ -30,11 +22,7 @@ void main() {
     });
 
     test('should_deserialize_from_json_correctly', () {
-      final json = {
-        'id': '饭卡',
-        'order': 2,
-        'isVisible': true,
-      };
+      final json = {'id': '饭卡', 'order': 2, 'isVisible': true};
 
       final tile = TileConfiguration.fromJson(json);
 
@@ -44,11 +32,7 @@ void main() {
     });
 
     test('should_create_copy_with_modified_fields', () {
-      const original = TileConfiguration(
-        id: '电费',
-        order: 0,
-        isVisible: true,
-      );
+      const original = TileConfiguration(id: '电费', order: 0, isVisible: true);
 
       final modified = original.copyWith(order: 2, isVisible: false);
 
@@ -59,50 +43,26 @@ void main() {
     });
 
     test('should_compare_equality_correctly', () {
-      const tile1 = TileConfiguration(
-        id: '电费',
-        order: 0,
-        isVisible: true,
-      );
+      const tile1 = TileConfiguration(id: '电费', order: 0, isVisible: true);
 
-      const tile2 = TileConfiguration(
-        id: '电费',
-        order: 0,
-        isVisible: true,
-      );
+      const tile2 = TileConfiguration(id: '电费', order: 0, isVisible: true);
 
-      const tile3 = TileConfiguration(
-        id: '校车',
-        order: 0,
-        isVisible: true,
-      );
+      const tile3 = TileConfiguration(id: '校车', order: 0, isVisible: true);
 
       expect(tile1, equals(tile2));
       expect(tile1, isNot(equals(tile3)));
     });
 
     test('should_have_consistent_hashcode', () {
-      const tile1 = TileConfiguration(
-        id: '电费',
-        order: 0,
-        isVisible: true,
-      );
+      const tile1 = TileConfiguration(id: '电费', order: 0, isVisible: true);
 
-      const tile2 = TileConfiguration(
-        id: '电费',
-        order: 0,
-        isVisible: true,
-      );
+      const tile2 = TileConfiguration(id: '电费', order: 0, isVisible: true);
 
       expect(tile1.hashCode, equals(tile2.hashCode));
     });
 
     test('should_convert_to_string_correctly', () {
-      const tile = TileConfiguration(
-        id: '电费',
-        order: 0,
-        isVisible: true,
-      );
+      const tile = TileConfiguration(id: '电费', order: 0, isVisible: true);
 
       final str = tile.toString();
 
@@ -322,20 +282,22 @@ void main() {
       expect(config1, isNot(equals(config3)));
     });
 
-    test('should_recover_order_consistency_after_high_frequency_operations',
-        () {
-      var config = TileConfigurationList.defaultConfig();
+    test(
+      'should_recover_order_consistency_after_high_frequency_operations',
+      () {
+        var config = TileConfigurationList.defaultConfig();
 
-      for (var i = 0; i < 100; i++) {
-        config = config.reorderTile('电费', 0, 2);
-        config = config.reorderTile('电费', 2, 0);
-      }
+        for (var i = 0; i < 100; i++) {
+          config = config.reorderTile('电费', 0, 2);
+          config = config.reorderTile('电费', 2, 0);
+        }
 
-      final visible = config.getVisibleTiles();
-      for (var i = 0; i < visible.length; i++) {
-        expect(visible[i].order, i);
-      }
-      expect(visible.map((e) => e.id).toSet().length, visible.length);
-    });
+        final visible = config.getVisibleTiles();
+        for (var i = 0; i < visible.length; i++) {
+          expect(visible[i].order, i);
+        }
+        expect(visible.map((e) => e.id).toSet().length, visible.length);
+      },
+    );
   });
 }

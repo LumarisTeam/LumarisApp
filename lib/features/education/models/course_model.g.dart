@@ -78,19 +78,19 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
 // **************************************************************************
 
 CourseModel _$CourseModelFromJson(Map<String, dynamic> json) => CourseModel(
-      weekIndexes: parseSchemaIntList(json['weekIndexes']),
-      teachers: parseSchemaStringList(json['teachers']),
-      room: parseSchemaString(json['room']),
-      courseName: parseSchemaString(json['courseName']),
-      courseCode: parseSchemaString(json['courseCode']),
-      weekday: parseSchemaInt(json['weekday']),
-      startUnit: parseSchemaInt(json['startUnit']),
-      endUnit: parseSchemaInt(json['endUnit']),
-      credits: parseSchemaString(json['credits']),
-      lessonId: parseSchemaString(json['lessonId']),
-      campus: parseSchemaString(json['campus']),
-      isCustom: parseSchemaBool(json['isCustom']),
-    );
+  weekIndexes: parseSchemaIntList(json['weekIndexes']),
+  teachers: parseSchemaStringList(json['teachers']),
+  room: parseSchemaString(json['room']),
+  courseName: parseSchemaString(json['courseName']),
+  courseCode: parseSchemaString(json['courseCode']),
+  weekday: parseSchemaInt(json['weekday']),
+  startUnit: parseSchemaInt(json['startUnit']),
+  endUnit: parseSchemaInt(json['endUnit']),
+  credits: parseSchemaString(json['credits']),
+  lessonId: parseSchemaString(json['lessonId']),
+  campus: parseSchemaString(json['campus']),
+  isCustom: parseSchemaBool(json['isCustom']),
+);
 
 Map<String, dynamic> _$CourseModelToJson(CourseModel instance) =>
     <String, dynamic>{

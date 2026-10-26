@@ -19,9 +19,7 @@ class SecureStorageService {
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage(
     aOptions: AndroidOptions(),
-    iOptions: IOSOptions(
-      accessibility: KeychainAccessibility.first_unlock,
-    ),
+    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     mOptions: MacOsOptions(
       accessibility: KeychainAccessibility.first_unlock,
       usesDataProtectionKeychain: true,
@@ -119,8 +117,11 @@ class SecureStorageService {
       }
       return true;
     } catch (e, stackTrace) {
-      AppLogger.error('SecureStorage write error',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'SecureStorage write error',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (_shouldUseMacOsFallback) {
         AppLogger.warning(
           'SecureStorage write fallback to SharedPreferences on macOS',
@@ -136,8 +137,11 @@ class SecureStorageService {
     try {
       return await _storage.read(key: key);
     } catch (e, stackTrace) {
-      AppLogger.error('SecureStorage read error',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'SecureStorage read error',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (_shouldUseMacOsFallback) {
         AppLogger.warning(
           'SecureStorage read fallback to SharedPreferences on macOS',
@@ -154,8 +158,11 @@ class SecureStorageService {
       await _storage.delete(key: key);
       return true;
     } catch (e, stackTrace) {
-      AppLogger.error('SecureStorage delete error',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'SecureStorage delete error',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (_shouldUseMacOsFallback) {
         AppLogger.warning(
           'SecureStorage delete fallback to SharedPreferences on macOS',
@@ -172,8 +179,11 @@ class SecureStorageService {
       await _storage.deleteAll();
       return true;
     } catch (e, stackTrace) {
-      AppLogger.error('SecureStorage deleteAll error',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'SecureStorage deleteAll error',
+        error: e,
+        stackTrace: stackTrace,
+      );
       if (_shouldUseMacOsFallback) {
         AppLogger.warning(
           'SecureStorage deleteAll fallback to SharedPreferences on macOS',

@@ -59,16 +59,20 @@ void main() {
     });
 
     test('should_use_school_adapter_when_school_code_matches', () {
-      final result =
-          CourseHtmlParser.parseHtml(_xauatHtml, schoolCode: 'XAUAT');
+      final result = CourseHtmlParser.parseHtml(
+        _xauatHtml,
+        schoolCode: 'XAUAT',
+      );
 
       expect(result.adapterId, 'XAUAT_01');
       expect(result.courses, hasLength(2));
     });
 
     test('should_be_case_insensitive_for_school_code', () {
-      final result =
-          CourseHtmlParser.parseHtml(_xauatHtml, schoolCode: 'xauat');
+      final result = CourseHtmlParser.parseHtml(
+        _xauatHtml,
+        schoolCode: 'xauat',
+      );
 
       expect(result.adapterId, 'XAUAT_01');
     });

@@ -17,54 +17,50 @@ import 'package:ios_club_app/ui/components/tiles/payment_tile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<Override> _overrides() => [
-      tileConfigurationReaderProvider.overrideWithValue(
-        () async => TileConfigurationList.defaultConfig(),
+  tileConfigurationReaderProvider.overrideWithValue(
+    () async => TileConfigurationList.defaultConfig(),
+  ),
+  tileConfigurationWriterProvider.overrideWithValue((config) async {}),
+  availableTilesReaderProvider.overrideWithValue(
+    () => const ['电费', '校车', '饭卡'],
+  ),
+  electricityReaderProvider.overrideWithValue(() async => 23.5),
+  electricityWeeklyReaderProvider.overrideWithValue(
+    () async => [ElectricData(timestamp: DateTime(2026), value: 1)],
+  ),
+  electricityTileVisibilityReaderProvider.overrideWithValue((_) async => true),
+  studentIsLoginReaderProvider.overrideWithValue(() => true),
+  paymentStudentIdReaderProvider.overrideWithValue(() async => 'student-1'),
+  paymentPasswordReaderProvider.overrideWithValue(() async => null),
+  paymentDataFetcherProvider.overrideWithValue(
+    (_, _) async => const PaymentData([
+      PaymentModel(
+        turnoverType: '充值',
+        datetimeStr: '2026-04-27',
+        resume: '测试',
+        amount: 20,
       ),
-      tileConfigurationWriterProvider.overrideWithValue((config) async {}),
-      availableTilesReaderProvider.overrideWithValue(
-        () => const ['电费', '校车', '饭卡'],
-      ),
-      electricityReaderProvider.overrideWithValue(() async => 23.5),
-      electricityWeeklyReaderProvider.overrideWithValue(
-        () async => [ElectricData(timestamp: DateTime(2026), value: 1)],
-      ),
-      electricityTileVisibilityReaderProvider
-          .overrideWithValue((_) async => true),
-      studentIsLoginReaderProvider.overrideWithValue(() => true),
-      paymentStudentIdReaderProvider.overrideWithValue(() async => 'student-1'),
-      paymentPasswordReaderProvider.overrideWithValue(() async => null),
-      paymentDataFetcherProvider.overrideWithValue(
-        (_, _) async => const PaymentData(
-          [
-            PaymentModel(
-              turnoverType: '充值',
-              datetimeStr: '2026-04-27',
-              resume: '测试',
-              amount: 20,
-            ),
-          ],
-          20,
+    ], 20),
+  ),
+  tileVisibilityReaderProvider.overrideWithValue((_) async => true),
+  // 校车磁贴默认会请求真实接口，测试里用固定数据替换。
+  busFetcherProvider.overrideWithValue(
+    () async => BusModel(
+      total: 3,
+      records: List.generate(
+        3,
+        (index) => BusItem(
+          lineName: '线路$index',
+          description: '',
+          departureStation: '雁塔',
+          arrivalStation: '草堂',
+          runTime: '01:00',
+          arrivalStationTime: '02:00',
         ),
       ),
-      tileVisibilityReaderProvider.overrideWithValue((_) async => true),
-      // 校车磁贴默认会请求真实接口，测试里用固定数据替换。
-      busFetcherProvider.overrideWithValue(
-        () async => BusModel(
-          total: 3,
-          records: List.generate(
-            3,
-            (index) => BusItem(
-              lineName: '线路$index',
-              description: '',
-              departureStation: '雁塔',
-              arrivalStation: '草堂',
-              runTime: '01:00',
-              arrivalStationTime: '02:00',
-            ),
-          ),
-        ),
-      ),
-    ];
+    ),
+  ),
+];
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

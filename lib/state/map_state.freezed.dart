@@ -12,7 +12,8 @@ part of 'map_state.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$CampusPOI {
@@ -50,20 +51,23 @@ class _$CampusPOICopyWithImpl<$Res, $Val extends CampusPOI>
     Object? description = null,
     Object? position = null,
   }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      position: null == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
-              as LatLng,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            name: null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String,
+            description: null == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                      as String,
+            position: null == position
+                ? _value.position
+                : position // ignore: cast_nullable_to_non_nullable
+                      as LatLng,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -71,8 +75,9 @@ class _$CampusPOICopyWithImpl<$Res, $Val extends CampusPOI>
 abstract class _$$CampusPOIImplCopyWith<$Res>
     implements $CampusPOICopyWith<$Res> {
   factory _$$CampusPOIImplCopyWith(
-          _$CampusPOIImpl value, $Res Function(_$CampusPOIImpl) then) =
-      __$$CampusPOIImplCopyWithImpl<$Res>;
+    _$CampusPOIImpl value,
+    $Res Function(_$CampusPOIImpl) then,
+  ) = __$$CampusPOIImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, String description, LatLng position});
@@ -83,8 +88,9 @@ class __$$CampusPOIImplCopyWithImpl<$Res>
     extends _$CampusPOICopyWithImpl<$Res, _$CampusPOIImpl>
     implements _$$CampusPOIImplCopyWith<$Res> {
   __$$CampusPOIImplCopyWithImpl(
-      _$CampusPOIImpl _value, $Res Function(_$CampusPOIImpl) _then)
-      : super(_value, _then);
+    _$CampusPOIImpl _value,
+    $Res Function(_$CampusPOIImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -93,28 +99,33 @@ class __$$CampusPOIImplCopyWithImpl<$Res>
     Object? description = null,
     Object? position = null,
   }) {
-    return _then(_$CampusPOIImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      position: null == position
-          ? _value.position
-          : position // ignore: cast_nullable_to_non_nullable
-              as LatLng,
-    ));
+    return _then(
+      _$CampusPOIImpl(
+        name: null == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        description: null == description
+            ? _value.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String,
+        position: null == position
+            ? _value.position
+            : position // ignore: cast_nullable_to_non_nullable
+                  as LatLng,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$CampusPOIImpl implements _CampusPOI {
-  const _$CampusPOIImpl(
-      {required this.name, required this.description, required this.position});
+  const _$CampusPOIImpl({
+    required this.name,
+    required this.description,
+    required this.position,
+  });
 
   @override
   final String name;
@@ -151,10 +162,11 @@ class _$CampusPOIImpl implements _CampusPOI {
 }
 
 abstract class _CampusPOI implements CampusPOI {
-  const factory _CampusPOI(
-      {required final String name,
-      required final String description,
-      required final LatLng position}) = _$CampusPOIImpl;
+  const factory _CampusPOI({
+    required final String name,
+    required final String description,
+    required final LatLng position,
+  }) = _$CampusPOIImpl;
 
   @override
   String get name;
@@ -186,12 +198,13 @@ abstract class $MapStateCopyWith<$Res> {
   factory $MapStateCopyWith(MapState value, $Res Function(MapState) then) =
       _$MapStateCopyWithImpl<$Res, MapState>;
   @useResult
-  $Res call(
-      {LatLng? currentLocation,
-      bool isLoadingLocation,
-      bool isLoadingPOIs,
-      List<CampusPOI> campusPOIs,
-      String searchQuery});
+  $Res call({
+    LatLng? currentLocation,
+    bool isLoadingLocation,
+    bool isLoadingPOIs,
+    List<CampusPOI> campusPOIs,
+    String searchQuery,
+  });
 }
 
 /// @nodoc
@@ -213,28 +226,31 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
     Object? campusPOIs = null,
     Object? searchQuery = null,
   }) {
-    return _then(_value.copyWith(
-      currentLocation: freezed == currentLocation
-          ? _value.currentLocation
-          : currentLocation // ignore: cast_nullable_to_non_nullable
-              as LatLng?,
-      isLoadingLocation: null == isLoadingLocation
-          ? _value.isLoadingLocation
-          : isLoadingLocation // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isLoadingPOIs: null == isLoadingPOIs
-          ? _value.isLoadingPOIs
-          : isLoadingPOIs // ignore: cast_nullable_to_non_nullable
-              as bool,
-      campusPOIs: null == campusPOIs
-          ? _value.campusPOIs
-          : campusPOIs // ignore: cast_nullable_to_non_nullable
-              as List<CampusPOI>,
-      searchQuery: null == searchQuery
-          ? _value.searchQuery
-          : searchQuery // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            currentLocation: freezed == currentLocation
+                ? _value.currentLocation
+                : currentLocation // ignore: cast_nullable_to_non_nullable
+                      as LatLng?,
+            isLoadingLocation: null == isLoadingLocation
+                ? _value.isLoadingLocation
+                : isLoadingLocation // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            isLoadingPOIs: null == isLoadingPOIs
+                ? _value.isLoadingPOIs
+                : isLoadingPOIs // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            campusPOIs: null == campusPOIs
+                ? _value.campusPOIs
+                : campusPOIs // ignore: cast_nullable_to_non_nullable
+                      as List<CampusPOI>,
+            searchQuery: null == searchQuery
+                ? _value.searchQuery
+                : searchQuery // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -242,16 +258,18 @@ class _$MapStateCopyWithImpl<$Res, $Val extends MapState>
 abstract class _$$MapStateImplCopyWith<$Res>
     implements $MapStateCopyWith<$Res> {
   factory _$$MapStateImplCopyWith(
-          _$MapStateImpl value, $Res Function(_$MapStateImpl) then) =
-      __$$MapStateImplCopyWithImpl<$Res>;
+    _$MapStateImpl value,
+    $Res Function(_$MapStateImpl) then,
+  ) = __$$MapStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {LatLng? currentLocation,
-      bool isLoadingLocation,
-      bool isLoadingPOIs,
-      List<CampusPOI> campusPOIs,
-      String searchQuery});
+  $Res call({
+    LatLng? currentLocation,
+    bool isLoadingLocation,
+    bool isLoadingPOIs,
+    List<CampusPOI> campusPOIs,
+    String searchQuery,
+  });
 }
 
 /// @nodoc
@@ -259,8 +277,9 @@ class __$$MapStateImplCopyWithImpl<$Res>
     extends _$MapStateCopyWithImpl<$Res, _$MapStateImpl>
     implements _$$MapStateImplCopyWith<$Res> {
   __$$MapStateImplCopyWithImpl(
-      _$MapStateImpl _value, $Res Function(_$MapStateImpl) _then)
-      : super(_value, _then);
+    _$MapStateImpl _value,
+    $Res Function(_$MapStateImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -271,41 +290,43 @@ class __$$MapStateImplCopyWithImpl<$Res>
     Object? campusPOIs = null,
     Object? searchQuery = null,
   }) {
-    return _then(_$MapStateImpl(
-      currentLocation: freezed == currentLocation
-          ? _value.currentLocation
-          : currentLocation // ignore: cast_nullable_to_non_nullable
-              as LatLng?,
-      isLoadingLocation: null == isLoadingLocation
-          ? _value.isLoadingLocation
-          : isLoadingLocation // ignore: cast_nullable_to_non_nullable
-              as bool,
-      isLoadingPOIs: null == isLoadingPOIs
-          ? _value.isLoadingPOIs
-          : isLoadingPOIs // ignore: cast_nullable_to_non_nullable
-              as bool,
-      campusPOIs: null == campusPOIs
-          ? _value._campusPOIs
-          : campusPOIs // ignore: cast_nullable_to_non_nullable
-              as List<CampusPOI>,
-      searchQuery: null == searchQuery
-          ? _value.searchQuery
-          : searchQuery // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+    return _then(
+      _$MapStateImpl(
+        currentLocation: freezed == currentLocation
+            ? _value.currentLocation
+            : currentLocation // ignore: cast_nullable_to_non_nullable
+                  as LatLng?,
+        isLoadingLocation: null == isLoadingLocation
+            ? _value.isLoadingLocation
+            : isLoadingLocation // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        isLoadingPOIs: null == isLoadingPOIs
+            ? _value.isLoadingPOIs
+            : isLoadingPOIs // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        campusPOIs: null == campusPOIs
+            ? _value._campusPOIs
+            : campusPOIs // ignore: cast_nullable_to_non_nullable
+                  as List<CampusPOI>,
+        searchQuery: null == searchQuery
+            ? _value.searchQuery
+            : searchQuery // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$MapStateImpl implements _MapState {
-  const _$MapStateImpl(
-      {this.currentLocation,
-      this.isLoadingLocation = false,
-      this.isLoadingPOIs = false,
-      final List<CampusPOI> campusPOIs = const <CampusPOI>[],
-      this.searchQuery = ''})
-      : _campusPOIs = campusPOIs;
+  const _$MapStateImpl({
+    this.currentLocation,
+    this.isLoadingLocation = false,
+    this.isLoadingPOIs = false,
+    final List<CampusPOI> campusPOIs = const <CampusPOI>[],
+    this.searchQuery = '',
+  }) : _campusPOIs = campusPOIs;
 
   @override
   final LatLng? currentLocation;
@@ -344,20 +365,23 @@ class _$MapStateImpl implements _MapState {
                 other.isLoadingLocation == isLoadingLocation) &&
             (identical(other.isLoadingPOIs, isLoadingPOIs) ||
                 other.isLoadingPOIs == isLoadingPOIs) &&
-            const DeepCollectionEquality()
-                .equals(other._campusPOIs, _campusPOIs) &&
+            const DeepCollectionEquality().equals(
+              other._campusPOIs,
+              _campusPOIs,
+            ) &&
             (identical(other.searchQuery, searchQuery) ||
                 other.searchQuery == searchQuery));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      currentLocation,
-      isLoadingLocation,
-      isLoadingPOIs,
-      const DeepCollectionEquality().hash(_campusPOIs),
-      searchQuery);
+    runtimeType,
+    currentLocation,
+    isLoadingLocation,
+    isLoadingPOIs,
+    const DeepCollectionEquality().hash(_campusPOIs),
+    searchQuery,
+  );
 
   @JsonKey(ignore: true)
   @override
@@ -367,12 +391,13 @@ class _$MapStateImpl implements _MapState {
 }
 
 abstract class _MapState implements MapState {
-  const factory _MapState(
-      {final LatLng? currentLocation,
-      final bool isLoadingLocation,
-      final bool isLoadingPOIs,
-      final List<CampusPOI> campusPOIs,
-      final String searchQuery}) = _$MapStateImpl;
+  const factory _MapState({
+    final LatLng? currentLocation,
+    final bool isLoadingLocation,
+    final bool isLoadingPOIs,
+    final List<CampusPOI> campusPOIs,
+    final String searchQuery,
+  }) = _$MapStateImpl;
 
   @override
   LatLng? get currentLocation;

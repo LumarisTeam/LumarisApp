@@ -71,10 +71,7 @@ class RetryInterceptor extends Interceptor {
   final RetryPolicy policy;
   final Dio dio;
 
-  RetryInterceptor({
-    required this.dio,
-    this.policy = const RetryPolicy(),
-  });
+  RetryInterceptor({required this.dio, this.policy = const RetryPolicy()});
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
@@ -83,7 +80,8 @@ class RetryInterceptor extends Interceptor {
     if (attempt < policy.maxRetries && policy.shouldRetry(err)) {
       final delay = policy.delayFactor(attempt);
       AppLogger.debug(
-          '请求失败，${delay.inMilliseconds}ms 后重试 (${attempt + 1}/${policy.maxRetries})');
+        '请求失败，${delay.inMilliseconds}ms 后重试 (${attempt + 1}/${policy.maxRetries})',
+      );
 
       await Future.delayed(delay);
 

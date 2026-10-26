@@ -20,8 +20,11 @@ class ScoreRepository {
       final box = await HiveManager.instance.openBox(_boxName);
       await box.put('all_scores', scores);
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to save scores to Hive',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to save scores to Hive',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 
@@ -42,8 +45,11 @@ class ScoreRepository {
       // 如果 Hive 中没有，尝试从 SharedPreferences 迁移
       return await _migrateFromPrefs();
     } catch (e, stackTrace) {
-      AppLogger.error('Failed to get scores from Hive',
-          error: e, stackTrace: stackTrace);
+      AppLogger.error(
+        'Failed to get scores from Hive',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return [];
     }
   }
@@ -57,15 +63,18 @@ class ScoreRepository {
     if (jsonString != null && jsonString.isNotEmpty) {
       try {
         AppLogger.info(
-            'Migrating score data from SharedPreferences to Hive...');
+          'Migrating score data from SharedPreferences to Hive...',
+        );
         final List<dynamic> jsonList = jsonDecode(jsonString);
         final scores = <ScoreList>[];
         for (final e in jsonList) {
           try {
             scores.add(ScoreList.fromJson(e as Map<String, dynamic>));
           } catch (itemErr) {
-            AppLogger.warning('Skipping corrupt score entry during migration',
-                error: itemErr);
+            AppLogger.warning(
+              'Skipping corrupt score entry during migration',
+              error: itemErr,
+            );
           }
         }
 
@@ -76,7 +85,8 @@ class ScoreRepository {
         // await prefs.remove(PrefsKeys.ALL_SCORE_DATA);
 
         AppLogger.info(
-            'Score data migration completed. Count: ${scores.length}');
+          'Score data migration completed. Count: ${scores.length}',
+        );
         return scores;
       } catch (e) {
         AppLogger.warning('Failed to migrate score data', error: e);

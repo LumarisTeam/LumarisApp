@@ -26,11 +26,7 @@ class TileConfiguration {
   Map<String, dynamic> toJson() => _$TileConfigurationToJson(this);
 
   /// Create a copy with modified fields
-  TileConfiguration copyWith({
-    String? id,
-    int? order,
-    bool? isVisible,
-  }) {
+  TileConfiguration copyWith({String? id, int? order, bool? isVisible}) {
     return TileConfiguration(
       id: id ?? this.id,
       order: order ?? this.order,
@@ -120,8 +116,9 @@ class TileConfigurationList {
     }
 
     // Merge back with hidden tiles
-    final hiddenTiles =
-        configurations.where((tile) => !tile.isVisible).toList();
+    final hiddenTiles = configurations
+        .where((tile) => !tile.isVisible)
+        .toList();
     final newConfigurations = [...visibleTiles, ...hiddenTiles];
 
     return TileConfigurationList(
@@ -162,8 +159,9 @@ class TileConfigurationList {
       ..sort((a, b) => a.order.compareTo(b.order));
 
     for (int i = 0; i < visibleTiles.length; i++) {
-      final index =
-          newConfigurations.indexWhere((t) => t.id == visibleTiles[i].id);
+      final index = newConfigurations.indexWhere(
+        (t) => t.id == visibleTiles[i].id,
+      );
       if (index != -1) {
         newConfigurations[index] = newConfigurations[index].copyWith(order: i);
       }
@@ -185,8 +183,9 @@ class TileConfigurationList {
     }
 
     // Merge back with hidden tiles
-    final hiddenTiles =
-        configurations.where((tile) => !tile.isVisible).toList();
+    final hiddenTiles = configurations
+        .where((tile) => !tile.isVisible)
+        .toList();
     final newConfigurations = [...visibleTiles, ...hiddenTiles];
 
     return TileConfigurationList(

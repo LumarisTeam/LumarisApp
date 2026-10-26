@@ -22,10 +22,7 @@ class BusApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '校巴请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '校巴请求失败', -1);
       }
       return BusModel(
         records: apiResponse.data ?? [],
@@ -38,8 +35,11 @@ class BusApi {
   }
 
   /// 获取新的校巴数据
-  static Future<BusModel> getBusNewData(String time,
-      {String loc = 'ALL', bool forceRefresh = false}) async {
+  static Future<BusModel> getBusNewData(
+    String time, {
+    String loc = 'ALL',
+    bool forceRefresh = false,
+  }) async {
     try {
       final rawResponse = await EduHttpClientManager.instance.get(
         '/Bus/NewData/$time',
@@ -53,10 +53,7 @@ class BusApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '新校巴请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '新校巴请求失败', -1);
       }
       return BusModel(
         records: apiResponse.data ?? [],
@@ -69,8 +66,11 @@ class BusApi {
   }
 
   /// 获取旧的校巴数据
-  static Future<BusModel> getBusOldData(String time,
-      {bool isShow = false, bool forceRefresh = false}) async {
+  static Future<BusModel> getBusOldData(
+    String time, {
+    bool isShow = false,
+    bool forceRefresh = false,
+  }) async {
     try {
       final rawResponse = await EduHttpClientManager.instance.get(
         '/Bus/OldData/$time',
@@ -84,10 +84,7 @@ class BusApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '旧校巴请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '旧校巴请求失败', -1);
       }
       return BusModel(
         records: apiResponse.data ?? [],

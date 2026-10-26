@@ -6,32 +6,33 @@ import 'package:ios_club_app/core/services/retry_policy.dart';
 void main() {
   group('RetryPolicy', () {
     test(
-        'defaultShouldRetry should return true for timeout and connection errors',
-        () {
-      final request = RequestOptions(path: '/x');
+      'defaultShouldRetry should return true for timeout and connection errors',
+      () {
+        final request = RequestOptions(path: '/x');
 
-      final timeout = DioException(
-        requestOptions: request,
-        type: DioExceptionType.connectionTimeout,
-      );
-      final sendTimeout = DioException(
-        requestOptions: request,
-        type: DioExceptionType.sendTimeout,
-      );
-      final receiveTimeout = DioException(
-        requestOptions: request,
-        type: DioExceptionType.receiveTimeout,
-      );
-      final connectionError = DioException(
-        requestOptions: request,
-        type: DioExceptionType.connectionError,
-      );
+        final timeout = DioException(
+          requestOptions: request,
+          type: DioExceptionType.connectionTimeout,
+        );
+        final sendTimeout = DioException(
+          requestOptions: request,
+          type: DioExceptionType.sendTimeout,
+        );
+        final receiveTimeout = DioException(
+          requestOptions: request,
+          type: DioExceptionType.receiveTimeout,
+        );
+        final connectionError = DioException(
+          requestOptions: request,
+          type: DioExceptionType.connectionError,
+        );
 
-      expect(RetryPolicy.defaultShouldRetry(timeout), isTrue);
-      expect(RetryPolicy.defaultShouldRetry(sendTimeout), isTrue);
-      expect(RetryPolicy.defaultShouldRetry(receiveTimeout), isTrue);
-      expect(RetryPolicy.defaultShouldRetry(connectionError), isTrue);
-    });
+        expect(RetryPolicy.defaultShouldRetry(timeout), isTrue);
+        expect(RetryPolicy.defaultShouldRetry(sendTimeout), isTrue);
+        expect(RetryPolicy.defaultShouldRetry(receiveTimeout), isTrue);
+        expect(RetryPolicy.defaultShouldRetry(connectionError), isTrue);
+      },
+    );
 
     test('defaultShouldRetry should return true for 5xx and false for 4xx', () {
       final request = RequestOptions(path: '/x');
@@ -118,22 +119,24 @@ void main() {
       );
     });
 
-    test('handleError should use response status mapping when response exists',
-        () {
-      final request = RequestOptions(path: '/x');
-      final responseError = DioException(
-        requestOptions: request,
-        response: Response<dynamic>(
+    test(
+      'handleError should use response status mapping when response exists',
+      () {
+        final request = RequestOptions(path: '/x');
+        final responseError = DioException(
           requestOptions: request,
-          statusCode: 404,
-          data: 'missing',
-        ),
-      );
+          response: Response<dynamic>(
+            requestOptions: request,
+            statusCode: 404,
+            data: 'missing',
+          ),
+        );
 
-      expect(
-        () => DioErrorHandler.handleError(responseError),
-        throwsA(isA<NotFoundException>()),
-      );
-    });
+        expect(
+          () => DioErrorHandler.handleError(responseError),
+          throwsA(isA<NotFoundException>()),
+        );
+      },
+    );
   });
 }

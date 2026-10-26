@@ -12,24 +12,23 @@ import 'package:ios_club_app/ui/pages/home_page/tiles_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<Override> _overrides() => [
-      tileConfigurationReaderProvider.overrideWithValue(
-        () async => TileConfigurationList.defaultConfig(),
-      ),
-      tileConfigurationWriterProvider.overrideWithValue((config) async {}),
-      availableTilesReaderProvider.overrideWithValue(
-        () => const ['电费', '校车', '饭卡'],
-      ),
-      electricityReaderProvider.overrideWithValue(() async => 23.5),
-      electricityWeeklyReaderProvider.overrideWithValue(() async => []),
-      electricityTileVisibilityReaderProvider
-          .overrideWithValue((_) async => true),
-      studentIsLoginReaderProvider.overrideWithValue(() => true),
-      paymentStudentIdReaderProvider.overrideWithValue(() async => 'student-1'),
-      paymentDataFetcherProvider.overrideWithValue(
-        (_, _) async => const PaymentData([], 20),
-      ),
-      tileVisibilityReaderProvider.overrideWithValue((_) async => true),
-    ];
+  tileConfigurationReaderProvider.overrideWithValue(
+    () async => TileConfigurationList.defaultConfig(),
+  ),
+  tileConfigurationWriterProvider.overrideWithValue((config) async {}),
+  availableTilesReaderProvider.overrideWithValue(
+    () => const ['电费', '校车', '饭卡'],
+  ),
+  electricityReaderProvider.overrideWithValue(() async => 23.5),
+  electricityWeeklyReaderProvider.overrideWithValue(() async => []),
+  electricityTileVisibilityReaderProvider.overrideWithValue((_) async => true),
+  studentIsLoginReaderProvider.overrideWithValue(() => true),
+  paymentStudentIdReaderProvider.overrideWithValue(() async => 'student-1'),
+  paymentDataFetcherProvider.overrideWithValue(
+    (_, _) async => const PaymentData([], 20),
+  ),
+  tileVisibilityReaderProvider.overrideWithValue((_) async => true),
+];
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -34,10 +34,7 @@ void main() {
   });
 
   test('should_serialize_to_lowercase_json_keys', () {
-    final data = ElectricData(
-      timestamp: DateTime(2026, 3, 2, 12),
-      value: 6.5,
-    );
+    final data = ElectricData(timestamp: DateTime(2026, 3, 2, 12), value: 6.5);
 
     expect(data.toJson(), <String, dynamic>{
       'timestamp': '2026-03-02T12:00:00.000',

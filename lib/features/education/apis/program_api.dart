@@ -6,29 +6,25 @@ import '../services/edu_http_client_manager.dart';
 /// Program相关API — v1.yaml tag: ProgramV1
 class ProgramApi {
   /// GET /v1/program → ApiResponseOfListOfPlanCourse
-  static Future<List<PlanCourse>> getProgram(String studentId,
-      {String? name, bool forceRefresh = false}) async {
+  static Future<List<PlanCourse>> getProgram(
+    String studentId, {
+    String? name,
+    bool forceRefresh = false,
+  }) async {
     try {
       final rawResponse = await EduHttpClientManager.instance.get(
         '/Program',
-        queryParameters: {
-          'id': studentId,
-          'name': name,
-        },
+        queryParameters: {'id': studentId, 'name': name},
         bypassCache: forceRefresh,
       );
       final apiResponse = ApiResponse<List<PlanCourse>>.parsed(
         rawResponse,
         (data) => (data as List<dynamic>)
-            .map(
-                (e) => PlanCourse.fromJson(Map<String, dynamic>.from(e)))
+            .map((e) => PlanCourse.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '培养方案请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '培养方案请求失败', -1);
       }
       return apiResponse.data ?? <PlanCourse>[];
     } catch (e) {
@@ -54,18 +50,14 @@ class ProgramApi {
           final map = Map<String, dynamic>.from(data as Map);
           return map.map((key, value) {
             final courses = (value as List<dynamic>)
-                .map((e) =>
-                    PlanCourse.fromJson(Map<String, dynamic>.from(e)))
+                .map((e) => PlanCourse.fromJson(Map<String, dynamic>.from(e)))
                 .toList();
             return MapEntry(key, courses);
           });
         },
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '培养方案字典请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '培养方案字典请求失败', -1);
       }
       return apiResponse.data ?? <String, List<PlanCourse>>{};
     } catch (e) {

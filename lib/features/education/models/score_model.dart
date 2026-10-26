@@ -8,7 +8,6 @@ part 'score_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 @HiveType(typeId: 1)
-
 /// Maps to v1.yaml schema: ScoreResponse
 class ScoreModel {
   @JsonKey(fromJson: parseSchemaString)

@@ -7,11 +7,11 @@ part of 'payment_model.dart';
 // **************************************************************************
 
 PaymentModel _$PaymentModelFromJson(Map<String, dynamic> json) => PaymentModel(
-      turnoverType: json['turnoverType'] as String,
-      datetimeStr: json['datetimeStr'] as String,
-      resume: json['resume'] as String,
-      amount: _amountFromJson(json['tranamt']),
-    );
+  turnoverType: json['turnoverType'] as String,
+  datetimeStr: json['datetimeStr'] as String,
+  resume: json['resume'] as String,
+  amount: _amountFromJson(json['tranamt']),
+);
 
 Map<String, dynamic> _$PaymentModelToJson(PaymentModel instance) =>
     <String, dynamic>{
@@ -22,9 +22,9 @@ Map<String, dynamic> _$PaymentModelToJson(PaymentModel instance) =>
     };
 
 PaymentData _$PaymentDataFromJson(Map<String, dynamic> json) => PaymentData(
-      _paymentsFromJson(json['records']),
-      _balanceFromJson(json['balance']),
-    );
+  _paymentsFromJson(json['records']),
+  _balanceFromJson(json['balance']),
+);
 
 Map<String, dynamic> _$PaymentDataToJson(PaymentData instance) =>
     <String, dynamic>{

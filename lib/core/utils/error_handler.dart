@@ -17,8 +17,10 @@ class ErrorHandler {
   /// - TimeoutException
   /// - FormatException
   /// - 其他通用异常
-  static AppError mapExceptionToAppError(Object error,
-      [StackTrace? stackTrace]) {
+  static AppError mapExceptionToAppError(
+    Object error, [
+    StackTrace? stackTrace,
+  ]) {
     // 记录错误到日志
     ErrorLogger.logError(error, stackTrace);
 
@@ -34,50 +36,32 @@ class ErrorHandler {
 
     // 处理Socket异常
     if (error is SocketException) {
-      return AppError.network(
-        '网络连接失败',
-        originalError: error,
-      );
+      return AppError.network('网络连接失败', originalError: error);
     }
 
     // 处理超时异常
     if (error is TimeoutException) {
-      return AppError.network(
-        '请求超时，请检查网络连接',
-        originalError: error,
-      );
+      return AppError.network('请求超时，请检查网络连接', originalError: error);
     }
 
     // 处理格式异常（通常是JSON解析错误）
     if (error is FormatException) {
-      return AppError.parsing(
-        '数据格式错误',
-        originalError: error,
-      );
+      return AppError.parsing('数据格式错误', originalError: error);
     }
 
     // 处理类型错误
     if (error is TypeError) {
-      return AppError.parsing(
-        '数据类型错误',
-        originalError: error,
-      );
+      return AppError.parsing('数据类型错误', originalError: error);
     }
 
     // 未知错误
-    return AppError.unknown(
-      error.toString(),
-      originalError: error,
-    );
+    return AppError.unknown(error.toString(), originalError: error);
   }
 
   /// 处理NetworkException及其子类
   static AppError _handleNetworkException(NetworkException error) {
     if (error is AuthenticationException) {
-      return AppError.authentication(
-        error.message,
-        code: error.statusCode,
-      );
+      return AppError.authentication(error.message, code: error.statusCode);
     }
 
     if (error is AuthorizationException) {
@@ -85,30 +69,18 @@ class ErrorHandler {
     }
 
     if (error is NotFoundException) {
-      return AppError.server(
-        error.message,
-        statusCode: error.statusCode,
-      );
+      return AppError.server(error.message, statusCode: error.statusCode);
     }
 
     if (error is ServerException) {
-      return AppError.server(
-        error.message,
-        statusCode: error.statusCode,
-      );
+      return AppError.server(error.message, statusCode: error.statusCode);
     }
 
     if (error is TimeoutException) {
-      return AppError.network(
-        '请求超时',
-        originalError: error,
-      );
+      return AppError.network('请求超时', originalError: error);
     }
 
-    return AppError.network(
-      error.message,
-      originalError: error,
-    );
+    return AppError.network(error.message, originalError: error);
   }
 
   /// 处理DioException
@@ -117,44 +89,26 @@ class ErrorHandler {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return AppError.network(
-          '请求超时，请检查网络连接',
-          originalError: error,
-        );
+        return AppError.network('请求超时，请检查网络连接', originalError: error);
 
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode;
         if (statusCode != null) {
           return _handleHttpStatusCode(statusCode, error);
         }
-        return AppError.server(
-          '服务器响应错误',
-          statusCode: statusCode,
-        );
+        return AppError.server('服务器响应错误', statusCode: statusCode);
 
       case DioExceptionType.cancel:
-        return AppError.unknown(
-          '请求已取消',
-          originalError: error,
-        );
+        return AppError.unknown('请求已取消', originalError: error);
 
       case DioExceptionType.connectionError:
-        return AppError.network(
-          '网络连接失败，请检查网络设置',
-          originalError: error,
-        );
+        return AppError.network('网络连接失败，请检查网络设置', originalError: error);
 
       case DioExceptionType.badCertificate:
-        return AppError.network(
-          '证书验证失败',
-          originalError: error,
-        );
+        return AppError.network('证书验证失败', originalError: error);
 
       case DioExceptionType.unknown:
-        return AppError.network(
-          '网络请求失败',
-          originalError: error,
-        );
+        return AppError.network('网络请求失败', originalError: error);
     }
   }
 
@@ -211,9 +165,7 @@ class ErrorHandler {
   /// 包装同步操作为Result
   ///
   /// 自动捕获异常并转换为Result.failure
-  static Result<T> wrapWithResultSync<T>(
-    T Function() operation,
-  ) {
+  static Result<T> wrapWithResultSync<T>(T Function() operation) {
     try {
       final data = operation();
       return Result.success(data);

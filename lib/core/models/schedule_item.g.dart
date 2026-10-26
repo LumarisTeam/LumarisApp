@@ -7,12 +7,12 @@ part of 'schedule_item.dart';
 // **************************************************************************
 
 ScheduleItem _$ScheduleItemFromJson(Map<String, dynamic> json) => ScheduleItem(
-      title: json['title'] as String,
-      time: json['time'] as String,
-      location: json['location'] as String,
-      teacher: json['teacher'] as String,
-      description: json['description'] as String? ?? '',
-    );
+  title: json['title'] as String,
+  time: json['time'] as String,
+  location: json['location'] as String,
+  teacher: json['teacher'] as String,
+  description: json['description'] as String? ?? '',
+);
 
 Map<String, dynamic> _$ScheduleItemToJson(ScheduleItem instance) =>
     <String, dynamic>{

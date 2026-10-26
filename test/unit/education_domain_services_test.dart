@@ -109,41 +109,37 @@ void main() {
     EducationRefreshService.resetForTest();
     LoginApi.setLoginOverrideForTest(null);
 
-    for (final boxName in <String>[
-      'request_cache',
-      'courses',
-      'scores',
-    ]) {
+    for (final boxName in <String>['request_cache', 'courses', 'scores']) {
       final box = await Hive.openBox(boxName);
       await box.clear();
     }
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (call) async {
-      final key = call.arguments['key'] as String?;
-      switch (call.method) {
-        case 'write':
-          final value = call.arguments['value'] as String?;
-          if (key != null && value != null) {
-            secureStore[key] = value;
+          final key = call.arguments['key'] as String?;
+          switch (call.method) {
+            case 'write':
+              final value = call.arguments['value'] as String?;
+              if (key != null && value != null) {
+                secureStore[key] = value;
+              }
+              return null;
+            case 'read':
+              if (key == null) {
+                return null;
+              }
+              return secureStore[key];
+            case 'delete':
+              if (key != null) {
+                secureStore.remove(key);
+              }
+              return null;
+            case 'deleteAll':
+              secureStore.clear();
+              return null;
           }
           return null;
-        case 'read':
-          if (key == null) {
-            return null;
-          }
-          return secureStore[key];
-        case 'delete':
-          if (key != null) {
-            secureStore.remove(key);
-          }
-          return null;
-        case 'deleteAll':
-          secureStore.clear();
-          return null;
-      }
-      return null;
-    });
+        });
 
     final manager = EduHttpClientManager.initialize();
     manager.updateSchoolConfig(
@@ -186,9 +182,9 @@ void main() {
       final ok = await AuthService.loginFromData('u', 'p');
 
       expect(ok, isTrue);
-      final storedUserData = jsonDecode(
-        PrefsService.instance.getString(PrefsKeys.USER_DATA)!,
-      ) as Map<String, dynamic>;
+      final storedUserData =
+          jsonDecode(PrefsService.instance.getString(PrefsKeys.USER_DATA)!)
+              as Map<String, dynamic>;
       expect(storedUserData, <String, dynamic>{
         'success': true,
         'studentId': '2026888',
@@ -198,259 +194,268 @@ void main() {
       expect(storedUserData.containsKey('code'), isFalse);
       expect(storedUserData.containsKey('message'), isFalse);
       expect(
-          PrefsService.instance.getInt(PrefsKeys.LAST_FETCH_TIME), isNotNull);
+        PrefsService.instance.getInt(PrefsKeys.LAST_FETCH_TIME),
+        isNotNull,
+      );
     });
 
     test(
-        'AuthService.loginFromData should discard result when session is invalidated',
-        () async {
-      await PrefsService.instance.remove(PrefsKeys.USER_DATA);
-      await PrefsService.instance.remove(PrefsKeys.LAST_FETCH_TIME);
+      'AuthService.loginFromData should discard result when session is invalidated',
+      () async {
+        await PrefsService.instance.remove(PrefsKeys.USER_DATA);
+        await PrefsService.instance.remove(PrefsKeys.LAST_FETCH_TIME);
 
-      LoginApi.setLoginOverrideForTest((_, _) async {
-        // 模拟登录请求还在途时用户点了退出登录。
-        AuthSessionGuard.invalidate();
-        return LoginResponse(
-          success: true,
-          studentId: '2026888',
-          cookie: 'stale-cookie',
+        LoginApi.setLoginOverrideForTest((_, _) async {
+          // 模拟登录请求还在途时用户点了退出登录。
+          AuthSessionGuard.invalidate();
+          return LoginResponse(
+            success: true,
+            studentId: '2026888',
+            cookie: 'stale-cookie',
+          );
+        });
+
+        final ok = await AuthService.loginFromData('u', 'p');
+
+        expect(ok, isFalse);
+        expect(PrefsService.instance.getString(PrefsKeys.USER_DATA), isNull);
+        expect(PrefsService.instance.getInt(PrefsKeys.LAST_FETCH_TIME), isNull);
+      },
+    );
+
+    test(
+      'CourseService.fetchCoursesFromRemote should persist repository data',
+      () async {
+        await CourseService.setIgnore(<String>['旧忽略']);
+        mockEduResponse(
+          path: '/Course',
+          data: <String, dynamic>{
+            'success': true,
+            'data': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'lessonId': 'L1',
+                'courseName': '软件工程',
+                'weekIndexes': <int>[1, 2],
+                'teachers': <String>['Teacher'],
+                'room': 'A101',
+                'weekday': 1,
+                'startUnit': 1,
+                'endUnit': 2,
+                'campus': '雁塔校区',
+              },
+            ],
+            'expirationTime': '2026-03-23T00:00:00.000',
+          },
         );
-      });
 
-      final ok = await AuthService.loginFromData('u', 'p');
+        final courses = await CourseService.fetchCoursesFromRemote(
+          userData: UserData(studentId: '2026001', cookie: 'cookie'),
+        );
 
-      expect(ok, isFalse);
-      expect(PrefsService.instance.getString(PrefsKeys.USER_DATA), isNull);
-      expect(PrefsService.instance.getInt(PrefsKeys.LAST_FETCH_TIME), isNull);
-    });
-
-    test('CourseService.fetchCoursesFromRemote should persist repository data',
-        () async {
-      await CourseService.setIgnore(<String>['旧忽略']);
-      mockEduResponse(
-        path: '/Course',
-        data: <String, dynamic>{
-          'success': true,
-          'data': <Map<String, dynamic>>[
-            <String, dynamic>{
-              'lessonId': 'L1',
-              'courseName': '软件工程',
-              'weekIndexes': <int>[1, 2],
-              'teachers': <String>['Teacher'],
-              'room': 'A101',
-              'weekday': 1,
-              'startUnit': 1,
-              'endUnit': 2,
-              'campus': '雁塔校区',
-            },
-          ],
-          'expirationTime': '2026-03-23T00:00:00.000',
-        },
-      );
-
-      final courses = await CourseService.fetchCoursesFromRemote(
-        userData: UserData(studentId: '2026001', cookie: 'cookie'),
-      );
-
-      expect(courses, hasLength(1));
-      expect(courses.first.courseName, '软件工程');
-      expect(await CourseRepository().getCourses(), hasLength(1));
-      expect(await CourseService.getIgnore(), isEmpty);
-    });
+        expect(courses, hasLength(1));
+        expect(courses.first.courseName, '软件工程');
+        expect(await CourseRepository().getCourses(), hasLength(1));
+        expect(await CourseService.getIgnore(), isEmpty);
+      },
+    );
 
     test(
-        'EducationRefreshService.loginAndRefresh should preload time and courses',
-        () async {
-      LoginApi.setLoginOverrideForTest(
-        (_, _) async => LoginResponse(
-          success: true,
-          studentId: '2026999',
-          cookie: 'cookie-refresh-service',
-        ),
-      );
-      mockEduResponse(
-        path: '/Score/Semester',
-        data: <String, dynamic>{
-          'data': <Map<String, String>>[
-            <String, String>{'value': '2025-2', 'text': '2025-2'}
-          ]
-        },
-      );
-      mockEduResponse(
-        path: '/Info/Time',
-        data: <String, dynamic>{
-          'startTime': '2026-02-20T00:00:00.000',
-          'endTime': '2026-07-20T00:00:00.000',
-        },
-      );
-      mockEduResponse(
-        path: '/Exam',
-        data: <String, dynamic>{
-          'exams': <Map<String, dynamic>>[],
-          'canClick': false,
-          'error': null,
-        },
-      );
-      mockEduResponse(path: '/Info/Completion', data: <Map<String, dynamic>>[]);
-      mockEduResponse(
-        path: '/Course',
-        data: <String, dynamic>{
-          'success': true,
-          'data': <Map<String, dynamic>>[
-            <String, dynamic>{
-              'lessonId': 'L2',
-              'courseName': '数据库系统',
-              'weekIndexes': <int>[1, 2],
-              'teachers': <String>['Teacher'],
-              'room': 'B202',
-              'weekday': 2,
-              'startUnit': 3,
-              'endUnit': 4,
-              'campus': '雁塔校区',
-            },
-          ],
-          'expirationTime': '2026-03-23T00:00:00.000',
-        },
-      );
-      mockEduResponse(path: '/course/ScheduleTime', data: <dynamic>[]);
+      'EducationRefreshService.loginAndRefresh should preload time and courses',
+      () async {
+        LoginApi.setLoginOverrideForTest(
+          (_, _) async => LoginResponse(
+            success: true,
+            studentId: '2026999',
+            cookie: 'cookie-refresh-service',
+          ),
+        );
+        mockEduResponse(
+          path: '/Score/Semester',
+          data: <String, dynamic>{
+            'data': <Map<String, String>>[
+              <String, String>{'value': '2025-2', 'text': '2025-2'},
+            ],
+          },
+        );
+        mockEduResponse(
+          path: '/Info/Time',
+          data: <String, dynamic>{
+            'startTime': '2026-02-20T00:00:00.000',
+            'endTime': '2026-07-20T00:00:00.000',
+          },
+        );
+        mockEduResponse(
+          path: '/Exam',
+          data: <String, dynamic>{
+            'exams': <Map<String, dynamic>>[],
+            'canClick': false,
+            'error': null,
+          },
+        );
+        mockEduResponse(
+          path: '/Info/Completion',
+          data: <Map<String, dynamic>>[],
+        );
+        mockEduResponse(
+          path: '/Course',
+          data: <String, dynamic>{
+            'success': true,
+            'data': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'lessonId': 'L2',
+                'courseName': '数据库系统',
+                'weekIndexes': <int>[1, 2],
+                'teachers': <String>['Teacher'],
+                'room': 'B202',
+                'weekday': 2,
+                'startUnit': 3,
+                'endUnit': 4,
+                'campus': '雁塔校区',
+              },
+            ],
+            'expirationTime': '2026-03-23T00:00:00.000',
+          },
+        );
+        mockEduResponse(path: '/course/ScheduleTime', data: <dynamic>[]);
 
-      final ok = await EducationRefreshService.loginAndRefresh('u', 'p');
-      final week = await EduTimeService.getWeek();
+        final ok = await EducationRefreshService.loginAndRefresh('u', 'p');
+        final week = await EduTimeService.getWeek();
 
-      expect(ok, isTrue);
-      expect(PrefsService.instance.getString(PrefsKeys.TIME_DATA), isNotNull);
-      expect(await CourseRepository().getCourses(), hasLength(1));
-      expect(week.maxWeek, greaterThan(0));
-    });
+        expect(ok, isTrue);
+        expect(PrefsService.instance.getString(PrefsKeys.TIME_DATA), isNotNull);
+        expect(await CourseRepository().getCourses(), hasLength(1));
+        expect(week.maxWeek, greaterThan(0));
+      },
+    );
 
     test(
-        'EducationRefreshService.refreshWithExistingSession should bypass cache',
-        () async {
-      await PrefsService.instance.setString(
-        PrefsKeys.USER_DATA,
-        '{"studentId":"2026999","cookie":"cookie-refresh-service"}',
-      );
-      await PrefsService.instance.setInt(
-        PrefsKeys.LAST_FETCH_TIME,
-        DateTime.now().millisecondsSinceEpoch,
-      );
+      'EducationRefreshService.refreshWithExistingSession should bypass cache',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.USER_DATA,
+          '{"studentId":"2026999","cookie":"cookie-refresh-service"}',
+        );
+        await PrefsService.instance.setInt(
+          PrefsKeys.LAST_FETCH_TIME,
+          DateTime.now().millisecondsSinceEpoch,
+        );
 
-      final seenPaths = <String>{};
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            if (<String>{
-              '/Score/Semester',
-              '/Info/Time',
-              '/Exam',
-              '/Info/Completion',
-              '/Course',
-            }.contains(options.path)) {
-              expect(
-                options.extra[CacheInterceptor.bypassCacheKey],
-                isTrue,
-                reason: 'Expected ${options.path} to bypass request cache',
+        final seenPaths = <String>{};
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              if (<String>{
+                '/Score/Semester',
+                '/Info/Time',
+                '/Exam',
+                '/Info/Completion',
+                '/Course',
+              }.contains(options.path)) {
+                expect(
+                  options.extra[CacheInterceptor.bypassCacheKey],
+                  isTrue,
+                  reason: 'Expected ${options.path} to bypass request cache',
+                );
+                seenPaths.add(options.path);
+              }
+
+              dynamic data;
+              switch (options.path) {
+                case '/Score/Semester':
+                  data = <String, dynamic>{
+                    'data': <Map<String, String>>[
+                      <String, String>{'value': '2025-2', 'text': '2025-2'},
+                    ],
+                  };
+                case '/Info/Time':
+                  data = <String, dynamic>{
+                    'startTime': '2026-02-20T00:00:00.000',
+                    'endTime': '2026-07-20T00:00:00.000',
+                  };
+                case '/Exam':
+                  data = <String, dynamic>{
+                    'exams': <Map<String, dynamic>>[],
+                    'canClick': false,
+                    'error': null,
+                  };
+                case '/Info/Completion':
+                  data = <Map<String, dynamic>>[];
+                case '/course/ScheduleTime':
+                  data = <dynamic>[];
+                case '/Course':
+                  data = <String, dynamic>{
+                    'success': true,
+                    'data': <Map<String, dynamic>>[
+                      <String, dynamic>{
+                        'lessonId': 'L2',
+                        'courseName': '数据库系统',
+                        'weekIndexes': <int>[1, 2],
+                        'teachers': <String>['Teacher'],
+                        'room': 'B202',
+                        'weekday': 2,
+                        'startUnit': 3,
+                        'endUnit': 4,
+                        'campus': '雁塔校区',
+                      },
+                    ],
+                    'expirationTime': '2026-03-23T00:00:00.000',
+                  };
+                default:
+                  fail('Unexpected path ${options.path}');
+              }
+
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: data,
+                ),
               );
-              seenPaths.add(options.path);
-            }
+            },
+          ),
+        );
 
-            dynamic data;
-            switch (options.path) {
-              case '/Score/Semester':
-                data = <String, dynamic>{
-                  'data': <Map<String, String>>[
-                    <String, String>{'value': '2025-2', 'text': '2025-2'}
-                  ]
-                };
-              case '/Info/Time':
-                data = <String, dynamic>{
-                  'startTime': '2026-02-20T00:00:00.000',
-                  'endTime': '2026-07-20T00:00:00.000',
-                };
-              case '/Exam':
-                data = <String, dynamic>{
-                  'exams': <Map<String, dynamic>>[],
-                  'canClick': false,
-                  'error': null,
-                };
-              case '/Info/Completion':
-                data = <Map<String, dynamic>>[];
-              case '/course/ScheduleTime':
-                data = <dynamic>[];
-              case '/Course':
-                data = <String, dynamic>{
-                  'success': true,
-                  'data': <Map<String, dynamic>>[
-                    <String, dynamic>{
-                      'lessonId': 'L2',
-                      'courseName': '数据库系统',
-                      'weekIndexes': <int>[1, 2],
-                      'teachers': <String>['Teacher'],
-                      'room': 'B202',
-                      'weekday': 2,
-                      'startUnit': 3,
-                      'endUnit': 4,
-                      'campus': '雁塔校区',
-                    },
-                  ],
-                  'expirationTime': '2026-03-23T00:00:00.000',
-                };
-              default:
-                fail('Unexpected path ${options.path}');
-            }
+        // 只有强制刷新才会拉取全部数据并绕过缓存。
+        final ok = await EducationRefreshService.refreshWithExistingSession(
+          isForced: true,
+        );
 
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: data,
-              ),
-            );
-          },
-        ),
-      );
-
-      // 只有强制刷新才会拉取全部数据并绕过缓存。
-      final ok = await EducationRefreshService.refreshWithExistingSession(
-        isForced: true,
-      );
-
-      expect(ok, isTrue);
-      expect(seenPaths, {
-        '/Score/Semester',
-        '/Info/Time',
-        '/Exam',
-        '/Info/Completion',
-        '/Course',
-      });
-    });
-
-    test('CourseService.getCourses should return local snapshot first',
-        () async {
-      await CourseRepository().saveCourses([
-        courseFixture(courseName: '本地课程'),
-      ]);
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            fail('localFirst should not request remote course data');
-          },
-        ),
-      );
-
-      final snapshot = await CourseService.getCourses();
-
-      expect(snapshot.isFromLocal, isTrue);
-      expect(snapshot.isStale, isFalse);
-      expect(snapshot.data.single.courseName, '本地课程');
-    });
+        expect(ok, isTrue);
+        expect(seenPaths, {
+          '/Score/Semester',
+          '/Info/Time',
+          '/Exam',
+          '/Info/Completion',
+          '/Course',
+        });
+      },
+    );
 
     test(
-        'CourseService.fetchCoursesFromRemote should fallback to local data '
+      'CourseService.getCourses should return local snapshot first',
+      () async {
+        await CourseRepository().saveCourses([
+          courseFixture(courseName: '本地课程'),
+        ]);
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              fail('localFirst should not request remote course data');
+            },
+          ),
+        );
+
+        final snapshot = await CourseService.getCourses();
+
+        expect(snapshot.isFromLocal, isTrue);
+        expect(snapshot.isStale, isFalse);
+        expect(snapshot.data.single.courseName, '本地课程');
+      },
+    );
+
+    test('CourseService.fetchCoursesFromRemote should fallback to local data '
         'when user data is missing', () async {
-      await CourseRepository().saveCourses([
-        courseFixture(courseName: '缓存课程'),
-      ]);
+      await CourseRepository().saveCourses([courseFixture(courseName: '缓存课程')]);
 
       final courses = await CourseService.fetchCoursesFromRemote();
 
@@ -458,39 +463,42 @@ void main() {
       expect(courses.single.courseName, '缓存课程');
     });
 
-    test('ScoreService.readSemestersFromPrefs should parse valid cache',
-        () async {
-      await PrefsService.instance.setString(
-        PrefsKeys.SEMESTER_DATA,
-        '{"data":[{"value":"2025-2","text":"2025-2026 第二学期"}]}',
-      );
+    test(
+      'ScoreService.readSemestersFromPrefs should parse valid cache',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.SEMESTER_DATA,
+          '{"data":[{"value":"2025-2","text":"2025-2026 第二学期"}]}',
+        );
 
-      final semesters = ScoreService.readSemestersFromPrefs();
+        final semesters = ScoreService.readSemestersFromPrefs();
 
-      expect(semesters, hasLength(1));
-      expect(semesters.single.semester, '2025-2');
-      expect(semesters.single.name, '2025-2026 第二学期');
-    });
-
-    test('ScoreService.readSemestersFromPrefs should return empty on bad cache',
-        () async {
-      await PrefsService.instance.setString(
-        PrefsKeys.SEMESTER_DATA,
-        '{"data":{}}',
-      );
-
-      expect(ScoreService.readSemestersFromPrefs(), isEmpty);
-
-      await PrefsService.instance.setString(
-        PrefsKeys.SEMESTER_DATA,
-        '{bad-json',
-      );
-
-      expect(ScoreService.readSemestersFromPrefs(), isEmpty);
-    });
+        expect(semesters, hasLength(1));
+        expect(semesters.single.semester, '2025-2');
+        expect(semesters.single.name, '2025-2026 第二学期');
+      },
+    );
 
     test(
-        'ScoreService.fetchScoresFromRemote should return sorted cached data '
+      'ScoreService.readSemestersFromPrefs should return empty on bad cache',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.SEMESTER_DATA,
+          '{"data":{}}',
+        );
+
+        expect(ScoreService.readSemestersFromPrefs(), isEmpty);
+
+        await PrefsService.instance.setString(
+          PrefsKeys.SEMESTER_DATA,
+          '{bad-json',
+        );
+
+        expect(ScoreService.readSemestersFromPrefs(), isEmpty);
+      },
+    );
+
+    test('ScoreService.fetchScoresFromRemote should return sorted cached data '
         'when user data is missing', () async {
       await ScoreRepository().saveScores([
         ScoreList(
@@ -512,63 +520,65 @@ void main() {
     });
 
     test(
-        'ExamService.getExamResult should return filtered merged exams on refresh',
-        () async {
-      await PrefsService.instance.setString(
-        PrefsKeys.USER_DATA,
-        '{"studentId":"2026001","cookie":"session"}',
-      );
-      await PrefsService.instance.setInt(
-        PrefsKeys.LAST_FETCH_TIME,
-        DateTime.now().millisecondsSinceEpoch,
-      );
-      await PrefsService.instance.setString(
-        PrefsKeys.EXAM_DATA,
-        '{"exams":[{"name":"缓存考试","time":"2099-06-10 09:00-11:00","location":"A101","seat":"01"}],"canClick":true}',
-      );
+      'ExamService.getExamResult should return filtered merged exams on refresh',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.USER_DATA,
+          '{"studentId":"2026001","cookie":"session"}',
+        );
+        await PrefsService.instance.setInt(
+          PrefsKeys.LAST_FETCH_TIME,
+          DateTime.now().millisecondsSinceEpoch,
+        );
+        await PrefsService.instance.setString(
+          PrefsKeys.EXAM_DATA,
+          '{"exams":[{"name":"缓存考试","time":"2099-06-10 09:00-11:00","location":"A101","seat":"01"}],"canClick":true}',
+        );
 
-      mockEduResponse(
-        path: '/Exam',
-        data: <String, dynamic>{
-          'data': <Map<String, dynamic>>[
-            {
-              'name': '缓存考试',
-              'time': '2099-06-10 09:00-11:00',
-              'location': 'A101',
-              'seat': '01',
-            },
-            {
-              'name': '新增考试',
-              'time': '2099-06-11 14:00-16:00',
-              'location': 'B202',
-              'seat': '02',
-            },
-            {
-              'name': '过期考试',
-              'time': '2000-06-11 08:00-10:00',
-              'location': 'C303',
-              'seat': '03',
-            },
-          ],
-          'code': 0,
-          'message': 'ok',
-        },
-      );
+        mockEduResponse(
+          path: '/Exam',
+          data: <String, dynamic>{
+            'data': <Map<String, dynamic>>[
+              {
+                'name': '缓存考试',
+                'time': '2099-06-10 09:00-11:00',
+                'location': 'A101',
+                'seat': '01',
+              },
+              {
+                'name': '新增考试',
+                'time': '2099-06-11 14:00-16:00',
+                'location': 'B202',
+                'seat': '02',
+              },
+              {
+                'name': '过期考试',
+                'time': '2000-06-11 08:00-10:00',
+                'location': 'C303',
+                'seat': '03',
+              },
+            ],
+            'code': 0,
+            'message': 'ok',
+          },
+        );
 
-      final result = await ExamService.getExamResult(isRefresh: true);
+        final result = await ExamService.getExamResult(isRefresh: true);
 
-      expect(result.isSuccess, isTrue);
-      expect(result.exams.map((item) => item.name).toList(), [
-        '缓存考试',
-        '新增考试',
-      ]);
+        expect(result.isSuccess, isTrue);
+        expect(result.exams.map((item) => item.name).toList(), [
+          '缓存考试',
+          '新增考试',
+        ]);
 
-      final cachedExamData =
-          PrefsService.instance.getString(PrefsKeys.EXAM_DATA);
-      expect(cachedExamData, isNotNull);
-      expect(cachedExamData, isNot(contains('过期考试')));
-      expect(cachedExamData, contains('新增考试'));
-    });
+        final cachedExamData = PrefsService.instance.getString(
+          PrefsKeys.EXAM_DATA,
+        );
+        expect(cachedExamData, isNotNull);
+        expect(cachedExamData, isNot(contains('过期考试')));
+        expect(cachedExamData, contains('新增考试'));
+      },
+    );
 
     test('ScoreService.sortScores should order semesters descending', () {
       final sorted = ScoreService.sortScores([

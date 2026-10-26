@@ -117,7 +117,8 @@ class WidgetService {
   // 更新小组件数据
   @pragma('vm:entry-point')
   static Future<void> updateTodayCourses(
-      List<ScheduleItem> todayCourses) async {
+    List<ScheduleItem> todayCourses,
+  ) async {
     await initialize();
 
     final now = DateTime.now();
@@ -130,9 +131,13 @@ class WidgetService {
 
     // 更新小组件
     await HomeWidget.saveWidgetData<String>(
-        'flutter.date', '第$weekNow周 周${a[now.weekday]}');
+      'flutter.date',
+      '第$weekNow周 周${a[now.weekday]}',
+    );
     await HomeWidget.saveWidgetData<String>(
-        'flutter.courses', jsonEncode(todayCourses));
+      'flutter.courses',
+      jsonEncode(todayCourses),
+    );
 
     AppLogger.debug('小组件数据更新完成');
 
@@ -148,20 +153,29 @@ class WidgetService {
 
   @pragma('vm:entry-point')
   static Future<void> updateTodayAndTomorrowCourses(
-      Map<String, List<ScheduleItem>> courses) async {
+    Map<String, List<ScheduleItem>> courses,
+  ) async {
     await initialize();
 
     final now = DateTime.now();
     final tomorrow = now.add(const Duration(days: 1));
 
     await HomeWidget.saveWidgetData<String>(
-        'flutter.tomorrow.courses', jsonEncode(courses['today'] ?? []));
-    await HomeWidget.saveWidgetData<String>('flutter.tomorrow.tomorrowCourses',
-        jsonEncode(courses['tomorrow'] ?? []));
+      'flutter.tomorrow.courses',
+      jsonEncode(courses['today'] ?? []),
+    );
     await HomeWidget.saveWidgetData<String>(
-        'flutter.tomorrow.date', _formatMonthDayWeekday(now));
+      'flutter.tomorrow.tomorrowCourses',
+      jsonEncode(courses['tomorrow'] ?? []),
+    );
     await HomeWidget.saveWidgetData<String>(
-        'flutter.tomorrow.tomorrowDate', _formatMonthDayWeekday(tomorrow));
+      'flutter.tomorrow.date',
+      _formatMonthDayWeekday(now),
+    );
+    await HomeWidget.saveWidgetData<String>(
+      'flutter.tomorrow.tomorrowDate',
+      _formatMonthDayWeekday(tomorrow),
+    );
 
     AppLogger.debug('小组件数据更新完成');
 

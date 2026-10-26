@@ -28,8 +28,11 @@ void main() {
     test('difference should return startTime minus input time', () {
       final start = DateTime(2026, 3, 2, 10, 0);
       final end = DateTime(2026, 3, 2, 11, 30);
-      final model =
-          CourseTime(startTime: start, courseName: '高数', endTime: end);
+      final model = CourseTime(
+        startTime: start,
+        courseName: '高数',
+        endTime: end,
+      );
 
       final diff = model.difference(DateTime(2026, 3, 2, 9, 30));
       expect(diff, const Duration(minutes: 30));

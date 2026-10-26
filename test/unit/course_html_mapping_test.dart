@@ -32,21 +32,40 @@ const String _withTeachers = '''
 void main() {
   group('Course -> CourseModel 映射', () {
     test('should_map_core_fields_from_curriculum_course', () {
-      final course =
-          CourseHtmlParser.parseHtml(_html, schoolCode: 'XAUAT').courses.single;
+      final course = CourseHtmlParser.parseHtml(
+        _html,
+        schoolCode: 'XAUAT',
+      ).courses.single;
 
       expect(course.courseName, '数据结构');
       expect(course.room, '信息楼B301');
       expect(course.weekday, DateTime.monday);
       expect(course.startUnit, 5);
       expect(course.endUnit, 6);
-      expect(course.weekIndexes,
-          <int>[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+      expect(course.weekIndexes, <int>[
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+      ]);
     });
 
     test('should_leave_fields_the_page_does_not_provide_empty', () {
-      final course =
-          CourseHtmlParser.parseHtml(_html, schoolCode: 'XAUAT').courses.single;
+      final course = CourseHtmlParser.parseHtml(
+        _html,
+        schoolCode: 'XAUAT',
+      ).courses.single;
 
       // 课程代码按设计丢弃：CourseModel 没有对应字段，curriculum 也没有。
       expect(course.courseCode, '');
@@ -57,8 +76,10 @@ void main() {
     });
 
     test('should_return_empty_teacher_list_when_page_has_no_teacher', () {
-      final course =
-          CourseHtmlParser.parseHtml(_html, schoolCode: 'XAUAT').courses.single;
+      final course = CourseHtmlParser.parseHtml(
+        _html,
+        schoolCode: 'XAUAT',
+      ).courses.single;
 
       // 西建大页面不提供教师（卡片里没有师资信息）。
       expect(course.teachers, isEmpty);
@@ -71,8 +92,10 @@ void main() {
     });
 
     test('should_keep_week_indexes_sorted_and_deduplicated', () {
-      final course =
-          CourseHtmlParser.parseHtml(_html, schoolCode: 'XAUAT').courses.single;
+      final course = CourseHtmlParser.parseHtml(
+        _html,
+        schoolCode: 'XAUAT',
+      ).courses.single;
 
       final weeks = course.weekIndexes;
       expect(weeks, equals(<int>[...weeks]..sort()));

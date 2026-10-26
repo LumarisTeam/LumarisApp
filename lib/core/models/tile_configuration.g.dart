@@ -21,17 +21,17 @@ Map<String, dynamic> _$TileConfigurationToJson(TileConfiguration instance) =>
     };
 
 TileConfigurationList _$TileConfigurationListFromJson(
-        Map<String, dynamic> json) =>
-    TileConfigurationList(
-      configurations: (json['configurations'] as List<dynamic>)
-          .map((e) => TileConfiguration.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      lastModified: DateTime.parse(json['lastModified'] as String),
-    );
+  Map<String, dynamic> json,
+) => TileConfigurationList(
+  configurations: (json['configurations'] as List<dynamic>)
+      .map((e) => TileConfiguration.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  lastModified: DateTime.parse(json['lastModified'] as String),
+);
 
 Map<String, dynamic> _$TileConfigurationListToJson(
-        TileConfigurationList instance) =>
-    <String, dynamic>{
-      'configurations': instance.configurations.map((e) => e.toJson()).toList(),
-      'lastModified': instance.lastModified.toIso8601String(),
-    };
+  TileConfigurationList instance,
+) => <String, dynamic>{
+  'configurations': instance.configurations.map((e) => e.toJson()).toList(),
+  'lastModified': instance.lastModified.toIso8601String(),
+};

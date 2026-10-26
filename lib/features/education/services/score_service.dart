@@ -15,9 +15,7 @@ import '../apis/score_api.dart';
 class ScoreService {
   static Future<void> getThisSemester({UserData? userData}) async {
     try {
-      final response = await ScoreApi.getThisSemester(
-        forceRefresh: false,
-      );
+      final response = await ScoreApi.getThisSemester(forceRefresh: false);
       final prefs = PrefsService.instance;
       await prefs.setString(
         PrefsKeys.THIS_SEMESTER_DATA,
@@ -207,7 +205,8 @@ class ScoreService {
       return data
           .whereType<Map>()
           .map(
-              (item) => SemesterModel.fromJson(Map<String, dynamic>.from(item)))
+            (item) => SemesterModel.fromJson(Map<String, dynamic>.from(item)),
+          )
           .toList();
     } catch (e, stackTrace) {
       AppLogger.error('读取本地学期数据失败', error: e, stackTrace: stackTrace);

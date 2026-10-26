@@ -5,10 +5,7 @@ void main() {
   group('NetworkException', () {
     test('should format toString with status code', () {
       final e = NetworkException('bad gateway', 502);
-      expect(
-        e.toString(),
-        'NetworkException: bad gateway (Status code: 502)',
-      );
+      expect(e.toString(), 'NetworkException: bad gateway (Status code: 502)');
     });
 
     test('should format toString without status code', () {

@@ -60,10 +60,7 @@ class AnimatedListItem extends StatelessWidget {
         builder: (context, value, child) {
           return Transform.translate(
             offset: Offset(0, offset * (1 - value)),
-            child: Opacity(
-              opacity: value,
-              child: child,
-            ),
+            child: Opacity(opacity: value, child: child),
           );
         },
         child: child,
@@ -103,10 +100,7 @@ class AnimatedListItemSlideLeft extends StatelessWidget {
         builder: (context, value, child) {
           return Transform.translate(
             offset: Offset(-30 * (1 - value), 0),
-            child: Opacity(
-              opacity: value,
-              child: child,
-            ),
+            child: Opacity(opacity: value, child: child),
           );
         },
         child: child,
@@ -146,10 +140,7 @@ class AnimatedListItemScale extends StatelessWidget {
         builder: (context, value, child) {
           return Transform.scale(
             scale: 0.8 + (0.2 * value),
-            child: Opacity(
-              opacity: value,
-              child: child,
-            ),
+            child: Opacity(opacity: value, child: child),
           );
         },
         child: child,

@@ -29,8 +29,10 @@ class CourseHtmlParseResult {
   String get diagnosticReport {
     final buffer = StringBuffer()
       ..writeln('adapter: ${adapterId ?? '(none)'}')
-      ..writeln('courses: ${courses.length}'
-          '${skippedCount > 0 ? '  (skipped $skippedCount)' : ''}');
+      ..writeln(
+        'courses: ${courses.length}'
+        '${skippedCount > 0 ? '  (skipped $skippedCount)' : ''}',
+      );
     if (warnings.isEmpty) {
       buffer.writeln('warnings: none');
       return buffer.toString();
@@ -113,7 +115,8 @@ class CourseHtmlParser {
     for (final course in result.courses) {
       final start = course.startSection;
       final end = course.endSection;
-      final usable = course.name.isNotEmpty &&
+      final usable =
+          course.name.isNotEmpty &&
           start != null &&
           end != null &&
           start >= minUnit &&
@@ -127,21 +130,23 @@ class CourseHtmlParser {
         continue;
       }
 
-      courses.add(CourseModel(
-        courseName: course.name,
-        room: course.position,
-        weekday: course.day,
-        startUnit: start,
-        endUnit: end,
-        weekIndexes: course.weeks,
-        teachers: _splitTeachers(course.teacher),
-        // 以下字段页面不提供，或 curriculum 的模型里没有对应项。
-        courseCode: '',
-        credits: '',
-        lessonId: '',
-        campus: '',
-        isCustom: false,
-      ));
+      courses.add(
+        CourseModel(
+          courseName: course.name,
+          room: course.position,
+          weekday: course.day,
+          startUnit: start,
+          endUnit: end,
+          weekIndexes: course.weeks,
+          teachers: _splitTeachers(course.teacher),
+          // 以下字段页面不提供，或 curriculum 的模型里没有对应项。
+          courseCode: '',
+          credits: '',
+          lessonId: '',
+          campus: '',
+          isCustom: false,
+        ),
+      );
     }
 
     return CourseHtmlParseResult(

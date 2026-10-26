@@ -29,8 +29,9 @@ class UserStore extends Notifier<UserState> {
 
     if (userDataString != null) {
       try {
-        final userDataMap =
-            Map<String, dynamic>.from(jsonDecode(userDataString) as Map);
+        final userDataMap = Map<String, dynamic>.from(
+          jsonDecode(userDataString) as Map,
+        );
         final userData = UserData.fromJson(userDataMap);
         if (userData.studentId.isEmpty ||
             userData.studentId == '/student/login') {

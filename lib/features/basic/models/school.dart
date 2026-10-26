@@ -53,33 +53,33 @@ class School {
   static const int defaultWeekStartDay = DateTime.sunday;
 
   static List<School> get fallbackList => [
-        // 兜底学校的 website 必须和目录接口返回的那份一致（带 `/v1`）：它被直接当作
-        // Dio 的 baseUrl，而各接口传的 path 都不含版本前缀（`/Course`、
-        // `/course/ScheduleTime`…），少了 `/v1` 就会请求到 `.../course/ScheduleTime`
-        // 并 404——目录接口不通时（首发无缓存、离线）所有教务请求都会这样悄悄失败。
-        School(
-          code: 'XAUAT',
-          name: '西安建筑科技大学',
-          website: 'https://xauatapi.xauat.site/v1',
-          features: [
-            Feature.timetable,
-            Feature.gradeQuery,
-            Feature.gpaCalculation,
-            Feature.courseSelection,
-            Feature.examSchedule,
-            Feature.login,
-            Feature.busSchedule,
-            Feature.program,
-            Feature.studyProgress,
-            Feature.electricity,
-            Feature.payment,
-            Feature.map,
-          ],
-          enabled: true,
-          createdAt: DateTime(2024, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
-        ),
-      ];
+    // 兜底学校的 website 必须和目录接口返回的那份一致（带 `/v1`）：它被直接当作
+    // Dio 的 baseUrl，而各接口传的 path 都不含版本前缀（`/Course`、
+    // `/course/ScheduleTime`…），少了 `/v1` 就会请求到 `.../course/ScheduleTime`
+    // 并 404——目录接口不通时（首发无缓存、离线）所有教务请求都会这样悄悄失败。
+    School(
+      code: 'XAUAT',
+      name: '西安建筑科技大学',
+      website: 'https://xauatapi.xauat.site/v1',
+      features: [
+        Feature.timetable,
+        Feature.gradeQuery,
+        Feature.gpaCalculation,
+        Feature.courseSelection,
+        Feature.examSchedule,
+        Feature.login,
+        Feature.busSchedule,
+        Feature.program,
+        Feature.studyProgress,
+        Feature.electricity,
+        Feature.payment,
+        Feature.map,
+      ],
+      enabled: true,
+      createdAt: DateTime(2024, 1, 1),
+      updatedAt: DateTime(2024, 1, 1),
+    ),
+  ];
 
   final String code;
   final String name;
@@ -128,9 +128,11 @@ class School {
     if (query.isEmpty) return schools;
     final lower = query.toLowerCase();
     return schools
-        .where((s) =>
-            s.name.toLowerCase().contains(lower) ||
-            s.code.toLowerCase().contains(lower))
+        .where(
+          (s) =>
+              s.name.toLowerCase().contains(lower) ||
+              s.code.toLowerCase().contains(lower),
+        )
         .toList();
   }
 
@@ -154,30 +156,30 @@ class School {
   }
 
   factory School.fromJson(Map<String, dynamic> json) => School(
-        code: json['code'] as String,
-        name: json['name'] as String,
-        website: json['website'] as String,
-        eduSystemUrl: _readEduSystemUrl(json),
-        features: (json['features'] as List<dynamic>)
-            .map((f) => Feature.fromValue(f as String))
-            .toList(),
-        enabled: json['enabled'] as bool? ?? true,
-        weekStartDay: _readWeekStartDay(json),
-        createdAt: DateTime.parse(json['created_at'] as String),
-        updatedAt: DateTime.parse(json['updated_at'] as String),
-      );
+    code: json['code'] as String,
+    name: json['name'] as String,
+    website: json['website'] as String,
+    eduSystemUrl: _readEduSystemUrl(json),
+    features: (json['features'] as List<dynamic>)
+        .map((f) => Feature.fromValue(f as String))
+        .toList(),
+    enabled: json['enabled'] as bool? ?? true,
+    weekStartDay: _readWeekStartDay(json),
+    createdAt: DateTime.parse(json['created_at'] as String),
+    updatedAt: DateTime.parse(json['updated_at'] as String),
+  );
 
   Map<String, dynamic> toJson() => {
-        'code': code,
-        'name': name,
-        'website': website,
-        'edu_system_url': eduSystemUrl,
-        'features': features.map((f) => f.value).toList(),
-        'enabled': enabled,
-        'week_start_day': weekStartDay,
-        'created_at': createdAt.toIso8601String(),
-        'updated_at': updatedAt.toIso8601String(),
-      };
+    'code': code,
+    'name': name,
+    'website': website,
+    'edu_system_url': eduSystemUrl,
+    'features': features.map((f) => f.value).toList(),
+    'enabled': enabled,
+    'week_start_day': weekStartDay,
+    'created_at': createdAt.toIso8601String(),
+    'updated_at': updatedAt.toIso8601String(),
+  };
 }
 
 class SchoolListData {
@@ -187,9 +189,9 @@ class SchoolListData {
   SchoolListData({required this.total, required this.items});
 
   factory SchoolListData.fromJson(Map<String, dynamic> json) => SchoolListData(
-        total: json['total'] as int,
-        items: (json['items'] as List<dynamic>)
-            .map((e) => School.fromJson(Map<String, dynamic>.from(e)))
-            .toList(),
-      );
+    total: json['total'] as int,
+    items: (json['items'] as List<dynamic>)
+        .map((e) => School.fromJson(Map<String, dynamic>.from(e)))
+        .toList(),
+  );
 }

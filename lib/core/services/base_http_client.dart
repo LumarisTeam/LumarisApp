@@ -20,25 +20,20 @@ class BaseHttpClient {
     Duration connectTimeout = const Duration(seconds: 10),
     Duration receiveTimeout = const Duration(seconds: 10),
     Map<String, dynamic>? defaultHeaders,
-  })  : _retryPolicy = retryPolicy,
-        _dio = dio ?? Dio() {
+  }) : _retryPolicy = retryPolicy,
+       _dio = dio ?? Dio() {
     _dio.options = BaseOptions(
       baseUrl: baseUrl ?? '',
       connectTimeout: connectTimeout,
       receiveTimeout: receiveTimeout,
-      headers: defaultHeaders ??
-          {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
+      headers:
+          defaultHeaders ??
+          {'Accept': 'application/json', 'Content-Type': 'application/json'},
     );
 
     // 添加重试拦截器
     if (_retryPolicy.maxRetries > 0) {
-      _dio.interceptors.add(RetryInterceptor(
-        dio: _dio,
-        policy: _retryPolicy,
-      ));
+      _dio.interceptors.add(RetryInterceptor(dio: _dio, policy: _retryPolicy));
     }
 
     // 添加缓存拦截器
@@ -170,8 +165,9 @@ class BaseHttpClient {
 
     return _ResolvedRequestTarget(
       path: uri.hasQuery ? uri.replace(query: null).toString() : path,
-      queryParameters:
-          mergedQueryParameters.isEmpty ? null : mergedQueryParameters,
+      queryParameters: mergedQueryParameters.isEmpty
+          ? null
+          : mergedQueryParameters,
     );
   }
 

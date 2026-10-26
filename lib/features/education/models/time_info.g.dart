@@ -7,10 +7,10 @@ part of 'time_info.dart';
 // **************************************************************************
 
 TimeInfo _$TimeInfoFromJson(Map<String, dynamic> json) => TimeInfo(
-      startTime: json['startTime'] as String?,
-      endTime: json['endTime'] as String?,
-      semester: json['semester'] as String?,
-    );
+  startTime: json['startTime'] as String?,
+  endTime: json['endTime'] as String?,
+  semester: json['semester'] as String?,
+);
 
 Map<String, dynamic> _$TimeInfoToJson(TimeInfo instance) {
   final val = <String, dynamic>{};

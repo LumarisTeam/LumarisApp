@@ -23,41 +23,41 @@ void main() async {
   // 需要移除的导入映射
   final importsToRemove = {
     'lib/core/services/data_service.dart': [
-      "import 'package:flutter/foundation.dart';"
+      "import 'package:flutter/foundation.dart';",
     ],
     'lib/core/services/exam_service.dart': [
-      "import 'package:flutter/material.dart';"
+      "import 'package:flutter/material.dart';",
     ],
     'lib/core/services/xauat_login.dart': [
-      "import 'package:flutter/foundation.dart';"
+      "import 'package:flutter/foundation.dart';",
     ],
     'lib/core/utils/animations/animated_button.dart': [
-      "import 'package:ios_club_app/core/utils/app_logger.dart';"
+      "import 'package:ios_club_app/core/utils/app_logger.dart';",
     ],
     'lib/core/utils/animations/animated_card.dart': [
-      "import 'package:ios_club_app/core/utils/app_logger.dart';"
+      "import 'package:ios_club_app/core/utils/app_logger.dart';",
     ],
     'lib/core/utils/request_cache.dart': [
-      "import 'package:flutter/foundation.dart';"
+      "import 'package:flutter/foundation.dart';",
     ],
     'lib/features/education/services/edu_http_client.dart': [
-      "import 'package:flutter/foundation.dart';"
+      "import 'package:flutter/foundation.dart';",
     ],
     'lib/features/system/notifications/task_executor.dart': [
-      "import 'package:flutter/foundation.dart';"
+      "import 'package:flutter/foundation.dart';",
     ],
     'lib/features/system/update/check_update_manager.dart': [
-      "import 'package:flutter/foundation.dart';"
+      "import 'package:flutter/foundation.dart';",
     ],
     'lib/features/system/widget_service.dart': [
       "import 'package:flutter/cupertino.dart';",
-      "import 'package:flutter/material.dart';"
+      "import 'package:flutter/material.dart';",
     ],
     'lib/state/schedule_store.dart': [
-      "import 'package:flutter/foundation.dart';"
+      "import 'package:flutter/foundation.dart';",
     ],
     'lib/ui/components/modal_components.dart': [
-      "import 'package:ios_club_app/core/utils/app_logger.dart';"
+      "import 'package:ios_club_app/core/utils/app_logger.dart';",
     ],
   };
 

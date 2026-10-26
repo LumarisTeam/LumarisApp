@@ -5,23 +5,22 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ios_club_app/core/services/course_color_manager.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
-import 'package:ios_club_app/core/utils/image_helper.dart';
 import 'package:ios_club_app/core/utils/week_start_utils.dart';
 
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
+import 'package:ios_club_app/state/schedule_style_store.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/state/user_store.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/ui/components/loading_state_view.dart';
-import 'package:ios_club_app/ui/components/schedule/course_card.dart';
 import 'package:ios_club_app/ui/components/schedule/course_detail_sheet.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_background_image.dart';
 import 'package:ios_club_app/ui/components/schedule/schedule_grid.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_visual_style.dart';
 import 'package:ios_club_app/ui/components/schedule/weekday_header.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
@@ -44,37 +43,18 @@ class ScheduleListPage extends ConsumerStatefulWidget {
 class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
   late PageController _pageController;
 
-  CourseCardStyle _cardStyle = CourseCardStyle.normal;
-  bool _showStyleSelector = false;
-
   @override
   void initState() {
     super.initState();
     _pageController = PageController(
       initialPage: ref.read(scheduleStoreProvider).currentPage,
     );
-    _loadPreferences();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadPreferences() async {
-    final prefs = PrefsService.instance;
-    final courseSize = prefs.getDouble('course_size') ?? 55;
-
-    setState(() {
-      _cardStyle = _determineCourseStyle(courseSize);
-    });
-  }
-
-  CourseCardStyle _determineCourseStyle(double size) {
-    if (size == 50) return CourseCardStyle.small;
-    if (size == 60) return CourseCardStyle.large;
-    return CourseCardStyle.normal;
   }
 
   void _jumpToPage(int page) {
@@ -99,24 +79,44 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     final systemIsDark = Theme.of(context).brightness == Brightness.dark;
     final settings = ref.watch(settingsStoreProvider);
     final scheduleState = ref.watch(scheduleStoreProvider);
+    final styleState = ref.watch(scheduleStyleStoreProvider);
+    final weekStartDay = ref.watch(
+      schoolStoreProvider.select(
+        (value) => value.school?.weekStartDay ?? School.defaultWeekStartDay,
+      ),
+    );
+    final settingsStore = ref.read(settingsStoreProvider.notifier);
+
+    final backgroundPath = settingsStore.backgroundImageFor(
+      isDark: systemIsDark,
+    );
+    final hasCustomBackground =
+        settings.scheduleBackground == 'custom' && backgroundPath.isNotEmpty;
+    // 有自定义背景时，根据背景亮暗决定文字/颜色池；未计算完成前回退系统主题。
+    final isDark = hasCustomBackground
+        ? (settingsStore.backgroundIsDarkFor(isDark: systemIsDark) ??
+              systemIsDark)
+        : systemIsDark;
+
+    final visualStyle = ScheduleVisualStyle.from(
+      styleState: styleState,
+      showGrid: settings.showCourseGrid,
+      cellHeight: scheduleState.height,
+      isDark: isDark,
+    );
 
     return Scaffold(
       body: Builder(
         builder: (context) {
-          final hasCustomBackground =
-              settings.scheduleBackground == 'custom' &&
-              settings.customBackgroundImage.isNotEmpty;
-
-          // 有自定义背景时，根据背景亮暗决定字体颜色（异步计算后自动更新）
-          // 未计算完成前回退到系统主题
-          final isDark = hasCustomBackground
-              ? (settings.customBackgroundIsDark ?? systemIsDark)
-              : systemIsDark;
-
           final content = Column(
             children: [
               // 顶部工具栏
-              _buildTopBar(context, isDesktop, isDark),
+              _buildTopBar(
+                context,
+                isDesktop,
+                isDark,
+                styleState.pageTextColor,
+              ),
               // 课表内容
               Expanded(
                 child: Builder(
@@ -139,7 +139,23 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
                       },
                       itemCount: scheduleState.allCourses.length,
                       itemBuilder: (context, index) {
-                        return _buildSchedulePage(context, index);
+                        return _WeekScheduleView(
+                          weekIndex: index,
+                          currentWeek: scheduleState.currentWeek,
+                          courses: scheduleState.allCourses[index],
+                          weekStartDay: weekStartDay,
+                          isYanTa: scheduleState.isYanTa,
+                          visualStyle: visualStyle,
+                          onCourseTap: (course) =>
+                              _showCourseDetail(course, visualStyle.isDark),
+                          onCourseLongPress: (course) {
+                            if (course.isCustom) {
+                              _showCourseActions(course);
+                            }
+                          },
+                          onConflictCourseTap: (courses) =>
+                              _showConflictCourseSelector(courses, visualStyle),
+                        );
                       },
                     );
                   },
@@ -151,10 +167,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
           return hasCustomBackground
               ? Stack(
                   fit: StackFit.expand,
-                  children: [
-                    _buildBackgroundImage(settings.customBackgroundImage),
-                    content,
-                  ],
+                  children: [_buildBackgroundImage(backgroundPath), content],
                 )
               : content;
         },
@@ -162,7 +175,12 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     );
   }
 
-  Widget _buildTopBar(BuildContext context, bool isDesktop, bool isDark) {
+  Widget _buildTopBar(
+    BuildContext context,
+    bool isDesktop,
+    bool isDark,
+    Color? pageTextColor,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
@@ -170,24 +188,23 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
           Row(
             children: [
               // 左侧：周次导航
-              if (!isDesktop) _buildWeekInfo(context, isDark),
-              if (isDesktop) _buildDesktopWeekNav(context),
+              if (!isDesktop) _buildWeekInfo(context, isDark, pageTextColor),
+              if (isDesktop) _buildDesktopWeekNav(context, pageTextColor),
               const Spacer(),
               // 右侧：操作按钮
               _buildActionButtons(context, isDark),
             ],
           ),
-          // 样式选择器
-          if (_showStyleSelector) ...[
-            const SizedBox(height: 12),
-            _buildStyleSelector(),
-          ],
         ],
       ),
     );
   }
 
-  Widget _buildWeekInfo(BuildContext context, bool isDark) {
+  Widget _buildWeekInfo(
+    BuildContext context,
+    bool isDark,
+    Color? pageTextColor,
+  ) {
     final scheduleState = ref.watch(scheduleStoreProvider);
     final colors = context.mc.colors;
     final l10n = context.l10n;
@@ -215,7 +232,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: colors.label,
+                    color: pageTextColor ?? colors.label,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -223,7 +240,9 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
                   weekText,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Theme.of(context).colorScheme.primary,
+                    color:
+                        pageTextColor?.withValues(alpha: 0.8) ??
+                        Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -323,7 +342,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     _jumpToPage(selectedPage);
   }
 
-  Widget _buildDesktopWeekNav(BuildContext context) {
+  Widget _buildDesktopWeekNav(BuildContext context, Color? pageTextColor) {
     final scheduleState = ref.watch(scheduleStoreProvider);
     final l10n = context.l10n;
     return Row(
@@ -339,7 +358,11 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
               ? l10n.allSchedules
               : '${l10n.weekUnit(scheduleState.currentPage)}'
                     '${scheduleState.currentPage == scheduleState.currentWeek ? " (${l10n.currentWeekLabel})" : ""}',
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: pageTextColor,
+          ),
         ),
         const SizedBox(width: 8),
         IconButton(
@@ -357,15 +380,11 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 样式切换
+        // 个性化配置
         IconButton(
           icon: const Icon(Icons.palette_outlined),
-          onPressed: () {
-            setState(() {
-              _showStyleSelector = !_showStyleSelector;
-            });
-          },
-          tooltip: l10n.switchStyle,
+          onPressed: () => AppRouter.push(AppRoutes.schedulePersonalization),
+          tooltip: l10n.schedulePersonalization,
         ),
         // 游客模式：HTML 导入
         if (!isLogin)
@@ -390,135 +409,9 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     );
   }
 
-  Widget _buildStyleSelector() {
-    final l10n = context.l10n;
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: ShapeDecoration(
-        shape: McSmoothCorners.shape(McRadii.navigationBorder),
-      ),
-      child: CupertinoSlidingSegmentedControl<CourseCardStyle>(
-        groupValue: _cardStyle,
-        onValueChanged: (CourseCardStyle? value) async {
-          if (value != null) {
-            setState(() {
-              _cardStyle = value;
-            });
-
-            double height = 55;
-            if (value == CourseCardStyle.small) {
-              height = 50;
-            } else if (value == CourseCardStyle.large) {
-              height = 60;
-            }
-
-            await ref
-                .read(scheduleStoreProvider.notifier)
-                .setCourseHeight(height);
-          }
-        },
-        children: {
-          CourseCardStyle.small: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(l10n.compact),
-          ),
-          CourseCardStyle.normal: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(l10n.standard),
-          ),
-          CourseCardStyle.large: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(l10n.relaxed),
-          ),
-        },
-      ),
-    );
-  }
-
-  Widget _buildSchedulePage(BuildContext context, int weekIndex) {
-    final scheduleState = ref.watch(scheduleStoreProvider);
-    final settings = ref.watch(settingsStoreProvider);
-    final weekStartDay = ref.watch(
-      schoolStoreProvider.select(
-        (value) => value.school?.weekStartDay ?? School.defaultWeekStartDay,
-      ),
-    );
-    final courses = scheduleState.allCourses[weekIndex];
-    final currentWeek = scheduleState.currentWeek;
-    final now = DateTime.now();
-
-    final weekStartDate = weekIndex == 0
-        ? WeekStartUtils.getWeekStart(now, weekStartDay)
-        : WeekStartUtils.getWeekStart(
-            now,
-            weekStartDay,
-          ).add(Duration(days: (weekIndex - currentWeek) * 7));
-
-    return Builder(
-      builder: (context) {
-        final scheduleContent = Column(
-          children: [
-            // 星期标题栏
-            WeekdayHeader(
-              weekStartDate: weekStartDate,
-              currentWeek: weekIndex == 0 ? null : weekIndex,
-              showDate: weekIndex > 0,
-              showGrid: settings.showCourseGrid,
-              highlightToday: currentWeek != 0,
-            ),
-            // 课表网格
-            Expanded(
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  height: scheduleState.height * 12,
-                  child: ScheduleGrid(
-                    courses: courses,
-                    cellHeight: scheduleState.height,
-                    weekStartDay: weekStartDay,
-                    isYanTa: scheduleState.isYanTa,
-                    cardStyle: _cardStyle,
-                    showGrid: settings.showCourseGrid,
-                    onCourseTap: (course) => _showCourseDetail(course),
-                    onCourseLongPress: (course) {
-                      if (course.isCustom) {
-                        _showCourseActions(course);
-                      }
-                    },
-                    onConflictCourseTap: (courses) =>
-                        _showConflictCourseSelector(courses),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-
-        return scheduleContent;
-      },
-    );
-  }
-
   /// 构建背景图片
   Widget _buildBackgroundImage(String imagePath) {
-    // 检查是否为网络图片
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-      return Image(
-        image: CachedNetworkImageProvider(imagePath),
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(color: Theme.of(context).scaffoldBackgroundColor);
-        },
-      );
-    }
-
-    // 本地文件图片（使用 image_helper 处理平台差异）
-    return getLocalImage(
-      imagePath,
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Container(color: Theme.of(context).scaffoldBackgroundColor);
-      },
-    );
+    return ScheduleBackgroundImage(imagePath: imagePath);
   }
 
   Future<void> _handleHtmlImport() async {
@@ -550,18 +443,23 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     }
   }
 
-  void _showCourseDetail(CourseModel course) {
+  void _showCourseDetail(CourseModel course, bool isDark) {
     CourseDetailSheet.show(
       context,
       course,
+      isDark: isDark,
       onEdit: course.isCustom ? () => _editCustomCourse(course) : null,
       onDelete: course.isCustom ? () => _deleteCustomCourse(course) : null,
     );
   }
 
   /// 显示冲突课程选择列表
-  void _showConflictCourseSelector(List<CourseModel> courses) {
+  void _showConflictCourseSelector(
+    List<CourseModel> courses,
+    ScheduleVisualStyle visualStyle,
+  ) {
     final l10n = context.l10n;
+
     showMcBottomSheet(
       context: context,
       builder: (_) => Column(
@@ -579,9 +477,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
                 width: 8,
                 height: 40,
                 decoration: ShapeDecoration(
-                  color: CourseColorManager.generateSoftColor(
-                    course.courseName,
-                  ),
+                  color: visualStyle.colorFor(course),
                   shape: McSmoothCorners.shape(McRadii.xsBorder),
                 ),
               ),
@@ -594,7 +490,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
               ),
               onTap: () {
                 Navigator.pop(context);
-                _showCourseDetail(course);
+                _showCourseDetail(course, visualStyle.isDark);
               },
             ),
           ),
@@ -746,5 +642,90 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
         // 处理错误
       }
     }
+  }
+}
+
+/// 单个周课表页。
+///
+/// 每个周页持有自己的 ScrollController，用于保留各自的滚动位置。
+class _WeekScheduleView extends StatefulWidget {
+  const _WeekScheduleView({
+    required this.weekIndex,
+    required this.currentWeek,
+    required this.courses,
+    required this.weekStartDay,
+    required this.isYanTa,
+    required this.visualStyle,
+    required this.onCourseTap,
+    required this.onCourseLongPress,
+    required this.onConflictCourseTap,
+  });
+
+  final int weekIndex;
+  final int currentWeek;
+  final List<CourseModel> courses;
+  final int weekStartDay;
+  final bool isYanTa;
+  final ScheduleVisualStyle visualStyle;
+  final void Function(CourseModel) onCourseTap;
+  final void Function(CourseModel) onCourseLongPress;
+  final void Function(List<CourseModel>) onConflictCourseTap;
+
+  @override
+  State<_WeekScheduleView> createState() => _WeekScheduleViewState();
+}
+
+class _WeekScheduleViewState extends State<_WeekScheduleView> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final weekStartDate = widget.weekIndex == 0
+        ? WeekStartUtils.getWeekStart(DateTime.now(), widget.weekStartDay)
+        : WeekStartUtils.getWeekStart(
+            DateTime.now(),
+            widget.weekStartDay,
+          ).add(Duration(days: (widget.weekIndex - widget.currentWeek) * 7));
+
+    return Column(
+      children: [
+        WeekdayHeader(
+          weekStartDate: weekStartDate,
+          currentWeek: widget.weekIndex == 0 ? null : widget.weekIndex,
+          showDate: widget.weekIndex > 0,
+          showGrid: widget.visualStyle.showGrid,
+          highlightToday: widget.currentWeek != 0,
+          height: widget.visualStyle.headerHeight,
+          timeColumnWidth: widget.visualStyle.timeColumnWidth,
+          hideDateUnderDay: widget.visualStyle.hideDateUnderDay,
+          textColor: widget.visualStyle.pageTextColor,
+        ),
+        Expanded(
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: SizedBox(
+              height: widget.visualStyle.gridHeight,
+              child: ScheduleGrid(
+                courses: widget.courses,
+                cellHeight: widget.visualStyle.cellHeight,
+                weekStartDay: widget.weekStartDay,
+                isYanTa: widget.isYanTa,
+                showGrid: widget.visualStyle.showGrid,
+                visualStyle: widget.visualStyle,
+                onCourseTap: widget.onCourseTap,
+                onCourseLongPress: widget.onCourseLongPress,
+                onConflictCourseTap: widget.onConflictCourseTap,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

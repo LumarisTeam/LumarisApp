@@ -43,10 +43,12 @@ class ScheduleTimeService {
   /// 返回是否成功装载；失败只记日志，调用方不需要处理异常。
   static Future<bool> fetchFromRemote({bool forceRefresh = false}) async {
     try {
-      final models =
-          await CourseApi.getScheduleTime(forceRefresh: forceRefresh);
-      final tables =
-          models.map(ScheduleTable.fromModel).toList(growable: false);
+      final models = await CourseApi.getScheduleTime(
+        forceRefresh: forceRefresh,
+      );
+      final tables = models
+          .map(ScheduleTable.fromModel)
+          .toList(growable: false);
       if (tables.isEmpty) {
         return false;
       }

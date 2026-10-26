@@ -9,14 +9,75 @@ import 'package:ios_club_app/features/education/models/payment_model.dart';
 import 'package:ios_club_app/features/education/models/plan_course.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/core/services/app_locale_service.dart';
+import 'package:ios_club_app/state/schedule_color_themes.dart';
 
 part 'app_states.freezed.dart';
 
-enum AuthState {
-  normal,
-  relogging,
-  relogSuccess,
-  relogFailed,
+enum AuthState { normal, relogging, relogSuccess, relogFailed }
+
+/// 课表课程块的边框样式。
+enum ScheduleBorderStyle { none, solid, dashed }
+
+/// 课表浅色模式默认颜色池：Catppuccin Macchiato 的 14 个 accent 色。
+///
+/// 浅/深色池仍分开存储活动主题，分别可编辑；两者默认均为 Macchiato。
+const List<Color> scheduleDefaultLightColorPool =
+    ScheduleColorThemeCatalog.macchiatoAccents;
+
+/// 课表深色模式默认颜色池：Catppuccin Macchiato 的 14 个 accent 色。
+const List<Color> scheduleDefaultDarkColorPool =
+    ScheduleColorThemeCatalog.macchiatoAccents;
+
+/// 浅色池默认主题（Macchiato）。
+const String scheduleDefaultLightThemeId =
+    ScheduleColorThemeCatalog.macchiatoId;
+
+/// 深色池默认主题（Macchiato）。
+const String scheduleDefaultDarkThemeId = ScheduleColorThemeCatalog.macchiatoId;
+
+/// 课表个性化样式。
+///
+/// 只承载纯外观字段；壁纸、网格线开关和格子高度分别由
+/// SettingsStore / ScheduleStore 管理。颜色池本身由活动主题派生，
+/// 避免颜色列表与主题 ID 出现两份数据源。
+@freezed
+class ScheduleStyleState with _$ScheduleStyleState {
+  const ScheduleStyleState._();
+
+  const factory ScheduleStyleState({
+    @Default(45.0) double headerHeight,
+    @Default(false) bool hideSectionTime,
+    @Default(false) bool hideDateUnderDay,
+    @Default(45.0) double timeColumnWidth,
+    @Default(false) bool showStartTime,
+    @Default(false) bool hideLocation,
+    Color? pageTextColor,
+    Color? courseTextColor,
+    @Default(false) bool hideTeacher,
+    @Default(false) bool centerHorizontally,
+    @Default(false) bool centerVertically,
+    @Default(ScheduleBorderStyle.none) ScheduleBorderStyle borderStyle,
+    @Default(1.0) double fontScale,
+    @Default(8.0) double cornerRadius,
+    @Default(4.0) double innerPadding,
+    @Default(2.0) double outerPadding,
+    @Default(1.0) double opacity,
+    @Default(scheduleDefaultLightThemeId) String lightColorPoolThemeId,
+    @Default(scheduleDefaultDarkThemeId) String darkColorPoolThemeId,
+    @Default(<String, ScheduleColorTheme>{})
+    Map<String, ScheduleColorTheme> customColorPoolThemes,
+    @Default(<String, Color>{}) Map<String, Color> courseColorOverrides,
+  }) = _ScheduleStyleState;
+
+  List<Color> get lightColorPool => ScheduleColorThemeCatalog.resolvePool(
+    themeId: lightColorPoolThemeId,
+    customThemes: customColorPoolThemes,
+  );
+
+  List<Color> get darkColorPool => ScheduleColorThemeCatalog.resolvePool(
+    themeId: darkColorPoolThemeId,
+    customThemes: customColorPoolThemes,
+  );
 }
 
 @freezed
@@ -35,6 +96,10 @@ class SettingsState with _$SettingsState {
     @Default('') String scheduleBackground,
     @Default('') String customBackgroundImage,
     bool? customBackgroundIsDark,
+    @Default('') String customBackgroundImageLight,
+    @Default('') String customBackgroundImageDark,
+    bool? customBackgroundIsDarkLight,
+    bool? customBackgroundIsDarkDark,
     @Default(School.defaultCode) String schoolId,
     @Default(false) bool hasAcceptedAgreement,
   }) = _SettingsState;
@@ -42,10 +107,8 @@ class SettingsState with _$SettingsState {
 
 @freezed
 class UserState with _$UserState {
-  const factory UserState({
-    @Default(false) bool isLogin,
-    UserData? userData,
-  }) = _UserState;
+  const factory UserState({@Default(false) bool isLogin, UserData? userData}) =
+      _UserState;
 }
 
 @freezed

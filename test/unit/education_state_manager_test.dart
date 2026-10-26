@@ -29,69 +29,72 @@ void main() {
   tearDown(EduHttpClientManager.resetForTest);
 
   group('EduHttpClientManager', () {
-    test('should initialize with default school url when settings is missing',
-        () {
-      EduHttpClientManager.initialize();
-      expect(
-        EduHttpClientManager.instance.baseUrl,
-        School.fallbackList.first.website,
-      );
-    });
+    test(
+      'should initialize with default school url when settings is missing',
+      () {
+        EduHttpClientManager.initialize();
+        expect(
+          EduHttpClientManager.instance.baseUrl,
+          School.fallbackList.first.website,
+        );
+      },
+    );
 
-    test('should update school config and reinitialize back to settings value',
-        () async {
-      final container = createContainer();
-      final settings = container.read(settingsStoreProvider.notifier);
-      expect(settings.schoolId, School.defaultCode);
+    test(
+      'should update school config and reinitialize back to settings value',
+      () async {
+        final container = createContainer();
+        final settings = container.read(settingsStoreProvider.notifier);
+        expect(settings.schoolId, School.defaultCode);
 
-      final manager = EduHttpClientManager.initialize(
-        school: settings.currentSchool,
-      );
-      final custom = School(
-        code: 'xauat',
-        name: '自定义',
-        website: 'https://custom.edu.example',
-        features: [Feature.timetable],
-        createdAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 1, 1),
-      );
+        final manager = EduHttpClientManager.initialize(
+          school: settings.currentSchool,
+        );
+        final custom = School(
+          code: 'xauat',
+          name: '自定义',
+          website: 'https://custom.edu.example',
+          features: [Feature.timetable],
+          createdAt: DateTime(2024, 1, 1),
+          updatedAt: DateTime(2024, 1, 1),
+        );
 
-      manager.updateSchoolConfig(custom);
-      expect(EduHttpClientManager.instance.baseUrl, custom.website);
+        manager.updateSchoolConfig(custom);
+        expect(EduHttpClientManager.instance.baseUrl, custom.website);
 
-      manager.reinitialize(school: settings.currentSchool);
-      expect(
-        EduHttpClientManager.instance.baseUrl,
-        School.fallbackList.first.website,
-      );
-    });
+        manager.reinitialize(school: settings.currentSchool);
+        expect(
+          EduHttpClientManager.instance.baseUrl,
+          School.fallbackList.first.website,
+        );
+      },
+    );
 
-    test('selectSchool should update persisted school and education client',
-        () async {
-      final container = createContainer();
-      final settings = container.read(settingsStoreProvider.notifier);
-      EduHttpClientManager.initialize(school: settings.currentSchool);
-      final selectedSchool = School(
-        code: School.defaultCode.toLowerCase(),
-        name: '自定义学校配置',
-        website: 'https://selected.edu.example',
-        features: [Feature.login],
-        createdAt: DateTime(2024, 1, 1),
-        updatedAt: DateTime(2024, 1, 1),
-      );
+    test(
+      'selectSchool should update persisted school and education client',
+      () async {
+        final container = createContainer();
+        final settings = container.read(settingsStoreProvider.notifier);
+        EduHttpClientManager.initialize(school: settings.currentSchool);
+        final selectedSchool = School(
+          code: School.defaultCode.toLowerCase(),
+          name: '自定义学校配置',
+          website: 'https://selected.edu.example',
+          features: [Feature.login],
+          createdAt: DateTime(2024, 1, 1),
+          updatedAt: DateTime(2024, 1, 1),
+        );
 
-      await settings.selectSchool(selectedSchool);
+        await settings.selectSchool(selectedSchool);
 
-      expect(settings.schoolId, School.defaultCode);
-      expect(
-        PrefsService.instance.getString(PrefsKeys.SCHOOL_ID),
-        School.defaultCode,
-      );
-      expect(
-        EduHttpClientManager.instance.baseUrl,
-        selectedSchool.website,
-      );
-    });
+        expect(settings.schoolId, School.defaultCode);
+        expect(
+          PrefsService.instance.getString(PrefsKeys.SCHOOL_ID),
+          School.defaultCode,
+        );
+        expect(EduHttpClientManager.instance.baseUrl, selectedSchool.website);
+      },
+    );
 
     test('SchoolStore should restore the cached non-default school', () async {
       final cachedSchool = School(
@@ -119,21 +122,26 @@ void main() {
   group('State Stores', () {
     test('ElectricityStore.toggleTile should update local tile list', () async {
       final touchedTiles = <String>[];
-      final container = createContainer(overrides: [
-        electricityTileAdderProvider.overrideWithValue(
-            (tileId) async => touchedTiles.add('add:$tileId')),
-        electricityTileRemoverProvider.overrideWithValue(
-          (tileId) async => touchedTiles.add('remove:$tileId'),
-        ),
-        tileConfigurationReaderProvider.overrideWithValue(
-          () async => throw StateError('not needed'),
-        ),
-      ]);
+      final container = createContainer(
+        overrides: [
+          electricityTileAdderProvider.overrideWithValue(
+            (tileId) async => touchedTiles.add('add:$tileId'),
+          ),
+          electricityTileRemoverProvider.overrideWithValue(
+            (tileId) async => touchedTiles.add('remove:$tileId'),
+          ),
+          tileConfigurationReaderProvider.overrideWithValue(
+            () async => throw StateError('not needed'),
+          ),
+        ],
+      );
       final store = container.read(electricityStoreProvider.notifier);
 
       await store.toggleTile('电费', false);
-      expect(container.read(electricityStoreProvider).tiles,
-          isNot(contains('电费')));
+      expect(
+        container.read(electricityStoreProvider).tiles,
+        isNot(contains('电费')),
+      );
 
       await store.toggleTile('电费', true);
       expect(container.read(electricityStoreProvider).tiles, contains('电费'));
@@ -142,16 +150,19 @@ void main() {
 
     test('PaymentStore.toggleTileShow should switch local state', () async {
       final touchedTiles = <String>[];
-      final container = createContainer(overrides: [
-        tileAdderProvider.overrideWithValue(
-            (tileId) async => touchedTiles.add('add:$tileId')),
-        tileRemoverProvider.overrideWithValue(
-          (tileId) async => touchedTiles.add('remove:$tileId'),
-        ),
-        tileConfigurationReaderProvider.overrideWithValue(
-          () async => throw StateError('not needed'),
-        ),
-      ]);
+      final container = createContainer(
+        overrides: [
+          tileAdderProvider.overrideWithValue(
+            (tileId) async => touchedTiles.add('add:$tileId'),
+          ),
+          tileRemoverProvider.overrideWithValue(
+            (tileId) async => touchedTiles.add('remove:$tileId'),
+          ),
+          tileConfigurationReaderProvider.overrideWithValue(
+            () async => throw StateError('not needed'),
+          ),
+        ],
+      );
       final store = container.read(paymentStoreProvider.notifier);
 
       await store.toggleTileShow(false);

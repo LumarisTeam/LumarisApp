@@ -14,11 +14,7 @@ class TotalData {
   @JsonKey(fromJson: parseSchemaDouble)
   final double full;
 
-  TotalData({
-    required this.name,
-    required this.actual,
-    required this.full,
-  });
+  TotalData({required this.name, required this.actual, required this.full});
 
   factory TotalData.fromJson(Map<String, dynamic> json) =>
       _$TotalDataFromJson(json);
@@ -36,11 +32,7 @@ class InfoModel {
   @JsonKey(fromJson: _totalDataListFromJson)
   final List<TotalData> other;
 
-  InfoModel({
-    required this.type,
-    required this.total,
-    required this.other,
-  });
+  InfoModel({required this.type, required this.total, required this.other});
 
   factory InfoModel.fromJson(Map<String, dynamic> json) =>
       _$InfoModelFromJson(json);

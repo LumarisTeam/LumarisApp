@@ -25,11 +25,7 @@ void main() {
     test('should deserialize and serialize correctly', () {
       final json = <String, dynamic>{
         'type': 'completion',
-        'total': <String, dynamic>{
-          'name': '总计',
-          'actual': 80,
-          'full': 100,
-        },
+        'total': <String, dynamic>{'name': '总计', 'actual': 80, 'full': 100},
         'other': <Map<String, dynamic>>[
           <String, dynamic>{'name': '课程', 'actual': 50, 'full': 60},
           <String, dynamic>{'name': '实验', 'actual': 30.5, 'full': 40},

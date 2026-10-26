@@ -33,8 +33,9 @@ void main() {
         },
       );
 
-      final value =
-          await service.fetchCurrentBalance(url: 'https://example.com/e');
+      final value = await service.fetchCurrentBalance(
+        url: 'https://example.com/e',
+      );
 
       expect(value, 12.5);
       expect(receivedUrl, 'https://example.com/e');
@@ -63,21 +64,23 @@ void main() {
       expect(receivedUrl, 'https://cached.example.com/e');
     });
 
-    test('should_return_null_when_balance_request_has_no_input_and_no_cache',
-        () async {
-      var called = false;
-      final service = ElectricityService(
-        balanceReader: ({String? url}) async {
-          called = true;
-          return 1.0;
-        },
-      );
+    test(
+      'should_return_null_when_balance_request_has_no_input_and_no_cache',
+      () async {
+        var called = false;
+        final service = ElectricityService(
+          balanceReader: ({String? url}) async {
+            called = true;
+            return 1.0;
+          },
+        );
 
-      final value = await service.fetchCurrentBalance();
+        final value = await service.fetchCurrentBalance();
 
-      expect(value, isNull);
-      expect(called, isFalse);
-    });
+        expect(value, isNull);
+        expect(called, isFalse);
+      },
+    );
 
     test('should_return_null_when_balance_reader_throws', () async {
       final service = ElectricityService(
@@ -144,18 +147,18 @@ void main() {
 
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(launcherChannel, (call) async {
-        final url = (call.arguments is Map)
-            ? (call.arguments['url'] as String? ?? '')
-            : call.arguments.toString();
-        if (call.method == 'canLaunch' || call.method == 'canLaunchUrl') {
-          return url.startsWith('weixin://');
-        }
-        if (call.method == 'launch' || call.method == 'launchUrl') {
-          launched.add(url);
-          return true;
-        }
-        return null;
-      });
+            final url = (call.arguments is Map)
+                ? (call.arguments['url'] as String? ?? '')
+                : call.arguments.toString();
+            if (call.method == 'canLaunch' || call.method == 'canLaunchUrl') {
+              return url.startsWith('weixin://');
+            }
+            if (call.method == 'launch' || call.method == 'launchUrl') {
+              launched.add(url);
+              return true;
+            }
+            return null;
+          });
 
       await service.openRechargePage();
 
@@ -171,18 +174,18 @@ void main() {
 
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(launcherChannel, (call) async {
-        final url = (call.arguments is Map)
-            ? (call.arguments['url'] as String? ?? '')
-            : call.arguments.toString();
-        if (call.method == 'canLaunch' || call.method == 'canLaunchUrl') {
-          return url.startsWith('http');
-        }
-        if (call.method == 'launch' || call.method == 'launchUrl') {
-          launched.add(url);
-          return true;
-        }
-        return null;
-      });
+            final url = (call.arguments is Map)
+                ? (call.arguments['url'] as String? ?? '')
+                : call.arguments.toString();
+            if (call.method == 'canLaunch' || call.method == 'canLaunchUrl') {
+              return url.startsWith('http');
+            }
+            if (call.method == 'launch' || call.method == 'launchUrl') {
+              launched.add(url);
+              return true;
+            }
+            return null;
+          });
 
       await service.openRechargePage();
 
@@ -194,10 +197,7 @@ void main() {
         rechargeUrlReader: ({String? url}) async => null,
       );
 
-      await expectLater(
-        service.openRechargePage,
-        throwsA(isA<String>()),
-      );
+      await expectLater(service.openRechargePage, throwsA(isA<String>()));
     });
 
     test('should_throw_when_no_launcher_is_available', () async {
@@ -208,16 +208,13 @@ void main() {
 
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(launcherChannel, (call) async {
-        if (call.method == 'canLaunch' || call.method == 'canLaunchUrl') {
-          return false;
-        }
-        return null;
-      });
+            if (call.method == 'canLaunch' || call.method == 'canLaunchUrl') {
+              return false;
+            }
+            return null;
+          });
 
-      await expectLater(
-        service.openRechargePage,
-        throwsA(isA<String>()),
-      );
+      await expectLater(service.openRechargePage, throwsA(isA<String>()));
     });
 
     test('should_save_and_read_subscription_email', () async {
@@ -228,53 +225,57 @@ void main() {
 
       expect(email, 'codex@example.com');
       expect(
-        PrefsService.instance
-            .getString(PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL),
+        PrefsService.instance.getString(
+          PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL,
+        ),
         'codex@example.com',
       );
     });
 
-    test('should_create_subscription_with_cached_url_and_persist_email',
-        () async {
-      await PrefsService.instance.setString(
-        PrefsKeys.ELECTRICITY_URL,
-        'https://cached.example.com/e',
-      );
+    test(
+      'should_create_subscription_with_cached_url_and_persist_email',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.ELECTRICITY_URL,
+          'https://cached.example.com/e',
+        );
 
-      CreateElectricitySubscriptionRequest? receivedRequest;
-      final service = ElectricityService(
-        subscriptionCreator: (request) async {
-          receivedRequest = request;
-          return ElectricitySubscriptionResponse(
-            id: 'sub-1',
-            url: request.url,
-            email: request.email,
-            threshold: request.threshold ?? 0,
-            isActive: true,
-            createdAt: DateTime.parse('2026-05-01T10:00:00Z'),
-            updatedAt: DateTime.parse('2026-05-01T10:00:00Z'),
-            nextCheckAt: DateTime.parse('2026-05-01T11:00:00Z'),
-            lastErrorMessage: '',
-          );
-        },
-      );
+        CreateElectricitySubscriptionRequest? receivedRequest;
+        final service = ElectricityService(
+          subscriptionCreator: (request) async {
+            receivedRequest = request;
+            return ElectricitySubscriptionResponse(
+              id: 'sub-1',
+              url: request.url,
+              email: request.email,
+              threshold: request.threshold ?? 0,
+              isActive: true,
+              createdAt: DateTime.parse('2026-05-01T10:00:00Z'),
+              updatedAt: DateTime.parse('2026-05-01T10:00:00Z'),
+              nextCheckAt: DateTime.parse('2026-05-01T11:00:00Z'),
+              lastErrorMessage: '',
+            );
+          },
+        );
 
-      final subscription = await service.createSubscription(
-        email: ' codex@example.com ',
-        threshold: 12.5,
-      );
+        final subscription = await service.createSubscription(
+          email: ' codex@example.com ',
+          threshold: 12.5,
+        );
 
-      expect(receivedRequest, isNotNull);
-      expect(receivedRequest!.url, 'https://cached.example.com/e');
-      expect(receivedRequest!.email, 'codex@example.com');
-      expect(receivedRequest!.threshold, 12.5);
-      expect(subscription.id, 'sub-1');
-      expect(
-        PrefsService.instance
-            .getString(PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL),
-        'codex@example.com',
-      );
-    });
+        expect(receivedRequest, isNotNull);
+        expect(receivedRequest!.url, 'https://cached.example.com/e');
+        expect(receivedRequest!.email, 'codex@example.com');
+        expect(receivedRequest!.threshold, 12.5);
+        expect(subscription.id, 'sub-1');
+        expect(
+          PrefsService.instance.getString(
+            PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL,
+          ),
+          'codex@example.com',
+        );
+      },
+    );
 
     test('should_query_subscription_with_explicit_email', () async {
       String? receivedEmail;
@@ -290,40 +291,43 @@ void main() {
         },
       );
 
-      final result =
-          await service.getSubscription(email: ' codex@example.com ');
+      final result = await service.getSubscription(
+        email: ' codex@example.com ',
+      );
 
       expect(receivedEmail, 'codex@example.com');
       expect(result.hasSubscription, isTrue);
       expect(result.subscriptionId, 'sub-1');
     });
 
-    test('should_query_subscription_with_saved_email_when_not_provided',
-        () async {
-      await PrefsService.instance.setString(
-        PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL,
-        'cached@example.com',
-      );
+    test(
+      'should_query_subscription_with_saved_email_when_not_provided',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.ELECTRICITY_SUBSCRIPTION_EMAIL,
+          'cached@example.com',
+        );
 
-      String? receivedEmail;
-      final service = ElectricityService(
-        subscriptionQueryReader: (email) async {
-          receivedEmail = email;
-          return const ElectricitySubscriptionQueryResponse(
-            email: 'cached@example.com',
-            hasSubscription: false,
-            subscriptionId: '',
-            threshold: 0,
-          );
-        },
-      );
+        String? receivedEmail;
+        final service = ElectricityService(
+          subscriptionQueryReader: (email) async {
+            receivedEmail = email;
+            return const ElectricitySubscriptionQueryResponse(
+              email: 'cached@example.com',
+              hasSubscription: false,
+              subscriptionId: '',
+              threshold: 0,
+            );
+          },
+        );
 
-      final result = await service.getSubscription();
+        final result = await service.getSubscription();
 
-      expect(receivedEmail, 'cached@example.com');
-      expect(result.email, 'cached@example.com');
-      expect(result.hasSubscription, isFalse);
-    });
+        expect(receivedEmail, 'cached@example.com');
+        expect(result.email, 'cached@example.com');
+        expect(result.hasSubscription, isFalse);
+      },
+    );
 
     test('should_throw_when_querying_subscription_without_email', () async {
       final service = ElectricityService(
@@ -337,10 +341,7 @@ void main() {
         },
       );
 
-      await expectLater(
-        service.getSubscription,
-        throwsA(isA<StateError>()),
-      );
+      await expectLater(service.getSubscription, throwsA(isA<StateError>()));
     });
 
     test('should_delegate_subscription_delete', () async {

@@ -717,15 +717,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scheduleSettingsTitle => 'Schedule Settings';
 
   @override
-  String get compact => 'Compact';
-
-  @override
-  String get standard => 'Standard';
-
-  @override
-  String get relaxed => 'Relaxed';
-
-  @override
   String get selectCourse => 'Select Course';
 
   @override
@@ -2113,4 +2104,203 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get permissionWidgetFeatureDesc =>
       'Allow background running so the home screen widget updates on time.';
+
+  @override
+  String get schedulePersonalization => 'Personalization';
+
+  @override
+  String get resetToDefaultStyle => 'Reset to default style';
+
+  @override
+  String get resetStyleConfirmTitle => 'Reset default style';
+
+  @override
+  String get resetStyleConfirmMessage =>
+      'This resets colors, text, borders, and sizes. Wallpaper will be kept. Continue?';
+
+  @override
+  String get sectionInterface => 'Interface';
+
+  @override
+  String get scheduleWallpaper => 'Schedule Wallpaper';
+
+  @override
+  String get wallpaperTapHint => 'Not set (tap to select image)';
+
+  @override
+  String get wallpaperClearHint => 'Set (long-press to clear)';
+
+  @override
+  String get hideGridLines => 'Hide Grid Lines';
+
+  @override
+  String get schedulePageTextColor => 'Schedule text color';
+
+  @override
+  String get sectionGridSize => 'Grid Size';
+
+  @override
+  String get gridHeight => 'Grid Height';
+
+  @override
+  String get topHeaderHeight => 'Top Header Height';
+
+  @override
+  String get sectionCourseBlock => 'Course Block Settings';
+
+  @override
+  String get courseBlockTextColor => 'Course block text color';
+
+  @override
+  String get hideTeacher => 'Hide Teacher';
+
+  @override
+  String get textAlignCenterH => 'Horizontal Center';
+
+  @override
+  String get textAlignCenterV => 'Vertical Center';
+
+  @override
+  String get borderStyle => 'Border Style';
+
+  @override
+  String get borderStyleNone => 'None';
+
+  @override
+  String get borderStyleSolid => 'Solid';
+
+  @override
+  String get borderStyleDashed => 'Dashed';
+
+  @override
+  String get sectionColorScheme => 'Color Scheme';
+
+  @override
+  String get lightColorPool => 'Light Mode Color Pool';
+
+  @override
+  String get darkColorPool => 'Dark Mode Color Pool';
+
+  @override
+  String get resetColor => 'Reset color';
+
+  @override
+  String get useTheme => 'Follow theme';
+
+  @override
+  String get hideSectionTime => 'Hide Section Times';
+
+  @override
+  String get hideDateUnderDay => 'Hide Date Under Day';
+
+  @override
+  String get timeColumnWidth => 'Time Column Width';
+
+  @override
+  String get showStartTime => 'Show Start Time';
+
+  @override
+  String get hideLocation => 'Hide Location';
+
+  @override
+  String get fontScale => 'Font Scale';
+
+  @override
+  String get cornerRadius => 'Corner Radius';
+
+  @override
+  String get innerPadding => 'Inner Padding';
+
+  @override
+  String get outerPadding => 'Outer Padding';
+
+  @override
+  String get opacity => 'Opacity';
+
+  @override
+  String get wallpaperEditingLight => 'Light mode';
+
+  @override
+  String get wallpaperEditingDark => 'Dark mode';
+
+  @override
+  String get inputValue => 'Enter a value';
+
+  @override
+  String get changeCourseColor => 'Change Course Color';
+
+  @override
+  String get resetCourseColor => 'Reset to Default Color';
+
+  @override
+  String get colorTheme => 'Color Theme';
+
+  @override
+  String get customThemes => 'Custom Themes';
+
+  @override
+  String get newCustomTheme => 'New Custom Theme';
+
+  @override
+  String get copyAsCustomTheme => 'Copy as Custom Theme';
+
+  @override
+  String copyThemeName(String name) {
+    return '$name Copy';
+  }
+
+  @override
+  String get editColorPool => 'Edit Colors';
+
+  @override
+  String get builtInThemeReadOnly =>
+      'Built-in themes are read-only. Copy one to a custom theme to edit it.';
+
+  @override
+  String get colorThemeNameHint => 'Enter a theme name';
+
+  @override
+  String get colorThemeNameRequired => 'Please enter a theme name';
+
+  @override
+  String get colorThemeNameDuplicate =>
+      'A theme with this name already exists or is reserved';
+
+  @override
+  String colorThemeNameTooLong(int max) {
+    return 'Theme name cannot exceed $max characters';
+  }
+
+  @override
+  String get renameTheme => 'Rename Theme';
+
+  @override
+  String get deleteTheme => 'Delete Theme';
+
+  @override
+  String deleteThemeConfirmMessage(String name) {
+    return 'Delete theme \"$name\"? Pools using it will revert to their default theme.';
+  }
+
+  @override
+  String get addColor => 'Add Color';
+
+  @override
+  String get editColor => 'Edit Color';
+
+  @override
+  String get deleteColor => 'Delete Color';
+
+  @override
+  String get minOneColorHint => 'Keep at least one color';
+
+  @override
+  String maxColorLimitHint(int max) {
+    return 'Up to $max colors';
+  }
+
+  @override
+  String colorCount(int count) {
+    return 'Colors: $count';
+  }
 }

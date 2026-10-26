@@ -49,8 +49,9 @@ class MapNotifier extends Notifier<MapState> {
     }
   }
 
-  Future<void> checkLocationPermission(
-      {bool openSettingsOnFailure = false}) async {
+  Future<void> checkLocationPermission({
+    bool openSettingsOnFailure = false,
+  }) async {
     if (state.isLoadingLocation) return; // Prevent concurrent requests
 
     state = state.copyWith(isLoadingLocation: true);
@@ -128,13 +129,14 @@ class MapNotifier extends Notifier<MapState> {
       }
 
       AppLogger.debug(
-          'MapNotifier: Position received: ${position.latitude}, ${position.longitude}');
-
-      final gcj02Location =
-          _wgs84ToGcj02(position.latitude, position.longitude);
-      state = state.copyWith(
-        currentLocation: gcj02Location,
+        'MapNotifier: Position received: ${position.latitude}, ${position.longitude}',
       );
+
+      final gcj02Location = _wgs84ToGcj02(
+        position.latitude,
+        position.longitude,
+      );
+      state = state.copyWith(currentLocation: gcj02Location);
       AppLogger.debug('MapNotifier: State updated with location');
     } on PermissionDeniedException catch (e) {
       // Permission denial is an expected user choice, not an application error.
@@ -202,7 +204,8 @@ class MapNotifier extends Notifier<MapState> {
     }
 
     AppLogger.debug(
-        'MapNotifier: Using recent last known position as fallback');
+      'MapNotifier: Using recent last known position as fallback',
+    );
     return position;
   }
 
@@ -235,20 +238,24 @@ class MapNotifier extends Notifier<MapState> {
   }
 
   double _transformLat(double x, double y) {
-    double ret = -100.0 +
+    double ret =
+        -100.0 +
         2.0 * x +
         3.0 * y +
         0.2 * y * y +
         0.1 * x * y +
         0.2 * math.sqrt(x.abs());
-    ret += (20.0 * math.sin(6.0 * x * math.pi) +
+    ret +=
+        (20.0 * math.sin(6.0 * x * math.pi) +
             20.0 * math.sin(2.0 * x * math.pi)) *
         2.0 /
         3.0;
-    ret += (20.0 * math.sin(y * math.pi) + 40.0 * math.sin(y / 3.0 * math.pi)) *
+    ret +=
+        (20.0 * math.sin(y * math.pi) + 40.0 * math.sin(y / 3.0 * math.pi)) *
         2.0 /
         3.0;
-    ret += (160.0 * math.sin(y / 12.0 * math.pi) +
+    ret +=
+        (160.0 * math.sin(y / 12.0 * math.pi) +
             320 * math.sin(y * math.pi / 30.0)) *
         2.0 /
         3.0;
@@ -256,20 +263,24 @@ class MapNotifier extends Notifier<MapState> {
   }
 
   double _transformLng(double x, double y) {
-    double ret = 300.0 +
+    double ret =
+        300.0 +
         x +
         2.0 * y +
         0.1 * x * x +
         0.1 * x * y +
         0.1 * math.sqrt(x.abs());
-    ret += (20.0 * math.sin(6.0 * x * math.pi) +
+    ret +=
+        (20.0 * math.sin(6.0 * x * math.pi) +
             20.0 * math.sin(2.0 * x * math.pi)) *
         2.0 /
         3.0;
-    ret += (20.0 * math.sin(x * math.pi) + 40.0 * math.sin(x / 3.0 * math.pi)) *
+    ret +=
+        (20.0 * math.sin(x * math.pi) + 40.0 * math.sin(x / 3.0 * math.pi)) *
         2.0 /
         3.0;
-    ret += (150.0 * math.sin(x / 12.0 * math.pi) +
+    ret +=
+        (150.0 * math.sin(x / 12.0 * math.pi) +
             300.0 * math.sin(x / 30.0 * math.pi)) *
         2.0 /
         3.0;
@@ -277,5 +288,6 @@ class MapNotifier extends Notifier<MapState> {
   }
 }
 
-final mapNotifierProvider =
-    NotifierProvider<MapNotifier, MapState>(MapNotifier.new);
+final mapNotifierProvider = NotifierProvider<MapNotifier, MapState>(
+  MapNotifier.new,
+);

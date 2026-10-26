@@ -33,12 +33,17 @@ void main() {
   });
 
   // ─── 辅助：直接向 box 写入已过期条目 ───────────────────────────────────────
-  Future<void> putExpired(String url, dynamic data,
-      {Map<String, dynamic>? params}) async {
+  Future<void> putExpired(
+    String url,
+    dynamic data, {
+    Map<String, dynamic>? params,
+  }) async {
     final box = Hive.box(HiveManager.requestCacheBoxName);
-    final paramsString =
-        (params != null && params.isNotEmpty) ? jsonEncode(params) : '';
-    final key = 'request_cache_${Uri.encodeComponent(url)}_'
+    final paramsString = (params != null && params.isNotEmpty)
+        ? jsonEncode(params)
+        : '';
+    final key =
+        'request_cache_${Uri.encodeComponent(url)}_'
         '${Uri.encodeComponent(paramsString)}';
     final entry = CacheEntry(
       data: data,
@@ -118,19 +123,31 @@ void main() {
     });
 
     test('should_differentiate_entries_by_params', () async {
-      await cache
-          .set('https://example.com/api', 'result_a', params: {'page': '1'});
-      await cache
-          .set('https://example.com/api', 'result_b', params: {'page': '2'});
+      await cache.set(
+        'https://example.com/api',
+        'result_a',
+        params: {'page': '1'},
+      );
+      await cache.set(
+        'https://example.com/api',
+        'result_b',
+        params: {'page': '2'},
+      );
 
       expect(
-          await cache
-              .get<String>('https://example.com/api', params: {'page': '1'}),
-          'result_a');
+        await cache.get<String>(
+          'https://example.com/api',
+          params: {'page': '1'},
+        ),
+        'result_a',
+      );
       expect(
-          await cache
-              .get<String>('https://example.com/api', params: {'page': '2'}),
-          'result_b');
+        await cache.get<String>(
+          'https://example.com/api',
+          params: {'page': '2'},
+        ),
+        'result_b',
+      );
     });
 
     test('should_respect_explicit_maxAge_over_url_policy', () async {
@@ -141,8 +158,9 @@ void main() {
       );
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
-      final result =
-          await cache.get<String>('https://example.com/api/score/list');
+      final result = await cache.get<String>(
+        'https://example.com/api/score/list',
+      );
       expect(result, isNull); // 自定义 1ms TTL 已过期，而非 score 的 1h 策略
     });
   });
@@ -160,7 +178,9 @@ void main() {
 
     test('should_not_throw_when_deleting_non_existent_key', () async {
       await expectLater(
-          cache.delete('https://example.com/api/nonexistent'), completes);
+        cache.delete('https://example.com/api/nonexistent'),
+        completes,
+      );
     });
   });
 
@@ -174,9 +194,13 @@ void main() {
 
       expect(await cache.get<String>('https://example.com/api/valid'), 'keep');
       expect(
-          await cache.get<String>('https://example.com/api/expired1'), isNull);
+        await cache.get<String>('https://example.com/api/expired1'),
+        isNull,
+      );
       expect(
-          await cache.get<String>('https://example.com/api/expired2'), isNull);
+        await cache.get<String>('https://example.com/api/expired2'),
+        isNull,
+      );
     });
 
     test('should_return_count_of_removed_entries', () async {
@@ -244,7 +268,8 @@ void main() {
       final before = DateTime.now();
       await cache.set('https://api.example.com/course/list', 'data');
       final expiry = DateTime.fromMillisecondsSinceEpoch(
-          await getExpiryMs('https://api.example.com/course/list'));
+        await getExpiryMs('https://api.example.com/course/list'),
+      );
 
       // medium-term = 15 分钟
       expect(expiry.isAfter(before.add(const Duration(minutes: 14))), isTrue);
@@ -255,7 +280,8 @@ void main() {
       final before = DateTime.now();
       await cache.set('https://api.example.com/score/query', 'data');
       final expiry = DateTime.fromMillisecondsSinceEpoch(
-          await getExpiryMs('https://api.example.com/score/query'));
+        await getExpiryMs('https://api.example.com/score/query'),
+      );
 
       // long-term = 1 小时
       expect(expiry.isAfter(before.add(const Duration(minutes: 59))), isTrue);
@@ -266,7 +292,8 @@ void main() {
       final before = DateTime.now();
       await cache.set('https://api.example.com/bus/schedule', 'data');
       final expiry = DateTime.fromMillisecondsSinceEpoch(
-          await getExpiryMs('https://api.example.com/bus/schedule'));
+        await getExpiryMs('https://api.example.com/bus/schedule'),
+      );
 
       // short-term = 1 分钟
       expect(expiry.isAfter(before.add(const Duration(seconds: 59))), isTrue);
@@ -277,7 +304,8 @@ void main() {
       final before = DateTime.now();
       await cache.set('https://api.example.com/unknown/endpoint', 'data');
       final expiry = DateTime.fromMillisecondsSinceEpoch(
-          await getExpiryMs('https://api.example.com/unknown/endpoint'));
+        await getExpiryMs('https://api.example.com/unknown/endpoint'),
+      );
 
       // default = 5 分钟
       expect(expiry.isAfter(before.add(const Duration(minutes: 4))), isTrue);
@@ -319,8 +347,10 @@ void main() {
     });
 
     test('should_cache_GET_200_response_data', () async {
-      final options =
-          RequestOptions(path: 'https://example.com/api/data', method: 'GET');
+      final options = RequestOptions(
+        path: 'https://example.com/api/data',
+        method: 'GET',
+      );
       final response = Response<Map>(
         data: {'key': 'value'},
         requestOptions: options,
@@ -335,16 +365,19 @@ void main() {
       // 使用与拦截器相同的 URL 和 params 查询
       final cached = await cache.get<Map>(
         options.uri.toString(),
-        params:
-            options.queryParameters.isEmpty ? null : options.queryParameters,
+        params: options.queryParameters.isEmpty
+            ? null
+            : options.queryParameters,
       );
       expect(cached, isNotNull);
       expect(cached!['key'], 'value');
     });
 
     test('should_not_cache_non_GET_response', () async {
-      final options =
-          RequestOptions(path: 'https://example.com/api/data', method: 'POST');
+      final options = RequestOptions(
+        path: 'https://example.com/api/data',
+        method: 'POST',
+      );
       final response = Response<Map>(
         data: {'key': 'value'},
         requestOptions: options,
@@ -360,8 +393,10 @@ void main() {
     });
 
     test('should_not_cache_non_200_GET_response', () async {
-      final options =
-          RequestOptions(path: 'https://example.com/api/data', method: 'GET');
+      final options = RequestOptions(
+        path: 'https://example.com/api/data',
+        method: 'GET',
+      );
       final response = Response<Map>(
         data: {'error': 'not found'},
         requestOptions: options,

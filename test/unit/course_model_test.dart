@@ -105,10 +105,7 @@ void main() {
     });
 
     test('should handle boundary values for startUnit and endUnit', () {
-      final course = CourseModel(
-        startUnit: -1,
-        endUnit: 10,
-      );
+      final course = CourseModel(startUnit: -1, endUnit: 10);
 
       expect(course.startUnit, -1);
       expect(course.endUnit, 10);
@@ -143,8 +140,10 @@ void main() {
     });
 
     test('should handle large week numbers', () {
-      expect(CourseModel.formatWeekRanges([10, 11, 12, 15, 16, 20]),
-          '10-12,15-16,20');
+      expect(
+        CourseModel.formatWeekRanges([10, 11, 12, 15, 16, 20]),
+        '10-12,15-16,20',
+      );
       expect(CourseModel.formatWeekRanges([100]), '100');
       expect(CourseModel.formatWeekRanges([99, 100, 101]), '99-101');
     });

@@ -48,8 +48,9 @@ class EducationRefreshService {
     }
   }
 
-  static Future<bool> refreshWithExistingSession(
-      {bool isForced = false}) async {
+  static Future<bool> refreshWithExistingSession({
+    bool isForced = false,
+  }) async {
     try {
       final cookieData = await AuthService.getUserData();
       if (cookieData == null) {
@@ -70,7 +71,7 @@ class EducationRefreshService {
             userData: cookieData,
             forceRefresh: true,
           ),
-          CourseService.getCourse(userData: cookieData, isRefresh: true)
+          CourseService.getCourse(userData: cookieData, isRefresh: true),
         ]);
       }
 

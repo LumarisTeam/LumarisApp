@@ -3,29 +3,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/ui/components/loading_state_view.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-Widget _wrap(
-  Widget child, {
-  ThemeMode themeMode = ThemeMode.light,
-}) {
+Widget _wrap(Widget child, {ThemeMode themeMode = ThemeMode.light}) {
   return MaterialApp(
     themeMode: themeMode,
     theme: ThemeData.light(),
     darkTheme: ThemeData.dark(),
-    home: Scaffold(
-      body: Center(child: child),
-    ),
+    home: Scaffold(body: Center(child: child)),
   );
 }
 
 void main() {
   testWidgets('should_render_title_subtitle_and_full_layout', (tester) async {
     await tester.pumpWidget(
-      _wrap(
-        const LoadingStateView(
-          title: '正在同步教务数据',
-          subtitle: '网络较慢时可能需要几秒',
-        ),
-      ),
+      _wrap(const LoadingStateView(title: '正在同步教务数据', subtitle: '网络较慢时可能需要几秒')),
     );
 
     expect(find.text('正在同步教务数据'), findsOneWidget);
@@ -35,21 +25,13 @@ void main() {
 
   testWidgets('should_build_in_light_and_dark_themes', (tester) async {
     await tester.pumpWidget(
-      _wrap(
-        const LoadingStateView(
-          title: '正在加载课表',
-          subtitle: '正在读取课程和偏好设置',
-        ),
-      ),
+      _wrap(const LoadingStateView(title: '正在加载课表', subtitle: '正在读取课程和偏好设置')),
     );
     expect(find.text('正在加载课表'), findsOneWidget);
 
     await tester.pumpWidget(
       _wrap(
-        const LoadingStateView(
-          title: '正在加载课表',
-          subtitle: '正在读取课程和偏好设置',
-        ),
+        const LoadingStateView(title: '正在加载课表', subtitle: '正在读取课程和偏好设置'),
         themeMode: ThemeMode.dark,
       ),
     );

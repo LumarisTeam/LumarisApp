@@ -5,9 +5,7 @@ export 'package:ios_club_app/state/app_states.dart'
     show AuthState, AuthStateView;
 
 final authStateNotifierProvider =
-    NotifierProvider<AuthStateNotifier, AuthStateView>(
-  AuthStateNotifier.new,
-);
+    NotifierProvider<AuthStateNotifier, AuthStateView>(AuthStateNotifier.new);
 
 class AuthStateNotifier extends Notifier<AuthStateView> {
   @override

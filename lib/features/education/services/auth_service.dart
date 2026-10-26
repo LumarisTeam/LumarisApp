@@ -195,7 +195,8 @@ class AuthService {
     }
 
     throw const FormatException(
-        'Cookie data is invalid after successful login');
+      'Cookie data is invalid after successful login',
+    );
   }
 
   static Future<UserData?> getCookie() async {

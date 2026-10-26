@@ -52,43 +52,45 @@ void main() {
   });
 
   group('manual refresh retention', () {
-    test('ProgramPageNotifier should retain old data when refresh fails',
-        () async {
-      final programs = [
-        PlanCourseList(
-          term: '1',
-          courses: [
-            PlanCourse(
-              name: '高等数学',
-              courseTypeName: '必修',
-              credits: 4,
-              examMode: '考试',
-            ),
-          ],
-        ),
-      ];
-      final container = createContainer([
-        programAutoLoadProvider.overrideWithValue(false),
-        programsFetcherProvider.overrideWithValue(
-          ({bool forceRefresh = false}) async {
+    test(
+      'ProgramPageNotifier should retain old data when refresh fails',
+      () async {
+        final programs = [
+          PlanCourseList(
+            term: '1',
+            courses: [
+              PlanCourse(
+                name: '高等数学',
+                courseTypeName: '必修',
+                credits: 4,
+                examMode: '考试',
+              ),
+            ],
+          ),
+        ];
+        final container = createContainer([
+          programAutoLoadProvider.overrideWithValue(false),
+          programsFetcherProvider.overrideWithValue(({
+            bool forceRefresh = false,
+          }) async {
             if (forceRefresh) {
               throw Exception('refresh failed');
             }
             return programs;
-          },
-        ),
-      ]);
-      final store = container.read(programControllerProvider.notifier);
+          }),
+        ]);
+        final store = container.read(programControllerProvider.notifier);
 
-      await store.loadPrograms();
-      await store.refreshPrograms();
+        await store.loadPrograms();
+        await store.refreshPrograms();
 
-      final state = container.read(programControllerProvider);
-      expect(state.programs, hasLength(1));
-      expect(state.programs.single.courses.single.name, '高等数学');
-      expect(state.isError, isFalse);
-      expect(state.errorMessage, isNotEmpty);
-    });
+        final state = container.read(programControllerProvider);
+        expect(state.programs, hasLength(1));
+        expect(state.programs.single.courses.single.name, '高等数学');
+        expect(state.isError, isFalse);
+        expect(state.errorMessage, isNotEmpty);
+      },
+    );
 
     test('BusPageNotifier should retain old data when refresh fails', () async {
       final initialModel = BusModel(
@@ -106,14 +108,15 @@ void main() {
       );
       final container = createContainer([
         busPageAutoLoadProvider.overrideWithValue(false),
-        busPageFetcherProvider.overrideWithValue(
-          ({String? dayDate, bool forceRefresh = false}) async {
-            if (forceRefresh) {
-              throw Exception('refresh failed');
-            }
-            return initialModel;
-          },
-        ),
+        busPageFetcherProvider.overrideWithValue(({
+          String? dayDate,
+          bool forceRefresh = false,
+        }) async {
+          if (forceRefresh) {
+            throw Exception('refresh failed');
+          }
+          return initialModel;
+        }),
       ]);
       final store = container.read(busControllerProvider.notifier);
 

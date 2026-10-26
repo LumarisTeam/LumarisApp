@@ -1,9 +1,13 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
+import 'package:ios_club_app/core/services/schedule_color_resolver.dart';
+import 'package:ios_club_app/state/schedule_style_store.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/ui/components/schedule/schedule_color_picker.dart';
 
 /// 课程详情弹窗组件
 ///
@@ -12,11 +16,15 @@ class CourseDetailSheet extends StatelessWidget {
   const CourseDetailSheet({
     super.key,
     required this.course,
+    this.isDark,
     this.onEdit,
     this.onDelete,
   });
 
   final CourseModel course;
+
+  /// 课表当前实际使用的亮暗（包含自定义壁纸的影响）；不传时跟随系统主题。
+  final bool? isDark;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
 
@@ -27,6 +35,8 @@ class CourseDetailSheet extends StatelessWidget {
     final isTablet = screenWidth > 600;
     final isDesktop =
         isTablet && !PlatformUtils.isAndroid && !PlatformUtils.isIOS;
+    final effectiveIsDark =
+        isDark ?? (Theme.of(context).brightness == Brightness.dark);
 
     return Container(
       padding: EdgeInsets.all(isTablet ? 24 : 20),
@@ -36,84 +46,94 @@ class CourseDetailSheet extends StatelessWidget {
           isDesktop ? McRadii.cardBorder : McRadii.sheetTopBorder,
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 标题栏
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  course.courseName,
-                  style: TextStyle(
-                    fontSize: isTablet ? 24 : 22,
-                    fontWeight: FontWeight.w700,
-                    color: colors.label,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 标题栏
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    course.courseName,
+                    key: const ValueKey('courseDetailTitle'),
+                    style: TextStyle(
+                      fontSize: isTablet ? 24 : 22,
+                      fontWeight: FontWeight.w700,
+                      color: colors.label,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
                 ),
+                const SizedBox(width: 12),
+                _CourseColorSwatch(
+                  key: const ValueKey('courseColorSwatch'),
+                  course: course,
+                  isDark: effectiveIsDark,
+                ),
+                if (course.isCustom && (onEdit != null || onDelete != null))
+                  _buildActionMenu(context),
+              ],
+            ),
+            SizedBox(height: isTablet ? 24 : 20),
+
+            // 课程信息列表
+            _buildInfoRow(
+              context,
+              icon: CupertinoIcons.location_solid,
+              label: context.l10n.classroom,
+              content: course.room,
+              color: colors.primary,
+            ),
+            SizedBox(height: isTablet ? 16 : 14),
+
+            _buildInfoRow(
+              context,
+              icon: course.teachers.length > 1
+                  ? CupertinoIcons.person_2_fill
+                  : CupertinoIcons.person_fill,
+              label: context.l10n.teacherLabel,
+              content: course.teachers.join(', '),
+              color: colors.danger,
+            ),
+            SizedBox(height: isTablet ? 16 : 14),
+
+            _buildInfoRow(
+              context,
+              icon: CupertinoIcons.calendar,
+              label: context.l10n.classTime,
+              content: _formatScheduleInfo(context),
+              color: colors.success,
+            ),
+
+            if (course.campus.isNotEmpty) ...[
+              SizedBox(height: isTablet ? 16 : 14),
+              _buildInfoRow(
+                context,
+                icon: CupertinoIcons.building_2_fill,
+                label: context.l10n.classCampus,
+                content: course.campus,
+                color: colors.warning,
               ),
-              if (course.isCustom && (onEdit != null || onDelete != null))
-                _buildActionMenu(context),
             ],
-          ),
-          SizedBox(height: isTablet ? 24 : 20),
 
-          // 课程信息列表
-          _buildInfoRow(
-            context,
-            icon: CupertinoIcons.location_solid,
-            label: context.l10n.classroom,
-            content: course.room,
-            color: colors.primary,
-          ),
-          SizedBox(height: isTablet ? 16 : 14),
+            if (course.credits.isNotEmpty) ...[
+              SizedBox(height: isTablet ? 16 : 14),
+              _buildInfoRow(
+                context,
+                icon: CupertinoIcons.star_fill,
+                label: context.l10n.courseCredits,
+                content: course.credits,
+                color: colors.yellow,
+              ),
+            ],
 
-          _buildInfoRow(
-            context,
-            icon: course.teachers.length > 1
-                ? CupertinoIcons.person_2_fill
-                : CupertinoIcons.person_fill,
-            label: context.l10n.teacherLabel,
-            content: course.teachers.join(', '),
-            color: colors.danger,
-          ),
-          SizedBox(height: isTablet ? 16 : 14),
-
-          _buildInfoRow(
-            context,
-            icon: CupertinoIcons.calendar,
-            label: context.l10n.classTime,
-            content: _formatScheduleInfo(context),
-            color: colors.success,
-          ),
-
-          if (course.campus.isNotEmpty) ...[
-            SizedBox(height: isTablet ? 16 : 14),
-            _buildInfoRow(
-              context,
-              icon: CupertinoIcons.building_2_fill,
-              label: context.l10n.classCampus,
-              content: course.campus,
-              color: colors.warning,
-            ),
+            SizedBox(height: isTablet ? 24 : 20),
           ],
-
-          if (course.credits.isNotEmpty) ...[
-            SizedBox(height: isTablet ? 16 : 14),
-            _buildInfoRow(
-              context,
-              icon: CupertinoIcons.star_fill,
-              label: context.l10n.courseCredits,
-              content: course.credits,
-              color: colors.yellow,
-            ),
-          ],
-
-          SizedBox(height: isTablet ? 24 : 20),
-        ],
+        ),
       ),
     );
   }
@@ -222,9 +242,13 @@ class CourseDetailSheet extends StatelessWidget {
   }
 
   /// 显示课程详情弹窗
+  ///
+  /// [isDark] 传入课表当前实际使用的亮暗（自定义壁纸可能覆盖系统主题）；
+  /// 不传时颜色圆点按系统主题选池。
   static Future<void> show(
     BuildContext context,
     CourseModel course, {
+    bool? isDark,
     VoidCallback? onEdit,
     VoidCallback? onDelete,
   }) {
@@ -241,6 +265,7 @@ class CourseDetailSheet extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 500),
             child: CourseDetailSheet(
               course: course,
+              isDark: isDark,
               onEdit: onEdit,
               onDelete: onDelete,
             ),
@@ -253,12 +278,108 @@ class CourseDetailSheet extends StatelessWidget {
         context: context,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
-        builder: (context) => CourseDetailSheet(
-          course: course,
-          onEdit: onEdit,
-          onDelete: onDelete,
+        builder: (context) => SafeArea(
+          top: false,
+          child: CourseDetailSheet(
+            course: course,
+            isDark: isDark,
+            onEdit: onEdit,
+            onDelete: onDelete,
+          ),
         ),
       );
     }
+  }
+}
+
+/// 详情弹窗标题右上角的课程颜色圆点。
+///
+/// 点击打开 HSV 取色器，修改会按 [ScheduleColorResolver.courseKey] 覆盖同一
+/// 教学班（同 lessonId）的所有课程；重置则清除覆盖、回到自动色池颜色。
+class _CourseColorSwatch extends ConsumerWidget {
+  const _CourseColorSwatch({
+    super.key,
+    required this.course,
+    required this.isDark,
+  });
+
+  final CourseModel course;
+  final bool isDark;
+
+  static const double _dotSize = 36;
+  static const double _tapPadding = 4;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final styleState = ref.watch(scheduleStyleStoreProvider);
+    final colorPool = isDark
+        ? styleState.darkColorPool
+        : styleState.lightColorPool;
+    final color = ScheduleColorResolver.colorForCourse(
+      course,
+      colorPool,
+      styleState.courseColorOverrides,
+    );
+    final colors = context.mc.colors;
+    final canCustomize =
+        course.lessonId.trim().isNotEmpty ||
+        course.courseName.trim().isNotEmpty;
+
+    final dot = Container(
+      key: const ValueKey('courseColorSwatchDot'),
+      width: _dotSize,
+      height: _dotSize,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: color,
+        border: Border.all(
+          color: colors.separator.withValues(alpha: 0.35),
+          width: 0.5,
+        ),
+      ),
+      child: Icon(
+        Icons.palette_outlined,
+        size: 16,
+        color: ScheduleColorResolver.autoContrast(color),
+      ),
+    );
+
+    if (!canCustomize) {
+      return Padding(padding: const EdgeInsets.all(_tapPadding), child: dot);
+    }
+
+    final label = context.l10n.changeCourseColor;
+    return Tooltip(
+      message: label,
+      child: Semantics(
+        button: true,
+        label: label,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () => _openPicker(context, ref, color),
+          child: Padding(
+            padding: const EdgeInsets.all(_tapPadding),
+            child: dot,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openPicker(BuildContext context, WidgetRef ref, Color initialColor) {
+    final store = ref.read(scheduleStyleStoreProvider.notifier);
+    final key = ScheduleColorResolver.courseKey(
+      lessonId: course.lessonId,
+      courseName: course.courseName,
+    );
+
+    showScheduleColorPicker(
+      context: context,
+      title: course.courseName,
+      initialColor: initialColor,
+      onChanged: (value) => store.setCourseColorOverride(key, value),
+      onReset: () => store.clearCourseColorOverride(key),
+      resetLabel: context.l10n.resetCourseColor,
+    );
   }
 }

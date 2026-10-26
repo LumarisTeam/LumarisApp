@@ -10,8 +10,9 @@ final busFetcherProvider = Provider<BusFetcher>((ref) {
   return BusService.getBus;
 });
 
-final busTileStoreProvider =
-    NotifierProvider<BusTileStore, BusTileState>(BusTileStore.new);
+final busTileStoreProvider = NotifierProvider<BusTileStore, BusTileState>(
+  BusTileStore.new,
+);
 
 class BusTileStore extends Notifier<BusTileState> {
   @override

@@ -62,15 +62,16 @@ class TaskExecutor {
 
     try {
       // 并行获取课程和时间数据
-      final results = await Future.wait([
-        CourseService.getAllCourse(),
-        EduTimeService.getTime(),
-      ]).timeout(
-        const Duration(seconds: 30),
-        onTimeout: () {
-          throw TimeoutException('预加载数据超时');
-        },
-      );
+      final results =
+          await Future.wait([
+            CourseService.getAllCourse(),
+            EduTimeService.getTime(),
+          ]).timeout(
+            const Duration(seconds: 30),
+            onTimeout: () {
+              throw TimeoutException('预加载数据超时');
+            },
+          );
 
       _cachedCourses = results[0] as List<CourseModel>;
       _cachedTime = results[1] as TimeInfo;
@@ -84,8 +85,9 @@ class TaskExecutor {
   }
 
   /// 从缓存获取今日或明日课程
-  static (bool, List<CourseModel>) _getTodayOrTomorrowCourseFromCache(
-      {bool isTomorrow = false}) {
+  static (bool, List<CourseModel>) _getTodayOrTomorrowCourseFromCache({
+    bool isTomorrow = false,
+  }) {
     if (_cachedCourses == null || _cachedTime == null) {
       return (false, <CourseModel>[]);
     }
@@ -129,7 +131,10 @@ class TaskExecutor {
     }
 
     filteredCourses = filteredCourses.where((course) {
-      final end = TimeService.getStartAndEnd(course, date: now).endDateTime(now);
+      final end = TimeService.getStartAndEnd(
+        course,
+        date: now,
+      ).endDateTime(now);
       return end == null || now.isBefore(end);
     }).toList();
 
@@ -165,7 +170,10 @@ class TaskExecutor {
 
     // 过滤掉已经结束的课程
     todayCourses = todayCourses.where((course) {
-      final end = TimeService.getStartAndEnd(course, date: now).endDateTime(now);
+      final end = TimeService.getStartAndEnd(
+        course,
+        date: now,
+      ).endDateTime(now);
       return end == null || now.isBefore(end);
     }).toList();
 
@@ -237,7 +245,8 @@ class TaskExecutor {
         if (lastRemindStr != null) {
           try {
             final lastRemindDate = DateTime.parse(lastRemindStr);
-            final alreadyScheduledToday = lastRemindDate.year == now.year &&
+            final alreadyScheduledToday =
+                lastRemindDate.year == now.year &&
                 lastRemindDate.month == now.month &&
                 lastRemindDate.day == now.day;
             if (alreadyScheduledToday) {
@@ -285,8 +294,10 @@ class TaskExecutor {
         // 如果是今天，过滤掉已经结束的课程
         if (i == 0) {
           courses = courses.where((course) {
-            final end =
-                TimeService.getStartAndEnd(course, date: now).endDateTime(now);
+            final end = TimeService.getStartAndEnd(
+              course,
+              date: now,
+            ).endDateTime(now);
             return end == null || now.isBefore(end);
           }).toList();
         }
@@ -379,8 +390,9 @@ class TaskExecutor {
   /// 从缓存更新今日课程小组件
   static Future<void> _updateTodayWidgetFromCache() async {
     try {
-      final (_, courses) =
-          _getTodayOrTomorrowCourseFromCache(isTomorrow: false);
+      final (_, courses) = _getTodayOrTomorrowCourseFromCache(
+        isTomorrow: false,
+      );
 
       if (courses.isNotEmpty) {
         final scheduleItems = _convertToScheduleItems(courses);

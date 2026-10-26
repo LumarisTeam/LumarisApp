@@ -25,10 +25,7 @@ class ScoreApi {
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '学期请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '学期请求失败', -1);
       }
       return SemesterResult(data: apiResponse.data ?? []);
     } catch (e) {
@@ -46,24 +43,17 @@ class ScoreApi {
     try {
       final rawResponse = await EduHttpClientManager.instance.get(
         '/Score',
-        queryParameters: {
-          'studentId': studentId,
-          'semester': semester,
-        },
+        queryParameters: {'studentId': studentId, 'semester': semester},
         bypassCache: forceRefresh,
       );
       final apiResponse = ApiResponse<List<ScoreModel>>.parsed(
         rawResponse,
         (data) => (data as List<dynamic>)
-            .map(
-                (e) => ScoreModel.fromJson(Map<String, dynamic>.from(e)))
+            .map((e) => ScoreModel.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '成绩请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '成绩请求失败', -1);
       }
       return apiResponse.data ?? <ScoreModel>[];
     } catch (e) {
@@ -73,8 +63,9 @@ class ScoreApi {
   }
 
   /// GET /v1/score/ThisSemester → ApiResponseOfSemesterItem
-  static Future<SemesterModel> getThisSemester(
-      {bool forceRefresh = false}) async {
+  static Future<SemesterModel> getThisSemester({
+    bool forceRefresh = false,
+  }) async {
     try {
       final rawResponse = await EduHttpClientManager.instance.get(
         '/Score/ThisSemester',
@@ -86,13 +77,9 @@ class ScoreApi {
             SemesterModel.fromJson(Map<String, dynamic>.from(data as Map)),
       );
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '当前学期请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '当前学期请求失败', -1);
       }
-      return apiResponse.data ??
-          SemesterModel(semester: '', name: '');
+      return apiResponse.data ?? SemesterModel(semester: '', name: '');
     } catch (e) {
       _handleError(e);
       rethrow;

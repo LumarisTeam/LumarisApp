@@ -9,7 +9,8 @@ class PrefsKeys {
   /// 课程相关
   /// @deprecated 已迁移到 Hive (CourseRepository)，保留此 Key 仅用于迁移逻辑，禁止新代码写入
   @Deprecated(
-      'Migrated to Hive via CourseRepository. Do not write new data to this key.')
+    'Migrated to Hive via CourseRepository. Do not write new data to this key.',
+  )
   static const String COURSE_DATA = 'course_data';
   static const String IGNORE_DATA = 'ignore_data';
   static const String COURSE_LAST_FETCH_TIME = 'course_last_fetch_time';
@@ -21,7 +22,8 @@ class PrefsKeys {
   /// 成绩相关
   /// @deprecated 已迁移到 Hive (ScoreRepository)，保留此 Key 仅用于迁移逻辑，禁止新代码写入
   @Deprecated(
-      'Migrated to Hive via ScoreRepository. Do not write new data to this key.')
+    'Migrated to Hive via ScoreRepository. Do not write new data to this key.',
+  )
   static const String ALL_SCORE_DATA = 'all_score_data';
   static const String LAST_SCORE_TIME = 'last_Score_time';
   static const String THIS_SEMESTER_DATA = 'this_semester_data';
@@ -85,6 +87,61 @@ class PrefsKeys {
   static const String SCHEDULE_BACKGROUND = 'schedule_background';
   static const String CUSTOM_BACKGROUND_IMAGE = 'custom_background_image';
   static const String CUSTOM_BACKGROUND_IS_DARK = 'custom_background_is_dark';
+
+  /// 课表个性化样式相关
+  /// 格子高度沿用旧键名，保证已设置过的用户升级后不丢配置。
+  static const String COURSE_SIZE = 'course_size';
+  static const String SCHEDULE_HEADER_HEIGHT = 'schedule_header_height';
+  static const String SCHEDULE_HIDE_SECTION_TIME = 'schedule_hide_section_time';
+  static const String SCHEDULE_HIDE_DATE_UNDER_DAY =
+      'schedule_hide_date_under_day';
+  static const String SCHEDULE_TIME_COLUMN_WIDTH = 'schedule_time_column_width';
+  static const String SCHEDULE_SHOW_START_TIME = 'schedule_show_start_time';
+  static const String SCHEDULE_HIDE_LOCATION = 'schedule_hide_location';
+  static const String SCHEDULE_PAGE_TEXT_COLOR = 'schedule_page_text_color';
+  static const String SCHEDULE_COURSE_TEXT_COLOR = 'schedule_course_text_color';
+  static const String SCHEDULE_HIDE_TEACHER = 'schedule_hide_teacher';
+  static const String SCHEDULE_TEXT_CENTER_H = 'schedule_text_center_h';
+  static const String SCHEDULE_TEXT_CENTER_V = 'schedule_text_center_v';
+  static const String SCHEDULE_BORDER_STYLE = 'schedule_border_style';
+  static const String SCHEDULE_FONT_SCALE = 'schedule_font_scale';
+  static const String SCHEDULE_CORNER_RADIUS = 'schedule_corner_radius';
+  static const String SCHEDULE_INNER_PADDING = 'schedule_inner_padding';
+  static const String SCHEDULE_OUTER_PADDING = 'schedule_outer_padding';
+  static const String SCHEDULE_OPACITY = 'schedule_opacity';
+
+  /// 旧版直接存储的颜色池；仅用于 schema 2 迁移清理，不再读取。
+  static const String SCHEDULE_LIGHT_COLOR_POOL = 'schedule_light_color_pool';
+  static const String SCHEDULE_DARK_COLOR_POOL = 'schedule_dark_color_pool';
+
+  /// 当前颜色池使用的具名主题 ID（内置 flavor ID 或 custom: 前缀）。
+  static const String SCHEDULE_LIGHT_COLOR_POOL_THEME_ID =
+      'schedule_light_color_pool_theme_id';
+  static const String SCHEDULE_DARK_COLOR_POOL_THEME_ID =
+      'schedule_dark_color_pool_theme_id';
+
+  /// 用户命名的自定义颜色主题（JSON：id -> {name, colors}）。
+  static const String SCHEDULE_CUSTOM_COLOR_POOL_THEMES =
+      'schedule_custom_color_pool_themes';
+
+  static const String SCHEDULE_COURSE_COLOR_OVERRIDES =
+      'schedule_course_color_overrides';
+
+  /// 颜色池默认值版本；旧版本升级时一次性重置活动主题为 Macchiato。
+  static const String SCHEDULE_COLOR_POOL_SCHEMA = 'schedule_color_pool_schema';
+
+  /// 课表布局尺寸版本；旧版本升级时一次性重置为 55/45/45。
+  static const String SCHEDULE_LAYOUT_SCHEMA = 'schedule_layout_schema';
+
+  /// 浅色/深色独立壁纸
+  static const String CUSTOM_BACKGROUND_IMAGE_LIGHT =
+      'custom_background_image_light';
+  static const String CUSTOM_BACKGROUND_IMAGE_DARK =
+      'custom_background_image_dark';
+  static const String CUSTOM_BACKGROUND_IS_DARK_LIGHT =
+      'custom_background_is_dark_light';
+  static const String CUSTOM_BACKGROUND_IS_DARK_DARK =
+      'custom_background_is_dark_dark';
 
   /// 学校配置相关
   static const String SCHOOL_ID = 'school_id';

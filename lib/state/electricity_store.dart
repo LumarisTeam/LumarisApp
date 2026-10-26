@@ -21,20 +21,21 @@ final electricityReaderProvider = Provider<ElectricityReader>((ref) {
   return () => ref.read(electricityServiceProvider).fetchCurrentBalance();
 });
 
-final electricityWeeklyReaderProvider =
-    Provider<ElectricityWeeklyReader>((ref) {
+final electricityWeeklyReaderProvider = Provider<ElectricityWeeklyReader>((
+  ref,
+) {
   return ref.read(electricityServiceProvider).fetchWeeklyData;
 });
 
 final electricitySourceConfigurationReaderProvider =
     Provider<ElectricitySourceConfigurationReader>((ref) {
-  return ref.read(electricityServiceProvider).hasConfiguredSource;
-});
+      return ref.read(electricityServiceProvider).hasConfiguredSource;
+    });
 
 final electricityTileVisibilityReaderProvider =
     Provider<ElectricityTileVisibilityReader>((ref) {
-  return TileService.isTileVisible;
-});
+      return TileService.isTileVisible;
+    });
 
 final electricityTileAdderProvider = Provider<ElectricityTileMutator>((ref) {
   return TileService.addTile;
@@ -70,11 +71,13 @@ class ElectricityStore extends Notifier<ElectricityState> {
     try {
       state = state.copyWith(isLoading: true);
 
-      hasConfiguredSource =
-          await ref.read(electricitySourceConfigurationReaderProvider)();
+      hasConfiguredSource = await ref.read(
+        electricitySourceConfigurationReaderProvider,
+      )();
       final value = await ref.read(electricityReaderProvider)();
-      final isVisible =
-          await ref.read(electricityTileVisibilityReaderProvider)('电费');
+      final isVisible = await ref.read(electricityTileVisibilityReaderProvider)(
+        '电费',
+      );
       final weekly = await ref.read(electricityWeeklyReaderProvider)();
 
       if (!_loadGuard.isCurrent(requestId)) return;
@@ -113,8 +116,9 @@ class ElectricityStore extends Notifier<ElectricityState> {
     try {
       state = state.copyWith(isLoading: true);
 
-      hasConfiguredSource =
-          await ref.read(electricitySourceConfigurationReaderProvider)();
+      hasConfiguredSource = await ref.read(
+        electricitySourceConfigurationReaderProvider,
+      )();
       final value = await ref.read(electricityReaderProvider)();
       final weekly = await ref.read(electricityWeeklyReaderProvider)();
 

@@ -17,20 +17,14 @@ class ElectricityApi {
             : <String, dynamic>{'url': trimmedUrl},
       );
 
-      final apiResponse = ApiResponse<double>.parsed(
-        rawResponse,
-        (data) {
-          if (data is num) return data.toDouble();
-          if (data is String) return double.parse(data);
-          throw NetworkException('电费余额格式错误: ${data.runtimeType}', -1);
-        },
-      );
+      final apiResponse = ApiResponse<double>.parsed(rawResponse, (data) {
+        if (data is num) return data.toDouble();
+        if (data is String) return double.parse(data);
+        throw NetworkException('电费余额格式错误: ${data.runtimeType}', -1);
+      });
 
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '电费余额请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '电费余额请求失败', -1);
       }
       return apiResponse.data;
     } on NotFoundException {
@@ -56,16 +50,14 @@ class ElectricityApi {
       final apiResponse = ApiResponse<List<ElectricData>>.parsed(
         rawResponse,
         (data) => (data as List<dynamic>)
-            .map((item) =>
-                ElectricData.fromJson(Map<String, dynamic>.from(item)))
+            .map(
+              (item) => ElectricData.fromJson(Map<String, dynamic>.from(item)),
+            )
             .toList(),
       );
 
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '电费周明细请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '电费周明细请求失败', -1);
       }
       return apiResponse.data ?? [];
     } catch (e) {
@@ -92,10 +84,7 @@ class ElectricityApi {
       );
 
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '电费充值地址请求失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '电费充值地址请求失败', -1);
       }
       return apiResponse.data;
     } on NotFoundException {
@@ -124,10 +113,7 @@ class ElectricityApi {
       );
 
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '电费订阅创建失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '电费订阅创建失败', -1);
       }
       return apiResponse.data!;
     } catch (e) {
@@ -149,17 +135,14 @@ class ElectricityApi {
 
       final apiResponse =
           ApiResponse<ElectricitySubscriptionQueryResponse>.parsed(
-        rawResponse,
-        (data) => ElectricitySubscriptionQueryResponse.fromJson(
-          Map<String, dynamic>.from(data as Map),
-        ),
-      );
+            rawResponse,
+            (data) => ElectricitySubscriptionQueryResponse.fromJson(
+              Map<String, dynamic>.from(data as Map),
+            ),
+          );
 
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '电费订阅查询失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '电费订阅查询失败', -1);
       }
       return apiResponse.data!;
     } catch (e) {
@@ -175,16 +158,10 @@ class ElectricityApi {
         '/Electricity/Subscriptions/${id.trim()}',
       );
 
-      final apiResponse = ApiResponse.parsed(
-        rawResponse,
-        (data) => data,
-      );
+      final apiResponse = ApiResponse.parsed(rawResponse, (data) => data);
 
       if (!apiResponse.isSuccess) {
-        throw NetworkException(
-          apiResponse.message ?? '电费订阅删除失败',
-          -1,
-        );
+        throw NetworkException(apiResponse.message ?? '电费订阅删除失败', -1);
       }
     } catch (e) {
       _handleError(e);

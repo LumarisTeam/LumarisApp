@@ -45,13 +45,12 @@ CourseModel _course({
   String room = 'A101',
   int startUnit = 1,
   int endUnit = 1,
-}) =>
-    CourseModel(
-      campus: campus,
-      room: room,
-      startUnit: startUnit,
-      endUnit: endUnit,
-    );
+}) => CourseModel(
+  campus: campus,
+  room: room,
+  startUnit: startUnit,
+  endUnit: endUnit,
+);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -96,104 +95,113 @@ void main() {
   });
 
   group('ScheduleTimeService', () {
-    test('requests a single /v1 for a website that already carries the prefix',
-        () async {
-      // 回归：XAUAT 的 website 就是 https://xauatapi.xauat.site/v1，而 Dio 是把
-      // baseUrl 与 path 直接拼起来的。路径里再写一次 /v1 会请求到
-      // /v1/v1/course/ScheduleTime 并 404，异常又被这里吞掉，于是远端作息表
-      // 一直没生效、悄悄用内置表——只看 options.path 的测试是发现不了的，
-      // 所以这里断言拼接后的完整 URL。
-      EduHttpClientManager.current.updateSchoolConfig(
-        School(
-          code: 'XAUAT',
-          name: '西安建筑科技大学',
-          website: 'https://xauatapi.xauat.site/v1',
-          features: [],
-          createdAt: DateTime(2024, 1, 1),
-          updatedAt: DateTime(2024, 1, 1),
-        ),
-      );
+    test(
+      'requests a single /v1 for a website that already carries the prefix',
+      () async {
+        // 回归：XAUAT 的 website 就是 https://xauatapi.xauat.site/v1，而 Dio 是把
+        // baseUrl 与 path 直接拼起来的。路径里再写一次 /v1 会请求到
+        // /v1/v1/course/ScheduleTime 并 404，异常又被这里吞掉，于是远端作息表
+        // 一直没生效、悄悄用内置表——只看 options.path 的测试是发现不了的，
+        // 所以这里断言拼接后的完整 URL。
+        EduHttpClientManager.current.updateSchoolConfig(
+          School(
+            code: 'XAUAT',
+            name: '西安建筑科技大学',
+            website: 'https://xauatapi.xauat.site/v1',
+            features: [],
+            createdAt: DateTime(2024, 1, 1),
+            updatedAt: DateTime(2024, 1, 1),
+          ),
+        );
 
-      Uri? requested;
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            requested = options.uri;
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: _remotePayload,
-              ),
-            );
-          },
-        ),
-      );
-
-      final ok = await ScheduleTimeService.fetchFromRemote();
-
-      expect(ok, isTrue);
-      expect(requested.toString(),
-          'https://xauatapi.xauat.site/v1/course/ScheduleTime');
-    });
-
-    test('fetchFromRemote should install remote tables and cache them',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            expect(options.path, '/course/ScheduleTime');
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: _remotePayload,
-              ),
-            );
-          },
-        ),
-      );
-
-      final ok = await ScheduleTimeService.fetchFromRemote();
-
-      expect(ok, isTrue);
-      expect(TimeService.isUsingRemoteTables, isTrue);
-      expect(TimeService.getStartAndEnd(_course()).start, '7:07');
-
-      final cached = PrefsService.instance
-          .getString(PrefsKeys.SCHEDULE_TIME_DATA);
-      expect(cached, isNotNull);
-      expect(jsonDecode(cached!), hasLength(_remotePayload.length));
-    });
-
-    test('fetchFromRemote should keep built-in tables when the API fails',
-        () async {
-      EduHttpClientManager.instance.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            handler.reject(
-              DioException(
-                requestOptions: options,
-                response: Response<dynamic>(
+        Uri? requested;
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              requested = options.uri;
+              handler.resolve(
+                Response<dynamic>(
                   requestOptions: options,
-                  statusCode: 500,
+                  statusCode: 200,
+                  data: _remotePayload,
                 ),
-                type: DioExceptionType.badResponse,
-              ),
-            );
-          },
-        ),
-      );
+              );
+            },
+          ),
+        );
 
-      final ok = await ScheduleTimeService.fetchFromRemote();
+        final ok = await ScheduleTimeService.fetchFromRemote();
 
-      expect(ok, isFalse);
-      expect(TimeService.isUsingRemoteTables, isFalse);
-      expect(
-        TimeService.getStartAndEnd(_course()).start,
-        TimeService.CanTangTimeStart[1],
-      );
-    });
+        expect(ok, isTrue);
+        expect(
+          requested.toString(),
+          'https://xauatapi.xauat.site/v1/course/ScheduleTime',
+        );
+      },
+    );
+
+    test(
+      'fetchFromRemote should install remote tables and cache them',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              expect(options.path, '/course/ScheduleTime');
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: _remotePayload,
+                ),
+              );
+            },
+          ),
+        );
+
+        final ok = await ScheduleTimeService.fetchFromRemote();
+
+        expect(ok, isTrue);
+        expect(TimeService.isUsingRemoteTables, isTrue);
+        expect(TimeService.getStartAndEnd(_course()).start, '7:07');
+
+        final cached = PrefsService.instance.getString(
+          PrefsKeys.SCHEDULE_TIME_DATA,
+        );
+        expect(cached, isNotNull);
+        expect(jsonDecode(cached!), hasLength(_remotePayload.length));
+      },
+    );
+
+    test(
+      'fetchFromRemote should keep built-in tables when the API fails',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              handler.reject(
+                DioException(
+                  requestOptions: options,
+                  response: Response<dynamic>(
+                    requestOptions: options,
+                    statusCode: 500,
+                  ),
+                  type: DioExceptionType.badResponse,
+                ),
+              );
+            },
+          ),
+        );
+
+        final ok = await ScheduleTimeService.fetchFromRemote();
+
+        expect(ok, isFalse);
+        expect(TimeService.isUsingRemoteTables, isFalse);
+        expect(
+          TimeService.getStartAndEnd(_course()).start,
+          TimeService.CanTangTimeStart[1],
+        );
+      },
+    );
 
     test('loadFromCache should install the persisted tables', () async {
       await PrefsService.instance.setString(
@@ -229,25 +237,27 @@ void main() {
       expect(TimeService.tables, TimeService.builtInTables);
     });
 
-    test('ensureLoaded should install from cache and skip once installed',
-        () async {
-      await PrefsService.instance.setString(
-        PrefsKeys.SCHEDULE_TIME_DATA,
-        jsonEncode(_remotePayload),
-      );
+    test(
+      'ensureLoaded should install from cache and skip once installed',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.SCHEDULE_TIME_DATA,
+          jsonEncode(_remotePayload),
+        );
 
-      await ScheduleTimeService.ensureLoaded();
+        await ScheduleTimeService.ensureLoaded();
 
-      expect(TimeService.isUsingRemoteTables, isTrue);
-      expect(TimeService.getStartAndEnd(_course()).start, '7:07');
+        expect(TimeService.isUsingRemoteTables, isTrue);
+        expect(TimeService.getStartAndEnd(_course()).start, '7:07');
 
-      // 已装载远端表后再调用是空操作，缓存被清掉也不会退回内置表
-      await PrefsService.instance.remove(PrefsKeys.SCHEDULE_TIME_DATA);
-      await ScheduleTimeService.ensureLoaded();
+        // 已装载远端表后再调用是空操作，缓存被清掉也不会退回内置表
+        await PrefsService.instance.remove(PrefsKeys.SCHEDULE_TIME_DATA);
+        await ScheduleTimeService.ensureLoaded();
 
-      expect(TimeService.isUsingRemoteTables, isTrue);
-      expect(TimeService.getStartAndEnd(_course()).start, '7:07');
-    });
+        expect(TimeService.isUsingRemoteTables, isTrue);
+        expect(TimeService.getStartAndEnd(_course()).start, '7:07');
+      },
+    );
   });
 
   group('TimeService 表选择', () {
@@ -302,13 +312,15 @@ void main() {
     });
 
     test('should fall back to built-in tables when a campus is missing', () {
-      TimeService.installTables(_tablesFrom([
-        {
-          'campusName': '未知校区',
-          'start': ['', '1:11'],
-          'end': ['', '1:12'],
-        },
-      ]));
+      TimeService.installTables(
+        _tablesFrom([
+          {
+            'campusName': '未知校区',
+            'start': ['', '1:11'],
+            'end': ['', '1:12'],
+          },
+        ]),
+      );
 
       expect(TimeService.isUsingRemoteTables, isTrue);
       expect(
@@ -328,53 +340,55 @@ void main() {
       );
     });
 
-    test('should fall back to Caotang time when the period is out of range',
-        () {
-      TimeService.installTables(const [
-        ScheduleTable(
-          campusName: TimeService.caoTangCampus,
-          start: ['8:00', '8:30', '9:20', '10:25', '11:15'],
-          end: ['8:20', '9:15', '10:05', '11:10', '12:00'],
-        ),
-        ScheduleTable(
-          campusName: TimeService.yanTaCampus,
-          timeRange: '05/01~09/30',
-          start: ['', '9:00'],
-          end: ['', '9:50'],
-        ),
-      ]);
+    test(
+      'should fall back to Caotang time when the period is out of range',
+      () {
+        TimeService.installTables(const [
+          ScheduleTable(
+            campusName: TimeService.caoTangCampus,
+            start: ['8:00', '8:30', '9:20', '10:25', '11:15'],
+            end: ['8:20', '9:15', '10:05', '11:10', '12:00'],
+          ),
+          ScheduleTable(
+            campusName: TimeService.yanTaCampus,
+            timeRange: '05/01~09/30',
+            start: ['', '9:00'],
+            end: ['', '9:50'],
+          ),
+        ]);
 
-      final summer = DateTime(2026, 7, 1);
-      // 雁塔表只到第 1 节，第 4 节退回草堂
-      final outOfRange = TimeService.getStartAndEndForCampus(
-        campus: TimeService.yanTaCampus,
-        startUnit: 4,
-        endUnit: 4,
-        date: summer,
-      );
-      expect(outOfRange.start, '11:15');
-      expect(outOfRange.end, '12:00');
+        final summer = DateTime(2026, 7, 1);
+        // 雁塔表只到第 1 节，第 4 节退回草堂
+        final outOfRange = TimeService.getStartAndEndForCampus(
+          campus: TimeService.yanTaCampus,
+          startUnit: 4,
+          endUnit: 4,
+          date: summer,
+        );
+        expect(outOfRange.start, '11:15');
+        expect(outOfRange.end, '12:00');
 
-      // 表内为空串表示该节次没课，保持空串而不是回退草堂
-      final empty = TimeService.getStartAndEndForCampus(
-        campus: TimeService.yanTaCampus,
-        startUnit: 0,
-        endUnit: 0,
-        date: summer,
-      );
-      expect(empty.start, '');
-      expect(empty.end, '');
+        // 表内为空串表示该节次没课，保持空串而不是回退草堂
+        final empty = TimeService.getStartAndEndForCampus(
+          campus: TimeService.yanTaCampus,
+          startUnit: 0,
+          endUnit: 0,
+          date: summer,
+        );
+        expect(empty.start, '');
+        expect(empty.end, '');
 
-      // 草堂自己越界时没有可退的表
-      final caoTang = TimeService.getStartAndEndForCampus(
-        campus: TimeService.caoTangCampus,
-        startUnit: 99,
-        endUnit: 99,
-        date: summer,
-      );
-      expect(caoTang.start, '');
-      expect(caoTang.end, '');
-    });
+        // 草堂自己越界时没有可退的表
+        final caoTang = TimeService.getStartAndEndForCampus(
+          campus: TimeService.caoTangCampus,
+          startUnit: 99,
+          endUnit: 99,
+          date: summer,
+        );
+        expect(caoTang.start, '');
+        expect(caoTang.end, '');
+      },
+    );
 
     test('installing an empty list should restore built-in tables', () {
       TimeService.installTables(_tablesFrom(_remotePayload));

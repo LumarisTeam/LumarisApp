@@ -33,6 +33,7 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/services/app_locale_service.dart';
+import 'package:ios_club_app/state/schedule_layout_defaults.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 
 void main() async {
@@ -45,6 +46,9 @@ void main() async {
 
   // 课表首帧就要用到节次时间，先用本地缓存的作息表装载
   await ScheduleTimeService.loadFromCache();
+
+  // 旧用户升级时一次性把课表尺寸重置为新默认 55 / 45 / 45。
+  await ScheduleLayoutDefaults.migrateIfNeeded();
 
   if (PlatformUtils.isIOS) {
     await WidgetService.initialize();

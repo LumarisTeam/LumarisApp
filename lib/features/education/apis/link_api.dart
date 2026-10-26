@@ -8,15 +8,17 @@ import '../services/edu_http_client_manager.dart';
 class LinkApi {
   static Future<List<CategoryModel>> getLinks() async {
     try {
-      final rawResponse =
-          await EduHttpClientManager.instance.get('/SchoolNav');
+      final rawResponse = await EduHttpClientManager.instance.get('/SchoolNav');
       final apiResponse = ApiResponse<List<CategoryModel>>.parsed(
         rawResponse,
-        (data) => (data as List<dynamic>)
-            .map((item) =>
-                CategoryModel.fromJson(Map<String, dynamic>.from(item)))
-            .toList()
-          ..sort((a, b) => a.index.compareTo(b.index)),
+        (data) =>
+            (data as List<dynamic>)
+                .map(
+                  (item) =>
+                      CategoryModel.fromJson(Map<String, dynamic>.from(item)),
+                )
+                .toList()
+              ..sort((a, b) => a.index.compareTo(b.index)),
       );
       return apiResponse.data ?? [];
     } catch (e, stackTrace) {

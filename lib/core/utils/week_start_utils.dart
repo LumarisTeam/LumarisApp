@@ -12,8 +12,11 @@ class WeekStartUtils {
   static DateTime getWeekStart(DateTime date, int weekStartDay) {
     final normalized = normalizeWeekStartDay(weekStartDay);
     final daysSinceWeekStart = (date.weekday - normalized + 7) % 7;
-    return DateTime(date.year, date.month, date.day)
-        .subtract(Duration(days: daysSinceWeekStart));
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+    ).subtract(Duration(days: daysSinceWeekStart));
   }
 
   static int getWeekIndexByStartTime(

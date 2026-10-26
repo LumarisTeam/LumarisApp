@@ -10,14 +10,14 @@ import 'package:ios_club_app/ui/components/tiles/tile_edit_controls.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 List<Override> _tileOverrides() => [
-      tileConfigurationReaderProvider.overrideWithValue(
-        () async => TileConfigurationList.defaultConfig(),
-      ),
-      tileConfigurationWriterProvider.overrideWithValue((config) async {}),
-      availableTilesReaderProvider.overrideWithValue(
-        () => const ['电费', '校车', '饭卡'],
-      ),
-    ];
+  tileConfigurationReaderProvider.overrideWithValue(
+    () async => TileConfigurationList.defaultConfig(),
+  ),
+  tileConfigurationWriterProvider.overrideWithValue((config) async {}),
+  availableTilesReaderProvider.overrideWithValue(
+    () => const ['电费', '校车', '饭卡'],
+  ),
+];
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

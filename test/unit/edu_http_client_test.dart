@@ -64,22 +64,22 @@ void main() {
 
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (call) async {
-      final key = call.arguments['key'] as String?;
-      switch (call.method) {
-        case 'read':
-          if (key == null) {
-            return null;
-          }
-          return secureStore[key];
-        case 'write':
-          final value = call.arguments['value'] as String?;
-          if (key != null && value != null) {
-            secureStore[key] = value;
+          final key = call.arguments['key'] as String?;
+          switch (call.method) {
+            case 'read':
+              if (key == null) {
+                return null;
+              }
+              return secureStore[key];
+            case 'write':
+              final value = call.arguments['value'] as String?;
+              if (key != null && value != null) {
+                secureStore[key] = value;
+              }
+              return null;
           }
           return null;
-      }
-      return null;
-    });
+        });
   });
 
   tearDown(() {
@@ -166,40 +166,43 @@ void main() {
       client.dispose();
     });
 
-    test('should bypass request cache when force refresh is requested',
-        () async {
-      await RequestCache.instance.set(
-        'http://api.test/ping',
-        <String, dynamic>{'cached': true},
-      );
+    test(
+      'should bypass request cache when force refresh is requested',
+      () async {
+        await RequestCache.instance.set(
+          'http://api.test/ping',
+          <String, dynamic>{'cached': true},
+        );
 
-      var networkHits = 0;
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-      client.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            networkHits++;
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: <String, dynamic>{'cached': false},
-              ),
-            );
-          },
-        ),
-      );
+        var networkHits = 0;
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        client.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              networkHits++;
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: <String, dynamic>{'cached': false},
+                ),
+              );
+            },
+          ),
+        );
 
-      final cachedData = await client.get('/ping') as Map<String, dynamic>;
-      final refreshedData =
-          await client.get('/ping', bypassCache: true) as Map<String, dynamic>;
+        final cachedData = await client.get('/ping') as Map<String, dynamic>;
+        final refreshedData =
+            await client.get('/ping', bypassCache: true)
+                as Map<String, dynamic>;
 
-      expect(cachedData['cached'], isTrue);
-      expect(refreshedData['cached'], isFalse);
-      expect(networkHits, 1);
+        expect(cachedData['cached'], isTrue);
+        expect(refreshedData['cached'], isFalse);
+        expect(networkHits, 1);
 
-      client.dispose();
-    });
+        client.dispose();
+      },
+    );
 
     test('should return post response data', () async {
       final client = EduHttpClient(baseUrl: 'http://api.test');
@@ -218,9 +221,10 @@ void main() {
         ),
       );
 
-      final data = await client.post('/submit', data: <String, dynamic>{
-        'name': 'codex',
-      });
+      final data = await client.post(
+        '/submit',
+        data: <String, dynamic>{'name': 'codex'},
+      );
       expect(data, isA<Map>());
       expect((data as Map<String, dynamic>)['result'], 'ok');
 
@@ -250,37 +254,39 @@ void main() {
       client.dispose();
     });
 
-    test('should trigger relog failed state on 401 and throw auth exception',
-        () async {
-      var reloggingCalled = 0;
-      String? failedReason;
-      final client = EduHttpClient(
-        baseUrl: 'http://api.test',
-        authStateCallbacks: AuthStateCallbacks(
-          onRelogging: () => reloggingCalled++,
-          onRelogFailed: (reason) => failedReason = reason,
-        ),
-      );
+    test(
+      'should trigger relog failed state on 401 and throw auth exception',
+      () async {
+        var reloggingCalled = 0;
+        String? failedReason;
+        final client = EduHttpClient(
+          baseUrl: 'http://api.test',
+          authStateCallbacks: AuthStateCallbacks(
+            onRelogging: () => reloggingCalled++,
+            onRelogFailed: (reason) => failedReason = reason,
+          ),
+        );
 
-      client.dio.httpClientAdapter = _QueueAdapter([
-        (_) => ResponseBody.fromString(
-              '{"error":"unauthorized"}',
-              401,
-              headers: <String, List<String>>{
-                Headers.contentTypeHeader: <String>['application/json']
-              },
-            ),
-      ]);
+        client.dio.httpClientAdapter = _QueueAdapter([
+          (_) => ResponseBody.fromString(
+            '{"error":"unauthorized"}',
+            401,
+            headers: <String, List<String>>{
+              Headers.contentTypeHeader: <String>['application/json'],
+            },
+          ),
+        ]);
 
-      await expectLater(
-        () => client.get('/need-auth'),
-        throwsA(isA<AuthenticationException>()),
-      );
-      expect(reloggingCalled, 1);
-      expect(failedReason, '账号或密码错误');
+        await expectLater(
+          () => client.get('/need-auth'),
+          throwsA(isA<AuthenticationException>()),
+        );
+        expect(reloggingCalled, 1);
+        expect(failedReason, '账号或密码错误');
 
-      client.dispose();
-    });
+        client.dispose();
+      },
+    );
 
     test('should skip relogin during cooldown window', () async {
       var loginCalled = 0;
@@ -338,10 +344,7 @@ void main() {
         ),
       );
 
-      expect(
-        () => client.get('/boom'),
-        throwsA(isA<ServerException>()),
-      );
+      expect(() => client.get('/boom'), throwsA(isA<ServerException>()));
 
       client.dispose();
     });
@@ -438,214 +441,226 @@ void main() {
       client.dispose();
     });
 
-    test('should not block different request signatures during cooldown',
-        () async {
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-      var nowMs = 2000;
-      var networkHits = 0;
-      EduHttpClient.setNowProviderForTest(() => nowMs);
+    test(
+      'should not block different request signatures during cooldown',
+      () async {
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        var nowMs = 2000;
+        var networkHits = 0;
+        EduHttpClient.setNowProviderForTest(() => nowMs);
 
-      client.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            networkHits++;
-            if (options.path == '/same-path' &&
-                options.queryParameters['page'] == 1) {
-              handler.reject(
-                DioException(
-                  requestOptions: options,
-                  response: Response<dynamic>(
+        client.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              networkHits++;
+              if (options.path == '/same-path' &&
+                  options.queryParameters['page'] == 1) {
+                handler.reject(
+                  DioException(
                     requestOptions: options,
-                    statusCode: 429,
+                    response: Response<dynamic>(
+                      requestOptions: options,
+                      statusCode: 429,
+                    ),
+                    type: DioExceptionType.badResponse,
                   ),
-                  type: DioExceptionType.badResponse,
+                );
+                return;
+              }
+
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: <String, dynamic>{'ok': true},
                 ),
               );
-              return;
-            }
-
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: <String, dynamic>{'ok': true},
-              ),
-            );
-          },
-        ),
-      );
-
-      await expectLater(
-        () => client.get('/same-path', queryParameters: <String, dynamic>{
-          'page': 1,
-        }),
-        throwsA(isA<NetworkException>()),
-      );
-
-      final differentQuery = await client.get(
-        '/same-path',
-        queryParameters: <String, dynamic>{'page': 2},
-      ) as Map<String, dynamic>;
-      final differentPath =
-          await client.get('/different-path') as Map<String, dynamic>;
-
-      expect(differentQuery['ok'], isTrue);
-      expect(differentPath['ok'], isTrue);
-      expect(networkHits, 3);
-      client.dispose();
-    });
-
-    test('should allow identical request after rate limit cooldown expires',
-        () async {
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-      var nowMs = 3000;
-      var networkHits = 0;
-      EduHttpClient.setNowProviderForTest(() => nowMs);
-
-      client.dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            networkHits++;
-            if (networkHits == 1) {
-              handler.reject(
-                DioException(
-                  requestOptions: options,
-                  response: Response<dynamic>(
-                    requestOptions: options,
-                    statusCode: 429,
-                  ),
-                  type: DioExceptionType.badResponse,
-                ),
-              );
-              return;
-            }
-
-            handler.resolve(
-              Response<dynamic>(
-                requestOptions: options,
-                statusCode: 200,
-                data: <String, dynamic>{'ok': true},
-              ),
-            );
-          },
-        ),
-      );
-
-      await expectLater(
-        () => client.get('/rate-limit-expire'),
-        throwsA(isA<NetworkException>()),
-      );
-
-      nowMs += 5001;
-
-      final data =
-          await client.get('/rate-limit-expire') as Map<String, dynamic>;
-
-      expect(data['ok'], isTrue);
-      expect(networkHits, 2);
-      client.dispose();
-    });
-
-    test('should relogin and retry when adapter returns 401 then 200',
-        () async {
-      secureStore[PrefsKeys.USERNAME] = 'u1';
-      secureStore[PrefsKeys.PASSWORD] = 'p1';
-      EduHttpClient.setLoginHandlerForTest((_, _) async {
-        return <String, dynamic>{
-          'success': true,
-          'studentId': '2026001',
-          'cookie': 'cookie-after-login',
-        };
-      });
-
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-      client.dio.httpClientAdapter = _QueueAdapter([
-        (_) => ResponseBody.fromString(
-              '{"error":"unauthorized"}',
-              401,
-              headers: <String, List<String>>{
-                Headers.contentTypeHeader: <String>['application/json']
-              },
-            ),
-        (options) {
-          expect(options.headers['Cookie'], 'cookie-after-login');
-          expect(options.headers['xauat'], 'cookie-after-login');
-          return ResponseBody.fromString(
-            '{"ok":true}',
-            200,
-            headers: <String, List<String>>{
-              Headers.contentTypeHeader: <String>['application/json']
             },
-          );
-        },
-      ]);
+          ),
+        );
 
-      final data = await client.get('/protected') as Map<String, dynamic>;
-      expect(data['ok'], isTrue);
+        await expectLater(
+          () => client.get(
+            '/same-path',
+            queryParameters: <String, dynamic>{'page': 1},
+          ),
+          throwsA(isA<NetworkException>()),
+        );
 
-      client.dispose();
-    });
+        final differentQuery =
+            await client.get(
+                  '/same-path',
+                  queryParameters: <String, dynamic>{'page': 2},
+                )
+                as Map<String, dynamic>;
+        final differentPath =
+            await client.get('/different-path') as Map<String, dynamic>;
 
-    test('should keep auth failure when relogin succeeds but retry still fails',
-        () async {
-      secureStore[PrefsKeys.USERNAME] = 'u1';
-      secureStore[PrefsKeys.PASSWORD] = 'p1';
-      EduHttpClient.setLoginHandlerForTest((_, _) async {
-        return <String, dynamic>{
-          'success': true,
-          'studentId': '2026001',
-          'cookie': 'cookie-after-login',
-        };
-      });
+        expect(differentQuery['ok'], isTrue);
+        expect(differentPath['ok'], isTrue);
+        expect(networkHits, 3);
+        client.dispose();
+      },
+    );
 
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-      client.dio.httpClientAdapter = _QueueAdapter([
-        (_) => ResponseBody.fromString(
-              '{"error":"unauthorized"}',
-              401,
+    test(
+      'should allow identical request after rate limit cooldown expires',
+      () async {
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        var nowMs = 3000;
+        var networkHits = 0;
+        EduHttpClient.setNowProviderForTest(() => nowMs);
+
+        client.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              networkHits++;
+              if (networkHits == 1) {
+                handler.reject(
+                  DioException(
+                    requestOptions: options,
+                    response: Response<dynamic>(
+                      requestOptions: options,
+                      statusCode: 429,
+                    ),
+                    type: DioExceptionType.badResponse,
+                  ),
+                );
+                return;
+              }
+
+              handler.resolve(
+                Response<dynamic>(
+                  requestOptions: options,
+                  statusCode: 200,
+                  data: <String, dynamic>{'ok': true},
+                ),
+              );
+            },
+          ),
+        );
+
+        await expectLater(
+          () => client.get('/rate-limit-expire'),
+          throwsA(isA<NetworkException>()),
+        );
+
+        nowMs += 5001;
+
+        final data =
+            await client.get('/rate-limit-expire') as Map<String, dynamic>;
+
+        expect(data['ok'], isTrue);
+        expect(networkHits, 2);
+        client.dispose();
+      },
+    );
+
+    test(
+      'should relogin and retry when adapter returns 401 then 200',
+      () async {
+        secureStore[PrefsKeys.USERNAME] = 'u1';
+        secureStore[PrefsKeys.PASSWORD] = 'p1';
+        EduHttpClient.setLoginHandlerForTest((_, _) async {
+          return <String, dynamic>{
+            'success': true,
+            'studentId': '2026001',
+            'cookie': 'cookie-after-login',
+          };
+        });
+
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        client.dio.httpClientAdapter = _QueueAdapter([
+          (_) => ResponseBody.fromString(
+            '{"error":"unauthorized"}',
+            401,
+            headers: <String, List<String>>{
+              Headers.contentTypeHeader: <String>['application/json'],
+            },
+          ),
+          (options) {
+            expect(options.headers['Cookie'], 'cookie-after-login');
+            expect(options.headers['xauat'], 'cookie-after-login');
+            return ResponseBody.fromString(
+              '{"ok":true}',
+              200,
               headers: <String, List<String>>{
-                Headers.contentTypeHeader: <String>['application/json']
+                Headers.contentTypeHeader: <String>['application/json'],
               },
-            ),
-        (_) => throw DioException(
-              requestOptions: RequestOptions(path: '/protected-fail'),
-              type: DioExceptionType.connectionError,
-              error: 'network down',
-            ),
-      ]);
+            );
+          },
+        ]);
 
-      await expectLater(
-        () => client.get('/protected-fail'),
-        throwsA(isA<AuthenticationException>()),
-      );
+        final data = await client.get('/protected') as Map<String, dynamic>;
+        expect(data['ok'], isTrue);
 
-      client.dispose();
-    });
+        client.dispose();
+      },
+    );
 
-    test('reLoginWithLockForTest should succeed and persist fresh cookie',
-        () async {
-      secureStore[PrefsKeys.USERNAME] = 'u1';
-      secureStore[PrefsKeys.PASSWORD] = 'p1';
-      EduHttpClient.setLoginHandlerForTest((_, _) async {
-        return <String, dynamic>{
-          'success': true,
-          'studentId': '2026001',
-          'cookie': 'fresh-cookie',
-        };
-      });
+    test(
+      'should keep auth failure when relogin succeeds but retry still fails',
+      () async {
+        secureStore[PrefsKeys.USERNAME] = 'u1';
+        secureStore[PrefsKeys.PASSWORD] = 'p1';
+        EduHttpClient.setLoginHandlerForTest((_, _) async {
+          return <String, dynamic>{
+            'success': true,
+            'studentId': '2026001',
+            'cookie': 'cookie-after-login',
+          };
+        });
 
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-      final ok = await client.reLoginWithLockForTest();
-      expect(ok, isTrue);
-      expect(
-        PrefsService.instance.getString(PrefsKeys.USER_DATA),
-        contains('fresh-cookie'),
-      );
-      client.dispose();
-    });
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        client.dio.httpClientAdapter = _QueueAdapter([
+          (_) => ResponseBody.fromString(
+            '{"error":"unauthorized"}',
+            401,
+            headers: <String, List<String>>{
+              Headers.contentTypeHeader: <String>['application/json'],
+            },
+          ),
+          (_) => throw DioException(
+            requestOptions: RequestOptions(path: '/protected-fail'),
+            type: DioExceptionType.connectionError,
+            error: 'network down',
+          ),
+        ]);
 
-    test('reLoginWithLockForTest should discard result after logout',
-        () async {
+        await expectLater(
+          () => client.get('/protected-fail'),
+          throwsA(isA<AuthenticationException>()),
+        );
+
+        client.dispose();
+      },
+    );
+
+    test(
+      'reLoginWithLockForTest should succeed and persist fresh cookie',
+      () async {
+        secureStore[PrefsKeys.USERNAME] = 'u1';
+        secureStore[PrefsKeys.PASSWORD] = 'p1';
+        EduHttpClient.setLoginHandlerForTest((_, _) async {
+          return <String, dynamic>{
+            'success': true,
+            'studentId': '2026001',
+            'cookie': 'fresh-cookie',
+          };
+        });
+
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        final ok = await client.reLoginWithLockForTest();
+        expect(ok, isTrue);
+        expect(
+          PrefsService.instance.getString(PrefsKeys.USER_DATA),
+          contains('fresh-cookie'),
+        );
+        client.dispose();
+      },
+    );
+
+    test('reLoginWithLockForTest should discard result after logout', () async {
       secureStore[PrefsKeys.USERNAME] = 'u1';
       secureStore[PrefsKeys.PASSWORD] = 'p1';
       await PrefsService.instance.remove(PrefsKeys.USER_DATA);
@@ -668,63 +683,70 @@ void main() {
       client.dispose();
     });
 
-    test('reLoginWithLockForTest should return false during cooldown',
-        () async {
-      EduHttpClient.setLastLoginFailTimeForTest(
-        DateTime.now().millisecondsSinceEpoch,
-      );
-      final client = EduHttpClient(baseUrl: 'http://api.test');
+    test(
+      'reLoginWithLockForTest should return false during cooldown',
+      () async {
+        EduHttpClient.setLastLoginFailTimeForTest(
+          DateTime.now().millisecondsSinceEpoch,
+        );
+        final client = EduHttpClient(baseUrl: 'http://api.test');
 
-      final ok = await client.reLoginWithLockForTest();
-      expect(ok, isFalse);
+        final ok = await client.reLoginWithLockForTest();
+        expect(ok, isFalse);
 
-      client.dispose();
-    });
-
-    test('reLoginWithLockForTest should return false when credentials missing',
-        () async {
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-
-      final ok = await client.reLoginWithLockForTest();
-      expect(ok, isFalse);
-
-      client.dispose();
-    });
-
-    test('reLoginWithLockForTest should return false when login handler throws',
-        () async {
-      secureStore[PrefsKeys.USERNAME] = 'u1';
-      secureStore[PrefsKeys.PASSWORD] = 'p1';
-      EduHttpClient.setLoginHandlerForTest((_, _) async {
-        throw Exception('forced failure');
-      });
-      final client = EduHttpClient(baseUrl: 'http://api.test');
-
-      final ok = await client.reLoginWithLockForTest();
-      expect(ok, isFalse);
-
-      client.dispose();
-    });
+        client.dispose();
+      },
+    );
 
     test(
-        'reLoginWithLockForTest should use LoginApi fallback when test handler unset',
-        () async {
-      secureStore[PrefsKeys.USERNAME] = 'u2';
-      secureStore[PrefsKeys.PASSWORD] = 'p2';
-      LoginApi.setLoginOverrideForTest(
-        (_, _) async => LoginResponse(
-          success: true,
-          studentId: '2026002',
-          cookie: 'fallback-cookie',
-        ),
-      );
-      final client = EduHttpClient(baseUrl: 'http://api.test');
+      'reLoginWithLockForTest should return false when credentials missing',
+      () async {
+        final client = EduHttpClient(baseUrl: 'http://api.test');
 
-      final ok = await client.reLoginWithLockForTest();
-      expect(ok, isTrue);
+        final ok = await client.reLoginWithLockForTest();
+        expect(ok, isFalse);
 
-      client.dispose();
-    });
+        client.dispose();
+      },
+    );
+
+    test(
+      'reLoginWithLockForTest should return false when login handler throws',
+      () async {
+        secureStore[PrefsKeys.USERNAME] = 'u1';
+        secureStore[PrefsKeys.PASSWORD] = 'p1';
+        EduHttpClient.setLoginHandlerForTest((_, _) async {
+          throw Exception('forced failure');
+        });
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+
+        final ok = await client.reLoginWithLockForTest();
+        expect(ok, isFalse);
+
+        client.dispose();
+      },
+    );
+
+    test(
+      'reLoginWithLockForTest should use LoginApi fallback when test handler unset',
+      () async {
+        secureStore[PrefsKeys.USERNAME] = 'u2';
+        secureStore[PrefsKeys.PASSWORD] = 'p2';
+        LoginApi.setLoginOverrideForTest(
+          (_, _) async => LoginResponse(
+            success: true,
+            studentId: '2026002',
+            cookie: 'fallback-cookie',
+          ),
+        );
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+
+        final ok = await client.reLoginWithLockForTest();
+        expect(ok, isTrue);
+
+        client.dispose();
+      },
+    );
 
     test('should map post dio error into network exception', () async {
       final client = EduHttpClient(baseUrl: 'http://api.test');

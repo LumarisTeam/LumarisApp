@@ -43,9 +43,7 @@ class WorkmanagerService {
   /// 必须在 main isolate 中调用
   static Future<void> initialize() async {
     if (_isInitialized) return;
-    await Workmanager().initialize(
-      callbackDispatcher,
-    );
+    await Workmanager().initialize(callbackDispatcher);
     _isInitialized = true;
     AppLogger.debug('WorkManager 初始化完成');
   }
@@ -56,9 +54,7 @@ class WorkmanagerService {
       kWidgetUpdateTask,
       kWidgetUpdateTask,
       frequency: _widgetInterval,
-      constraints: Constraints(
-        networkType: NetworkType.notRequired,
-      ),
+      constraints: Constraints(networkType: NetworkType.notRequired),
       backoffPolicy: BackoffPolicy.exponential,
       backoffPolicyDelay: const Duration(minutes: 10),
       existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
@@ -72,9 +68,7 @@ class WorkmanagerService {
       kCourseReminderTask,
       kCourseReminderTask,
       frequency: _reminderInterval,
-      constraints: Constraints(
-        networkType: NetworkType.notRequired,
-      ),
+      constraints: Constraints(networkType: NetworkType.notRequired),
       existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
     );
     AppLogger.debug('WorkManager: 课程提醒检查任务已注册，间隔: $_reminderInterval');

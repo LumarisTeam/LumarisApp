@@ -696,15 +696,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get scheduleSettingsTitle => '시간표 설정';
 
   @override
-  String get compact => '간결';
-
-  @override
-  String get standard => '표준';
-
-  @override
-  String get relaxed => '넓게';
-
-  @override
   String get selectCourse => '조회할 수업 선택';
 
   @override
@@ -2047,4 +2038,202 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get permissionWidgetFeatureDesc =>
       '백그라운드 실행을 허용하여 홈 화면 위젯이 제때 업데이트되도록 합니다';
+
+  @override
+  String get schedulePersonalization => '개인 설정';
+
+  @override
+  String get resetToDefaultStyle => '기본 스타일로 재설정';
+
+  @override
+  String get resetStyleConfirmTitle => '기본 스타일 재설정';
+
+  @override
+  String get resetStyleConfirmMessage =>
+      '색상, 텍스트, 테두리 및 크기 설정이 재설정됩니다. 배경 화면은 유지됩니다. 계속하시겠습니까?';
+
+  @override
+  String get sectionInterface => '인터페이스';
+
+  @override
+  String get scheduleWallpaper => '시간표 배경 화면';
+
+  @override
+  String get wallpaperTapHint => '설정되지 않음 (탭하여 이미지 선택)';
+
+  @override
+  String get wallpaperClearHint => '설정됨 (길게 눌러 지우기)';
+
+  @override
+  String get hideGridLines => '격자선 숨기기';
+
+  @override
+  String get schedulePageTextColor => '시간표 페이지 텍스트 색상';
+
+  @override
+  String get sectionGridSize => '격자 크기';
+
+  @override
+  String get gridHeight => '칸 높이';
+
+  @override
+  String get topHeaderHeight => '상단 헤더 높이';
+
+  @override
+  String get sectionCourseBlock => '수업 블록 설정';
+
+  @override
+  String get courseBlockTextColor => '수업 블록 텍스트 색상';
+
+  @override
+  String get hideTeacher => '교사 숨기기';
+
+  @override
+  String get textAlignCenterH => '텍스트 가로 가운데 정렬';
+
+  @override
+  String get textAlignCenterV => '텍스트 세로 가운데 정렬';
+
+  @override
+  String get borderStyle => '테두리 스타일';
+
+  @override
+  String get borderStyleNone => '없음';
+
+  @override
+  String get borderStyleSolid => '실선';
+
+  @override
+  String get borderStyleDashed => '점선';
+
+  @override
+  String get sectionColorScheme => '색상 구성표';
+
+  @override
+  String get lightColorPool => '라이트 모드 색상 풀';
+
+  @override
+  String get darkColorPool => '다크 모드 색상 풀';
+
+  @override
+  String get resetColor => '색상 재설정';
+
+  @override
+  String get useTheme => '테마 따르기';
+
+  @override
+  String get hideSectionTime => '교시 시간 숨기기';
+
+  @override
+  String get hideDateUnderDay => '요일 아래 날짜 숨기기';
+
+  @override
+  String get timeColumnWidth => '시간 열 너비';
+
+  @override
+  String get showStartTime => '시작 시간 표시';
+
+  @override
+  String get hideLocation => '장소 숨기기';
+
+  @override
+  String get fontScale => '글자 크기 비율';
+
+  @override
+  String get cornerRadius => '모서리 반경';
+
+  @override
+  String get innerPadding => '내부 여백';
+
+  @override
+  String get outerPadding => '외부 여백';
+
+  @override
+  String get opacity => '불투명도';
+
+  @override
+  String get wallpaperEditingLight => '라이트 모드';
+
+  @override
+  String get wallpaperEditingDark => '다크 모드';
+
+  @override
+  String get inputValue => '값 입력';
+
+  @override
+  String get changeCourseColor => '강의 색상 변경';
+
+  @override
+  String get resetCourseColor => '기본 색상으로 복원';
+
+  @override
+  String get colorTheme => '색상 테마';
+
+  @override
+  String get customThemes => '사용자 지정 테마';
+
+  @override
+  String get newCustomTheme => '새 사용자 지정 테마';
+
+  @override
+  String get copyAsCustomTheme => '사용자 지정 테마로 복사';
+
+  @override
+  String copyThemeName(String name) {
+    return '$name 복사본';
+  }
+
+  @override
+  String get editColorPool => '색상 편집';
+
+  @override
+  String get builtInThemeReadOnly =>
+      '기본 제공 테마는 읽기 전용입니다. 사용자 지정 테마로 복사하면 편집할 수 있습니다.';
+
+  @override
+  String get colorThemeNameHint => '테마 이름 입력';
+
+  @override
+  String get colorThemeNameRequired => '테마 이름을 입력하세요';
+
+  @override
+  String get colorThemeNameDuplicate => '이미 존재하거나 예약된 테마 이름입니다';
+
+  @override
+  String colorThemeNameTooLong(int max) {
+    return '테마 이름은 $max자를 초과할 수 없습니다';
+  }
+
+  @override
+  String get renameTheme => '테마 이름 변경';
+
+  @override
+  String get deleteTheme => '테마 삭제';
+
+  @override
+  String deleteThemeConfirmMessage(String name) {
+    return '\"$name\" 테마를 삭제할까요? 이 테마를 사용하는 색상 풀은 기본 테마로 돌아갑니다.';
+  }
+
+  @override
+  String get addColor => '색상 추가';
+
+  @override
+  String get editColor => '색상 편집';
+
+  @override
+  String get deleteColor => '색상 삭제';
+
+  @override
+  String get minOneColorHint => '색상을 최소 1개 유지하세요';
+
+  @override
+  String maxColorLimitHint(int max) {
+    return '최대 $max색';
+  }
+
+  @override
+  String colorCount(int count) {
+    return '색상 $count개';
+  }
 }
