@@ -54,21 +54,21 @@ void main() {
       );
     });
 
-    test('should use Macchiato as the default for both pools', () {
+    test('should use Lumaris as the default for both pools', () {
       expect(
         scheduleDefaultLightColorPool,
-        ScheduleColorThemeCatalog.macchiatoAccents,
+        ScheduleColorThemeCatalog.lumarisPreviewColors,
       );
       expect(
         scheduleDefaultDarkColorPool,
-        ScheduleColorThemeCatalog.macchiatoAccents,
+        ScheduleColorThemeCatalog.lumarisPreviewColors,
       );
-      expect(scheduleDefaultLightThemeId, 'macchiato');
-      expect(scheduleDefaultDarkThemeId, 'macchiato');
-      expect(ScheduleColorThemeCatalog.defaultThemeId, 'macchiato');
+      expect(scheduleDefaultLightThemeId, 'lumaris');
+      expect(scheduleDefaultDarkThemeId, 'lumaris');
+      expect(ScheduleColorThemeCatalog.defaultThemeId, 'lumaris');
       expect(
         ScheduleColorThemeCatalog.defaultColorPool,
-        ScheduleColorThemeCatalog.macchiatoAccents,
+        ScheduleColorThemeCatalog.lumarisPreviewColors,
       );
       expect(ScheduleColorThemeCatalog.nameFor('lumaris', const {}), 'Lumaris');
     });
@@ -99,14 +99,14 @@ void main() {
           themeId: 'custom:missing',
           customThemes: customThemes,
         ),
-        ScheduleColorThemeCatalog.macchiatoAccents,
+        ScheduleColorThemeCatalog.lumarisPreviewColors,
       );
       expect(
         ScheduleColorThemeCatalog.resolvePool(
           themeId: '',
           customThemes: customThemes,
         ),
-        ScheduleColorThemeCatalog.macchiatoAccents,
+        ScheduleColorThemeCatalog.lumarisPreviewColors,
       );
     });
 

@@ -149,8 +149,8 @@ void main() {
 
       await reload();
 
-      expect(state().lightColorPoolThemeId, 'macchiato');
-      expect(state().darkColorPoolThemeId, 'macchiato');
+      expect(state().lightColorPoolThemeId, scheduleDefaultLightThemeId);
+      expect(state().darkColorPoolThemeId, scheduleDefaultDarkThemeId);
     });
 
     test('should ignore invalid custom theme entries', () async {
@@ -327,7 +327,7 @@ void main() {
 
       expect(applied, isTrue);
       expect(state().lightColorPoolThemeId, 'latte');
-      expect(state().darkColorPoolThemeId, 'macchiato');
+      expect(state().darkColorPoolThemeId, scheduleDefaultDarkThemeId);
       expect(state().lightColorPool, ScheduleColorThemeCatalog.latteAccents);
       expect(state().darkColorPool, scheduleDefaultDarkColorPool);
       expect(
@@ -353,7 +353,7 @@ void main() {
       );
 
       expect(applied, isFalse);
-      expect(state().lightColorPoolThemeId, 'macchiato');
+      expect(state().lightColorPoolThemeId, scheduleDefaultLightThemeId);
     });
 
     test('should copy the active pool into a custom theme', () async {
@@ -367,7 +367,7 @@ void main() {
       expect(id, isNotNull);
       expect(id, startsWith('custom:'));
       expect(state().lightColorPoolThemeId, id);
-      expect(state().darkColorPoolThemeId, 'macchiato');
+      expect(state().darkColorPoolThemeId, scheduleDefaultDarkThemeId);
       expect(state().customColorPoolThemes[id]?.name, '我的主题');
       expect(state().lightColorPool, scheduleDefaultLightColorPool);
 
@@ -400,7 +400,10 @@ void main() {
 
         expect(updated, isTrue);
         expect(state().lightColorPool.first, const Color(0xFF000000));
-        expect(scheduleDefaultLightColorPool.first, const Color(0xFFF4DBD6));
+        expect(
+          scheduleDefaultLightColorPool.first,
+          ScheduleColorThemeCatalog.lumarisPreviewColors.first,
+        );
         expect(
           state().customColorPoolThemes[id]?.colors.first,
           const Color(0xFF000000),
@@ -588,8 +591,8 @@ void main() {
 
       expect(deleted, isTrue);
       expect(state().customColorPoolThemes, isEmpty);
-      expect(state().lightColorPoolThemeId, 'macchiato');
-      expect(state().darkColorPoolThemeId, 'macchiato');
+      expect(state().lightColorPoolThemeId, scheduleDefaultLightThemeId);
+      expect(state().darkColorPoolThemeId, scheduleDefaultDarkThemeId);
       expect(state().lightColorPool, scheduleDefaultLightColorPool);
       expect(state().darkColorPool, scheduleDefaultDarkColorPool);
       expect(
@@ -602,7 +605,7 @@ void main() {
         PrefsService.instance.getString(
           PrefsKeys.SCHEDULE_DARK_COLOR_POOL_THEME_ID,
         ),
-        'macchiato',
+        scheduleDefaultDarkThemeId,
       );
     });
 
@@ -682,8 +685,8 @@ void main() {
       expect(state().hideTeacher, isFalse);
       expect(state().borderStyle, ScheduleBorderStyle.none);
       expect(state().fontScale, 1.0);
-      expect(state().lightColorPoolThemeId, 'macchiato');
-      expect(state().darkColorPoolThemeId, 'macchiato');
+      expect(state().lightColorPoolThemeId, scheduleDefaultLightThemeId);
+      expect(state().darkColorPoolThemeId, scheduleDefaultDarkThemeId);
       expect(state().lightColorPool, scheduleDefaultLightColorPool);
       expect(state().darkColorPool, scheduleDefaultDarkColorPool);
       expect(state().customColorPoolThemes, isEmpty);
@@ -736,8 +739,8 @@ void main() {
 
       await reload();
 
-      expect(state().lightColorPoolThemeId, 'macchiato');
-      expect(state().darkColorPoolThemeId, 'macchiato');
+      expect(state().lightColorPoolThemeId, scheduleDefaultLightThemeId);
+      expect(state().darkColorPoolThemeId, scheduleDefaultDarkThemeId);
       expect(state().lightColorPool, scheduleDefaultLightColorPool);
       expect(state().darkColorPool, scheduleDefaultDarkColorPool);
       expect(state().courseColorOverrides['id:L1'], const Color(0xFF123456));
@@ -752,11 +755,11 @@ void main() {
       );
       expect(
         prefs.getString(PrefsKeys.SCHEDULE_LIGHT_COLOR_POOL_THEME_ID),
-        'macchiato',
+        scheduleDefaultLightThemeId,
       );
       expect(
         prefs.getString(PrefsKeys.SCHEDULE_DARK_COLOR_POOL_THEME_ID),
-        'macchiato',
+        scheduleDefaultDarkThemeId,
       );
       expect(prefs.getStringList(PrefsKeys.SCHEDULE_LIGHT_COLOR_POOL), isNull);
       expect(prefs.getStringList(PrefsKeys.SCHEDULE_DARK_COLOR_POOL), isNull);
@@ -791,8 +794,8 @@ void main() {
 
       await reload();
 
-      expect(state().lightColorPoolThemeId, 'macchiato');
-      expect(state().darkColorPoolThemeId, 'macchiato');
+      expect(state().lightColorPoolThemeId, scheduleDefaultLightThemeId);
+      expect(state().darkColorPoolThemeId, scheduleDefaultDarkThemeId);
       expect(state().customColorPoolThemes['custom:keep']?.name, '保留主题');
 
       await Future<void>.delayed(Duration.zero);
@@ -804,11 +807,11 @@ void main() {
       );
       expect(
         prefs.getString(PrefsKeys.SCHEDULE_LIGHT_COLOR_POOL_THEME_ID),
-        'macchiato',
+        scheduleDefaultLightThemeId,
       );
       expect(
         prefs.getString(PrefsKeys.SCHEDULE_DARK_COLOR_POOL_THEME_ID),
-        'macchiato',
+        scheduleDefaultDarkThemeId,
       );
       expect(
         prefs.getString(PrefsKeys.SCHEDULE_CUSTOM_COLOR_POOL_THEMES),

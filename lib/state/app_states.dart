@@ -18,22 +18,21 @@ enum AuthState { normal, relogging, relogSuccess, relogFailed }
 /// 课表课程块的边框样式。
 enum ScheduleBorderStyle { none, solid, dashed }
 
-/// 课表浅色模式默认颜色池：Catppuccin Macchiato 的 14 个 accent 色。
+/// 课表浅色模式默认颜色池：Lumaris 旧版按课程名生成颜色时的预览色板。
 ///
-/// 浅/深色池仍分开存储活动主题，分别可编辑；两者默认均为 Macchiato。
+/// 浅/深色池仍分开存储活动主题，分别可编辑；两者默认均为 Lumaris。
 const List<Color> scheduleDefaultLightColorPool =
-    ScheduleColorThemeCatalog.macchiatoAccents;
+    ScheduleColorThemeCatalog.lumarisPreviewColors;
 
-/// 课表深色模式默认颜色池：Catppuccin Macchiato 的 14 个 accent 色。
+/// 课表深色模式默认颜色池：Lumaris 旧版按课程名生成颜色时的预览色板。
 const List<Color> scheduleDefaultDarkColorPool =
-    ScheduleColorThemeCatalog.macchiatoAccents;
+    ScheduleColorThemeCatalog.lumarisPreviewColors;
 
-/// 浅色池默认主题（Macchiato）。
-const String scheduleDefaultLightThemeId =
-    ScheduleColorThemeCatalog.macchiatoId;
+/// 浅色池默认主题（Lumaris）。
+const String scheduleDefaultLightThemeId = ScheduleColorThemeCatalog.lumarisId;
 
-/// 深色池默认主题（Macchiato）。
-const String scheduleDefaultDarkThemeId = ScheduleColorThemeCatalog.macchiatoId;
+/// 深色池默认主题（Lumaris）。
+const String scheduleDefaultDarkThemeId = ScheduleColorThemeCatalog.lumarisId;
 
 /// 课表个性化样式。
 ///

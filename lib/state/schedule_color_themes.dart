@@ -57,9 +57,9 @@ abstract final class ScheduleColorThemeCatalog {
   static const int maxColors = 32;
   static const int maxNameLength = 40;
 
-  /// 浅色池与深色池的默认主题都为 Macchiato。
-  static const String defaultThemeId = macchiatoId;
-  static const List<Color> defaultColorPool = macchiatoAccents;
+  /// 新用户浅色池与深色池的默认主题都为 Lumaris。
+  static const String defaultThemeId = lumarisId;
+  static const List<Color> defaultColorPool = lumarisPreviewColors;
 
   static const List<Color> latteAccents = <Color>[
     Color(0xFFDC8A78), // rosewater
@@ -154,7 +154,7 @@ abstract final class ScheduleColorThemeCatalog {
     );
   }
 
-  /// 解析活动主题对应的颜色池；未知 ID 回退到默认 Macchiato。
+  /// 解析活动主题对应的颜色池；未知 ID 回退到默认 Lumaris。
   static List<Color> resolvePool({
     required String themeId,
     required Map<String, ScheduleColorTheme> customThemes,
