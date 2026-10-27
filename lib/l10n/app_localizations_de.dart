@@ -2371,4 +2371,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get navigationBaiduMaps => 'Baidu Maps';
+
+  @override
+  String get resetNorth => 'Nach Norden ausrichten';
 }

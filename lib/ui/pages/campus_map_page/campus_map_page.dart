@@ -14,6 +14,7 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import '../../../core/services/external_navigation_service.dart';
 import '../../../core/utils/platform_utils.dart';
+import 'map_compass_button.dart';
 import 'navigation_app_picker.dart';
 
 class CampusMapPage extends ConsumerStatefulWidget {
@@ -23,13 +24,20 @@ class CampusMapPage extends ConsumerStatefulWidget {
   ConsumerState<CampusMapPage> createState() => _CampusMapPageState();
 }
 
-class _CampusMapPageState extends ConsumerState<CampusMapPage> {
+class _CampusMapPageState extends ConsumerState<CampusMapPage>
+    with SingleTickerProviderStateMixin {
   static const double _minMapZoom = 4.0;
   static const double _maxMapZoom = 19.0;
   static const int _maxNativeTileZoom = 18;
+  static const Duration _northResetMinDuration = Duration(milliseconds: 220);
+  static const Duration _northResetMaxDuration = Duration(milliseconds: 480);
 
   late final MapController _mapController;
   late final TextEditingController _searchController;
+  late final AnimationController _northResetAnimation;
+  final ValueNotifier<double> _mapRotation = ValueNotifier<double>(0);
+  double _northResetFrom = 0;
+  double _northResetDelta = 0;
   CampusPOI? _selectedPOI;
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
@@ -42,6 +50,10 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
     super.initState();
     _mapController = MapController();
     _searchController = TextEditingController();
+    _northResetAnimation = AnimationController(
+      vsync: this,
+      duration: _northResetMinDuration,
+    )..addListener(_onNorthResetAnimationTick);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(mapNotifierProvider.notifier).checkLocationPermission();
       ref.read(mapNotifierProvider.notifier).fetchCampusPOIs();
@@ -50,6 +62,8 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
 
   @override
   void dispose() {
+    _northResetAnimation.dispose();
+    _mapRotation.dispose();
     _mapController.dispose();
     _searchController.dispose();
     _sheetController.dispose();
@@ -68,6 +82,43 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
     );
     _mapController.move(_mapController.camera.center, nextZoom);
     HapticFeedback.lightImpact();
+  }
+
+  /// Keeps the on-screen compass in sync with the camera rotation.
+  ///
+  /// User gestures cancel an in-flight "reset to north" animation so that the
+  /// map never fights the user's fingers.
+  void _onMapEvent(MapEvent event) {
+    final rotation = normalizeMapRotation(event.camera.rotation);
+    final changed = (rotation - _mapRotation.value).abs() > 0.001;
+    if (_northResetAnimation.isAnimating &&
+        changed &&
+        event.source != MapEventSource.mapController) {
+      _northResetAnimation.stop();
+    }
+    if (!changed) return;
+    _mapRotation.value = rotation;
+  }
+
+  void _onNorthResetAnimationTick() {
+    final eased = Curves.easeOutCubic.transform(_northResetAnimation.value);
+    _mapController.rotate(_northResetFrom + _northResetDelta * eased);
+  }
+
+  /// Rotates the map back so that north is up, along the shortest path.
+  void _resetNorth() {
+    HapticFeedback.lightImpact();
+    final from = _mapRotation.value;
+    final delta = shortestRotationToNorth(from);
+    if (delta.abs() < 0.5) return;
+    _northResetFrom = from;
+    _northResetDelta = delta;
+    final milliseconds = (220 + delta.abs() * 1.6).round().clamp(
+      _northResetMinDuration.inMilliseconds,
+      _northResetMaxDuration.inMilliseconds,
+    );
+    _northResetAnimation.duration = Duration(milliseconds: milliseconds);
+    _northResetAnimation.forward(from: 0);
   }
 
   void _onPOITap(CampusPOI poi) {
@@ -161,6 +212,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
                       : const LatLng(34.2312, 108.9632),
                   initialZoom: 16.0,
                   maxZoom: _maxMapZoom,
+                  onMapEvent: _onMapEvent,
                   onTap: (_, _) {
                     setState(() => _selectedPOI = null);
                     if (_sheetController.isAttached) {
@@ -525,6 +577,16 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Compass / reset-north control
+        ValueListenableBuilder<double>(
+          valueListenable: _mapRotation,
+          builder: (context, rotation, _) => MapCompassButton(
+            rotation: rotation,
+            tooltip: context.l10n.resetNorth,
+            onResetNorth: _resetNorth,
+          ),
+        ),
+        const SizedBox(height: 12),
         // Zoom Controls
         McSmoothCorners.clip(
           borderRadius: controlRadius,

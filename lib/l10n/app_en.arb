@@ -802,5 +802,6 @@
   "navigationAppleMaps": "Apple Maps",
   "navigationGoogleMaps": "Google Maps",
   "navigationAmap": "Amap",
-  "navigationBaiduMaps": "Baidu Maps"
+  "navigationBaiduMaps": "Baidu Maps",
+  "resetNorth": "Reset to north"
 }

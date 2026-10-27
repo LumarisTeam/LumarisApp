@@ -799,5 +799,6 @@
   "navigationAppleMaps": "Plans Apple",
   "navigationGoogleMaps": "Google Maps",
   "navigationAmap": "Amap",
-  "navigationBaiduMaps": "Baidu Maps"
+  "navigationBaiduMaps": "Baidu Maps",
+  "resetNorth": "Remettre le nord en haut"
 }

@@ -799,5 +799,6 @@
   "navigationAppleMaps": "Apple Karten",
   "navigationGoogleMaps": "Google Maps",
   "navigationAmap": "Amap",
-  "navigationBaiduMaps": "Baidu Maps"
+  "navigationBaiduMaps": "Baidu Maps",
+  "resetNorth": "Nach Norden ausrichten"
 }

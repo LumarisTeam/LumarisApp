@@ -798,5 +798,6 @@
   "navigationAppleMaps": "Карты Apple",
   "navigationGoogleMaps": "Google Карты",
   "navigationAmap": "Amap",
-  "navigationBaiduMaps": "Baidu Maps"
+  "navigationBaiduMaps": "Baidu Maps",
+  "resetNorth": "Повернуть на север"
 }

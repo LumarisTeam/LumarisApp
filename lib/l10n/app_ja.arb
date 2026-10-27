@@ -802,5 +802,6 @@
   "navigationAppleMaps": "Appleマップ",
   "navigationGoogleMaps": "Google マップ",
   "navigationAmap": "高徳地図",
-  "navigationBaiduMaps": "百度地図"
+  "navigationBaiduMaps": "百度地図",
+  "resetNorth": "北を上に戻す"
 }

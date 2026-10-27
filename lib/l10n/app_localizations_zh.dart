@@ -2233,6 +2233,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get navigationBaiduMaps => '百度地图';
+
+  @override
+  String get resetNorth => '正北朝上';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4465,4 +4468,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get navigationBaiduMaps => '百度地圖';
+
+  @override
+  String get resetNorth => '正北朝上';
 }

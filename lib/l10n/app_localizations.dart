@@ -4403,6 +4403,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'百度地图'**
   String get navigationBaiduMaps;
+
+  /// 校园地图指南针按钮：把旋转后的地图校正为正北朝上
+  ///
+  /// In zh, this message translates to:
+  /// **'正北朝上'**
+  String get resetNorth;
 }
 
 class _AppLocalizationsDelegate

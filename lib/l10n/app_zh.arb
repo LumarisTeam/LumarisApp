@@ -1527,5 +1527,7 @@
   "navigationAmap": "高德地图",
   "@navigationAmap": {"description": "外部地图导航文案"},
   "navigationBaiduMaps": "百度地图",
-  "@navigationBaiduMaps": {"description": "外部地图导航文案"}
+  "@navigationBaiduMaps": {"description": "外部地图导航文案"},
+  "resetNorth": "正北朝上",
+  "@resetNorth": {"description": "校园地图指南针按钮：把旋转后的地图校正为正北朝上"}
 }

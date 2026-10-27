@@ -801,5 +801,6 @@
   "navigationAppleMaps": "Apple 地圖",
   "navigationGoogleMaps": "Google 地圖",
   "navigationAmap": "高德地圖",
-  "navigationBaiduMaps": "百度地圖"
+  "navigationBaiduMaps": "百度地圖",
+  "resetNorth": "正北朝上"
 }

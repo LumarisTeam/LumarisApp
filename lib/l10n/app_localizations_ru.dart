@@ -2335,4 +2335,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get navigationBaiduMaps => 'Baidu Maps';
+
+  @override
+  String get resetNorth => 'Повернуть на север';
 }

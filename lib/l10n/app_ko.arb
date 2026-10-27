@@ -799,5 +799,6 @@
   "navigationAppleMaps": "Apple 지도",
   "navigationGoogleMaps": "Google 지도",
   "navigationAmap": "Amap",
-  "navigationBaiduMaps": "Baidu 지도"
+  "navigationBaiduMaps": "Baidu 지도",
+  "resetNorth": "북쪽을 위로"
 }

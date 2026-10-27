@@ -2260,4 +2260,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get navigationBaiduMaps => 'Baidu 지도';
+
+  @override
+  String get resetNorth => '북쪽을 위로';
 }

@@ -2243,4 +2243,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get navigationBaiduMaps => '百度地図';
+
+  @override
+  String get resetNorth => '北を上に戻す';
 }
