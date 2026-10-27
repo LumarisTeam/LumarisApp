@@ -11,6 +11,7 @@ import 'package:ios_club_app/state/map_notifier.dart';
 import 'package:ios_club_app/state/map_state.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import '../../../core/services/external_navigation_service.dart';
 import '../../../core/utils/platform_utils.dart';
@@ -29,6 +30,11 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
   static const double _minMapZoom = 4.0;
   static const double _maxMapZoom = 19.0;
   static const int _maxNativeTileZoom = 18;
+
+  /// 与 MainApp 保持一致：窗口宽度超过该值时按平板布局处理，
+  /// 此时没有底部导航栏兜底，地图需要自己提供返回键。
+  static const double _tabletMinWindowWidth = 600.0;
+
   static const Duration _northResetMinDuration = Duration(milliseconds: 220);
   static const Duration _northResetMaxDuration = Duration(milliseconds: 480);
 
@@ -142,6 +148,19 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
     HapticFeedback.mediumImpact();
   }
 
+  /// 返回地图入口页。
+  ///
+  /// 地图通常由个人中心以 push 方式打开，直接 pop 即可；若是深链直达、
+  /// 没有可回退的页面，则退回地图入口所在的分支，避免用户被困在页面里。
+  void _handleBack() {
+    HapticFeedback.lightImpact();
+    if (AppRouter.router.canPop()) {
+      AppRouter.pop();
+      return;
+    }
+    AppRouter.go(AppRoutes.profile);
+  }
+
   @override
   Widget build(BuildContext context) {
     final mapState = ref.watch(mapNotifierProvider);
@@ -200,6 +219,10 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
         builder: (context, constraints) {
           final isWide = constraints.maxWidth > 700;
           final effectiveSidebarOpen = isWide && _isSidebarOpen;
+          // 平板窗口没有底部导航栏兜底，无论侧边栏展开还是收起都要有返回键。
+          final showBackButton =
+              isWide ||
+              MediaQuery.sizeOf(context).width > _tabletMinWindowWidth;
 
           return Stack(
             children: [
@@ -286,7 +309,12 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                   top: padding.top + 12,
                   left: 16,
                   right: 16,
-                  child: _buildFloatingTopPanel(mapState, colors, filteredPOIs),
+                  child: _buildFloatingTopPanel(
+                    mapState,
+                    colors,
+                    filteredPOIs,
+                    showBackButton: showBackButton,
+                  ),
                 ),
 
               // 3. Wide Screen Sidebar (Animated Floating)
@@ -301,14 +329,22 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                   child: _buildSidebar(mapState, colors, filteredPOIs),
                 ),
 
-              // 4. Sidebar Toggle Button (Wide Screen Only - Adjust position based on sidebar)
+              // 4. Top-left Floating Controls (Wide Screen Only)
+              //    返回键跟随侧边栏折叠按钮一起移动，保证始终可见。
               if (isWide)
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 400),
                   curve: Curves.easeInOutCubic,
                   top: padding.top + 20,
                   left: effectiveSidebarOpen ? 350 : 20,
-                  child: _buildSidebarToggle(colors),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildBackButton(colors),
+                      const SizedBox(width: 8),
+                      _buildSidebarToggle(colors),
+                    ],
+                  ),
                 ),
 
               // 5. Map Controls (Right)
@@ -327,7 +363,35 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
     );
   }
 
+  Widget _buildBackButton(McColors colors) {
+    return _buildFloatingIconButton(
+      colors: colors,
+      icon: Icons.arrow_back_rounded,
+      tooltip: context.l10n.back,
+      onPressed: _handleBack,
+    );
+  }
+
   Widget _buildSidebarToggle(McColors colors) {
+    return _buildFloatingIconButton(
+      colors: colors,
+      icon: _isSidebarOpen
+          ? Icons.chevron_left_rounded
+          : Icons.menu_open_rounded,
+      tooltip: _isSidebarOpen
+          ? context.l10n.collapseSidebar
+          : context.l10n.expandSidebar,
+      onPressed: _toggleSidebar,
+    );
+  }
+
+  /// 地图上统一风格的悬浮圆形按钮（半透明毛玻璃）。
+  Widget _buildFloatingIconButton({
+    required McColors colors,
+    required IconData icon,
+    required VoidCallback onPressed,
+    String? tooltip,
+  }) {
     final radius = BorderRadius.circular(20);
     return Container(
       decoration: ShapeDecoration(
@@ -345,13 +409,9 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: IconButton(
-            icon: Icon(
-              _isSidebarOpen
-                  ? Icons.chevron_left_rounded
-                  : Icons.menu_open_rounded,
-              color: colors.label,
-            ),
-            onPressed: _toggleSidebar,
+            icon: Icon(icon, color: colors.label),
+            tooltip: tooltip,
+            onPressed: onPressed,
           ),
         ),
       ),
@@ -446,8 +506,9 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
   Widget _buildFloatingTopPanel(
     MapState mapState,
     McColors colors,
-    List<CampusPOI> filteredPOIs,
-  ) {
+    List<CampusPOI> filteredPOIs, {
+    required bool showBackButton,
+  }) {
     final l10n = context.l10n;
     return Column(
       children: [
@@ -470,6 +531,29 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
               ),
               child: Row(
                 children: [
+                  if (showBackButton) ...[
+                    IconButton(
+                      tooltip: l10n.back,
+                      onPressed: _handleBack,
+                      icon: Icon(
+                        Icons.arrow_back_rounded,
+                        color: colors.label,
+                        size: 22,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints.tightFor(
+                        width: 36,
+                        height: 36,
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    Container(
+                      width: 1,
+                      height: 20,
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      color: colors.separator.withValues(alpha: 0.2),
+                    ),
+                  ],
                   Icon(Icons.search_rounded, color: colors.secondaryLabel),
                   const SizedBox(width: 12),
                   Expanded(
