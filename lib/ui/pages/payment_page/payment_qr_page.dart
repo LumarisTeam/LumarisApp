@@ -28,7 +28,7 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
 
   Timer? _ticker;
   int _secondsRemaining = _refreshInterval.inSeconds;
-  String? _payload;
+  QrCode? _qrCode;
   bool _isLoading = true;
   bool _isFetching = false;
   String _errorMessage = '';
@@ -99,20 +99,27 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
         setState(() {
           _isLoading = false;
           _errorMessage = 'auth_required';
-          _payload = null;
+          _qrCode = null;
         });
         return;
       }
 
       final password = await ref.read(paymentPasswordReaderProvider)();
-      final payload = await ref.read(paymentQrFetcherProvider)(
+      final paymentQrCode = await ref.read(paymentQrFetcherProvider)(
         studentId,
         password,
       );
 
+      // 离线码是多字节二进制载荷，必须按字节编码，不能当字符串处理。
+      // 在这里一次性生成 QrCode，避免每秒计时器触发的 rebuild 重算矩阵。
+      final qrCode = QrCode.fromUint8List(
+        data: paymentQrCode.data,
+        errorCorrectLevel: QrErrorCorrectLevel.L,
+      );
+
       if (!mounted) return;
       setState(() {
-        _payload = payload;
+        _qrCode = qrCode;
         _isLoading = false;
         _errorMessage = '';
       });
@@ -122,7 +129,7 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
       setState(() {
         _isLoading = false;
         _errorMessage = 'load_failed';
-        _payload = null;
+        _qrCode = null;
       });
     } finally {
       _isFetching = false;
@@ -155,7 +162,7 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (_payload == null && _errorMessage.isNotEmpty)
+                if (_qrCode == null && _errorMessage.isNotEmpty)
                   _buildError(l10n)
                 else ...[
                   _buildQrCode(context, l10n),
@@ -201,10 +208,9 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
           ),
         ],
       ),
-      child: _payload != null
-          ? QrImageView(
-              data: _payload!,
-              version: QrVersions.auto,
+      child: _qrCode != null
+          ? QrImageView.withQr(
+              qr: _qrCode!,
               size: size,
               padding: const EdgeInsets.all(12),
               backgroundColor: Colors.white,

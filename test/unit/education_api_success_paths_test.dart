@@ -16,6 +16,7 @@ import 'package:ios_club_app/features/education/apis/exam_api.dart';
 import 'package:ios_club_app/features/education/apis/info_api.dart';
 import 'package:ios_club_app/features/education/apis/login_api.dart';
 import 'package:ios_club_app/features/education/apis/payment_api.dart';
+import 'package:ios_club_app/features/education/models/payment_qr_code.dart';
 import 'package:ios_club_app/features/education/apis/program_api.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -361,14 +362,17 @@ void main() {
                 Response<dynamic>(
                   requestOptions: options,
                   statusCode: 200,
-                  data: <String, dynamic>{'payload': 'payload-123'},
+                  data: <String, dynamic>{
+                    'payload': base64Encode(utf8.encode('payload-123')),
+                    'mode': 'offline',
+                  },
                 ),
               );
             },
           ),
         );
 
-        final payload = await PaymentApi.getPaymentQrCodePayload(
+        final qrCode = await PaymentApi.getPaymentQrCodePayload(
           'card-1',
           ' pw ',
         );
@@ -377,7 +381,8 @@ void main() {
         expect(requestedQuery, {'password': 'pw'});
         // 支付码有时效，缓存拦截器必须被绕过
         expect(bypassCache, isTrue);
-        expect(payload, 'payload-123');
+        expect(utf8.decode(qrCode.data), 'payload-123');
+        expect(qrCode.mode, PaymentQrCode.offlineMode);
       },
     );
 

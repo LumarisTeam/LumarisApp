@@ -4,6 +4,7 @@ import 'package:ios_club_app/features/education/services/payment_service.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 import 'package:ios_club_app/features/education/models/payment_model.dart';
+import 'package:ios_club_app/features/education/models/payment_qr_code.dart';
 import 'package:ios_club_app/state/tile_edit_notifier.dart';
 import 'package:ios_club_app/features/system/tile_service.dart';
 import 'package:ios_club_app/core/utils/stale_request_guard.dart';
@@ -22,7 +23,7 @@ typedef TileMutator = Future<void> Function(String tileId);
 typedef PaymentPasswordWriter = Future<bool> Function(String? password);
 
 typedef PaymentQrFetcher =
-    Future<String> Function(String cardNumber, String? password);
+    Future<PaymentQrCode> Function(String cardNumber, String? password);
 
 final paymentDataFetcherProvider = Provider<PaymentDataFetcher>((ref) {
   return PaymentService.fetchData;

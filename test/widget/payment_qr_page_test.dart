@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ios_club_app/features/education/models/payment_qr_code.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:ios_club_app/state/payment_store.dart';
 import 'package:ios_club_app/ui/pages/payment_page/payment_qr_page.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 void main() {
   testWidgets('PaymentQrPage should refresh the code every 50 seconds', (
@@ -20,7 +25,10 @@ void main() {
           paymentPasswordReaderProvider.overrideWithValue(() async => 'pw'),
           paymentQrFetcherProvider.overrideWithValue((_, _) async {
             fetchCount++;
-            return 'payload-$fetchCount';
+            return PaymentQrCode(
+              data: Uint8List.fromList(utf8.encode('payload-$fetchCount')),
+              mode: PaymentQrCode.offlineMode,
+            );
           }),
         ],
         child: MaterialApp(
@@ -42,6 +50,8 @@ void main() {
     }
     expect(fetchCount, 1);
     expect(find.text('50 秒后自动刷新'), findsOneWidget);
+    // 支付码内容已渲染为二维码
+    expect(find.byType(QrImageView), findsOneWidget);
 
     // 49 秒时还不应刷新
     await tester.pump(const Duration(seconds: 49));
