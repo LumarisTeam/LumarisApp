@@ -15,7 +15,7 @@ void main() {
   Uri destination(ExternalNavigationService service, ExternalMap map) => service
       .uriFor(map, latitude: 34.23, longitude: 108.96, name: '教学楼 A & B');
 
-  test('should preserve WGS84 and walking mode when building map links', () {
+  test('should send GCJ-02 coordinates to domestic maps', () {
     for (final TargetPlatform platform in [
       TargetPlatform.iOS,
       TargetPlatform.android,
@@ -29,14 +29,15 @@ void main() {
         amap.scheme,
         platform == TargetPlatform.iOS ? 'iosamap' : 'androidamap',
       );
-      expect(amap.queryParameters['dev'], '1');
+      // 坐标已是 GCJ-02，不能再让高德纠偏一次。
+      expect(amap.queryParameters.containsKey('dev'), isFalse);
       expect(amap.queryParameters['t'], '2');
       expect(amap.queryParameters['dlat'], '34.23');
       expect(amap.queryParameters['dlon'], '108.96');
       expect(amap.queryParameters['dname'], '教学楼 A & B');
       expect(amap.toString(), isNot(contains('+')));
       final baidu = destination(service, ExternalMap.baidu);
-      expect(baidu.queryParameters['coord_type'], 'wgs84');
+      expect(baidu.queryParameters['coord_type'], '2');
       expect(
         baidu.queryParameters['destination'],
         'latlng:34.23,108.96|name:教学楼 A & B',
@@ -46,8 +47,16 @@ void main() {
       if (platform == TargetPlatform.iOS) {
         expect(google.scheme, 'comgooglemaps');
         expect(google.queryParameters['directionsmode'], 'walking');
+        final parts = google.queryParameters['daddr']!.split(',');
+        expect(double.parse(parts[0]), closeTo(34.23157195, 1e-6));
+        expect(double.parse(parts[1]), closeTo(108.955306617, 1e-6));
       } else {
-        expect(google.toString(), 'google.navigation:q=34.23,108.96&mode=w');
+        final match = RegExp(
+          r'^google\.navigation:q=([-\d.]+),([-\d.]+)&mode=w$',
+        ).firstMatch(google.toString());
+        expect(match, isNotNull);
+        expect(double.parse(match!.group(1)!), closeTo(34.23157195, 1e-6));
+        expect(double.parse(match.group(2)!), closeTo(108.955306617, 1e-6));
       }
     }
   });
@@ -140,7 +149,7 @@ void main() {
       );
       expect(launched.length, 2);
       expect(launched.last.host, 'api.map.baidu.com');
-      expect(launched.last.queryParameters['coord_type'], 'wgs84');
+      expect(launched.last.queryParameters['coord_type'], 'gcj02');
       expect(await service.preferredMap(), isNull);
     },
   );
@@ -179,7 +188,10 @@ void main() {
         isTrue,
       );
       expect(launched.single.host, 'www.google.com');
-      expect(launched.single.queryParameters['destination'], '34.23,108.96');
+      final destination = launched.single.queryParameters['destination']!
+          .split(',');
+      expect(double.parse(destination[0]), closeTo(34.23157195, 1e-6));
+      expect(double.parse(destination[1]), closeTo(108.955306617, 1e-6));
     },
   );
 

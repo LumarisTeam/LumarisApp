@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:ios_club_app/core/utils/coordinate_transform.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'prefs_service.dart';
@@ -7,7 +8,10 @@ enum ExternalMap { apple, google, amap, baidu }
 
 typedef MapLauncher = Future<bool> Function(Uri uri);
 
-/// External walking navigation. All input coordinates are WGS-84.
+/// External walking navigation.
+///
+/// 入参坐标与接口返回的 POI 一致，是 GCJ-02（火星坐标），与高德底图同源；
+/// 只有 Google Maps 这类 WGS-84 消费方在这里自行转换。
 class ExternalNavigationService {
   ExternalNavigationService({
     TargetPlatform? platform,
@@ -45,16 +49,19 @@ class ExternalNavigationService {
         !longitude.isFinite ||
         latitude.abs() > 90 ||
         longitude.abs() > 180) {
-      throw ArgumentError('Invalid WGS-84 destination');
+      throw ArgumentError('Invalid destination coordinates');
     }
-    final String coordinates = '$latitude,$longitude';
+    final String gcjCoordinates = '$latitude,$longitude';
     switch (map) {
       case ExternalMap.apple:
+        // 中国大陆的 Apple Maps 使用高德数据（GCJ-02），坐标原样传入即可。
         return Uri.https('maps.apple.com', '/', {
-          'daddr': coordinates,
+          'daddr': gcjCoordinates,
           'dirflg': 'w',
         });
       case ExternalMap.google:
+        final Coordinate wgs = gcj02ToWgs84(latitude, longitude);
+        final String coordinates = '${wgs.latitude},${wgs.longitude}';
         if (platform == TargetPlatform.iOS) {
           return Uri(
             scheme: 'comgooglemaps',
@@ -73,8 +80,7 @@ class ExternalNavigationService {
             'dlat': '$latitude',
             'dlon': '$longitude',
             'dname': name,
-            // AMap converts raw GPS (WGS-84) coordinates when dev=1.
-            'dev': '1',
+            // 坐标已是 GCJ-02，不能再带 dev=1（那会让高德把 GPS 原始坐标再纠偏一次）。
             't': '2',
           }),
         );
@@ -84,9 +90,10 @@ class ExternalNavigationService {
           host: 'map',
           path: '/direction',
           query: _query({
-            'destination': 'latlng:$coordinates|name:$name',
+            'destination': 'latlng:$gcjCoordinates|name:$name',
             'mode': 'walking',
-            'coord_type': 'wgs84',
+            // 2 = 国测局坐标（GCJ-02）
+            'coord_type': '2',
             'src': '光序',
           }),
         );
@@ -108,16 +115,17 @@ class ExternalNavigationService {
     );
     if (map == ExternalMap.apple) return appUri;
     if (map == ExternalMap.google) {
+      final Coordinate wgs = gcj02ToWgs84(latitude, longitude);
       return Uri.https('www.google.com', '/maps/dir/', {
         'api': '1',
-        'destination': '$latitude,$longitude',
+        'destination': '${wgs.latitude},${wgs.longitude}',
         'travelmode': 'walking',
       });
     }
-    // Domestic web fallback accepts WGS-84 explicitly and shows the destination.
+    // 百度 Web 兜底接受显式坐标系声明，传入的就是 GCJ-02。
     return Uri.https('api.map.baidu.com', '/marker', {
       'location': '$latitude,$longitude',
-      'coord_type': 'wgs84',
+      'coord_type': 'gcj02',
       'title': name,
       'content': name,
       'output': 'html',
