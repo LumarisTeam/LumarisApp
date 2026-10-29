@@ -6,6 +6,10 @@ class PrefsKeys {
   static const String USER_DATA = 'user_data';
   static const String LAST_FETCH_TIME = 'last_fetch_time';
 
+  /// 教务系统类型（0 = 本科生，1 = 研究生），登录成功后记录，
+  /// 后续请求通过 `x-loginMode` 头带上。
+  static const String LOGIN_MODE = 'login_mode';
+
   /// 课程相关
   /// @deprecated 已迁移到 Hive (CourseRepository)，保留此 Key 仅用于迁移逻辑，禁止新代码写入
   @Deprecated(

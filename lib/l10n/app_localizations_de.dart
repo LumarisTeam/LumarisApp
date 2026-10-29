@@ -995,6 +995,16 @@ class AppLocalizationsDe extends AppLocalizations {
       'Anmeldung erfolgreich, aber sicherer Speicher nicht verfügbar.';
 
   @override
+  String get undergraduateSystem => 'Bachelor';
+
+  @override
+  String get graduateSystem => 'Master';
+
+  @override
+  String get graduateSystemHint =>
+      'Das Graduiertensystem unterstützt derzeit nur Anmeldung und Stundenplan.';
+
+  @override
   String get loadingDefaultTitle => 'Synchronisierung';
 
   @override

@@ -1,5 +1,6 @@
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
+import 'package:ios_club_app/features/education/models/login_mode.dart';
 import 'package:ios_club_app/features/education/services/schedule_time_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
@@ -9,6 +10,7 @@ import 'edu_time_service.dart';
 import 'education_cache_service.dart';
 import 'exam_service.dart';
 import 'info_service.dart';
+import 'login_mode_service.dart';
 import 'score_service.dart';
 
 typedef CourseRefreshCallback = Future<void> Function();
@@ -61,18 +63,25 @@ class EducationRefreshService {
       await ScheduleTimeService.fetchFromRemote(forceRefresh: true);
 
       if (isForced) {
-        await Future.wait([
-          ScoreService.fetchSemestersFromRemote(
-            userData: cookieData,
-            forceRefresh: true,
-          ),
-          ExamService.getExam(userData: cookieData, forceRefresh: true),
-          InfoService.getInfoCompletion(
-            userData: cookieData,
-            forceRefresh: true,
-          ),
-          CourseService.getCourse(userData: cookieData, isRefresh: true),
-        ]);
+        if (LoginModeService.current == LoginMode.graduate) {
+          // 研究生系统目前只提供登录与课表。成绩、考试、学业进度仍会打到
+          // 本科生接口，拿 gmis 的 cookie 只会得到 401（还会触发一次无谓的
+          // 重登录），因此这里只预加载课表。
+          await CourseService.getCourse(userData: cookieData, isRefresh: true);
+        } else {
+          await Future.wait([
+            ScoreService.fetchSemestersFromRemote(
+              userData: cookieData,
+              forceRefresh: true,
+            ),
+            ExamService.getExam(userData: cookieData, forceRefresh: true),
+            InfoService.getInfoCompletion(
+              userData: cookieData,
+              forceRefresh: true,
+            ),
+            CourseService.getCourse(userData: cookieData, isRefresh: true),
+          ]);
+        }
       }
 
       final callback = _courseRefreshCallback;

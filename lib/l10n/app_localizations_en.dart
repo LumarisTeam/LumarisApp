@@ -979,6 +979,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Login successful, but secure storage is unavailable. You may need to re-enter your credentials next time.';
 
   @override
+  String get undergraduateSystem => 'Undergraduate';
+
+  @override
+  String get graduateSystem => 'Graduate';
+
+  @override
+  String get graduateSystemHint =>
+      'The graduate system currently supports login and timetable only.';
+
+  @override
   String get loadingDefaultTitle => 'Syncing Data';
 
   @override

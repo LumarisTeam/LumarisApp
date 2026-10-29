@@ -4,8 +4,10 @@ import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/apis/login_api.dart';
+import 'package:ios_club_app/features/education/models/login_mode.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/features/education/services/auth_session_guard.dart';
+import 'package:ios_club_app/features/education/services/login_mode_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
 class AuthService {
@@ -71,15 +73,26 @@ class AuthService {
     }
   }
 
-  static Future<bool> loginFromData(String username, String password) async {
+  /// 使用表单里的账号密码登录。
+  ///
+  /// [mode] 由登录页传入；登录成功后记录，供后续请求的 `x-loginMode` 头使用。
+  static Future<bool> loginFromData(
+    String username,
+    String password, {
+    LoginMode? mode,
+  }) async {
     if (username.isEmpty || password.isEmpty) {
       return false;
     }
 
     final epoch = AuthSessionGuard.epoch;
-    final response = await LoginApi.login(username, password);
+    final response = await LoginApi.login(username, password, mode: mode);
     if (response.success != true) {
       return false;
+    }
+
+    if (mode != null) {
+      await LoginModeService.save(mode);
     }
 
     return _persistUserData(jsonEncode(response.toJson()), epoch);

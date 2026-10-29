@@ -1896,6 +1896,24 @@ abstract class AppLocalizations {
   /// **'登录成功，但安全存储不可用，下次启动后可能需要重新输入账号密码'**
   String get loginSecurityStorageUnavailable;
 
+  /// 登录页系统类型选择：本科生教务系统
+  ///
+  /// In zh, this message translates to:
+  /// **'本科生'**
+  String get undergraduateSystem;
+
+  /// 登录页系统类型选择：研究生教务系统
+  ///
+  /// In zh, this message translates to:
+  /// **'研究生'**
+  String get graduateSystem;
+
+  /// 选择研究生系统后的功能范围提示
+  ///
+  /// In zh, this message translates to:
+  /// **'研究生系统当前支持登录与课表查询'**
+  String get graduateSystemHint;
+
   ///
   ///
   /// In zh, this message translates to:

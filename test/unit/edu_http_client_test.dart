@@ -140,6 +140,63 @@ void main() {
       client.dispose();
     });
 
+    test('should inject saved x-loginMode header', () async {
+      await PrefsService.instance.setInt(PrefsKeys.LOGIN_MODE, 1);
+
+      final client = EduHttpClient(baseUrl: 'http://api.test');
+      client.dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            expect(options.headers['x-loginMode'], '1');
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: <String, dynamic>{'ok': true},
+              ),
+            );
+          },
+        ),
+      );
+
+      final data = await client.get('/graduate') as Map<String, dynamic>;
+      expect(data['ok'], isTrue);
+
+      client.dispose();
+    });
+
+    test('should keep explicit x-loginMode over the saved mode', () async {
+      await PrefsService.instance.setInt(PrefsKeys.LOGIN_MODE, 1);
+
+      final client = EduHttpClient(baseUrl: 'http://api.test');
+      client.dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            expect(options.headers['x-loginMode'], '0');
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: <String, dynamic>{'ok': true},
+              ),
+            );
+          },
+        ),
+      );
+
+      final data =
+          await client.get(
+                '/undergraduate',
+                options: Options(
+                  headers: <String, dynamic>{'x-loginMode': '0'},
+                ),
+              )
+              as Map<String, dynamic>;
+      expect(data['ok'], isTrue);
+
+      client.dispose();
+    });
+
     test('should inject x-language header from locale preference', () async {
       await PrefsService.instance.setString(PrefsKeys.LOCALE_CODE, 'ja');
 
@@ -631,6 +688,51 @@ void main() {
           () => client.get('/protected-fail'),
           throwsA(isA<AuthenticationException>()),
         );
+
+        client.dispose();
+      },
+    );
+
+    test(
+      'should not relogin twice when retry keeps returning 401',
+      () async {
+        // 研究生模式下访问尚未支持的成绩/考试接口就是这种情形：重登录本身
+        // 成功，但原请求永远 401。没有一次性的重试闸，拦截器会无限递归。
+        secureStore[PrefsKeys.USERNAME] = 'u1';
+        secureStore[PrefsKeys.PASSWORD] = 'p1';
+        var loginCalls = 0;
+        EduHttpClient.setLoginHandlerForTest((_, _) async {
+          loginCalls++;
+          return <String, dynamic>{
+            'success': true,
+            'studentId': '2026001',
+            'cookie': 'cookie-after-login',
+          };
+        });
+
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        client.dio.httpClientAdapter = _QueueAdapter([
+          (_) => ResponseBody.fromString(
+            '{"error":"unauthorized"}',
+            401,
+            headers: <String, List<String>>{
+              Headers.contentTypeHeader: <String>['application/json'],
+            },
+          ),
+          (_) => ResponseBody.fromString(
+            '{"error":"unauthorized"}',
+            401,
+            headers: <String, List<String>>{
+              Headers.contentTypeHeader: <String>['application/json'],
+            },
+          ),
+        ]);
+
+        await expectLater(
+          () => client.get('/unsupported-endpoint'),
+          throwsA(isA<AuthenticationException>()),
+        );
+        expect(loginCalls, 1);
 
         client.dispose();
       },

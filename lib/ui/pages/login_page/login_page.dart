@@ -7,11 +7,13 @@ import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
+import 'package:ios_club_app/features/education/models/login_mode.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/services/auth_service.dart';
 import 'package:ios_club_app/features/education/services/education_refresh_service.dart';
+import 'package:ios_club_app/features/education/services/login_mode_service.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/state/settings_store.dart';
@@ -20,6 +22,7 @@ import 'package:ios_club_app/ui/components/school_selector.dart';
 import 'package:ios_club_app/ui/components/loading_state_view.dart';
 import 'package:ios_club_app/ui/components/optimized_image.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
@@ -39,6 +42,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool _isLoading = false;
   bool _hasAcceptedAgreement = false;
   late School _selectedSchool;
+  late LoginMode _loginMode;
+
+  /// 只有西建大有研究生系统；其它学校的后端不认这个选择。
+  bool get _supportsGraduateMode =>
+      _selectedSchool.code.toUpperCase() == School.defaultCode;
 
   @override
   void initState() {
@@ -46,6 +54,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     _selectedSchool =
         ref.read(settingsStoreProvider.notifier).currentSchool ??
         School.fallbackList.first;
+    // 记住上一次登录选择的系统类型，方便再次登录时直接沿用。
+    _loginMode = _supportsGraduateMode
+        ? LoginModeService.current
+        : LoginMode.undergraduate;
   }
 
   @override
@@ -143,6 +155,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final loginResult = await AuthService.loginFromData(
       _usernameController.text,
       _passwordController.text,
+      mode: _supportsGraduateMode ? _loginMode : LoginMode.undergraduate,
     );
 
     if (!loginResult) {
@@ -271,12 +284,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 selectedSchool: _selectedSchool,
                 schools: schools,
                 onChanged: (school) {
-                  setState(() => _selectedSchool = school);
+                  setState(() {
+                    _selectedSchool = school;
+                    if (school.code.toUpperCase() != School.defaultCode) {
+                      // 其它学校没有研究生系统，切走后强制回到本科生
+                      _loginMode = LoginMode.undergraduate;
+                    }
+                  });
                 },
               ),
             ),
 
             const SizedBox(height: 12),
+
+            if (_supportsGraduateMode) ...[
+              _buildLoginModeSelector(context, l10n),
+              const SizedBox(height: 12),
+            ],
 
             // Grouped Inputs
             Container(
@@ -368,7 +392,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ),
                 ),
-                if (_selectedSchool.code.toUpperCase() == School.defaultCode)
+                if (_supportsGraduateMode &&
+                    _loginMode == LoginMode.undergraduate)
                   TextButton(
                     onPressed: () async {
                       const url =
@@ -404,6 +429,63 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  /// 本科生 / 研究生系统选择。
+  ///
+  /// 只有西建大支持；选择结果在登录成功时写入偏好，后续请求由
+  /// `EduHttpClient` 自动带上 `x-loginMode` 头。
+  Widget _buildLoginModeSelector(BuildContext context, AppLocalizations l10n) {
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: CupertinoSlidingSegmentedControl<LoginMode>(
+            proportionalWidth: true,
+            groupValue: _loginMode,
+            onValueChanged: (mode) {
+              if (mode == null || mode == _loginMode) {
+                return;
+              }
+              setState(() => _loginMode = mode);
+            },
+            children: <LoginMode, Widget>{
+              LoginMode.undergraduate: _buildLoginModeSegment(
+                l10n.undergraduateSystem,
+                LoginMode.undergraduate,
+              ),
+              LoginMode.graduate: _buildLoginModeSegment(
+                l10n.graduateSystem,
+                LoginMode.graduate,
+              ),
+            },
+          ),
+        ),
+        if (_loginMode == LoginMode.graduate) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.graduateSystemHint,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              color: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildLoginModeSegment(String label, LoginMode mode) {
+    return Text(
+      label,
+      style: TextStyle(
+        fontSize: 14,
+        fontWeight: _loginMode == mode ? FontWeight.w600 : null,
       ),
     );
   }

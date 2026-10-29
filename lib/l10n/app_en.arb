@@ -344,6 +344,9 @@
   "loginFailed": "Login failed, please check your credentials",
   "loginTimeout": "Login timed out, please check your network and try again",
   "loginSecurityStorageUnavailable": "Login successful, but secure storage is unavailable. You may need to re-enter your credentials next time.",
+  "undergraduateSystem": "Undergraduate",
+  "graduateSystem": "Graduate",
+  "graduateSystemHint": "The graduate system currently supports login and timetable only.",
 
   "selectSchool": "Select School",
   "searchSchool": "Search school...",

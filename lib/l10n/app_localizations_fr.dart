@@ -991,6 +991,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Connexion réussie, mais le stockage sécurisé est indisponible.';
 
   @override
+  String get undergraduateSystem => 'Licence';
+
+  @override
+  String get graduateSystem => 'Master';
+
+  @override
+  String get graduateSystemHint =>
+      'Le système de master ne prend actuellement en charge que la connexion et l\'emploi du temps.';
+
+  @override
   String get loadingDefaultTitle => 'Synchronisation';
 
   @override

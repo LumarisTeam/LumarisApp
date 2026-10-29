@@ -10,6 +10,7 @@ import 'package:ios_club_app/core/repositories/score_repository.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
+import 'package:ios_club_app/features/education/models/login_mode.dart';
 import 'package:ios_club_app/features/education/models/score_model.dart';
 import 'package:ios_club_app/features/education/models/semester_model.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
@@ -198,6 +199,88 @@ void main() {
         isNotNull,
       );
     });
+
+    test(
+      'AuthService.loginFromData should record the selected login mode',
+      () async {
+        LoginApi.setLoginOverrideForTest(
+          (_, _) async => LoginResponse(
+            success: true,
+            studentId: '2026888',
+            cookie: 'cookie-graduate',
+          ),
+        );
+
+        final ok = await AuthService.loginFromData(
+          'u',
+          'p',
+          mode: LoginMode.graduate,
+        );
+
+        expect(ok, isTrue);
+        expect(PrefsService.instance.getInt(PrefsKeys.LOGIN_MODE), 1);
+      },
+    );
+
+    test(
+      'EducationRefreshService should only preload timetable in graduate mode',
+      () async {
+        await PrefsService.instance.setInt(
+          PrefsKeys.LOGIN_MODE,
+          LoginMode.graduate.value,
+        );
+        // getUserData() 只接受 20 分钟内的登录态，这里把两把钥匙都放好
+        await PrefsService.instance.setString(
+          PrefsKeys.USER_DATA,
+          jsonEncode(<String, String>{
+            'studentId': '2026001',
+            'cookie': 'graduate-cookie',
+          }),
+        );
+        await PrefsService.instance.setInt(
+          PrefsKeys.LAST_FETCH_TIME,
+          DateTime.now().millisecondsSinceEpoch,
+        );
+
+        final paths = <String>[];
+        // 记录器放在 mock 之前，否则请求会被 mock 直接 resolve 掉
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              paths.add(options.path);
+              handler.next(options);
+            },
+          ),
+        );
+        mockEduResponse(
+          path: '/Info/Time',
+          data: <String, dynamic>{
+            'startTime': '2026-02-20T00:00:00.000',
+            'endTime': '2026-07-20T00:00:00.000',
+          },
+        );
+        mockEduResponse(path: '/course/ScheduleTime', data: <dynamic>[]);
+        mockEduResponse(
+          path: '/Course',
+          data: <String, dynamic>{
+            'success': true,
+            'data': <Map<String, dynamic>>[courseFixture().toJson()],
+            'expirationTime': '2026-03-23T00:00:00.000',
+          },
+        );
+
+        final ok = await EducationRefreshService.refreshWithExistingSession(
+          isForced: true,
+        );
+
+        expect(ok, isTrue);
+        expect(paths, contains('/Course'));
+        // 研究生系统没有成绩/考试/学业进度，不能拿 gmis 的 cookie 去打本科生接口
+        expect(paths, isNot(contains('/Score/Semester')));
+        expect(paths, isNot(contains('/Exam')));
+        expect(paths, isNot(contains('/Info/Completion')));
+      },
+    );
 
     test(
       'AuthService.loginFromData should discard result when session is invalidated',

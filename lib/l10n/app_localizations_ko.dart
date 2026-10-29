@@ -955,6 +955,15 @@ class AppLocalizationsKo extends AppLocalizations {
       '로그인 성공, 그러나 보안 저장소를 사용할 수 없어 다음 실행 시 계정 정보를 다시 입력해야 할 수 있습니다';
 
   @override
+  String get undergraduateSystem => '학부생';
+
+  @override
+  String get graduateSystem => '대학원생';
+
+  @override
+  String get graduateSystemHint => '대학원 시스템은 현재 로그인과 시간표만 지원합니다.';
+
+  @override
   String get loadingDefaultTitle => '데이터 동기화 중';
 
   @override

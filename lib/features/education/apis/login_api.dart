@@ -1,10 +1,14 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
+
 import '../../../core/services/network_exception.dart';
 import '../models/api_response.dart';
+import '../models/login_mode.dart';
 import '../models/login_response.dart';
 import '../services/edu_http_client.dart';
 import '../services/edu_http_client_manager.dart';
+import '../services/login_mode_service.dart';
 
 /// Login相关API — v1.yaml tag: LoginV1
 class LoginApi {
@@ -12,15 +16,28 @@ class LoginApi {
   static Future<LoginResponse> Function(String, String)? _loginOverrideForTest;
 
   /// POST /Login → ApiResponseOfLoginResponse
-  static Future<LoginResponse> login(String username, String password) async {
+  ///
+  /// [mode] 是登录页当前选中的系统类型。登录页必须显式传入（此时偏好里还是
+  /// 上一次登录的值）；自动重登录不传，沿用 [LoginModeService.current]。
+  static Future<LoginResponse> login(
+    String username,
+    String password, {
+    LoginMode? mode,
+  }) async {
     if (_loginOverrideForTest != null) {
       return _loginOverrideForTest!(username, password);
     }
     try {
       final client = _clientForTest ?? EduHttpClientManager.instance;
+      final effectiveMode = mode ?? LoginModeService.current;
       final response = await client.post(
         '/Login',
         data: {'username': username, 'password': password},
+        options: Options(
+          headers: <String, dynamic>{
+            LoginModeService.headerName: effectiveMode.value.toString(),
+          },
+        ),
       );
       Map<String, dynamic> responseData;
       if (response is String) {

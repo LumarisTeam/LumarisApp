@@ -949,6 +949,15 @@ class AppLocalizationsJa extends AppLocalizations {
       'ログインに成功しましたが、安全なストレージが利用できません。次回起動時に認証情報の再入力が必要になる場合があります';
 
   @override
+  String get undergraduateSystem => '学部生';
+
+  @override
+  String get graduateSystem => '大学院生';
+
+  @override
+  String get graduateSystemHint => '大学院システムは現在、ログインと時間割のみに対応しています。';
+
+  @override
   String get loadingDefaultTitle => 'データ同期中';
 
   @override

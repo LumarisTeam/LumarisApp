@@ -947,6 +947,15 @@ class AppLocalizationsZh extends AppLocalizations {
       '登录成功，但安全存储不可用，下次启动后可能需要重新输入账号密码';
 
   @override
+  String get undergraduateSystem => '本科生';
+
+  @override
+  String get graduateSystem => '研究生';
+
+  @override
+  String get graduateSystemHint => '研究生系统当前支持登录与课表查询';
+
+  @override
   String get loadingDefaultTitle => '正在同步数据';
 
   @override
@@ -3180,6 +3189,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String get loginSecurityStorageUnavailable =>
       '登入成功，但安全儲存不可用，下次啟動後可能需要重新輸入帳號密碼';
+
+  @override
+  String get undergraduateSystem => '本科生';
+
+  @override
+  String get graduateSystem => '研究生';
+
+  @override
+  String get graduateSystemHint => '研究生系統目前支援登入與課表查詢';
 
   @override
   String get loadingDefaultTitle => '正在同步資料';

@@ -340,6 +340,9 @@
   "loginFailed": "登入失敗，請檢查使用者名稱和密碼",
   "loginTimeout": "登入逾時，請檢查網路連線後重試",
   "loginSecurityStorageUnavailable": "登入成功，但安全儲存不可用，下次啟動後可能需要重新輸入帳號密碼",
+  "undergraduateSystem": "本科生",
+  "graduateSystem": "研究生",
+  "graduateSystemHint": "研究生系統目前支援登入與課表查詢",
 
   "loadingDefaultTitle": "正在同步資料",
   "loadingDefaultSubtitle": "網路較慢時可能需要幾秒，請稍等一下",

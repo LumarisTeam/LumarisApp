@@ -341,6 +341,9 @@
   "loginFailed": "로그인 실패, 사용자 이름과 비밀번호를 확인해 주세요",
   "loginTimeout": "로그인 시간 초과, 네트워크 연결을 확인한 후 다시 시도해 주세요",
   "loginSecurityStorageUnavailable": "로그인 성공, 그러나 보안 저장소를 사용할 수 없어 다음 실행 시 계정 정보를 다시 입력해야 할 수 있습니다",
+  "undergraduateSystem": "학부생",
+  "graduateSystem": "대학원생",
+  "graduateSystemHint": "대학원 시스템은 현재 로그인과 시간표만 지원합니다.",
 
   "loadingDefaultTitle": "데이터 동기화 중",
   "loadingDefaultSubtitle": "네트워크가 느린 경우 몇 초 정도 걸릴 수 있습니다. 잠시만 기다려 주세요",

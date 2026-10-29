@@ -16,6 +16,7 @@ import 'package:ios_club_app/features/education/apis/exam_api.dart';
 import 'package:ios_club_app/features/education/apis/info_api.dart';
 import 'package:ios_club_app/features/education/apis/login_api.dart';
 import 'package:ios_club_app/features/education/apis/payment_api.dart';
+import 'package:ios_club_app/features/education/models/login_mode.dart';
 import 'package:ios_club_app/features/education/models/payment_qr_code.dart';
 import 'package:ios_club_app/features/education/apis/program_api.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
@@ -456,6 +457,41 @@ void main() {
 
       expect(result.success, isTrue);
       expect(requestBaseUrl, selectedSchool.website);
+    });
+
+    test('LoginApi should send the selected x-loginMode header', () async {
+      String? modeHeader;
+      EduHttpClientManager.instance.dio.interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            if (options.path != '/Login') {
+              handler.next(options);
+              return;
+            }
+            modeHeader = options.headers['x-loginMode']?.toString();
+            handler.resolve(
+              Response<dynamic>(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'success': true,
+                  'studentId': '2026000',
+                  'cookie': 'graduate-cookie',
+                },
+              ),
+            );
+          },
+        ),
+      );
+
+      final result = await LoginApi.login(
+        'user',
+        'password',
+        mode: LoginMode.graduate,
+      );
+
+      expect(result.success, isTrue);
+      expect(modeHeader, '1');
     });
 
     test('LoginApi should unwrap the current API response envelope', () async {

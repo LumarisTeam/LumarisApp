@@ -978,6 +978,16 @@ class AppLocalizationsRu extends AppLocalizations {
       'Вход выполнен, но защищённое хранилище недоступно. Может потребоваться повторный ввод данных.';
 
   @override
+  String get undergraduateSystem => 'Бакалавриат';
+
+  @override
+  String get graduateSystem => 'Магистратура';
+
+  @override
+  String get graduateSystemHint =>
+      'Система магистратуры сейчас поддерживает только вход и расписание.';
+
+  @override
   String get loadingDefaultTitle => 'Синхронизация';
 
   @override

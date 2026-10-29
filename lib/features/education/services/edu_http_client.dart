@@ -12,6 +12,7 @@ import '../../../core/services/retry_policy.dart';
 import '../../basic/models/school.dart';
 import '../apis/login_api.dart';
 import 'auth_session_guard.dart';
+import 'login_mode_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 
@@ -51,6 +52,13 @@ class EduHttpClient extends BaseHttpClient {
 
   /// 登录失败后的冷却时间（毫秒）
   static const int _loginCooldownMs = 5000;
+
+  /// 同一请求因 401 重登录后只允许重试一次。
+  ///
+  /// 没有这道闸时，只要重登录本身成功、但原请求仍返回 401（研究生模式下访问
+  /// 成绩/考试等尚未支持的接口就是这样），拦截器会「重登录 → 重试 → 再 401」
+  /// 无限递归。
+  static const String _reloginRetriedKey = 'edu_relogin_retried';
 
   // Test hook: allows injecting deterministic login behavior in unit tests.
   static Future<Map<String, dynamic>> Function(String, String)?
@@ -97,6 +105,13 @@ class EduHttpClient extends BaseHttpClient {
             'x-language',
             _resolveLanguageHeaderValue,
           );
+
+          // 登录成功后记录的系统类型（本科生 0 / 研究生 1），随每个教务请求发出。
+          // 登录请求自己在 Options 里显式传了本次选中的值，putIfAbsent 不会覆盖它。
+          options.headers.putIfAbsent(
+            LoginModeService.headerName,
+            () => LoginModeService.currentHeaderValue,
+          );
           handler.next(options);
         },
         onError: (DioException e, handler) async {
@@ -112,6 +127,12 @@ class EduHttpClient extends BaseHttpClient {
 
           // 只在认证相关错误（401/403）时尝试重登录
           if (statusCode == 401 || statusCode == 403) {
+            if (e.requestOptions.extra[_reloginRetriedKey] == true) {
+              AppLogger.debug('重登录后仍返回 $statusCode，放弃再次重登录');
+              handler.next(e);
+              return;
+            }
+
             final requestEpoch = AuthSessionGuard.epoch;
             try {
               AppLogger.info('检测到认证失败($statusCode)，正在尝试重新登录...');
@@ -139,12 +160,16 @@ class EduHttpClient extends BaseHttpClient {
                   e.requestOptions.headers['Cookie'] = cookie;
                   e.requestOptions.headers['xauat'] = cookie;
                 }
+
+                // 标记已重试，避免重试仍 401 时再次进入本分支
+                e.requestOptions.extra[_reloginRetriedKey] = true;
                 final response = await dio.request(
                   e.requestOptions.path,
                   options: Options(
                     method: e.requestOptions.method,
                     headers: e.requestOptions.headers,
                     contentType: e.requestOptions.contentType,
+                    extra: e.requestOptions.extra,
                   ),
                   data: e.requestOptions.data,
                   queryParameters: e.requestOptions.queryParameters,
