@@ -462,7 +462,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
 
     showMcBottomSheet(
       context: context,
-      builder: (_) => Column(
+      builder: (sheetContext) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -489,7 +489,10 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
                 '${course.room} · ${l10n.periodRange(course.startUnit, course.endUnit)}',
               ),
               onTap: () {
-                Navigator.pop(context);
+                // 弹层挂在根 Navigator 上，必须用弹层自己的 context 关闭；
+                // 用页面的 context 会命中 StatefulShellBranch 的嵌套
+                // Navigator，把本页弹出栈底。
+                Navigator.pop(sheetContext);
                 _showCourseDetail(course, visualStyle.isDark);
               },
             ),
