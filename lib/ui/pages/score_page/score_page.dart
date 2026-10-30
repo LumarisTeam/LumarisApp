@@ -38,6 +38,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
 
   late PageController pageController = PageController();
   late int _currentIndex = 0;
+  bool _selectorMenuOpen = false;
   final List<String> _selectorList = [];
 
   @override
@@ -495,10 +496,20 @@ class _ScorePageState extends ConsumerState<ScorePage>
 
   Widget _buildDropdownSelector() {
     final colors = context.mc.colors;
-    return McMenu<int>(
+    return McPopoverMenu<int>(
       items: List.generate(_selectorList.length, (index) {
-        return McMenuItem<int>(value: index, label: _selectorList[index]);
+        return McPopoverMenuItem<int>(
+          value: index,
+          label: _selectorList[index],
+        );
       }),
+      selectedValue: _currentIndex,
+      matchTriggerWidth: true,
+      onOpenChanged: (open) {
+        if (_selectorMenuOpen != open) {
+          setState(() => _selectorMenuOpen = open);
+        }
+      },
       onSelected: _handleSelectorChanged,
       child: Container(
         width: double.infinity,
@@ -519,10 +530,14 @@ class _ScorePageState extends ConsumerState<ScorePage>
                 ),
               ),
             ),
-            Icon(
-              CupertinoIcons.chevron_down,
-              size: 16,
-              color: colors.secondaryLabel,
+            AnimatedRotation(
+              turns: _selectorMenuOpen ? 0.5 : 0,
+              duration: const Duration(milliseconds: 180),
+              child: Icon(
+                CupertinoIcons.chevron_down,
+                size: 16,
+                color: colors.secondaryLabel,
+              ),
             ),
           ],
         ),

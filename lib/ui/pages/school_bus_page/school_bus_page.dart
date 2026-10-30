@@ -134,13 +134,15 @@ class SchoolBusPage extends ConsumerWidget {
     final selectedCampus = busState.selectedCampus;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: McMenu<String>(
+      child: McPopoverMenu<String>(
         items: List.generate(campusOptions.length, (index) {
-          return McMenuItem<String>(
+          return McPopoverMenuItem<String>(
             value: campusOptions[index],
             label: _displayCampusName(campusOptions[index]),
           );
         }),
+        selectedValue: selectedCampus,
+        matchTriggerWidth: true,
         onSelected: (val) {
           busController.selectCampus(val);
         },

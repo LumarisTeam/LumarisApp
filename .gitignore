@@ -64,3 +64,5 @@ v1.yaml
 /dist
 /xx
 /refrence
+# Flutter local dependency override (dev machines only)
+pubspec_overrides.yaml
