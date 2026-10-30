@@ -1861,6 +1861,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get mcpTokenHint => '空欄の場合は Authorization を送信しません';
 
   @override
+  String get mcpTokenShow => 'トークンを表示';
+
+  @override
+  String get mcpTokenHide => 'トークンを隠す';
+
+  @override
   String get mcpTokenSaved => 'トークンを保存しました';
 
   @override

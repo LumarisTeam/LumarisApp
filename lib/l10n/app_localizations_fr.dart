@@ -1957,6 +1957,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Laissez vide pour ne pas envoyer l\'en-tête Authorization';
 
   @override
+  String get mcpTokenShow => 'Afficher le jeton';
+
+  @override
+  String get mcpTokenHide => 'Masquer le jeton';
+
+  @override
   String get mcpTokenSaved => 'Jeton enregistré';
 
   @override

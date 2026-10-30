@@ -1932,6 +1932,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get mcpTokenHint => 'Leave empty to omit the Authorization header';
 
   @override
+  String get mcpTokenShow => 'Show token';
+
+  @override
+  String get mcpTokenHide => 'Hide token';
+
+  @override
   String get mcpTokenSaved => 'Token saved';
 
   @override

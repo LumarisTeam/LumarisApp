@@ -676,6 +676,8 @@
   "mcpTokenSection": "存取權杖",
   "mcpTokenLabel": "Bearer 權杖",
   "mcpTokenHint": "留空則不傳送 Authorization",
+  "mcpTokenShow": "顯示權杖",
+  "mcpTokenHide": "隱藏權杖",
   "mcpTokenSaved": "權杖已儲存",
   "mcpTokenNotSet": "未設定權杖",
   "mcpTokenUnsaved": "未儲存",

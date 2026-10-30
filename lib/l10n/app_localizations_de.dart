@@ -1971,6 +1971,12 @@ class AppLocalizationsDe extends AppLocalizations {
       'Leer lassen, um den Authorization-Header nicht zu senden';
 
   @override
+  String get mcpTokenShow => 'Token anzeigen';
+
+  @override
+  String get mcpTokenHide => 'Token ausblenden';
+
+  @override
   String get mcpTokenSaved => 'Token gespeichert';
 
   @override

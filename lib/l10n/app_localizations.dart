@@ -3678,6 +3678,18 @@ abstract class AppLocalizations {
   /// **'留空则不发送 Authorization'**
   String get mcpTokenHint;
 
+  /// 显示令牌按钮
+  ///
+  /// In zh, this message translates to:
+  /// **'显示令牌'**
+  String get mcpTokenShow;
+
+  /// 隐藏令牌按钮
+  ///
+  /// In zh, this message translates to:
+  /// **'隐藏令牌'**
+  String get mcpTokenHide;
+
   ///
   ///
   /// In zh, this message translates to:

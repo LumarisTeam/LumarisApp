@@ -677,6 +677,8 @@
   "mcpTokenSection": "Access token",
   "mcpTokenLabel": "Bearer token",
   "mcpTokenHint": "Leave empty to omit the Authorization header",
+  "mcpTokenShow": "Show token",
+  "mcpTokenHide": "Hide token",
   "mcpTokenSaved": "Token saved",
   "mcpTokenNotSet": "No token set",
   "mcpTokenUnsaved": "Not saved",

@@ -674,6 +674,8 @@
   "mcpTokenSection": "Jeton d'accès",
   "mcpTokenLabel": "Jeton Bearer",
   "mcpTokenHint": "Laissez vide pour ne pas envoyer l'en-tête Authorization",
+  "mcpTokenShow": "Afficher le jeton",
+  "mcpTokenHide": "Masquer le jeton",
   "mcpTokenSaved": "Jeton enregistré",
   "mcpTokenNotSet": "Aucun jeton défini",
   "mcpTokenUnsaved": "Non enregistré",

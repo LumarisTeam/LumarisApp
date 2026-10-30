@@ -1938,6 +1938,12 @@ class AppLocalizationsRu extends AppLocalizations {
       'Оставьте пустым, чтобы не отправлять Authorization';
 
   @override
+  String get mcpTokenShow => 'Показать токен';
+
+  @override
+  String get mcpTokenHide => 'Скрыть токен';
+
+  @override
   String get mcpTokenSaved => 'Токен сохранён';
 
   @override

@@ -673,6 +673,8 @@
   "mcpTokenSection": "Токен доступа",
   "mcpTokenLabel": "Bearer-токен",
   "mcpTokenHint": "Оставьте пустым, чтобы не отправлять Authorization",
+  "mcpTokenShow": "Показать токен",
+  "mcpTokenHide": "Скрыть токен",
   "mcpTokenSaved": "Токен сохранён",
   "mcpTokenNotSet": "Токен не задан",
   "mcpTokenUnsaved": "Не сохранено",

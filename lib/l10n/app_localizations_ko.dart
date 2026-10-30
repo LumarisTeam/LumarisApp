@@ -1875,6 +1875,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get mcpTokenHint => '비워 두면 Authorization을 보내지 않습니다';
 
   @override
+  String get mcpTokenShow => '토큰 표시';
+
+  @override
+  String get mcpTokenHide => '토큰 숨기기';
+
+  @override
   String get mcpTokenSaved => '토큰이 저장되었습니다';
 
   @override

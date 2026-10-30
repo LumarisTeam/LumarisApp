@@ -1857,6 +1857,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get mcpTokenHint => '留空则不发送 Authorization';
 
   @override
+  String get mcpTokenShow => '显示令牌';
+
+  @override
+  String get mcpTokenHide => '隐藏令牌';
+
+  @override
   String get mcpTokenSaved => '令牌已保存';
 
   @override
@@ -4099,6 +4105,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get mcpTokenHint => '留空則不傳送 Authorization';
+
+  @override
+  String get mcpTokenShow => '顯示權杖';
+
+  @override
+  String get mcpTokenHide => '隱藏權杖';
 
   @override
   String get mcpTokenSaved => '權杖已儲存';

@@ -674,6 +674,8 @@
   "mcpTokenSection": "Zugriffstoken",
   "mcpTokenLabel": "Bearer-Token",
   "mcpTokenHint": "Leer lassen, um den Authorization-Header nicht zu senden",
+  "mcpTokenShow": "Token anzeigen",
+  "mcpTokenHide": "Token ausblenden",
   "mcpTokenSaved": "Token gespeichert",
   "mcpTokenNotSet": "Kein Token festgelegt",
   "mcpTokenUnsaved": "Nicht gespeichert",

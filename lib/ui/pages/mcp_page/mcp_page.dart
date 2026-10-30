@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
+
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/features/mcp/mcp_constants.dart';
 import 'package:ios_club_app/features/mcp/models/mcp_probe_result.dart';
@@ -10,7 +11,26 @@ import 'package:ios_club_app/features/mcp/services/mcp_config_generator.dart';
 import 'package:ios_club_app/features/mcp/services/mcp_probe_service.dart';
 import 'package:ios_club_app/features/mcp/services/mcp_token_store.dart';
 
+/// 单列内容的最大宽度，与设置页保持一致。
+const double _kPageMaxWidth = 600;
+
+/// iOS 建议的最小点按尺寸。
+const double _kMinTapTarget = 44;
+
+/// 等宽文本（地址、配置、工具名）的统一字重与行高。
+TextStyle _monoStyle({required double size, required Color color}) {
+  return TextStyle(
+    fontFamily: 'monospace',
+    fontSize: size,
+    height: 1.5,
+    color: color,
+  );
+}
+
 /// 光序 MCP 配置页：展示服务地址、保存令牌，并生成可复制的客户端配置。
+///
+/// 视觉上只保留一条信息主线：服务 → 令牌 → 配置 → 连通性。整页只有一个
+/// 填充蓝的主操作（测试连接），复制、切换等辅助动作退成中性灰，让页面安静。
 class McpPage extends StatefulWidget {
   const McpPage({super.key, this.tokenStore, this.probeService});
 
@@ -24,6 +44,9 @@ class McpPage extends StatefulWidget {
   State<McpPage> createState() => _McpPageState();
 }
 
+/// 配置卡片的两种展示格式。
+enum _ConfigFormat { json, cli }
+
 class _McpPageState extends State<McpPage> {
   final TextEditingController _tokenController = TextEditingController();
   late final McpTokenStore _tokenStore;
@@ -35,6 +58,20 @@ class _McpPageState extends State<McpPage> {
   bool _testing = false;
   String? _savedToken;
   McpProbeResult? _probeResult;
+  _ConfigFormat _configFormat = _ConfigFormat.json;
+
+  String? get _normalizedToken =>
+      McpConfigGenerator.normalizeToken(_tokenController.text);
+
+  /// 只有内容相对已保存值发生变化时才允许保存。
+  bool get _canSave =>
+      _tokenLoaded && !_savingToken && _normalizedToken != _savedToken;
+
+  /// 输入框或安全存储里还有内容时才允许清除。
+  bool get _canClear =>
+      _tokenLoaded &&
+      !_savingToken &&
+      (_normalizedToken != null || _tokenController.text.trim().isNotEmpty);
 
   @override
   void initState() {
@@ -153,63 +190,58 @@ class _McpPageState extends State<McpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.mc.colors;
     final l10n = context.l10n;
-    final jsonConfig = McpConfigGenerator.buildJson(_tokenController.text);
-    final cliCommand = McpConfigGenerator.buildClaudeCodeCommand(
-      _tokenController.text,
-    );
+    final config = _configFormat == _ConfigFormat.json
+        ? McpConfigGenerator.buildJson(_tokenController.text)
+        : McpConfigGenerator.buildClaudeCodeCommand(_tokenController.text);
+    final copyLabel = _configFormat == _ConfigFormat.json
+        ? l10n.mcpCopyJson
+        : l10n.mcpCopyCli;
 
     return Scaffold(
       appBar: McAppBar(title: l10n.mcpTitle),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final horizontalPadding = constraints.maxWidth > 600 ? 32.0 : 16.0;
+          final horizontalPadding = constraints.maxWidth > _kPageMaxWidth
+              ? 32.0
+              : 16.0;
 
           return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: horizontalPadding,
-              vertical: 24,
+            padding: EdgeInsets.fromLTRB(
+              horizontalPadding,
+              8,
+              horizontalPadding,
+              32,
             ),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 600),
+                constraints: const BoxConstraints(maxWidth: _kPageMaxWidth),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      l10n.mcpSubtitle,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: colors.secondaryLabel,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, l10n.mcpServerSection),
-                    const SizedBox(height: 12),
-                    _buildServerCard(context),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, l10n.mcpTokenSection),
-                    const SizedBox(height: 12),
-                    _buildTokenCard(context),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, l10n.mcpConfigSection),
-                    const SizedBox(height: 12),
-                    _buildConfigCard(context, jsonConfig, cliCommand),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, l10n.mcpConnectionSection),
-                    const SizedBox(height: 12),
-                    _buildConnectionCard(context),
+                    _PageLead(text: l10n.mcpSubtitle),
                     const SizedBox(height: 20),
-                    Text(
-                      l10n.mcpSecurityNote,
-                      style: TextStyle(
-                        fontSize: 12,
-                        height: 1.4,
-                        color: colors.tertiaryLabel,
-                      ),
+                    _SectionLabel(text: l10n.mcpServerSection),
+                    const SizedBox(height: 8),
+                    _buildServerGroup(context),
+                    const SizedBox(height: 24),
+                    _SectionLabel(text: l10n.mcpTokenSection),
+                    const SizedBox(height: 8),
+                    _buildTokenGroup(context),
+                    const SizedBox(height: 24),
+                    _SectionLabel(text: l10n.mcpConfigSection),
+                    const SizedBox(height: 8),
+                    _buildConfigGroup(
+                      context,
+                      config: config,
+                      copyLabel: copyLabel,
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 24),
+                    _SectionLabel(text: l10n.mcpConnectionSection),
+                    const SizedBox(height: 8),
+                    _buildConnectionGroup(context),
+                    const SizedBox(height: 20),
+                    _Footnote(text: l10n.mcpSecurityNote),
                   ],
                 ),
               ),
@@ -220,154 +252,188 @@ class _McpPageState extends State<McpPage> {
     );
   }
 
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    final colors = context.mc.colors;
+  // ── 服务 ────────────────────────────────────────────────────────────────
 
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          title.toUpperCase(),
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
+  Widget _buildServerGroup(BuildContext context) {
+    final colors = context.mc.colors;
+    final l10n = context.l10n;
+
+    return _GroupCard(
+      rows: [
+        McListTile(
+          contentPadding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
+          leading: Icon(
+            CupertinoIcons.link,
+            size: 20,
             color: colors.secondaryLabel,
           ),
+          title: Text(l10n.mcpServerAddress),
+          subtitle: SelectableText(
+            McpConstants.endpoint,
+            style: _monoStyle(size: 12, color: colors.label),
+          ),
+          trailing: _CopyIconButton(
+            label: l10n.copyTooltip,
+            onPressed: () => _copy(McpConstants.endpoint),
+          ),
         ),
-      ),
+        McListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 12,
+          ),
+          leading: Icon(
+            CupertinoIcons.arrow_2_circlepath,
+            size: 20,
+            color: colors.secondaryLabel,
+          ),
+          title: const Text('Streamable HTTP · POST'),
+          subtitle: Text(
+            'MCP ${McpConstants.protocolVersion}',
+            style: _monoStyle(size: 12, color: colors.secondaryLabel),
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildServerCard(BuildContext context) {
+  // ── 访问令牌 ─────────────────────────────────────────────────────────────
+
+  Widget _buildTokenGroup(BuildContext context) {
     final colors = context.mc.colors;
     final l10n = context.l10n;
-
-    return McCard.elevated(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          McListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-            leading: Icon(CupertinoIcons.link, size: 20, color: colors.primary),
-            title: Text(l10n.mcpServerAddress),
-            subtitle: Text(
-              McpConstants.endpoint,
-              style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-            ),
-            trailing: IconButton(
-              icon: const Icon(Icons.copy, size: 20),
-              tooltip: l10n.copyTooltip,
-              onPressed: () => _copy(McpConstants.endpoint),
-            ),
-          ),
-          McListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
-            leading: Icon(
-              CupertinoIcons.arrow_2_circlepath,
-              size: 20,
-              color: colors.tertiaryLabel,
-            ),
-            title: const Text('Streamable HTTP · POST'),
-            subtitle: Text(
-              'MCP ${McpConstants.protocolVersion}',
-              style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTokenCard(BuildContext context) {
-    final colors = context.mc.colors;
-    final l10n = context.l10n;
-    final disabled = !_tokenLoaded || _savingToken;
 
     return McCard.elevated(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.mcpTokenLabel,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: colors.label,
+          // 标题可伸缩，状态最多占一半宽度：大字号时状态省略而不是把标题挤没。
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.mcpTokenLabel,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: colors.label,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              _buildTokenStatusChip(context),
-            ],
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: constraints.maxWidth * 0.5,
+                    ),
+                    child: _buildTokenStatus(context),
+                  ),
+                ],
+              );
+            },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           CupertinoTextField(
             controller: _tokenController,
             obscureText: _obscureToken,
             autocorrect: false,
             enableSuggestions: false,
-            placeholder: l10n.mcpTokenHint,
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            decoration: BoxDecoration(
-              color: colors.surfaceRaised,
-              borderRadius: BorderRadius.circular(McRadii.md),
-              border: Border.all(
-                color: colors.separator.withValues(alpha: 0.2),
-              ),
+            placeholder: 'Bearer …',
+            placeholderStyle: TextStyle(
+              fontSize: 15,
+              color: colors.secondaryLabel,
             ),
-            suffix: CupertinoButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                setState(() => _obscureToken = !_obscureToken);
-              },
-              child: Icon(
-                _obscureToken ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
-                size: 20,
-                color: colors.tertiaryLabel,
+            style: TextStyle(fontSize: 15, color: colors.label),
+            cursorColor: colors.primary,
+            padding: const EdgeInsets.only(
+              left: 14,
+              right: 6,
+              top: 13,
+              bottom: 13,
+            ),
+            decoration: BoxDecoration(
+              color: colors.input,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) {
+              if (_canSave) {
+                _saveToken();
+              }
+            },
+            suffix: Tooltip(
+              message: _obscureToken ? l10n.mcpTokenShow : l10n.mcpTokenHide,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(_kMinTapTarget, _kMinTapTarget),
+                pressedOpacity: 0.4,
+                onPressed: () {
+                  setState(() => _obscureToken = !_obscureToken);
+                },
+                child: Icon(
+                  _obscureToken ? CupertinoIcons.eye : CupertinoIcons.eye_slash,
+                  size: 18,
+                  color: colors.secondaryLabel,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 12),
-          Row(
+          const SizedBox(height: 8),
+          Text(
+            l10n.mcpTokenHint,
+            style: TextStyle(
+              fontSize: 12.5,
+              height: 1.4,
+              color: colors.secondaryLabel,
+            ),
+          ),
+          const SizedBox(height: 14),
+          // 用 Wrap 而不是 Row：长语种文案或更大的动态字体下按钮换行而不是溢出。
+          Wrap(
+            spacing: 4,
+            runSpacing: 2,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              CupertinoButton.filled(
+              McButton.primary(
+                onPressed: _canSave ? _saveToken : null,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 10,
+                  horizontal: 22,
+                  vertical: 13,
                 ),
-                onPressed: disabled ? null : _saveToken,
-                child: _savingToken
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: CupertinoColors.white,
-                        ),
-                      )
-                    : Text(l10n.save),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (_savingToken) ...[
+                      const CupertinoActivityIndicator(
+                        radius: 7,
+                        color: CupertinoColors.white,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(
+                      l10n.save,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(width: 8),
-              CupertinoButton(
+              McButton.ghost(
+                onPressed: _canClear ? _clearToken : null,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 14,
-                  vertical: 10,
+                  vertical: 13,
                 ),
-                onPressed: disabled ? null : _clearToken,
                 child: Text(
                   l10n.delete,
-                  style: TextStyle(color: colors.danger),
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: _canClear ? colors.danger : colors.tertiaryLabel,
+                  ),
                 ),
               ),
             ],
@@ -377,45 +443,27 @@ class _McpPageState extends State<McpPage> {
     );
   }
 
-  Widget _buildTokenStatusChip(BuildContext context) {
+  Widget _buildTokenStatus(BuildContext context) {
     final colors = context.mc.colors;
-    final normalized = McpConfigGenerator.normalizeToken(_tokenController.text);
+    final l10n = context.l10n;
+    final normalized = _normalizedToken;
 
-    final String text;
-    final Color color;
-    if (normalized == null) {
-      text = context.l10n.mcpTokenNotSet;
-      color = colors.tertiaryLabel;
-    } else if (normalized == _savedToken) {
-      text = context.l10n.mcpTokenSaved;
-      color = colors.success;
-    } else {
-      text = context.l10n.mcpTokenUnsaved;
-      color = colors.warning;
-    }
+    final (String text, Color tint) status = switch (normalized) {
+      null => (l10n.mcpTokenNotSet, colors.tertiaryLabel),
+      _ when normalized == _savedToken => (l10n.mcpTokenSaved, colors.success),
+      _ => (l10n.mcpTokenUnsaved, colors.warning),
+    };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-          color: color,
-        ),
-      ),
-    );
+    return _StatusIndicator(text: status.$1, tint: status.$2);
   }
 
-  Widget _buildConfigCard(
-    BuildContext context,
-    String jsonConfig,
-    String cliCommand,
-  ) {
+  // ── 配置 ────────────────────────────────────────────────────────────────
+
+  Widget _buildConfigGroup(
+    BuildContext context, {
+    required String config,
+    required String copyLabel,
+  }) {
     final colors = context.mc.colors;
     final l10n = context.l10n;
     final enabled = _tokenLoaded;
@@ -423,123 +471,119 @@ class _McpPageState extends State<McpPage> {
     return McCard.elevated(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
             l10n.mcpConfigSubtitle,
-            style: TextStyle(fontSize: 13, color: colors.secondaryLabel),
+            style: TextStyle(
+              fontSize: 12.5,
+              height: 1.45,
+              color: colors.secondaryLabel,
+            ),
+          ),
+          const SizedBox(height: 14),
+          _FormatSelector(
+            value: _configFormat,
+            onChanged: (value) => setState(() => _configFormat = value),
           ),
           const SizedBox(height: 12),
-          _buildCodeBlock(context, jsonConfig),
-          const SizedBox(height: 8),
-          _buildCopyButton(
-            context,
-            label: l10n.mcpCopyJson,
-            onPressed: enabled ? () => _copy(jsonConfig) : null,
-          ),
-          const Divider(height: 24),
-          _buildCodeBlock(context, cliCommand),
-          const SizedBox(height: 8),
-          _buildCopyButton(
-            context,
-            label: l10n.mcpCopyCli,
-            onPressed: enabled ? () => _copy(cliCommand) : null,
+          _CodeBlock(text: config),
+          const SizedBox(height: 12),
+          McButton.secondary(
+            onPressed: enabled ? () => _copy(config) : null,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  CupertinoIcons.doc_on_doc,
+                  size: 16,
+                  color: enabled
+                      ? colors.secondaryForeground
+                      : colors.tertiaryLabel,
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    copyLabel,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCodeBlock(BuildContext context, String text) {
-    final colors = context.mc.colors;
+  // ── 连通性 ──────────────────────────────────────────────────────────────
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      decoration: ShapeDecoration(
-        color: colors.surfaceRaised,
-        shape: McSmoothCorners.shape(McRadii.controlBorder),
-      ),
-      child: SelectableText(
-        text,
-        style: TextStyle(
-          fontFamily: 'monospace',
-          fontSize: 12,
-          height: 1.5,
-          color: colors.label,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCopyButton(
-    BuildContext context, {
-    required String label,
-    required VoidCallback? onPressed,
-  }) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: CupertinoButton(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-        onPressed: onPressed,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.copy, size: 16),
-            const SizedBox(width: 6),
-            Text(label, style: const TextStyle(fontSize: 13)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildConnectionCard(BuildContext context) {
+  Widget _buildConnectionGroup(BuildContext context) {
     final colors = context.mc.colors;
     final l10n = context.l10n;
-    final normalized = McpConfigGenerator.normalizeToken(_tokenController.text);
     final result = _probeResult;
+    final animate = !MediaQuery.disableAnimationsOf(context);
 
     return McCard.elevated(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: CupertinoButton.filled(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              onPressed: _testing || !_tokenLoaded ? null : _testConnection,
-              child: _testing
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: CupertinoColors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(l10n.mcpTesting),
-                      ],
-                    )
-                  : Text(l10n.mcpTestConnection),
+          McButton.primary(
+            onPressed: _testing || !_tokenLoaded ? null : _testConnection,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_testing) ...[
+                  const CupertinoActivityIndicator(
+                    radius: 8,
+                    color: CupertinoColors.white,
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                Flexible(
+                  child: Text(
+                    _testing ? l10n.mcpTesting : l10n.mcpTestConnection,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          if (_tokenLoaded && normalized == null) ...[
+          if (_tokenLoaded && _normalizedToken == null) ...[
             const SizedBox(height: 10),
             Text(
               l10n.mcpNoTokenHint,
-              style: TextStyle(fontSize: 12, color: colors.tertiaryLabel),
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.4,
+                color: colors.secondaryLabel,
+              ),
             ),
           ],
-          if (result != null) ...[
-            const SizedBox(height: 14),
-            _buildProbeResult(context, result),
-          ],
+          AnimatedSize(
+            duration: animate
+                ? const Duration(milliseconds: 200)
+                : Duration.zero,
+            curve: Curves.easeOutCubic,
+            alignment: Alignment.topCenter,
+            child: result == null
+                ? const SizedBox(width: double.infinity)
+                : Padding(
+                    padding: const EdgeInsets.only(top: 18),
+                    child: _buildProbeResult(context, result),
+                  ),
+          ),
         ],
       ),
     );
@@ -547,8 +591,11 @@ class _McpPageState extends State<McpPage> {
 
   Widget _buildProbeResult(BuildContext context, McpProbeResult result) {
     final colors = context.mc.colors;
+    final l10n = context.l10n;
 
     if (!result.isSuccess) {
+      final detail = result.detail;
+
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -557,7 +604,7 @@ class _McpPageState extends State<McpPage> {
             size: 18,
             color: colors.danger,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -565,20 +612,17 @@ class _McpPageState extends State<McpPage> {
                 Text(
                   _probeFailureText(context, result.failure!),
                   style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: colors.danger,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    height: 1.35,
+                    color: colors.label,
                   ),
                 ),
-                if (result.detail != null && result.detail!.isNotEmpty) ...[
+                if (detail != null && detail.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
-                    result.detail!,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 11,
-                      color: colors.tertiaryLabel,
-                    ),
+                    detail,
+                    style: _monoStyle(size: 12, color: colors.secondaryLabel),
                   ),
                 ],
               ],
@@ -588,8 +632,10 @@ class _McpPageState extends State<McpPage> {
       );
     }
 
+    final summary = _serverSummary(result);
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
           children: [
@@ -598,72 +644,46 @@ class _McpPageState extends State<McpPage> {
               size: 18,
               color: colors.success,
             ),
-            const SizedBox(width: 8),
-            Text(
-              context.l10n.mcpTestSuccess,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: colors.success,
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                l10n.mcpTestSuccess,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colors.label,
+                ),
               ),
             ),
           ],
         ),
-        if (result.serverName.isNotEmpty ||
-            result.protocolVersion.isNotEmpty) ...[
-          const SizedBox(height: 8),
-          Text(
-            _serverSummary(result),
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 12,
-              color: colors.secondaryLabel,
+        if (summary.isNotEmpty) ...[
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.only(left: 28),
+            child: Text(
+              summary,
+              style: _monoStyle(size: 12, color: colors.secondaryLabel),
             ),
           ),
         ],
+        const SizedBox(height: 14),
+        _Hairline(color: colors.separator, indent: 0),
         const SizedBox(height: 12),
         Text(
-          context.l10n.mcpToolCount(result.tools.length),
+          l10n.mcpToolCount(result.tools.length),
           style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: colors.label,
+            fontSize: 12.5,
+            fontWeight: FontWeight.w600,
+            color: colors.secondaryLabel,
           ),
         ),
-        const SizedBox(height: 8),
-        ...result.tools.map((tool) => _buildToolRow(context, tool)),
-      ],
-    );
-  }
-
-  Widget _buildToolRow(BuildContext context, McpTool tool) {
-    final colors = context.mc.colors;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            tool.name,
-            style: TextStyle(
-              fontFamily: 'monospace',
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: colors.label,
-            ),
-          ),
-          if (tool.description.isNotEmpty)
-            Text(
-              tool.description,
-              style: TextStyle(
-                fontSize: 12,
-                height: 1.4,
-                color: colors.secondaryLabel,
-              ),
-            ),
+        const SizedBox(height: 2),
+        for (var index = 0; index < result.tools.length; index++) ...[
+          if (index > 0) _Hairline(color: colors.separator, indent: 0),
+          _ToolRow(tool: result.tools[index]),
         ],
-      ),
+      ],
     );
   }
 
@@ -693,5 +713,323 @@ class _McpPageState extends State<McpPage> {
       case McpProbeFailure.unexpected:
         return context.l10n.mcpErrorProtocol;
     }
+  }
+}
+
+// ── 页面内的展示组件 ──────────────────────────────────────────────────────
+
+/// 页面导语：一句话说明这个页面做什么。
+class _PageLead extends StatelessWidget {
+  const _PageLead({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: 13,
+          height: 1.45,
+          color: colors.secondaryLabel,
+        ),
+      ),
+    );
+  }
+}
+
+/// iOS 分组列表式的小节标题。
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: Text(
+        text.toUpperCase(),
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.4,
+          color: colors.secondaryLabel,
+        ),
+      ),
+    );
+  }
+}
+
+/// 行与行之间 0.5px 的分隔线，左侧留出与图标对齐的缩进。
+class _Hairline extends StatelessWidget {
+  const _Hairline({required this.color, this.indent = 16});
+
+  final Color color;
+  final double indent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: indent),
+      child: Container(height: 0.5, color: color),
+    );
+  }
+}
+
+/// 一组行共用一张卡片。
+class _GroupCard extends StatelessWidget {
+  const _GroupCard({required this.rows});
+
+  final List<Widget> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+    final children = <Widget>[];
+
+    for (var index = 0; index < rows.length; index++) {
+      if (index > 0) {
+        children.add(_Hairline(color: colors.separator));
+      }
+      children.add(rows[index]);
+    }
+
+    return McCard.elevated(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children,
+      ),
+    );
+  }
+}
+
+/// 地址、配置与状态行共用的复制按钮。
+class _CopyIconButton extends StatelessWidget {
+  const _CopyIconButton({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    return Tooltip(
+      message: label,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        minimumSize: const Size(_kMinTapTarget, _kMinTapTarget),
+        pressedOpacity: 0.4,
+        onPressed: onPressed,
+        child: Icon(
+          CupertinoIcons.doc_on_doc,
+          size: 18,
+          color: onPressed == null
+              ? colors.quaternaryLabel
+              : colors.secondaryLabel,
+        ),
+      ),
+    );
+  }
+}
+
+/// 圆点表示状态色，文字始终读得清楚——不只靠颜色传达信息。
+class _StatusIndicator extends StatelessWidget {
+  const _StatusIndicator({required this.text, required this.tint});
+
+  final String text;
+  final Color tint;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ExcludeSemantics(
+          child: Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(color: tint, shape: BoxShape.circle),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Flexible(
+          child: Text(
+            text,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: colors.secondaryLabel,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// JSON / Claude Code 两种配置的切换。
+class _FormatSelector extends StatelessWidget {
+  const _FormatSelector({required this.value, required this.onChanged});
+
+  final _ConfigFormat value;
+  final ValueChanged<_ConfigFormat> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    Widget segment(String text, _ConfigFormat format) {
+      final selected = format == value;
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 7),
+        child: Text(
+          text,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            color: selected ? colors.label : colors.secondaryLabel,
+          ),
+        ),
+      );
+    }
+
+    // 保留 CupertinoSlidingSegmentedControl 的系统外观：轨道和选中滑块都用
+    // 系统动态色（浅色白滑块 / 深色 #636366），随主题自动适配，无需手写分支。
+    return CupertinoSlidingSegmentedControl<_ConfigFormat>(
+      groupValue: value,
+      onValueChanged: (next) {
+        if (next != null && next != value) {
+          onChanged(next);
+        }
+      },
+      children: {
+        _ConfigFormat.json: segment('JSON', _ConfigFormat.json),
+        _ConfigFormat.cli: segment('Claude Code', _ConfigFormat.cli),
+      },
+    );
+  }
+}
+
+/// 等宽代码块，长行横向滚动而不是折行。
+class _CodeBlock extends StatelessWidget {
+  const _CodeBlock({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(McRadii.md),
+      child: ColoredBox(
+        color: colors.surfaceRaised,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: SelectableText(
+            text,
+            style: _monoStyle(
+              size: 12,
+              color: colors.label,
+            ).copyWith(height: 1.55),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// 探测结果里的单个工具。
+class _ToolRow extends StatelessWidget {
+  const _ToolRow({required this.tool});
+
+  final McpTool tool;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            tool.name,
+            style: _monoStyle(
+              size: 12.5,
+              color: colors.label,
+            ).copyWith(fontWeight: FontWeight.w600),
+          ),
+          if (tool.description.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Text(
+                tool.description,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.4,
+                  color: colors.secondaryLabel,
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// 页面底部的安全说明。
+class _Footnote extends StatelessWidget {
+  const _Footnote({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.mc.colors;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Icon(
+              CupertinoIcons.lock,
+              size: 12,
+              color: colors.tertiaryLabel,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 12.5,
+                height: 1.45,
+                color: colors.secondaryLabel,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -677,6 +677,8 @@
   "mcpTokenSection": "アクセストークン",
   "mcpTokenLabel": "Bearer トークン",
   "mcpTokenHint": "空欄の場合は Authorization を送信しません",
+  "mcpTokenShow": "トークンを表示",
+  "mcpTokenHide": "トークンを隠す",
   "mcpTokenSaved": "トークンを保存しました",
   "mcpTokenNotSet": "トークン未設定",
   "mcpTokenUnsaved": "未保存",

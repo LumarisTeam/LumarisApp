@@ -674,6 +674,8 @@
   "mcpTokenSection": "액세스 토큰",
   "mcpTokenLabel": "Bearer 토큰",
   "mcpTokenHint": "비워 두면 Authorization을 보내지 않습니다",
+  "mcpTokenShow": "토큰 표시",
+  "mcpTokenHide": "토큰 숨기기",
   "mcpTokenSaved": "토큰이 저장되었습니다",
   "mcpTokenNotSet": "토큰이 설정되지 않았습니다",
   "mcpTokenUnsaved": "저장되지 않음",
