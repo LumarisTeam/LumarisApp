@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:ios_club_app/core/utils/animations/app_animations.dart';
+import 'app_animations.dart';
 
 /// Shimmer闪光加载效果
 ///
@@ -41,16 +41,37 @@ class ShimmerLoading extends StatefulWidget {
 class _ShimmerLoadingState extends State<ShimmerLoading>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: widget.duration)
-      ..repeat();
-    _animation = Tween<double>(begin: -2.0, end: 2.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
-    );
+    _controller = AnimationController(vsync: this, duration: widget.duration);
+  }
+
+  void _syncAnimation() {
+    if (widget.isLoading &&
+        !AppAnimations.reduceMotionOf(context) &&
+        TickerMode.valuesOf(context).enabled) {
+      if (!_controller.isAnimating) _controller.repeat();
+    } else {
+      _controller.stop();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _syncAnimation();
+  }
+
+  @override
+  void didUpdateWidget(ShimmerLoading oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.duration != widget.duration) {
+      _controller.stop();
+      _controller.duration = widget.duration;
+    }
+    _syncAnimation();
   }
 
   @override
@@ -61,40 +82,37 @@ class _ShimmerLoadingState extends State<ShimmerLoading>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.isLoading) {
-      return AnimatedSwitcher(
-        duration: AppAnimations.standard,
-        child: widget.child,
-      );
-    }
-
+    final bool reduced = AppAnimations.reduceMotionOf(context);
     return AnimatedSwitcher(
-      duration: AppAnimations.standard,
-      child: AnimatedBuilder(
-        animation: _animation,
-        builder: (context, child) {
-          final colors = context.mc.colors;
-          return ShaderMask(
-            shaderCallback: (bounds) {
-              return LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  colors.skeletonBase,
-                  colors.skeletonHighlight,
-                  colors.skeletonBase,
-                ],
-                stops: [
-                  _animation.value - 0.3,
-                  _animation.value,
-                  _animation.value + 0.3,
-                ].map((e) => e.clamp(0.0, 1.0)).toList(),
-              ).createShader(bounds);
-            },
-            child: widget.skeleton ?? child,
-          );
-        },
-        child: widget.skeleton ?? _buildDefaultSkeleton(context),
+      duration: reduced ? Duration.zero : AppAnimations.standard,
+      switchInCurve: AppAnimations.easeOut,
+      switchOutCurve: AppAnimations.easeIn,
+      child: KeyedSubtree(
+        key: ValueKey<bool>(widget.isLoading),
+        child: !widget.isLoading
+            ? widget.child
+            : reduced
+            ? widget.skeleton ?? _buildDefaultSkeleton(context)
+            : AnimatedBuilder(
+                animation: _controller,
+                child: widget.skeleton ?? _buildDefaultSkeleton(context),
+                builder: (context, child) {
+                  final colors = context.mc.colors;
+                  return ShaderMask(
+                    shaderCallback: (bounds) => LinearGradient(
+                      begin: Alignment(-2 + _controller.value * 4, 0),
+                      end: Alignment(-1 + _controller.value * 4, 0),
+                      colors: [
+                        colors.skeletonBase,
+                        colors.skeletonHighlight,
+                        colors.skeletonBase,
+                      ],
+                      stops: const [0, 0.5, 1],
+                    ).createShader(bounds),
+                    child: child,
+                  );
+                },
+              ),
       ),
     );
   }

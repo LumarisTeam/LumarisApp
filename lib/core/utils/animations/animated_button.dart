@@ -1,24 +1,19 @@
-import 'package:material_ui/material_ui.dart';
-import 'package:ios_club_app/core/utils/animations/app_animations.dart';
+import 'package:flutter/services.dart';
 
-/// 带有按压反馈动画的按钮包装器
-///
-/// 苹果风格：按下时轻微缩小，松开恢复
-///
-/// 示例：
-/// ```dart
-/// AnimatedButton(
-///   onTap: () => AppLogger.debug('Tapped'),
-///   child: YourButtonWidget(),
-/// )
-/// ```
+import 'package:material_ui/material_ui.dart';
+
+import 'app_animations.dart';
+
+/// 统一按压反馈：轻压、平稳恢复，支持键盘及减少动态效果。
 class AnimatedButton extends StatefulWidget {
   final Widget child;
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
   final bool enabled;
   final double scaleOnPress;
+  final double opacityOnPress;
   final Duration duration;
+  final bool enableFeedback;
 
   const AnimatedButton({
     super.key,
@@ -27,263 +22,151 @@ class AnimatedButton extends StatefulWidget {
     this.onLongPress,
     this.enabled = true,
     this.scaleOnPress = AppAnimations.pressScale,
+    this.opacityOnPress = 0.88,
     this.duration = AppAnimations.fast,
-  });
+    this.enableFeedback = true,
+  }) : assert(scaleOnPress > 0 && scaleOnPress <= 1),
+       assert(opacityOnPress >= 0 && opacityOnPress <= 1);
 
   @override
   State<AnimatedButton> createState() => _AnimatedButtonState();
 }
 
-class _AnimatedButtonState extends State<AnimatedButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
+class _AnimatedButtonState extends State<AnimatedButton> {
+  bool _pressed = false;
+  bool _focused = false;
+  bool get _interactive =>
+      widget.enabled && (widget.onTap != null || widget.onLongPress != null);
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(duration: widget.duration, vsync: this);
-    _scaleAnimation = Tween<double>(begin: 1.0, end: widget.scaleOnPress)
-        .animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: AppAnimations.defaultCurve,
-          ),
-        );
+  void _setPressed(bool value) {
+    if (_pressed != value) setState(() => _pressed = value);
   }
 
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _handleTapDown(TapDownDetails details) {
-    if (widget.enabled) {
-      _controller.forward();
-    }
-  }
-
-  void _handleTapUp(TapUpDetails details) {
-    if (widget.enabled) {
-      _controller.reverse();
-    }
-  }
-
-  void _handleTapCancel() {
-    if (widget.enabled) {
-      _controller.reverse();
-    }
+  void didUpdateWidget(AnimatedButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!_interactive || !widget.enableFeedback) _pressed = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: _handleTapDown,
-      onTapUp: _handleTapUp,
-      onTapCancel: _handleTapCancel,
-      onTap: widget.enabled ? widget.onTap : null,
-      onLongPress: widget.enabled ? widget.onLongPress : null,
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Opacity(
-              opacity: widget.enabled ? 1.0 : AppAnimations.disabledOpacity,
-              child: child,
+    final bool reduced = AppAnimations.reduceMotionOf(context);
+    final bool pressed = _pressed && _interactive && widget.enableFeedback;
+    final Duration duration = reduced ? Duration.zero : widget.duration;
+    return FocusableActionDetector(
+      enabled: _interactive,
+      mouseCursor: _interactive ? SystemMouseCursors.click : MouseCursor.defer,
+      onShowFocusHighlight: (value) => setState(() => _focused = value),
+      shortcuts: const <ShortcutActivator, Intent>{
+        SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+        SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+      },
+      actions: <Type, Action<Intent>>{
+        ActivateIntent: CallbackAction<ActivateIntent>(
+          onInvoke: (_) {
+            if (_interactive) widget.onTap?.call();
+            return null;
+          },
+        ),
+      },
+      child: Semantics(
+        button: _interactive,
+        enabled: widget.enabled,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTapDown: _interactive && widget.enableFeedback
+              ? (_) => _setPressed(true)
+              : null,
+          onTapUp: _interactive && widget.enableFeedback
+              ? (_) => _setPressed(false)
+              : null,
+          onTapCancel: _interactive && widget.enableFeedback
+              ? () => _setPressed(false)
+              : null,
+          onTap: _interactive ? widget.onTap : null,
+          onLongPress: _interactive && widget.onLongPress != null
+              ? () {
+                  _setPressed(false);
+                  widget.onLongPress?.call();
+                }
+              : null,
+          child: AnimatedScale(
+            scale: pressed && !reduced ? widget.scaleOnPress : 1,
+            duration: duration,
+            curve: AppAnimations.easeOut,
+            child: AnimatedOpacity(
+              opacity: !widget.enabled
+                  ? AppAnimations.disabledOpacity
+                  : pressed
+                  ? widget.opacityOnPress
+                  : 1,
+              duration: duration,
+              curve: AppAnimations.easeOut,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: _focused
+                      ? Border.all(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 2,
+                        )
+                      : null,
+                ),
+                child: widget.child,
+              ),
             ),
-          );
-        },
-        child: widget.child,
+          ),
+        ),
       ),
     );
   }
 }
 
-/// 带有弹性效果的按钮
-///
-/// 点击后有轻微的弹跳效果
-class BounceButton extends StatefulWidget {
+/// 兼容旧名称，统一使用无回弹的按压反馈。
+class BounceButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
   final bool enabled;
-
   const BounceButton({
     super.key,
     required this.child,
     this.onTap,
     this.enabled = true,
   });
-
   @override
-  State<BounceButton> createState() => _BounceButtonState();
+  Widget build(BuildContext context) =>
+      AnimatedButton(onTap: onTap, enabled: enabled, child: child);
 }
 
-class _BounceButtonState extends State<BounceButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: AppAnimations.standard,
-      vsync: this,
-    );
-    _scaleAnimation =
-        TweenSequence<double>([
-          TweenSequenceItem(
-            tween: Tween<double>(begin: 1.0, end: 0.95),
-            weight: 50,
-          ),
-          TweenSequenceItem(
-            tween: Tween<double>(begin: 0.95, end: 1.05),
-            weight: 25,
-          ),
-          TweenSequenceItem(
-            tween: Tween<double>(begin: 1.05, end: 1.0),
-            weight: 25,
-          ),
-        ]).animate(
-          CurvedAnimation(parent: _controller, curve: AppAnimations.spring),
-        );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _handleTap() {
-    if (widget.enabled) {
-      _controller.forward(from: 0);
-      widget.onTap?.call();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: _handleTap,
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Opacity(
-              opacity: widget.enabled ? 1.0 : AppAnimations.disabledOpacity,
-              child: child,
-            ),
-          );
-        },
-        child: widget.child,
-      ),
-    );
-  }
-}
-
-/// 带有淡入淡出效果的按钮
-///
-/// 点击时轻微变透明
-class FadeButton extends StatefulWidget {
+/// 文本操作只改变透明度。
+class FadeButton extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
   final bool enabled;
   final double opacityOnPress;
-
   const FadeButton({
     super.key,
     required this.child,
     this.onTap,
     this.enabled = true,
-    this.opacityOnPress = 0.6,
+    this.opacityOnPress = 0.72,
   });
-
   @override
-  State<FadeButton> createState() => _FadeButtonState();
+  Widget build(BuildContext context) => AnimatedButton(
+    onTap: onTap,
+    enabled: enabled,
+    scaleOnPress: 1,
+    opacityOnPress: opacityOnPress,
+    child: child,
+  );
 }
 
-class _FadeButtonState extends State<FadeButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _opacityAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: AppAnimations.fast,
-      vsync: this,
-    );
-    _opacityAnimation = Tween<double>(begin: 1.0, end: widget.opacityOnPress)
-        .animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: AppAnimations.defaultCurve,
-          ),
-        );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _handleTapDown(TapDownDetails details) {
-    if (widget.enabled) {
-      _controller.forward();
-    }
-  }
-
-  void _handleTapUp(TapUpDetails details) {
-    if (widget.enabled) {
-      _controller.reverse();
-    }
-  }
-
-  void _handleTapCancel() {
-    if (widget.enabled) {
-      _controller.reverse();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: _handleTapDown,
-      onTapUp: _handleTapUp,
-      onTapCancel: _handleTapCancel,
-      onTap: widget.enabled ? widget.onTap : null,
-      child: AnimatedBuilder(
-        animation: _opacityAnimation,
-        builder: (context, child) {
-          return Opacity(
-            opacity: widget.enabled
-                ? _opacityAnimation.value
-                : AppAnimations.disabledOpacity,
-            child: child,
-          );
-        },
-        child: widget.child,
-      ),
-    );
-  }
-}
-
-/// iOS风格的可缩放容器
-///
-/// 类似于iOS按钮的交互反馈
-class ScaleTapContainer extends StatefulWidget {
+class ScaleTapContainer extends StatelessWidget {
   final Widget child;
   final VoidCallback? onTap;
   final EdgeInsetsGeometry? padding;
   final Decoration? decoration;
   final bool enabled;
-
   const ScaleTapContainer({
     super.key,
     required this.child,
@@ -292,58 +175,10 @@ class ScaleTapContainer extends StatefulWidget {
     this.decoration,
     this.enabled = true,
   });
-
   @override
-  State<ScaleTapContainer> createState() => _ScaleTapContainerState();
-}
-
-class _ScaleTapContainerState extends State<ScaleTapContainer>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: AppAnimations.fast,
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: AppAnimations.pressScale,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: widget.enabled ? (_) => _controller.forward() : null,
-      onTapUp: widget.enabled ? (_) => _controller.reverse() : null,
-      onTapCancel: widget.enabled ? () => _controller.reverse() : null,
-      onTap: widget.enabled ? widget.onTap : null,
-      child: AnimatedBuilder(
-        animation: _scaleAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: Container(
-              padding: widget.padding,
-              decoration: widget.decoration,
-              child: Opacity(
-                opacity: widget.enabled ? 1.0 : AppAnimations.disabledOpacity,
-                child: widget.child,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AnimatedButton(
+    onTap: onTap,
+    enabled: enabled,
+    child: Container(padding: padding, decoration: decoration, child: child),
+  );
 }

@@ -106,7 +106,7 @@ void main() {
         of: find.byType(HoverCard),
         matching: find.byType(MouseRegion),
       );
-      final mouseRegion = tester.widget<MouseRegion>(mouseRegionFinder);
+      final mouseRegion = tester.widget<MouseRegion>(mouseRegionFinder.first);
       expect(mouseRegion.onEnter, isNotNull);
       expect(mouseRegion.onExit, isNotNull);
     });
@@ -122,7 +122,7 @@ void main() {
         of: find.byType(HoverCard),
         matching: find.byType(MouseRegion),
       );
-      final mouseRegion = tester.widget<MouseRegion>(mouseRegionFinder);
+      final mouseRegion = tester.widget<MouseRegion>(mouseRegionFinder.first);
       expect(mouseRegion.onEnter, isNull);
       expect(mouseRegion.onExit, isNull);
     });
@@ -145,6 +145,7 @@ void main() {
     expect(find.byType(AnimatedCard), findsOneWidget);
     expect(find.byType(InteractiveCard), findsOneWidget);
 
+    await tester.pumpAndSettle();
     await tester.tap(find.text('combo'));
     await tester.pump();
     expect(tapped, isTrue);

@@ -1,279 +1,42 @@
-# 动画系统使用指南
+# 光序动效系统
 
-本目录包含光序的统一动画系统，遵循苹果设计规范，提供流畅、一致的用户体验。
+设计方向：信息轻轻就位。课表、成绩和校园服务属于高频查询，内容优先，动效帮助确认层级与操作，不让用户等候表演。
 
-## 📦 组件列表
+## 设计评审与取舍
 
-### 1. AppAnimations - 动画配置常量
+本轮依据源代码评审，尚未进行真机视觉与帧率验收。
 
-统一的动画时长和曲线配置。
+- **Critical，已修复（公共动画组件）**：未响应系统减少动态效果。依据 `accessibility.md › Cognitive`：开启 Reduce Motion 后应减少自动、重复、缩放及周边运动。现在入场直接显示、按压只改变透明度、悬停无位移、骨架屏静止；设置动态变化也生效。
+- **Medium，已修复**：90% 卡片缩放、80% 列表缩放、点击后 105% 回弹抢占注意力。依据 `motion.md › Providing feedback`：“Aim for brevity and precision in feedback animations.” 默认取消入场缩放和回弹，保留微小按压。
+- **Medium，已修复**：列表 delay 被加进 duration，实际没有延迟。独立计时后错峰播放，自动延迟上限 120 ms。成绩列表移除双层入场，其他嵌套入场由最外层统一负责。
+- **保留**：现有组件 API、主题语义色与导航结构。页面导航继续使用框架平台转场，避免用自定义滑动破坏返回手势。
 
-```dart
-import 'package:ios_club_app/core/utils/animations/animations.dart';
+具体时长和幅度是光序的设计选择，并非 Apple 规定值。刻意移除通用的弹跳装饰，让“序”体现为内容有序就位。此次仅调整运动语言，颜色、字号和布局沿用现有主题。
 
-// 使用预定义的动画时长
-AnimatedContainer(
-  duration: AppAnimations.standard,  // 300ms
-  curve: AppAnimations.easeOut,
-)
-```
+## 动效参数
 
-**可用配置：**
-- `fast` (200ms) - 快速交互
-- `standard` (300ms) - 标准过渡
-- `medium` (400ms) - 复杂过渡
-- `slow` (600ms) - 引人注目的效果
-- `extraSlow` (1000ms) - 数值变化
+| 场景 | 参数 | 行为 |
+| --- | --- | --- |
+| 按压 | 120 ms / 0.98 scale / 0.88 opacity | 手指松开、取消或长按成立后恢复；不回弹 |
+| 文本操作 | 120 ms / 0.72 opacity | 不缩放 |
+| 卡片入场 | 240 ms / 向上 12 logical px | 淡入，无缩放 |
+| 列表入场 | 240 ms / 向上 8 logical px | 每项错开 24 ms，上限 120 ms |
+| 兼容缩放列表 | 240 ms / 0.98 → 1 | 仅旧调用保留，优先使用普通列表入场 |
+| 悬停 | 120 ms / 向上自身高度的 0.5% | 不放大；键盘焦点有主题色边框 |
+| 加载 | 1500 ms 周期 / 240 ms 内容交接 | 离开加载状态或 TickerMode 关闭时停止循环 |
 
-**曲线：**
-- `defaultCurve` - 标准缓入缓出
-- `easeOut` - 用于进入动画
-- `easeIn` - 用于退出动画
-- `spring` - 弹性效果
-- `smooth` - 平滑变化
+统一使用无过冲曲线：状态变化 `easeInOutCubic`、进入和按压 `easeOutCubic`、退出 `easeInCubic`。`spring` 保留名称以兼容旧调用，实际使用无回弹曲线。`medium`、`slow`、`extraSlow` 留给明确需要更长变化的场景。
 
-### 2. AnimatedListItem - 列表项瀑布流动画
+## 使用原则
 
-为列表项添加从下往上滑入 + 淡入的进入动画。
+1. 一个内容区域只编排一层入场。`MotionEntrance` 自动避免嵌套叠加，已挂载内容重建不重播。列表重新创建条目时仍可能播放，避免为高频滚动列表添加装饰性入场。
+2. 有现成点击反馈的按钮或列表项直接使用原组件。`AnimatedButton` 用于自定义可操作内容，避免外层与子按钮争抢手势。
+3. 操作不等待动画结束；透明度为零的入场内容暂不接收点击。业务反馈应通过文本、图标和状态呈现。
+4. 自定义其他动画时读取 `AppAnimations.reduceMotionOf(context)`。这里的适配只覆盖本目录组件，不表示所有页面独立实现的动效都已迁移。
+5. 不增加自动震动。保留应用已有触感偏好，触感只用于有明确意义的离散操作。依据 `playing-haptics.md › Best practices`：“Avoid overusing haptics.”
 
-```dart
-ListView.builder(
-  itemCount: items.length,
-  itemBuilder: (context, index) {
-    return AnimatedListItem(
-      index: index,
-      child: YourListItem(item: items[index]),
-    );
-  },
-)
-```
+## 验证
 
-**变体：**
-- `AnimatedListItem` - 从下往上滑入（默认）
-- `AnimatedListItemSlideLeft` - 从左滑入
-- `AnimatedListItemScale` - 缩放进入
+组件回归：`flutter test test/widget/motion_system_test.dart test/widget/animated_card_test.dart`。
 
-### 3. AnimatedCard - 卡片进入动画
-
-为卡片添加滑入 + 缩放 + 淡入的组合动画。
-
-```dart
-AnimatedCard(
-  delay: Duration(milliseconds: 100),  // 可选延迟
-  child: McCard.elevated(
-    child: YourContent(),
-  ),
-)
-```
-
-### 4. InteractiveCard - 可交互卡片
-
-带有点击反馈的卡片，按下时轻微缩小。
-
-```dart
-InteractiveCard(
-  onTap: () => print('Tapped'),
-  child: McCard.elevated(
-    child: YourContent(),
-  ),
-)
-```
-
-### 5. AnimatedButton - 按钮交互动画
-
-为任何按钮添加按压反馈动画。
-
-```dart
-AnimatedButton(
-  onTap: () => handleAction(),
-  child: YourButtonWidget(),
-)
-```
-
-**变体：**
-- `AnimatedButton` - 按压缩放（默认）
-- `BounceButton` - 弹跳效果
-- `FadeButton` - 淡入淡出
-- `ScaleTapContainer` - iOS 风格容器
-
-### 6. ShimmerLoading - 骨架屏加载
-
-仿照苹果风格的闪光加载效果。
-
-```dart
-ShimmerLoading(
-  isLoading: isLoading,
-  skeleton: ListItemSkeleton(),  // 可选自定义骨架
-  child: YourActualContent(),
-)
-```
-
-**预设骨架：**
-- `ListItemSkeleton` - 列表项骨架
-- `CardSkeleton` - 卡片骨架
-- `SkeletonBox` - 方形占位符
-- `SkeletonCircle` - 圆形占位符
-- `SkeletonLine` - 文本行占位符
-
-## 🎨 使用示例
-
-### 示例 1：带动画的列表页面
-
-```dart
-import 'package:ios_club_app/core/utils/animations/animations.dart';
-
-class MyListPage extends StatelessWidget {
-  final List<Item> items;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: items.length,
-      itemBuilder: (context, index) {
-        return AnimatedListItem(
-          index: index,
-          child: ListTile(
-            title: Text(items[index].title),
-          ),
-        );
-      },
-    );
-  }
-}
-```
-
-### 示例 2：带加载状态的卡片
-
-```dart
-import 'package:ios_club_app/core/utils/animations/animations.dart';
-
-class DataCard extends StatelessWidget {
-  final bool isLoading;
-  final String data;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedCard(
-      child: ShimmerLoading(
-        isLoading: isLoading,
-        skeleton: CardSkeleton(height: 150),
-        child: McCard.elevated(
-          child: Text(data),
-        ),
-      ),
-    );
-  }
-}
-```
-
-### 示例 3：可交互的网格项
-
-```dart
-import 'package:ios_club_app/core/utils/animations/animations.dart';
-
-GridView.builder(
-  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2,
-  ),
-  itemCount: items.length,
-  itemBuilder: (context, index) {
-    return AnimatedCard(
-      delay: Duration(milliseconds: 50 * index),
-      child: InteractiveCard(
-        onTap: () => handleTap(items[index]),
-        child: YourGridItem(),
-      ),
-    );
-  },
-)
-```
-
-### 示例 4：带反馈的按钮
-
-```dart
-import 'package:ios_club_app/core/utils/animations/animations.dart';
-
-AnimatedButton(
-  onTap: () => submitForm(),
-  child: Container(
-    padding: EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.blue,
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Text('提交'),
-  ),
-)
-```
-
-## 🎯 设计原则
-
-1. **一致性** - 所有动画使用统一的时长和曲线
-2. **自然** - 模仿物理世界的运动规律
-3. **适度** - 不过度使用动画，避免干扰用户
-4. **性能** - 使用高效的动画实现，避免掉帧
-
-## ⚙️ 最佳实践
-
-### ✅ 推荐做法
-
-```dart
-// 使用预定义的配置
-AnimatedContainer(
-  duration: AppAnimations.standard,
-  curve: AppAnimations.easeOut,
-)
-
-// 列表项使用瀑布流动画
-ListView.builder(
-  itemBuilder: (context, index) => AnimatedListItem(
-    index: index,
-    child: item,
-  ),
-)
-
-// 卡片添加进入动画
-AnimatedCard(child: McCard.elevated(...))
-
-// 按钮添加交互反馈
-AnimatedButton(onTap: ..., child: ...)
-```
-
-### ❌ 避免做法
-
-```dart
-// ❌ 不要硬编码时长
-AnimatedContainer(
-  duration: Duration(milliseconds: 237),  // 使用 AppAnimations.standard
-)
-
-// ❌ 不要过度嵌套动画
-AnimatedCard(
-  child: AnimatedListItem(  // 只选择一个
-    child: InteractiveCard(  // 或者只用交互动画
-      child: ...
-    ),
-  ),
-)
-
-// ❌ 不要在列表中使用相同延迟
-ListView.builder(
-  itemBuilder: (context, index) => AnimatedCard(
-    delay: Duration(milliseconds: 100),  // 应该基于 index 计算
-    child: item,
-  ),
-)
-```
-
-## 🚀 性能优化
-
-1. **使用 const 构造函数** - 尽可能使用 const
-2. **避免重复构建** - 在 ListView 中使用 AnimatedListItem 而不是为整个列表添加动画
-3. **限制最大延迟** - AppAnimations 自动限制列表项延迟不超过 400ms
-4. **合理使用动画** - 不是所有元素都需要动画
-
-## 📚 相关资源
-
-- [Apple Human Interface Guidelines - Motion](https://developer.apple.com/design/human-interface-guidelines/motion)
-- [Flutter Animation Documentation](https://docs.flutter.dev/ui/animations)
-- [Material Motion System](https://m3.material.io/styles/motion/overview)
+发布前还需在真机检查：首页和成绩列表连续滚动、详情侧滑返回、切换系统减少动态效果、深浅色模式、桌面 Tab/Enter/Space。本轮不改变尺寸、字体、模糊或透明材质；最大字号与最小窗口的完整布局验收属于页面级检查。

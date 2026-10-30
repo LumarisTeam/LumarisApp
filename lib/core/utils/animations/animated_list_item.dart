@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:ios_club_app/core/utils/animations/app_animations.dart';
+import 'app_animations.dart';
+import 'motion_entrance.dart';
 
 /// 带有瀑布流进入动画的列表项
 ///
@@ -47,22 +48,13 @@ class AnimatedListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animDuration = duration ?? AppAnimations.listItemDuration;
-    final animDelay = delay ?? AppAnimations.getListItemDelay(index);
-    final animCurve = curve ?? AppAnimations.easeOut;
-    final offset = slideOffset ?? AppAnimations.slideOffset;
-
     return RepaintBoundary(
-      child: TweenAnimationBuilder<double>(
-        duration: animDuration + animDelay,
-        tween: Tween<double>(begin: 0.0, end: 1.0),
-        curve: animCurve,
-        builder: (context, value, child) {
-          return Transform.translate(
-            offset: Offset(0, offset * (1 - value)),
-            child: Opacity(opacity: value, child: child),
-          );
-        },
+      child: MotionEntrance(
+        duration: duration ?? AppAnimations.listItemDuration,
+        delay: delay ?? AppAnimations.getListItemDelay(index),
+        curve: curve ?? AppAnimations.easeOut,
+        offset: Offset(0, slideOffset ?? AppAnimations.slideOffset),
+        initialScale: 1,
         child: child,
       ),
     );
@@ -88,21 +80,17 @@ class AnimatedListItemSlideLeft extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animDuration = duration ?? AppAnimations.listItemDuration;
-    final animDelay = delay ?? AppAnimations.getListItemDelay(index);
-    final animCurve = curve ?? AppAnimations.easeOut;
-
     return RepaintBoundary(
-      child: TweenAnimationBuilder<double>(
-        duration: animDuration + animDelay,
-        tween: Tween<double>(begin: 0.0, end: 1.0),
-        curve: animCurve,
-        builder: (context, value, child) {
-          return Transform.translate(
-            offset: Offset(-30 * (1 - value), 0),
-            child: Opacity(opacity: value, child: child),
-          );
-        },
+      child: MotionEntrance(
+        duration: duration ?? AppAnimations.listItemDuration,
+        delay: delay ?? AppAnimations.getListItemDelay(index),
+        curve: curve ?? AppAnimations.easeOut,
+        offset: Offset(
+          (Directionality.of(context) == TextDirection.rtl ? 1 : -1) *
+              AppAnimations.slideOffset,
+          0,
+        ),
+        initialScale: 1,
         child: child,
       ),
     );
@@ -128,21 +116,13 @@ class AnimatedListItemScale extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animDuration = duration ?? AppAnimations.listItemDuration;
-    final animDelay = delay ?? AppAnimations.getListItemDelay(index);
-    final animCurve = curve ?? AppAnimations.easeOut;
-
     return RepaintBoundary(
-      child: TweenAnimationBuilder<double>(
-        duration: animDuration + animDelay,
-        tween: Tween<double>(begin: 0.0, end: 1.0),
-        curve: animCurve,
-        builder: (context, value, child) {
-          return Transform.scale(
-            scale: 0.8 + (0.2 * value),
-            child: Opacity(opacity: value, child: child),
-          );
-        },
+      child: MotionEntrance(
+        duration: duration ?? AppAnimations.listItemDuration,
+        delay: delay ?? AppAnimations.getListItemDelay(index),
+        curve: curve ?? AppAnimations.easeOut,
+        offset: Offset.zero,
+        initialScale: 0.98,
         child: child,
       ),
     );

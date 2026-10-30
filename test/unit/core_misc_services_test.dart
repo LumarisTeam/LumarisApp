@@ -18,20 +18,20 @@ void main() {
 
   group('AppAnimations', () {
     test('should provide expected constants and delay cap', () {
-      expect(AppAnimations.fast, const Duration(milliseconds: 200));
-      expect(AppAnimations.standard, const Duration(milliseconds: 300));
+      expect(AppAnimations.fast, const Duration(milliseconds: 120));
+      expect(AppAnimations.standard, const Duration(milliseconds: 240));
       expect(AppAnimations.extraSlow, const Duration(milliseconds: 1000));
 
       expect(
         AppAnimations.getListItemDelay(2),
-        const Duration(milliseconds: 100),
+        const Duration(milliseconds: 48),
       );
       expect(
         AppAnimations.getListItemDelay(20),
         AppAnimations.listItemMaxDelay,
       );
-      expect(AppAnimations.slideOffset, 20.0);
-      expect(AppAnimations.pressScale, 0.95);
+      expect(AppAnimations.slideOffset, 8.0);
+      expect(AppAnimations.pressScale, 0.98);
       expect(AppAnimations.secondaryOpacity, 0.6);
     });
   });
