@@ -1,4 +1,5 @@
 import 'package:flutter/widget_previews.dart';
+import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../core/extensions/localization_extensions.dart';
@@ -21,20 +22,34 @@ class NavigationAppPicker extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-    child: ListView(
-      shrinkWrap: true,
+  Widget build(BuildContext context) {
+    final m = context.mc;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ListTile(title: Text(context.l10n.chooseNavigationApp)),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 4, 12, 14),
+          child: Text(
+            context.l10n.chooseNavigationApp,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w600,
+              color: m.foreground,
+            ),
+          ),
+        ),
         for (final ExternalMap map in maps)
-          ListTile(
-            leading: const Icon(Icons.map_outlined),
+          McListTile(
+            leading: Icon(Icons.map_outlined, size: 20, color: m.primary),
             title: Text(_label(context, map)),
             onTap: () => Navigator.of(context).pop(map),
           ),
       ],
-    ),
-  );
+    );
+  }
 }
 
 @Preview(name: 'Navigation apps', size: Size(390, 360))

@@ -8,37 +8,35 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 ///
 /// 使用示例：
 /// ```dart
-/// showModalBottomSheet(
+/// showMcBottomSheet(
 ///   context: context,
-///   builder: (context) => Container(
-///     padding: const EdgeInsets.all(20),
-///     child: Column(
-///       mainAxisSize: MainAxisSize.min,
-///       crossAxisAlignment: CrossAxisAlignment.start,
-///       children: [
-///         ModalHeader(
-///           title: '详细信息',
-///           subtitle: '可选的副标题',
-///           actions: ModalActionMenu(
-///             onEdit: () => AppLogger.debug('编辑'),
-///             onDelete: () => print('删除'),
-///           ),
+///   contentPadding: const EdgeInsets.all(20),
+///   builder: (context) => Column(
+///     mainAxisSize: MainAxisSize.min,
+///     crossAxisAlignment: CrossAxisAlignment.start,
+///     children: [
+///       ModalHeader(
+///         title: '详细信息',
+///         subtitle: '可选的副标题',
+///         actions: ModalActionMenu(
+///           onEdit: () => AppLogger.debug('编辑'),
+///           onDelete: () => AppLogger.debug('删除'),
 ///         ),
-///         ModalInfoRow(
-///           icon: CupertinoIcons.location_solid,
-///           label: '地点',
-///           content: '教学楼A101',
-///           color: const Color(0xFF007AFF),
-///         ),
-///         const ModalSpacing(),
-///         ModalInfoRow(
-///           icon: CupertinoIcons.person_fill,
-///           label: '负责人',
-///           content: '张三',
-///           color: const Color(0xFFFF3B30),
-///         ),
-///       ],
-///     ),
+///       ),
+///       ModalInfoRow(
+///         icon: CupertinoIcons.location_solid,
+///         label: '地点',
+///         content: '教学楼A101',
+///         color: const Color(0xFF007AFF),
+///       ),
+///       const ModalSpacing(),
+///       ModalInfoRow(
+///         icon: CupertinoIcons.person_fill,
+///         label: '负责人',
+///         content: '张三',
+///         color: const Color(0xFFFF3B30),
+///       ),
+///     ],
 ///   ),
 /// );
 /// ```

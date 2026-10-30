@@ -14,6 +14,7 @@ import 'package:ios_club_app/features/education/services/education_refresh_servi
 import 'package:ios_club_app/features/system/permissions/course_feature_permissions.dart';
 import 'package:ios_club_app/features/system/widget_settings_service.dart';
 import 'package:ios_club_app/ui/components/permissions/course_feature_permission_tile.dart';
+import 'package:ios_club_app/ui/components/app_action_sheet.dart';
 import 'package:ios_club_app/platform/android/background_service.dart';
 import 'package:ios_club_app/platform/ios/background_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
@@ -491,33 +492,22 @@ class SettingPage extends ConsumerWidget {
     }
   }
 
-  Future<WidgetSetupType?> _showWidgetTypePicker(BuildContext context) async {
-    return showCupertinoModalPopup<WidgetSetupType>(
+  Future<WidgetSetupType?> _showWidgetTypePicker(BuildContext context) {
+    return showAppActionSheet<WidgetSetupType>(
       context: context,
-      builder: (popupContext) {
-        return CupertinoActionSheet(
-          title: Text(context.l10n.addToDesktop),
-          message: Text(context.l10n.widgetSetupTitle),
-          actions: [
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(popupContext).pop(WidgetSetupType.today);
-              },
-              child: Text(context.l10n.todayScheduleLabel),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(popupContext).pop(WidgetSetupType.tomorrow);
-              },
-              child: Text(context.l10n.tomorrowSchedule),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(popupContext).pop(),
-            child: Text(context.l10n.cancel),
-          ),
-        );
-      },
+      title: context.l10n.addToDesktop,
+      message: context.l10n.widgetSetupTitle,
+      cancelLabel: context.l10n.cancel,
+      items: [
+        AppActionSheetItem(
+          value: WidgetSetupType.today,
+          label: context.l10n.todayScheduleLabel,
+        ),
+        AppActionSheetItem(
+          value: WidgetSetupType.tomorrow,
+          label: context.l10n.tomorrowSchedule,
+        ),
+      ],
     );
   }
 
@@ -647,52 +637,23 @@ class SettingPage extends ConsumerWidget {
     BuildContext context,
     SettingsStore settingsStore,
   ) async {
-    final colors = context.mc.colors;
-
-    await showCupertinoModalPopup<void>(
+    final selected = await showAppActionSheet<ThemeMode>(
       context: context,
-      builder: (popupContext) {
-        return CupertinoActionSheet(
-          title: Text(context.l10n.appearance),
-          actions: [
-            CupertinoActionSheetAction(
-              onPressed: () async {
-                await settingsStore.setThemeMode(ThemeMode.system);
-                if (popupContext.mounted) {
-                  Navigator.of(popupContext).pop();
-                }
-              },
-              child: Text(context.l10n.followSystem),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () async {
-                await settingsStore.setThemeMode(ThemeMode.light);
-                if (popupContext.mounted) {
-                  Navigator.of(popupContext).pop();
-                }
-              },
-              child: Text(
-                context.l10n.light,
-                style: TextStyle(color: colors.label),
-              ),
-            ),
-            CupertinoActionSheetAction(
-              onPressed: () async {
-                await settingsStore.setThemeMode(ThemeMode.dark);
-                if (popupContext.mounted) {
-                  Navigator.of(popupContext).pop();
-                }
-              },
-              child: Text(context.l10n.dark),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(popupContext).pop(),
-            child: Text(context.l10n.cancel),
+      title: context.l10n.appearance,
+      cancelLabel: context.l10n.cancel,
+      items: [
+        for (final ThemeMode mode in ThemeMode.values)
+          AppActionSheetItem(
+            value: mode,
+            label: _themeModeLabel(context, mode),
+            isSelected: mode == settingsStore.themeMode,
           ),
-        );
-      },
+      ],
     );
+
+    if (selected != null) {
+      await settingsStore.setThemeMode(selected);
+    }
   }
 
   String _themeModeLabel(BuildContext context, ThemeMode themeMode) {

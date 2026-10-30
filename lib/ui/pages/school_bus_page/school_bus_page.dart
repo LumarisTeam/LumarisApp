@@ -325,7 +325,7 @@ class SchoolBusPage extends ConsumerWidget {
           final bus = busState.busData[busIndex];
           return BusTimelineTile(
             bus: bus,
-            onTap: () => _showModalBottomSheet(context, bus),
+            onTap: () => _showBusDetails(context, bus),
           );
         },
       ),
@@ -391,7 +391,7 @@ class SchoolBusPage extends ConsumerWidget {
     );
   }
 
-  Future<void> _showModalBottomSheet(BuildContext context, BusItem bus) {
+  Future<void> _showBusDetails(BuildContext context, BusItem bus) {
     final colors = context.mc.colors;
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,

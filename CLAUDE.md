@@ -206,6 +206,9 @@ Pass at build time: `--dart-define=UPDATE_CHANNEL=appstore`
 
 ## Widget Development
 
+### Bottom Sheets
+Every modal bottom sheet must use `showMcBottomSheet` from `package:luamris_ui` — do not call `showModalBottomSheet` or `showCupertinoModalPopup` directly. For action-menu style pickers (formerly `CupertinoActionSheet`), use `showAppActionSheet` from `lib/ui/components/app_action_sheet.dart`, which is built on `showMcBottomSheet` and shares its floating-card phone layout and centered tablet/desktop dialog.
+
 ### Android Widgets
 Provider: `android/app/src/main/kotlin/com/luckyfishisdashen/ios_club_app/TodayCoursesWidgetProvider.kt`
 Update from Flutter: `await HomeWidget.updateWidget()`

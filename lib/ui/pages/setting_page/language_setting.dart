@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/services/app_locale_service.dart';
 import 'package:ios_club_app/state/settings_store.dart';
+import 'package:ios_club_app/ui/components/app_action_sheet.dart';
 
 class LanguageSetting extends ConsumerWidget {
   const LanguageSetting({super.key});
@@ -34,49 +35,23 @@ class LanguageSetting extends ConsumerWidget {
     required Future<void> Function(AppLocaleCode code) onChanged,
   }) async {
     final l10n = context.l10n;
-    final colors = context.mc.colors;
 
-    await showCupertinoModalPopup<void>(
+    final selected = await showAppActionSheet<AppLocaleCode>(
       context: context,
-      builder: (popupContext) {
-        return CupertinoActionSheet(
-          title: Text(l10n.language),
-          actions: AppLocaleService.options.map((option) {
-            final selected = option.code == currentCode;
-
-            return CupertinoActionSheetAction(
-              onPressed: () async {
-                Navigator.of(popupContext).pop();
-                await onChanged(option.code);
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    option.labelBuilder(l10n),
-                    style: TextStyle(
-                      color: selected ? colors.primary : colors.label,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
-                    ),
-                  ),
-                  if (selected) ...[
-                    const SizedBox(width: 8),
-                    Icon(
-                      CupertinoIcons.check_mark,
-                      size: 18,
-                      color: colors.primary,
-                    ),
-                  ],
-                ],
-              ),
-            );
-          }).toList(),
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(popupContext).pop(),
-            child: Text(l10n.cancel),
+      title: l10n.language,
+      cancelLabel: l10n.cancel,
+      items: [
+        for (final option in AppLocaleService.options)
+          AppActionSheetItem(
+            value: option.code,
+            label: option.labelBuilder(l10n),
+            isSelected: option.code == currentCode,
           ),
-        );
-      },
+      ],
     );
+
+    if (selected != null) {
+      await onChanged(selected);
+    }
   }
 }

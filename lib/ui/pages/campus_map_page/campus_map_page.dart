@@ -990,9 +990,13 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
           (selected == null &&
               maps.length > 1 &&
               !(PlatformUtils.isIOS && maps.contains(ExternalMap.apple)))) {
-        selected = await showModalBottomSheet<ExternalMap>(
+        selected = await showMcBottomSheet<ExternalMap>(
           context: context,
-          builder: (sheetContext) => NavigationAppPicker(maps: maps),
+          builder: (_) => NavigationAppPicker(maps: maps),
+          showHandle: true,
+          contentPadding: const EdgeInsets.fromLTRB(8, 4, 8, 12),
+          maxHeight: MediaQuery.sizeOf(context).height * 0.6,
+          scrollable: true,
         );
         if (selected == null) return;
       } else {

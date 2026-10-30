@@ -13,8 +13,11 @@ import 'package:ios_club_app/features/education/models/electric_data.dart';
 
 import 'package:ios_club_app/ui/components/empty_widget.dart';
 import 'package:ios_club_app/ui/components/loading_state_view.dart';
+import 'package:ios_club_app/ui/components/app_action_sheet.dart';
 import 'package:ios_club_app/state/electricity_store.dart';
 import 'package:ios_club_app/state/user_store.dart';
+
+enum _ElectricityAction { refresh, changeRoom }
 
 class ElectricityPage extends ConsumerStatefulWidget {
   const ElectricityPage({super.key});
@@ -836,39 +839,37 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
     }
   }
 
-  void _showRefreshDialog() {
+  Future<void> _showRefreshDialog() async {
     final l10n = context.l10n;
-    showCupertinoModalPopup(
+    final action = await showAppActionSheet<_ElectricityAction>(
       context: context,
-      builder: (context) => CupertinoActionSheet(
-        title: Text(l10n.electricityManagement),
-        message: Text(l10n.chooseAction),
-        actions: [
-          CupertinoActionSheetAction(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await ref
-                  .read(electricityStoreProvider.notifier)
-                  .refreshElectricityData();
-              await _loadSubscriptions(force: true);
-            },
-            child: Text(l10n.refreshData),
-          ),
-          CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _showInputDialog();
-            },
-            child: Text(l10n.changeRoom),
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          isDestructiveAction: true,
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.cancel),
+      title: l10n.electricityManagement,
+      message: l10n.chooseAction,
+      cancelLabel: l10n.cancel,
+      items: [
+        AppActionSheetItem(
+          value: _ElectricityAction.refresh,
+          label: l10n.refreshData,
         ),
-      ),
+        AppActionSheetItem(
+          value: _ElectricityAction.changeRoom,
+          label: l10n.changeRoom,
+        ),
+      ],
     );
+    if (!mounted) return;
+
+    switch (action) {
+      case _ElectricityAction.refresh:
+        await ref
+            .read(electricityStoreProvider.notifier)
+            .refreshElectricityData();
+        await _loadSubscriptions(force: true);
+      case _ElectricityAction.changeRoom:
+        _showInputDialog();
+      case null:
+        break;
+    }
   }
 
   void _showInputDialog() {
