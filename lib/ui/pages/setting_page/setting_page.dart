@@ -14,7 +14,6 @@ import 'package:ios_club_app/features/education/services/education_refresh_servi
 import 'package:ios_club_app/features/system/permissions/course_feature_permissions.dart';
 import 'package:ios_club_app/features/system/widget_settings_service.dart';
 import 'package:ios_club_app/ui/components/permissions/course_feature_permission_tile.dart';
-import 'package:ios_club_app/ui/components/app_action_sheet.dart';
 import 'package:ios_club_app/platform/android/background_service.dart';
 import 'package:ios_club_app/platform/ios/background_service.dart';
 import 'package:ios_club_app/state/app_states.dart';
@@ -493,21 +492,43 @@ class SettingPage extends ConsumerWidget {
   }
 
   Future<WidgetSetupType?> _showWidgetTypePicker(BuildContext context) {
-    return showAppActionSheet<WidgetSetupType>(
+    final l10n = context.l10n;
+    final colors = context.mc.colors;
+    final brightness = colors.brightness;
+
+    return showCupertinoModalPopup<WidgetSetupType>(
       context: context,
-      title: context.l10n.addToDesktop,
-      message: context.l10n.widgetSetupTitle,
-      cancelLabel: context.l10n.cancel,
-      items: [
-        AppActionSheetItem(
-          value: WidgetSetupType.today,
-          label: context.l10n.todayScheduleLabel,
+      builder: (popupContext) => MediaQuery(
+        data: MediaQuery.of(
+          popupContext,
+        ).copyWith(platformBrightness: brightness),
+        child: CupertinoActionSheet(
+          title: Text(l10n.addToDesktop),
+          message: Text(l10n.widgetSetupTitle),
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () =>
+                  Navigator.of(popupContext).pop(WidgetSetupType.today),
+              child: Text(
+                l10n.todayScheduleLabel,
+                style: TextStyle(color: colors.label),
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () =>
+                  Navigator.of(popupContext).pop(WidgetSetupType.tomorrow),
+              child: Text(
+                l10n.tomorrowSchedule,
+                style: TextStyle(color: colors.label),
+              ),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.of(popupContext).pop(),
+            child: Text(l10n.cancel),
+          ),
         ),
-        AppActionSheetItem(
-          value: WidgetSetupType.tomorrow,
-          label: context.l10n.tomorrowSchedule,
-        ),
-      ],
+      ),
     );
   }
 
@@ -637,18 +658,55 @@ class SettingPage extends ConsumerWidget {
     BuildContext context,
     SettingsStore settingsStore,
   ) async {
-    final selected = await showAppActionSheet<ThemeMode>(
+    final l10n = context.l10n;
+    final colors = context.mc.colors;
+    final brightness = colors.brightness;
+    final currentMode = settingsStore.themeMode;
+
+    final selected = await showCupertinoModalPopup<ThemeMode>(
       context: context,
-      title: context.l10n.appearance,
-      cancelLabel: context.l10n.cancel,
-      items: [
-        for (final ThemeMode mode in ThemeMode.values)
-          AppActionSheetItem(
-            value: mode,
-            label: _themeModeLabel(context, mode),
-            isSelected: mode == settingsStore.themeMode,
+      builder: (popupContext) => MediaQuery(
+        data: MediaQuery.of(
+          popupContext,
+        ).copyWith(platformBrightness: brightness),
+        child: CupertinoActionSheet(
+          title: Text(l10n.appearance),
+          actions: [
+            for (final mode in ThemeMode.values)
+              CupertinoActionSheetAction(
+                onPressed: () => Navigator.of(popupContext).pop(mode),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _themeModeLabel(context, mode),
+                      style: TextStyle(
+                        color: mode == currentMode
+                            ? colors.primary
+                            : colors.label,
+                        fontWeight: mode == currentMode
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
+                    ),
+                    if (mode == currentMode) ...[
+                      const SizedBox(width: 8),
+                      Icon(
+                        CupertinoIcons.check_mark,
+                        size: 18,
+                        color: colors.primary,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.of(popupContext).pop(),
+            child: Text(l10n.cancel),
           ),
-      ],
+        ),
+      ),
     );
 
     if (selected != null) {

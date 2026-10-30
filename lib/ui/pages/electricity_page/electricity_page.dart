@@ -13,7 +13,6 @@ import 'package:ios_club_app/features/education/models/electric_data.dart';
 
 import 'package:ios_club_app/ui/components/empty_widget.dart';
 import 'package:ios_club_app/ui/components/loading_state_view.dart';
-import 'package:ios_club_app/ui/components/app_action_sheet.dart';
 import 'package:ios_club_app/state/electricity_store.dart';
 import 'package:ios_club_app/state/user_store.dart';
 
@@ -841,21 +840,42 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
 
   Future<void> _showRefreshDialog() async {
     final l10n = context.l10n;
-    final action = await showAppActionSheet<_ElectricityAction>(
+    final colors = context.mc.colors;
+    final brightness = colors.brightness;
+
+    final action = await showCupertinoModalPopup<_ElectricityAction>(
       context: context,
-      title: l10n.electricityManagement,
-      message: l10n.chooseAction,
-      cancelLabel: l10n.cancel,
-      items: [
-        AppActionSheetItem(
-          value: _ElectricityAction.refresh,
-          label: l10n.refreshData,
+      builder: (popupContext) => MediaQuery(
+        data: MediaQuery.of(
+          popupContext,
+        ).copyWith(platformBrightness: brightness),
+        child: CupertinoActionSheet(
+          title: Text(l10n.electricityManagement),
+          message: Text(l10n.chooseAction),
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () =>
+                  Navigator.of(popupContext).pop(_ElectricityAction.refresh),
+              child: Text(
+                l10n.refreshData,
+                style: TextStyle(color: colors.label),
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () =>
+                  Navigator.of(popupContext).pop(_ElectricityAction.changeRoom),
+              child: Text(
+                l10n.changeRoom,
+                style: TextStyle(color: colors.label),
+              ),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.of(popupContext).pop(),
+            child: Text(l10n.cancel),
+          ),
         ),
-        AppActionSheetItem(
-          value: _ElectricityAction.changeRoom,
-          label: l10n.changeRoom,
-        ),
-      ],
+      ),
     );
     if (!mounted) return;
 
