@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "apple-design": {
+      "source": "dickwu/apple-design-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "9581a1eeeb588b5e56a95ed12e2a2a65d8127b6d5ff1a4b7356ff6c4ca66731d"
+    },
     "flutter-add-integration-test": {
       "source": "flutter/skills",
       "sourceType": "github",
