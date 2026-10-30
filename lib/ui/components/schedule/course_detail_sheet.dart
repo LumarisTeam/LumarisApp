@@ -139,16 +139,17 @@ class CourseDetailSheet extends StatelessWidget {
   }
 
   Widget _buildActionMenu(BuildContext context) {
-    return McMenu<String>(
-      items: <McMenuItem<String>>[
+    return McPopoverMenu<String>(
+      showCheckmark: false,
+      items: <McPopoverMenuItem<String>>[
         if (onEdit != null)
-          McMenuItem<String>(
+          McPopoverMenuItem<String>(
             value: 'edit',
             label: context.l10n.editCourse,
             icon: CupertinoIcons.pencil,
           ),
         if (onDelete != null)
-          McMenuItem<String>(
+          McPopoverMenuItem<String>(
             value: 'delete',
             label: context.l10n.deleteCourse,
             icon: CupertinoIcons.delete,
@@ -163,6 +164,15 @@ class CourseDetailSheet extends StatelessWidget {
           onDelete!();
         }
       },
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: Icon(
+          CupertinoIcons.ellipsis_circle,
+          size: 19,
+          color: context.mc.secondaryLabel,
+        ),
+      ),
     );
   }
 

@@ -962,12 +962,10 @@ packages:
   luamris_ui:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "v0.3.4"
-      resolved-ref: "85f6f5460dee0580f72ae8f4a0f5fae584a09f32"
-      url: "https://github.com/LumarisTeam/luamris_ui.git"
-    source: git
-    version: "0.3.4"
+      path: "../luamris_ui"
+      relative: true
+    source: path
+    version: "0.4.1"
   markdown:
     dependency: transitive
     description:
@@ -1974,4 +1972,4 @@ packages:
     version: "3.1.3"
 sdks:
   dart: ">=3.13.0 <4.0.0"
-  flutter: ">=3.47.7"
+  flutter: ">=3.47.0"

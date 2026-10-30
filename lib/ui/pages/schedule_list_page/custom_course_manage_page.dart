@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -321,15 +322,15 @@ class _CustomCourseManagePageState
                                     ),
                                   ),
                                   const SizedBox(width: 12),
-                                  McMenu<String>(
-                                    tooltip: l10n.moreFunctions,
-                                    items: <McMenuItem<String>>[
-                                      McMenuItem<String>(
+                                  McPopoverMenu<String>(
+                                    showCheckmark: false,
+                                    items: <McPopoverMenuItem<String>>[
+                                      McPopoverMenuItem<String>(
                                         value: 'edit',
                                         label: l10n.editCourse,
                                         icon: Icons.edit_outlined,
                                       ),
-                                      McMenuItem<String>(
+                                      McPopoverMenuItem<String>(
                                         value: 'delete',
                                         label: l10n.deleteCourse,
                                         icon: Icons.delete_outline,
@@ -343,6 +344,18 @@ class _CustomCourseManagePageState
                                         _deleteCourse(course);
                                       }
                                     },
+                                    child: Tooltip(
+                                      message: l10n.moreFunctions,
+                                      child: SizedBox(
+                                        width: 40,
+                                        height: 40,
+                                        child: Icon(
+                                          CupertinoIcons.ellipsis_circle,
+                                          size: 19,
+                                          color: colors.secondaryLabel,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -620,35 +633,22 @@ class _AddEditCourseDialogState extends State<AddEditCourseDialog> {
               ),
             ),
             const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: ShapeDecoration(
-                color: colors.surfaceRaised,
-                shape: McSmoothCorners.shape(
-                  McRadii.navigationBorder,
-                  side: BorderSide(color: colors.borderStrong),
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<int>(
-                  value: _selectedWeekday,
-                  isExpanded: true,
-                  items: _weekdayDropdownValues.map((weekday) {
-                    return DropdownMenuItem(
+            _buildDropdownField<int>(
+              label: weekdays[_selectedWeekday],
+              value: _selectedWeekday,
+              items: _weekdayDropdownValues
+                  .map(
+                    (weekday) => McPopoverMenuItem<int>(
                       value: weekday,
-                      child: Text(weekdays[weekday]),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedWeekday = value;
-                      });
-                    }
-                  },
-                ),
-              ),
+                      label: weekdays[weekday],
+                    ),
+                  )
+                  .toList(growable: false),
+              onSelected: (value) {
+                setState(() {
+                  _selectedWeekday = value;
+                });
+              },
             ),
             const SizedBox(height: 20),
 
@@ -667,38 +667,24 @@ class _AddEditCourseDialogState extends State<AddEditCourseDialog> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: ShapeDecoration(
-                          color: colors.surfaceRaised,
-                          shape: McSmoothCorners.shape(
-                            McRadii.navigationBorder,
-                            side: BorderSide(color: colors.borderStrong),
+                      _buildDropdownField<int>(
+                        label: l10n.periodUnit(_startUnit),
+                        value: _startUnit,
+                        items: List.generate(
+                          12,
+                          (index) => McPopoverMenuItem<int>(
+                            value: index + 1,
+                            label: l10n.periodUnit(index + 1),
                           ),
                         ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<int>(
-                            value: _startUnit,
-                            isExpanded: true,
-                            items: List.generate(12, (index) {
-                              return DropdownMenuItem(
-                                value: index + 1,
-                                child: Text(l10n.periodUnit(index + 1)),
-                              );
-                            }),
-                            onChanged: (value) {
-                              if (value != null) {
-                                setState(() {
-                                  _startUnit = value;
-                                  if (_startUnit > _endUnit) {
-                                    _endUnit = _startUnit;
-                                  }
-                                });
-                              }
-                            },
-                          ),
-                        ),
+                        onSelected: (value) {
+                          setState(() {
+                            _startUnit = value;
+                            if (_startUnit > _endUnit) {
+                              _endUnit = _startUnit;
+                            }
+                          });
+                        },
                       ),
                     ],
                   ),
@@ -716,35 +702,23 @@ class _AddEditCourseDialogState extends State<AddEditCourseDialog> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: ShapeDecoration(
-                          color: colors.surfaceRaised,
-                          shape: McSmoothCorners.shape(
-                            McRadii.navigationBorder,
-                            side: BorderSide(color: colors.borderStrong),
+                      _buildDropdownField<int>(
+                        label: l10n.periodUnit(_endUnit),
+                        value: _endUnit,
+                        items: List.generate(
+                          12,
+                          (index) => McPopoverMenuItem<int>(
+                            value: index + 1,
+                            label: l10n.periodUnit(index + 1),
                           ),
                         ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<int>(
-                            value: _endUnit,
-                            isExpanded: true,
-                            items: List.generate(12, (index) {
-                              return DropdownMenuItem(
-                                value: index + 1,
-                                child: Text(l10n.periodUnit(index + 1)),
-                              );
-                            }),
-                            onChanged: (value) {
-                              if (value != null && value >= _startUnit) {
-                                setState(() {
-                                  _endUnit = value;
-                                });
-                              }
-                            },
-                          ),
-                        ),
+                        onSelected: (value) {
+                          if (value >= _startUnit) {
+                            setState(() {
+                              _endUnit = value;
+                            });
+                          }
+                        },
                       ),
                     ],
                   ),
@@ -846,6 +820,52 @@ class _AddEditCourseDialogState extends State<AddEditCourseDialog> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildDropdownField<T>({
+    required String label,
+    required T value,
+    required List<McPopoverMenuItem<T>> items,
+    required ValueChanged<T> onSelected,
+  }) {
+    final colors = context.mc.colors;
+    return McPopoverMenu<T>(
+      items: items,
+      selectedValue: value,
+      matchTriggerWidth: true,
+      offset: const Offset(0, 6),
+      onSelected: onSelected,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: ShapeDecoration(
+          color: colors.surfaceRaised,
+          shape: McSmoothCorners.shape(
+            McRadii.navigationBorder,
+            side: BorderSide(color: colors.borderStrong),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            Icon(
+              CupertinoIcons.chevron_down,
+              size: 16,
+              color: colors.secondaryLabel,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

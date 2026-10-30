@@ -190,19 +190,19 @@ class ModalActionMenu extends StatelessWidget {
 
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
-  final List<McMenuItem<String>>? customActions;
+  final List<McPopoverMenuItem<String>>? customActions;
 
   @override
   Widget build(BuildContext context) {
-    final List<McMenuItem<String>> items = <McMenuItem<String>>[
+    final List<McPopoverMenuItem<String>> items = <McPopoverMenuItem<String>>[
       if (onEdit != null)
-        McMenuItem<String>(
+        McPopoverMenuItem<String>(
           value: 'edit',
           label: context.l10n.edit,
           icon: CupertinoIcons.pencil,
         ),
       if (onDelete != null)
-        McMenuItem<String>(
+        McPopoverMenuItem<String>(
           value: 'delete',
           label: context.l10n.delete,
           icon: CupertinoIcons.delete,
@@ -211,8 +211,9 @@ class ModalActionMenu extends StatelessWidget {
       ...?customActions,
     ];
 
-    return McMenu<String>(
+    return McPopoverMenu<String>(
       items: items,
+      showCheckmark: false,
       onSelected: (String value) {
         Navigator.of(context).pop();
         if (value == 'edit' && onEdit != null) {
@@ -221,6 +222,15 @@ class ModalActionMenu extends StatelessWidget {
           onDelete!();
         }
       },
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: Icon(
+          CupertinoIcons.ellipsis_circle,
+          size: 19,
+          color: context.mc.secondaryLabel,
+        ),
+      ),
     );
   }
 }

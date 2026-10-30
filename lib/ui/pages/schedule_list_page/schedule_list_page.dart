@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -214,132 +213,62 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
             ? l10n.weeksUntilStart(-scheduleState.currentWeek + 1)
             : l10n.currentWeek(scheduleState.currentWeek);
 
-        return InkWell(
-          onLongPress: () => weekMenuPress(context),
-          onDoubleTap: () => _jumpToPage(0),
-          onTap: () => _jumpToPage(scheduleState.currentWeek),
-          borderRadius: McRadii.controlBorder,
-          customBorder: McSmoothCorners.shape(McRadii.controlBorder),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  scheduleState.currentPage <= 0
-                      ? l10n.allSchedules
-                      : l10n.weekUnit(scheduleState.currentPage),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: pageTextColor ?? colors.label,
+        return McPopoverMenu<int>(
+          openOnTap: false,
+          openOnLongPress: true,
+          width: 240,
+          offset: const Offset(0, 8),
+          selectedValue: scheduleState.currentPage,
+          items: List<McPopoverMenuItem<int>>.generate(
+            scheduleState.maxWeek + 1,
+            (index) {
+              final isCurrentWeek = index == scheduleState.currentWeek;
+              final label = index == 0
+                  ? l10n.allSchedules
+                  : '${l10n.weekUnit(index)}'
+                        '${isCurrentWeek ? " (${l10n.currentWeekLabel})" : ""}';
+              return McPopoverMenuItem<int>(value: index, label: label);
+            },
+          ),
+          onSelected: _jumpToPage,
+          child: InkWell(
+            onDoubleTap: () => _jumpToPage(0),
+            onTap: () => _jumpToPage(scheduleState.currentWeek),
+            borderRadius: McRadii.controlBorder,
+            customBorder: McSmoothCorners.shape(McRadii.controlBorder),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    scheduleState.currentPage <= 0
+                        ? l10n.allSchedules
+                        : l10n.weekUnit(scheduleState.currentPage),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: pageTextColor ?? colors.label,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  weekText,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color:
-                        pageTextColor?.withValues(alpha: 0.8) ??
-                        Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w500,
+                  const SizedBox(height: 2),
+                  Text(
+                    weekText,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color:
+                          pageTextColor?.withValues(alpha: 0.8) ??
+                          Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       },
     );
-  }
-
-  Future<void> weekMenuPress(BuildContext context) async {
-    final scheduleState = ref.read(scheduleStoreProvider);
-    final colors = context.mc.colors;
-    final l10n = context.l10n;
-    final renderBox = context.findRenderObject() as RenderBox?;
-    final overlay =
-        Overlay.of(context).context.findRenderObject() as RenderBox?;
-
-    if (renderBox == null || overlay == null) return;
-
-    final position = RelativeRect.fromRect(
-      Rect.fromPoints(
-        renderBox.localToGlobal(Offset.zero, ancestor: overlay),
-        renderBox.localToGlobal(
-          renderBox.size.bottomRight(Offset.zero),
-          ancestor: overlay,
-        ),
-      ),
-      Offset.zero & overlay.size,
-    );
-
-    final selectedPage = await showMenu<int>(
-      context: context,
-      position: position,
-      color: colors.cardBackground.withValues(alpha: 0.96),
-      surfaceTintColor: Colors.transparent,
-      shadowColor: colors.shadowColor.withValues(alpha: 0.18),
-      elevation: 10,
-      constraints: const BoxConstraints(minWidth: 196, maxWidth: 240),
-      shape: McSmoothCorners.shape(
-        McRadii.cardBorder,
-        side: BorderSide(
-          color: colors.separator.withValues(alpha: 0.18),
-          width: 0.75,
-        ),
-      ),
-      menuPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      items: List<PopupMenuEntry<int>>.generate(scheduleState.maxWeek + 1, (
-        index,
-      ) {
-        final isSelected = index == scheduleState.currentPage;
-        final isCurrentWeek = index == scheduleState.currentWeek;
-        final label = index == 0
-            ? l10n.allSchedules
-            : '${l10n.weekUnit(index)}'
-                  '${isCurrentWeek ? " (${l10n.currentWeekLabel})" : ""}';
-
-        return PopupMenuItem<int>(
-          value: index,
-          padding: EdgeInsets.zero,
-          child: Container(
-            height: 44,
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            decoration: ShapeDecoration(
-              shape: McSmoothCorners.shape(McRadii.navigationBorder),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    label,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: isSelected
-                          ? FontWeight.w700
-                          : FontWeight.w600,
-                      color: colors.label,
-                    ),
-                  ),
-                ),
-                if (isSelected)
-                  Icon(
-                    CupertinoIcons.check_mark,
-                    size: 18,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-              ],
-            ),
-          ),
-        );
-      }),
-    );
-
-    if (!mounted || selectedPage == null) return;
-    _jumpToPage(selectedPage);
   }
 
   Widget _buildDesktopWeekNav(BuildContext context, Color? pageTextColor) {
