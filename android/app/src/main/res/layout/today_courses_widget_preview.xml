@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  今日课表小组件的「预览布局」（Android 12+ 的 android:previewLayout）。
+
+  约束（必须遵守）：
+  1. 静态示例内容，仅用于小组件选择器 / 固定弹窗里的预览，不会被真实数据驱动；
+  2. 不使用 RemoteViewsService / AdapterView 适配器；
+  3. 不在任何 View 上声明 id —— 预览布局是一次性 inflate 的静态视图，不注册 id 就不可能和
+     today_courses_widget.xml（widget_root / widget_title / widget_courses_list / empty_view）
+     等运行态布局产生 id 冲突；
+  4. 只使用 RemoteViews 白名单内的 View（LinearLayout / FrameLayout / TextView / ImageView），
+     不使用 android.view.View（它未标注 @RemoteView，会抛 "Class not allowed to be inflated"，
+     所以下面的分隔条 / 色条统一用 TextView 实现）。
+
+  尺寸：targetCellWidth/Height = 2x2（约 110dp x 110dp），故内边距与字号都压得比较紧。
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_modern_background"
+    android:orientation="vertical"
+    android:paddingLeft="12dp"
+    android:paddingTop="10dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="10dp">
+
+    <!-- 顶部小标题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.05"
+        android:text="TODAY"
+        android:textAllCaps="true"
+        android:textColor="@color/time_indicator_text_light"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+    <!-- 日期 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="10月30日 星期四"
+        android:textColor="@color/widget_title_text_light"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- 示例课程 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <!-- 色条（TextView 代替 View，保证 RemoteViews 可 inflate） -->
+        <TextView
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/modern_accent_indicator" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="高等数学"
+                android:textColor="@color/course_title_text_light"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="08:00 · 逸夫楼 A201"
+                android:textColor="@color/course_info_text_light"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 示例课程 2 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/modern_accent_indicator" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="大学英语"
+                android:textColor="@color/course_title_text_light"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="10:10 · 教三楼 205"
+                android:textColor="@color/course_info_text_light"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

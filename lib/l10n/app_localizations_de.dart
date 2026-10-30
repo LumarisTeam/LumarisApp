@@ -264,6 +264,39 @@ class AppLocalizationsDe extends AppLocalizations {
   String get widgetSetupTip => 'Tipp: Widgets zeigen die heutigen Kurse an';
 
   @override
+  String get widgetAddSuccess => 'Zum Startbildschirm hinzugefügt';
+
+  @override
+  String get widgetSetupAndroidUnsupported =>
+      'Dieser Launcher unterstützt kein Hinzufügen per Tipp. Fügen Sie es manuell hinzu:';
+
+  @override
+  String get widgetSetupIosUnsupported =>
+      'iOS erlaubt Apps nicht, Widgets direkt hinzuzufügen. Fügen Sie es manuell hinzu:';
+
+  @override
+  String get widgetSetupIosStep2 => 'Tippen Sie oben links auf „+“';
+
+  @override
+  String get widgetSetupIosStep3 =>
+      'Suchen Sie „Lumaris“ und wählen Sie das Widget „Stundenplan“';
+
+  @override
+  String get widgetSetupIosStep4 =>
+      'Wählen Sie eine Größe und tippen Sie auf „Widget hinzufügen“';
+
+  @override
+  String get widgetSetupNotAdded =>
+      'Das Widget wurde nicht zum Startbildschirm hinzugefügt. Fügen Sie es manuell hinzu:';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      'Bei Xiaomi / Redmi müssen Sie zuerst „Startbildschirm-Verknüpfungen erstellen“ erlauben: Einstellungen → Apps → Lumaris → Berechtigungen → Startbildschirm-Verknüpfungen.';
+
+  @override
+  String get widgetSetupOpenHomeScreen => 'Startbildschirm öffnen';
+
+  @override
   String get cancel => 'Abbrechen';
 
   @override

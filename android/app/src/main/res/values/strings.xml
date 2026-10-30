@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  小组件在选择器 / 固定弹窗里展示的描述文案（Android 12+ 的 android:description）。
+
+  注意：<appwidget-provider> 的 android:description 是 format="reference" 的属性，
+  必须指向 @string/ 资源，不能写成内联字符串（aapt2 会直接报
+  "'xxx' is incompatible with attribute description (attr) reference" 导致构建失败）。
+-->
+<resources>
+    <string name="today_courses_widget_description">今日课表</string>
+    <string name="tomorrow_courses_widget_description">近日课表</string>
+</resources>

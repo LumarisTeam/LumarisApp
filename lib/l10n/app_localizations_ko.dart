@@ -254,6 +254,36 @@ class AppLocalizationsKo extends AppLocalizations {
   String get widgetSetupTip => '팁: 위젯을 통해 오늘의 수업 등 정보를 빠르게 확인할 수 있습니다';
 
   @override
+  String get widgetAddSuccess => '바탕화면에 추가했습니다';
+
+  @override
+  String get widgetSetupAndroidUnsupported =>
+      '현재 런처는 원터치 추가를 지원하지 않습니다. 다음 단계에 따라 직접 추가하세요:';
+
+  @override
+  String get widgetSetupIosUnsupported =>
+      'iOS는 앱에서 위젯을 직접 추가할 수 없습니다. 다음 단계에 따라 직접 추가하세요:';
+
+  @override
+  String get widgetSetupIosStep2 => '화면 왼쪽 상단의 “+” 버튼을 탭하세요';
+
+  @override
+  String get widgetSetupIosStep3 => '“Lumaris”를 검색하고 “시간표” 위젯을 선택하세요';
+
+  @override
+  String get widgetSetupIosStep4 => '크기를 선택한 뒤 “위젯 추가”를 탭하세요';
+
+  @override
+  String get widgetSetupNotAdded => '위젯이 바탕화면에 추가되지 않았습니다. 다음 단계에 따라 직접 추가하세요:';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      'Xiaomi / Redmi 기기에서는 먼저 \"홈 화면 바로가기 만들기\"를 허용해야 합니다: 설정 → 앱 → Lumaris → 권한 → 홈 화면 바로가기.';
+
+  @override
+  String get widgetSetupOpenHomeScreen => '바탕화면 열기';
+
+  @override
   String get cancel => '취소';
 
   @override

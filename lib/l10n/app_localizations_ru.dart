@@ -261,6 +261,39 @@ class AppLocalizationsRu extends AppLocalizations {
   String get widgetSetupTip => 'Совет: виджеты показывают сегодняшние занятия';
 
   @override
+  String get widgetAddSuccess => 'Добавлено на рабочий стол';
+
+  @override
+  String get widgetSetupAndroidUnsupported =>
+      'Эта оболочка не поддерживает добавление в одно касание. Добавьте вручную:';
+
+  @override
+  String get widgetSetupIosUnsupported =>
+      'iOS не позволяет приложениям добавлять виджеты напрямую. Добавьте вручную:';
+
+  @override
+  String get widgetSetupIosStep2 => 'Нажмите кнопку «+» в левом верхнем углу';
+
+  @override
+  String get widgetSetupIosStep3 =>
+      'Найдите «Lumaris» и выберите виджет «Расписание»';
+
+  @override
+  String get widgetSetupIosStep4 =>
+      'Выберите размер и нажмите «Добавить виджет»';
+
+  @override
+  String get widgetSetupNotAdded =>
+      'Виджет не был добавлен на рабочий стол. Добавьте его вручную:';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      'На Xiaomi / Redmi сначала разрешите создание ярлыков на рабочем столе: Настройки → Приложения → Lumaris → Разрешения → Ярлыки на рабочем столе.';
+
+  @override
+  String get widgetSetupOpenHomeScreen => 'Открыть рабочий стол';
+
+  @override
   String get cancel => 'Отмена';
 
   @override

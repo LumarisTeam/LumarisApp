@@ -598,6 +598,60 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
+  /// **'已添加到桌面'**
+  String get widgetAddSuccess;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'当前桌面不支持一键添加，请按以下步骤手动添加：'**
+  String get widgetSetupAndroidUnsupported;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'iOS 不允许 App 直接添加小组件，请按以下步骤手动添加：'**
+  String get widgetSetupIosUnsupported;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'点击屏幕左上角的「+」按钮'**
+  String get widgetSetupIosStep2;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索「光序」，选择「课表」小组件'**
+  String get widgetSetupIosStep3;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'选择尺寸后点击「添加小组件」'**
+  String get widgetSetupIosStep4;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'没有检测到小组件被添加到桌面，请按以下步骤手动添加：'**
+  String get widgetSetupNotAdded;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'小米 / 红米机型需要先允许光序「创建桌面快捷方式」：设置 → 应用管理 → 光序 → 权限 → 桌面快捷方式。'**
+  String get widgetSetupShortcutPermissionHint;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'去桌面手动添加'**
+  String get widgetSetupOpenHomeScreen;
+
+  ///
+  ///
+  /// In zh, this message translates to:
   /// **'取消'**
   String get cancel;
 

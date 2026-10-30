@@ -265,6 +265,40 @@ class AppLocalizationsFr extends AppLocalizations {
       'Astuce : les widgets affichent les cours du jour';
 
   @override
+  String get widgetAddSuccess => 'Ajouté à l\'écran d\'accueil';
+
+  @override
+  String get widgetSetupAndroidUnsupported =>
+      'Ce lanceur ne permet pas l\'ajout en un geste. Ajoutez-le manuellement :';
+
+  @override
+  String get widgetSetupIosUnsupported =>
+      'iOS ne permet pas aux apps d\'ajouter des widgets directement. Ajoutez-le manuellement :';
+
+  @override
+  String get widgetSetupIosStep2 =>
+      'Appuyez sur le bouton « + » en haut à gauche';
+
+  @override
+  String get widgetSetupIosStep3 =>
+      'Recherchez « Lumaris » et choisissez le widget « Emploi du temps »';
+
+  @override
+  String get widgetSetupIosStep4 =>
+      'Choisissez une taille et appuyez sur « Ajouter un widget »';
+
+  @override
+  String get widgetSetupNotAdded =>
+      'Le widget n\'a pas été ajouté à l\'écran d\'accueil. Ajoutez-le manuellement :';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      'Sur Xiaomi / Redmi, autorisez d\'abord la création de raccourcis sur l\'écran d\'accueil : Réglages → Applications → Lumaris → Autorisations → Raccourcis d\'écran d\'accueil.';
+
+  @override
+  String get widgetSetupOpenHomeScreen => 'Ouvrir l\'écran d\'accueil';
+
+  @override
   String get cancel => 'Annuler';
 
   @override

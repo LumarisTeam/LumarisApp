@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="250dp"
-    android:minHeight="100dp"
-    android:updatePeriodMillis="600000"
+    android:description="@string/tomorrow_courses_widget_description"
     android:initialLayout="@layout/tomorrow_courses_widget"
+    android:label="近日课表"
+    android:minHeight="100dp"
+    android:minWidth="250dp"
     android:previewImage="@drawable/tomorrow_courses_widget_preview"
+    android:previewLayout="@layout/tomorrow_courses_widget_preview"
     android:resizeMode="horizontal|vertical"
-    android:widgetCategory="home_screen"
-    android:label="近日课表" />
+    android:targetCellHeight="2"
+    android:targetCellWidth="4"
+    android:updatePeriodMillis="1800000"
+    android:widgetCategory="home_screen" />

@@ -69,6 +69,15 @@
                 android:resource="@xml/tomorrow_courses_widget_info" />
         </receiver>
 
+        <!-- 小组件「固定到主屏幕」成功回调。
+             exported="false" 是安全且正确的：successCallback 的 PendingIntent 由本 App 创建，
+             系统只是执行 PendingIntent.send()，而 PendingIntent 按「创建者身份」执行，
+             因此这条广播的发送方 UID 就是我们自己（自收自发），非导出 receiver 可以收到；
+             同时因为没有 intent-filter 且不导出，外部应用无法伪造「已添加成功」事件。 -->
+        <receiver
+            android:name=".WidgetPinReceiver"
+            android:exported="false" />
+
         <service
             android:name=".CourseListRemoteViewsService"
             android:exported="false"

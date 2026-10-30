@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,11 +30,32 @@ import 'package:ios_club_app/ui/pages/setting_page/font_family_setting.dart';
 import 'package:ios_club_app/ui/pages/setting_page/language_setting.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SettingPage extends ConsumerWidget {
+class SettingPage extends ConsumerStatefulWidget {
   const SettingPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SettingPage> createState() => _SettingPageState();
+}
+
+class _SettingPageState extends ConsumerState<SettingPage> {
+  StreamSubscription<WidgetPinOutcome>? _pinOutcomeSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _pinOutcomeSubscription = WidgetSettingsService.onPinOutcome.listen(
+      _handlePinOutcome,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pinOutcomeSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final colors = context.mc.colors;
     final userState = ref.watch(userStoreProvider);
     final userStore = ref.read(userStoreProvider.notifier);
@@ -424,71 +448,58 @@ class SettingPage extends ConsumerWidget {
       leading: Icon(Icons.widgets, size: 20, color: context.mc.colors.primary),
       title: Text(context.l10n.addToDesktop),
       showChevron: true,
-      onTap: () {
-        _handleWidgetSetup(context);
-      },
+      onTap: _handleWidgetSetup,
     );
   }
 
-  Future<void> _handleWidgetSetup(BuildContext context) async {
+  /// 点击「添加到桌面」。
+  ///
+  /// Android 会把固定请求交给系统桌面；系统的返回值不代表添加成功（小米 / 红米 /
+  /// vivo 甚至不弹确认框），真实结果由 [WidgetSettingsService.onPinOutcome]
+  /// 在判定后上报。判定失败或系统不支持时退化为手动图文引导。
+  /// iOS 不提供程序化添加接口，始终走图文引导。
+  Future<void> _handleWidgetSetup() async {
     if (PlatformUtils.isAndroid) {
-      final ready = await _ensureAndroidWidgetPrerequisites(context);
-      if (!ready || !context.mounted) return;
-
       final type = await _showWidgetTypePicker(context);
-      if (type == null || !context.mounted) return;
-      await _openWidgetSettings(context, type: type);
+      if (type == null || !mounted) return;
+
+      final result = await WidgetSettingsService.openWidgetSetup(type: type);
+      if (!mounted) return;
+
+      // pickerShown：请求已发出，结果等 onPinOutcome 回来再处理，避免静默无反馈。
+      if (result == WidgetSetupLaunchResult.pickerShown) {
+        return;
+      }
+
+      _showWidgetInstructions(ios: false);
       return;
     }
 
-    await _openWidgetSettings(context);
+    // iOS 等平台不提供程序化添加小组件的接口，只能给出准确的手动引导。
+    _showWidgetInstructions(ios: PlatformUtils.isIOS);
   }
 
-  Future<bool> _ensureAndroidWidgetPrerequisites(BuildContext context) async {
-    final statuses = await CourseFeaturePermissions.load(
-      CourseFeaturePermission.widget,
-    );
-    final hasBackgroundPermission = CourseFeaturePermissions.allGranted(
-      statuses.values,
+  /// 「添加小组件到桌面」的判定结果。
+  Future<void> _handlePinOutcome(WidgetPinOutcome outcome) async {
+    AppLogger.debug(
+      '小组件添加结果: installed=${outcome.installed} '
+      'alreadyInstalled=${outcome.alreadyInstalled} reason=${outcome.reason} '
+      'supported=${outcome.supported} brand=${outcome.brand} '
+      'launcher=${outcome.launcher}',
     );
 
-    if (hasBackgroundPermission) {
-      return true;
+    if (!outcome.installed) {
+      // 系统没有加上（常见于小米 / 红米缺少桌面快捷方式权限、vivo 未接厂商平台），
+      // 必须给出明确引导，不能什么都不发生。
+      _showWidgetInstructions(ios: false, outcome: outcome);
+      return;
     }
 
-    if (!context.mounted) return false;
+    await _syncHomeWidget();
 
-    final shouldRequest = await showMcConfirmDialog(
-      context: context,
-      title: context.l10n.addToDesktop,
-      message:
-          '${context.l10n.allowBackgroundRun}\n${context.l10n.permissionBatteryDesc}',
-      confirmText: context.l10n.goAuthorize,
-      cancelText: context.l10n.cancel,
-    );
+    if (!mounted) return;
 
-    if (shouldRequest != true || !context.mounted) {
-      return false;
-    }
-
-    return CourseFeaturePermissions.requestMissing(
-      context,
-      CourseFeaturePermission.widget,
-    );
-  }
-
-  Future<void> _openWidgetSettings(
-    BuildContext context, {
-    WidgetSetupType type = WidgetSetupType.today,
-  }) async {
-    final result = await WidgetSettingsService.openWidgetSetup(type: type);
-
-    if (!context.mounted) return;
-
-    if (result == WidgetSetupLaunchResult.unavailable ||
-        result == WidgetSetupLaunchResult.failed) {
-      _showWidgetInstructions(context);
-    }
+    McFeedback.showMessage(context, message: context.l10n.widgetAddSuccess);
   }
 
   Future<WidgetSetupType?> _showWidgetTypePicker(BuildContext context) {
@@ -570,17 +581,46 @@ class SettingPage extends ConsumerWidget {
     );
   }
 
-  void _showWidgetInstructions(BuildContext context) {
+  /// 手动添加小组件的图文引导。
+  ///
+  /// [ios] 为 true 时使用 iOS 主屏添加小组件的步骤，否则使用 Android 步骤。
+  ///
+  /// [outcome] 非空表示「系统没有加上」，需要额外说明原因；
+  /// 小米 / 红米这类缺少桌面快捷方式权限的机型再补充授权提示。
+  void _showWidgetInstructions({required bool ios, WidgetPinOutcome? outcome}) {
     final colors = context.mc.colors;
+    final l10n = context.l10n;
+
+    final steps = ios
+        ? <String>[
+            l10n.widgetSetupStep1,
+            l10n.widgetSetupIosStep2,
+            l10n.widgetSetupIosStep3,
+            l10n.widgetSetupIosStep4,
+          ]
+        : <String>[
+            l10n.widgetSetupStep1,
+            l10n.widgetSetupStep2,
+            l10n.widgetSetupStep3,
+            l10n.widgetSetupStep4,
+          ];
+
+    final intro = ios
+        ? l10n.widgetSetupIosUnsupported
+        : outcome != null
+        ? l10n.widgetSetupNotAdded
+        : l10n.widgetSetupAndroidUnsupported;
+
+    final showShortcutHint = outcome?.needsShortcutPermissionHint ?? false;
 
     showMcBottomSheet(
       context: context,
-      builder: (_) => Column(
+      builder: (sheetContext) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            context.l10n.widgetSetupTitle,
+            l10n.widgetSetupTitle,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -589,22 +629,53 @@ class SettingPage extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            context.l10n.widgetSetupIntro,
+            intro,
             style: TextStyle(fontSize: 16, color: colors.secondaryLabel),
           ),
+          if (showShortcutHint) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: colors.warning.withValues(alpha: 0.12),
+                borderRadius: McRadii.tileBorder,
+              ),
+              child: Text(
+                l10n.widgetSetupShortcutPermissionHint,
+                style: TextStyle(fontSize: 14, color: colors.label),
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
-          _buildInstructionStep(context, '1', context.l10n.widgetSetupStep1),
-          const SizedBox(height: 8),
-          _buildInstructionStep(context, '2', context.l10n.widgetSetupStep2),
-          const SizedBox(height: 8),
-          _buildInstructionStep(context, '3', context.l10n.widgetSetupStep3),
-          const SizedBox(height: 8),
-          _buildInstructionStep(context, '4', context.l10n.widgetSetupStep4),
+          for (var index = 0; index < steps.length; index++) ...[
+            if (index > 0) const SizedBox(height: 8),
+            _buildInstructionStep(context, '${index + 1}', steps[index]),
+          ],
           const SizedBox(height: 24),
           Text(
-            context.l10n.widgetSetupTip,
+            l10n.widgetSetupTip,
             style: TextStyle(fontSize: 14, color: colors.secondaryLabel),
           ),
+          if (kDebugMode && outcome != null) ...[
+            const SizedBox(height: 16),
+            Text(
+              'debug: reason=${outcome.reason} supported=${outcome.supported} '
+              'brand=${outcome.brand} launcher=${outcome.launcher}',
+              style: TextStyle(fontSize: 11, color: colors.tertiaryLabel),
+            ),
+          ],
+          if (!ios) ...[
+            const SizedBox(height: 20),
+            McButton.primary(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
+              onPressed: () {
+                Navigator.of(sheetContext).pop();
+                WidgetSettingsService.openHomeScreen();
+              },
+              child: Text(l10n.widgetSetupOpenHomeScreen),
+            ),
+          ],
           const SizedBox(height: 24),
         ],
       ),

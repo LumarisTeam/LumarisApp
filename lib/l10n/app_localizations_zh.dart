@@ -252,6 +252,34 @@ class AppLocalizationsZh extends AppLocalizations {
   String get widgetSetupTip => '提示：小组件可以显示今日课程等信息，方便快速查看';
 
   @override
+  String get widgetAddSuccess => '已添加到桌面';
+
+  @override
+  String get widgetSetupAndroidUnsupported => '当前桌面不支持一键添加，请按以下步骤手动添加：';
+
+  @override
+  String get widgetSetupIosUnsupported => 'iOS 不允许 App 直接添加小组件，请按以下步骤手动添加：';
+
+  @override
+  String get widgetSetupIosStep2 => '点击屏幕左上角的「+」按钮';
+
+  @override
+  String get widgetSetupIosStep3 => '搜索「光序」，选择「课表」小组件';
+
+  @override
+  String get widgetSetupIosStep4 => '选择尺寸后点击「添加小组件」';
+
+  @override
+  String get widgetSetupNotAdded => '没有检测到小组件被添加到桌面，请按以下步骤手动添加：';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      '小米 / 红米机型需要先允许光序「创建桌面快捷方式」：设置 → 应用管理 → 光序 → 权限 → 桌面快捷方式。';
+
+  @override
+  String get widgetSetupOpenHomeScreen => '去桌面手动添加';
+
+  @override
   String get cancel => '取消';
 
   @override
@@ -2499,6 +2527,34 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get widgetSetupTip => '提示：小元件可以顯示今日課程等資訊，方便快速檢視';
+
+  @override
+  String get widgetAddSuccess => '已新增到桌面';
+
+  @override
+  String get widgetSetupAndroidUnsupported => '目前桌面不支援一鍵新增，請按以下步驟手動新增：';
+
+  @override
+  String get widgetSetupIosUnsupported => 'iOS 不允許 App 直接新增小元件，請按以下步驟手動新增：';
+
+  @override
+  String get widgetSetupIosStep2 => '點選螢幕左上角的「+」按鈕';
+
+  @override
+  String get widgetSetupIosStep3 => '搜尋「光序」，選擇「課表」小元件';
+
+  @override
+  String get widgetSetupIosStep4 => '選擇尺寸後點選「加入小元件」';
+
+  @override
+  String get widgetSetupNotAdded => '沒有偵測到小元件被新增到桌面，請按以下步驟手動新增：';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      '小米 / 紅米機型需要先允許光序「建立桌面捷徑」：設定 → 應用程式管理 → 光序 → 權限 → 桌面捷徑。';
+
+  @override
+  String get widgetSetupOpenHomeScreen => '前往桌面手動新增';
 
   @override
   String get cancel => '取消';

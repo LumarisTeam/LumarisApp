@@ -259,6 +259,38 @@ class AppLocalizationsEn extends AppLocalizations {
       'Tip: widgets can show today\'s courses for quick access';
 
   @override
+  String get widgetAddSuccess => 'Added to home screen';
+
+  @override
+  String get widgetSetupAndroidUnsupported =>
+      'Your launcher doesn\'t support one-tap adding. Add it manually:';
+
+  @override
+  String get widgetSetupIosUnsupported =>
+      'iOS doesn\'t allow apps to add widgets directly. Add it manually:';
+
+  @override
+  String get widgetSetupIosStep2 => 'Tap the “+” button at the top-left corner';
+
+  @override
+  String get widgetSetupIosStep3 =>
+      'Search for “Lumaris” and pick the “Schedule” widget';
+
+  @override
+  String get widgetSetupIosStep4 => 'Choose a size and tap “Add Widget”';
+
+  @override
+  String get widgetSetupNotAdded =>
+      'The widget wasn\'t added to your home screen. Add it manually:';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      'On Xiaomi / Redmi devices, allow Lumaris to create home screen shortcuts first: Settings → Apps → Lumaris → Permissions → Home screen shortcuts.';
+
+  @override
+  String get widgetSetupOpenHomeScreen => 'Open home screen';
+
+  @override
   String get cancel => 'Cancel';
 
   @override

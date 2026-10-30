@@ -253,6 +253,36 @@ class AppLocalizationsJa extends AppLocalizations {
   String get widgetSetupTip => 'ヒント：ウィジェットで今日の授業を素早く確認できます';
 
   @override
+  String get widgetAddSuccess => 'ホーム画面に追加しました';
+
+  @override
+  String get widgetSetupAndroidUnsupported =>
+      'このホーム画面はワンタップ追加に対応していません。以下から手動で追加してください：';
+
+  @override
+  String get widgetSetupIosUnsupported =>
+      'iOS ではアプリから直接ウィジェットを追加できません。以下から手動で追加してください：';
+
+  @override
+  String get widgetSetupIosStep2 => '画面左上の「+」ボタンをタップ';
+
+  @override
+  String get widgetSetupIosStep3 => '「光序」を検索し、「課表」ウィジェットを選択';
+
+  @override
+  String get widgetSetupIosStep4 => 'サイズを選んで「ウィジェットを追加」をタップ';
+
+  @override
+  String get widgetSetupNotAdded => 'ウィジェットがホーム画面に追加されませんでした。以下から手動で追加してください：';
+
+  @override
+  String get widgetSetupShortcutPermissionHint =>
+      'Xiaomi / Redmi では「ホーム画面のショートカット作成」を許可してください：設定 → アプリ → 光序 → 権限 → ホーム画面ショートカット。';
+
+  @override
+  String get widgetSetupOpenHomeScreen => 'ホーム画面を開く';
+
+  @override
   String get cancel => 'キャンセル';
 
   @override
