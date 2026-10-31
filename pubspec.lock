@@ -270,7 +270,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: e1090f1f0577408b37be2323ffb663dcd82fd08b
+      resolved-ref: "839d6b5e289db366fe559ca1d5758051d15a68ec"
       url: "https://github.com/LumarisTeam/curriculum.git"
     source: git
     version: "0.2.0"
