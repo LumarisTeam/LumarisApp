@@ -76,12 +76,12 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
     final colors = context.mc.colors;
 
     // 学校列表来自 SchoolApi，接口失败时 Provider 内部已退回 fallbackList。
-    final schools =
-        ref.watch(importSchoolListProvider).valueOrNull ?? School.fallbackList;
-    // 没有网址的学校点不动（会加载一个空 URI），直接不展示。
-    final selectable = schools
-        .where((school) => school.htmlImportUrl.trim().isNotEmpty)
-        .toList();
+    // final schools =
+    //     ref.watch(importSchoolListProvider).valueOrNull ?? School.fallbackList;
+    // // 没有网址的学校点不动（会加载一个空 URI），直接不展示。
+    // final selectable = schools
+    //     .where((school) => school.htmlImportUrl.trim().isNotEmpty)
+    //     .toList();
 
     final canImport =
         _selectedUrl != null || _urlController.text.trim().isNotEmpty;
@@ -131,62 +131,62 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
                     ),
                   ),
                 ),
-                ...selectable.map(
-                  (school) => Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
-                    child: Material(
-                      color: _selectedCode == school.code
-                          ? colors.selectionFill
-                          : colors.groupedBackground,
-                      shape: McSmoothCorners.shape(BorderRadius.circular(12)),
-                      clipBehavior: Clip.antiAlias,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(12),
-                        customBorder: McSmoothCorners.shape(
-                          BorderRadius.circular(12),
-                        ),
-                        onTap: () => _selectSchool(school),
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      school.name,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                        color: colors.label,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      school.htmlImportUrl,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: colors.secondaryLabel,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (_selectedCode == school.code)
-                                Icon(Icons.check_circle, color: colors.primary),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                // ...selectable.map(
+                //   (school) => Padding(
+                //     padding: const EdgeInsets.symmetric(
+                //       horizontal: 16,
+                //       vertical: 4,
+                //     ),
+                //     child: Material(
+                //       color: _selectedCode == school.code
+                //           ? colors.selectionFill
+                //           : colors.groupedBackground,
+                //       shape: McSmoothCorners.shape(BorderRadius.circular(12)),
+                //       clipBehavior: Clip.antiAlias,
+                //       child: InkWell(
+                //         borderRadius: BorderRadius.circular(12),
+                //         customBorder: McSmoothCorners.shape(
+                //           BorderRadius.circular(12),
+                //         ),
+                //         onTap: () => _selectSchool(school),
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(14),
+                //           child: Row(
+                //             children: [
+                //               Expanded(
+                //                 child: Column(
+                //                   crossAxisAlignment: CrossAxisAlignment.start,
+                //                   children: [
+                //                     Text(
+                //                       school.name,
+                //                       style: TextStyle(
+                //                         fontSize: 16,
+                //                         fontWeight: FontWeight.w500,
+                //                         color: colors.label,
+                //                       ),
+                //                     ),
+                //                     const SizedBox(height: 2),
+                //                     Text(
+                //                       school.htmlImportUrl,
+                //                       style: TextStyle(
+                //                         fontSize: 12,
+                //                         color: colors.secondaryLabel,
+                //                       ),
+                //                       maxLines: 1,
+                //                       overflow: TextOverflow.ellipsis,
+                //                     ),
+                //                   ],
+                //                 ),
+                //               ),
+                //               if (_selectedCode == school.code)
+                //                 Icon(Icons.check_circle, color: colors.primary),
+                //             ],
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
                   child: Text(
