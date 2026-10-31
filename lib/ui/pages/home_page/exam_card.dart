@@ -7,7 +7,6 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/utils/error_message_resolver.dart';
 import 'package:ios_club_app/core/services/course_color_manager.dart';
 import 'package:ios_club_app/features/education/models/exam_result.dart';
-import 'package:ios_club_app/core/utils/animations/animations.dart';
 import 'package:ios_club_app/features/education/services/exam_service.dart';
 
 import 'package:ios_club_app/ui/components/empty_widget.dart';
@@ -184,7 +183,7 @@ class _ExamCardState extends State<ExamCard> {
   Widget examCard() {
     final l10n = context.l10n;
     if (isLoading) {
-      return AnimatedCard(
+      return McAnimatedCard(
         child: McCard.elevated(
           padding: EdgeInsets.zero,
           child: LoadingStateView(
@@ -199,7 +198,7 @@ class _ExamCardState extends State<ExamCard> {
 
     // 显示错误信息
     if (errorMessage != null) {
-      return AnimatedCard(
+      return McAnimatedCard(
         child: McCard.elevated(
           padding: const EdgeInsets.all(20),
           child: EmptyWidget(
@@ -218,7 +217,7 @@ class _ExamCardState extends State<ExamCard> {
     final isTablet = screenWidth > 600;
 
     return examItems.isEmpty
-        ? AnimatedCard(
+        ? McAnimatedCard(
             child: McCard.elevated(
               padding: const EdgeInsets.all(20),
               child: EmptyWidget(
@@ -228,7 +227,7 @@ class _ExamCardState extends State<ExamCard> {
               ),
             ),
           )
-        : AnimatedCard(
+        : McAnimatedCard(
             child: McCard.elevated(
               padding: EdgeInsets.zero,
               child: SizedBox(
@@ -242,7 +241,7 @@ class _ExamCardState extends State<ExamCard> {
                   itemBuilder: (context, index) {
                     final exam = examItems[index];
 
-                    return AnimatedListItem(
+                    return McAnimatedListItem(
                       index: index,
                       child: Material(
                         color: Colors.transparent,

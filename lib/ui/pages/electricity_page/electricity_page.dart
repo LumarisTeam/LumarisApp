@@ -7,7 +7,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/core/utils/animations/animations.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/features/education/models/electric_data.dart';
 
@@ -292,7 +291,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
         );
         final colorScheme = Theme.of(context).colorScheme;
         final l10n = context.l10n;
-        return AnimatedCard(
+        return McAnimatedCard(
           delay: const Duration(milliseconds: 150),
           child: McCard.elevated(
             padding: EdgeInsets.zero,
@@ -617,7 +616,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
         final colorScheme = Theme.of(context).colorScheme;
         final l10n = context.l10n;
 
-        return AnimatedCard(
+        return McAnimatedCard(
           delay: const Duration(milliseconds: 300),
           child: McCard.elevated(
             padding: EdgeInsets.zero,
@@ -673,7 +672,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
 
-    return AnimatedCard(
+    return McAnimatedCard(
       delay: const Duration(milliseconds: 360),
       child: McCard.elevated(
         padding: EdgeInsets.zero,

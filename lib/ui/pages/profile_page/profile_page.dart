@@ -7,7 +7,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/education/models/info_model.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
-import 'package:ios_club_app/core/utils/animations/animations.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/services/info_service.dart';
 import 'package:ios_club_app/routes/router.dart';
@@ -250,7 +249,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ],
             ),
           ),
-          AnimatedCard(
+          McAnimatedCard(
             delay: const Duration(milliseconds: 100),
             child: McCard.elevated(
               margin: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
@@ -262,7 +261,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     crossAxisCount: isTablet ? 6 : 3,
                   ),
                   itemBuilder: (context, index) {
-                    return AnimatedCard(
+                    return McAnimatedCard(
                       delay: Duration(milliseconds: 50 * index),
                       child: Center(
                         child: getProfileButtonItems(

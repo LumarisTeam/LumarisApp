@@ -5,7 +5,6 @@ import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/services/course_color_manager.dart';
-import 'package:ios_club_app/core/utils/animations/animated_list_item.dart';
 import 'package:ios_club_app/features/education/models/edu_fetch_models.dart';
 import 'package:ios_club_app/features/education/services/score_service.dart';
 import 'package:ios_club_app/routes/router.dart';
@@ -647,7 +646,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
       sliver: SliverFixedExtentList.builder(
         itemExtent: 72,
         itemCount: scores.length,
-        itemBuilder: (context, index) => AnimatedListItem(
+        itemBuilder: (context, index) => McAnimatedListItem(
           index: index,
           child: McCard.elevated(
             margin: const EdgeInsets.only(bottom: 8),

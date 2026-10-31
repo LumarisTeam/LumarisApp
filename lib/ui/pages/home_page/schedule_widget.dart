@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/core/models/schedule_item.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
-import 'package:ios_club_app/core/utils/animations/animations.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
 import 'package:ios_club_app/ui/components/empty_widget.dart';
@@ -107,7 +106,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-          child: AnimatedCard(
+          child: McAnimatedCard(
             child: McCard.elevated(
               padding: EdgeInsets.zero,
               child: Builder(
@@ -144,7 +143,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                                 course.endUnit,
                               ),
                             );
-                            return AnimatedListItem(
+                            return McAnimatedListItem(
                               index: index,
                               child: _buildScheduleItem(course, item, isTablet),
                             );

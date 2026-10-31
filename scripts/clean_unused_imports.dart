@@ -9,8 +9,6 @@ void main() async {
     'lib/core/services/data_service.dart',
     'lib/core/services/exam_service.dart',
     'lib/core/services/xauat_login.dart',
-    'lib/core/utils/animations/animated_button.dart',
-    'lib/core/utils/animations/animated_card.dart',
     'lib/core/utils/request_cache.dart',
     'lib/features/education/services/edu_http_client.dart',
     'lib/features/system/notifications/task_executor.dart',
@@ -30,12 +28,6 @@ void main() async {
     ],
     'lib/core/services/xauat_login.dart': [
       "import 'package:flutter/foundation.dart';",
-    ],
-    'lib/core/utils/animations/animated_button.dart': [
-      "import 'package:ios_club_app/core/utils/app_logger.dart';",
-    ],
-    'lib/core/utils/animations/animated_card.dart': [
-      "import 'package:ios_club_app/core/utils/app_logger.dart';",
     ],
     'lib/core/utils/request_cache.dart': [
       "import 'package:flutter/foundation.dart';",

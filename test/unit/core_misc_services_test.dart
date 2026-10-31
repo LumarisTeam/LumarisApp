@@ -4,35 +4,29 @@ import 'package:fake_async/fake_async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
+import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/apis/login_api.dart';
 import 'package:ios_club_app/state/auth_state_notifier.dart';
 import 'package:ios_club_app/core/services/network_exception.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
-import 'package:ios_club_app/core/utils/animations/app_animations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('AppAnimations', () {
+  group('McMotion', () {
     test('should provide expected constants and delay cap', () {
-      expect(AppAnimations.fast, const Duration(milliseconds: 120));
-      expect(AppAnimations.standard, const Duration(milliseconds: 240));
-      expect(AppAnimations.extraSlow, const Duration(milliseconds: 1000));
+      expect(McMotion.fast, const Duration(milliseconds: 120));
+      expect(McMotion.standard, const Duration(milliseconds: 240));
+      expect(McMotion.extraSlow, const Duration(milliseconds: 1000));
 
-      expect(
-        AppAnimations.getListItemDelay(2),
-        const Duration(milliseconds: 48),
-      );
-      expect(
-        AppAnimations.getListItemDelay(20),
-        AppAnimations.listItemMaxDelay,
-      );
-      expect(AppAnimations.slideOffset, 8.0);
-      expect(AppAnimations.pressScale, 0.98);
-      expect(AppAnimations.secondaryOpacity, 0.6);
+      expect(McMotion.getListItemDelay(2), const Duration(milliseconds: 48));
+      expect(McMotion.getListItemDelay(20), McMotion.listItemMaxDelay);
+      expect(McMotion.slideOffset, 8.0);
+      expect(McMotion.pressScale, 0.98);
+      expect(McMotion.secondaryOpacity, 0.6);
     });
   });
 

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:ios_club_app/core/utils/animations/app_animations.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 
 class LoadingStateView extends StatelessWidget {
@@ -32,7 +31,7 @@ class LoadingStateView extends StatelessWidget {
     final colors = context.mc.colors;
 
     Widget content = AnimatedSwitcher(
-      duration: AppAnimations.standard,
+      duration: McMotion.standard,
       child: compact ? _buildCompact(context) : _buildFull(context),
     );
 

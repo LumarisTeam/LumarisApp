@@ -1,7 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
-import 'package:ios_club_app/core/utils/animations/animated_card.dart';
+import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/state/tile_edit_notifier.dart';
 import 'package:ios_club_app/ui/components/tiles/tile_edit_controls.dart';
 import 'package:ios_club_app/ui/components/tiles/editable_tile_wrapper.dart';
@@ -189,7 +189,7 @@ class _TilesWidgetState extends ConsumerState<TilesWidget>
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 final tile = visibleTiles[index];
-                return AnimatedCard(
+                return McAnimatedCard(
                   key: ValueKey(tile.id),
                   delay: Duration(milliseconds: 100 * index),
                   child: buildTile(tile.id, context),
