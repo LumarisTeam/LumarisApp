@@ -1940,6 +1940,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String get urlHint => 'Enter website URL';
 
   @override
+  String get warehouseImport => 'Import from adapter repository';
+
+  @override
+  String get warehouseImportHint =>
+      'Log in to the academic system and open your timetable page, then tap the button below.';
+
+  @override
+  String get warehouseSelectSchoolHint =>
+      'Select a school to open its academic system. Log in, open the timetable page, then tap Start Import.';
+
+  @override
+  String get startImport => 'Start import';
+
+  @override
+  String get selectAdapter => 'Select adapter';
+
+  @override
+  String get loadingSchoolList => 'Loading school list…';
+
+  @override
+  String get warehouseRepositoryUnavailable =>
+      'The adapter repository is unavailable. Check your network and try again.';
+
+  @override
+  String get warehouseNoSchoolFound => 'No matching schools';
+
+  @override
+  String get warehouseImportFailed => 'Import failed';
+
+  @override
+  String get warehouseImportInProgress => 'Importing…';
+
+  @override
+  String get pageNotReady =>
+      'The page is not ready yet. Please try again in a moment.';
+
+  @override
+  String get refreshRepository => 'Refresh adapter repository';
+
+  @override
+  String get warehouseCategoryAll => 'All';
+
+  @override
+  String get warehouseCategoryUndergrad => 'Undergraduate/Associate';
+
+  @override
+  String get warehouseCategoryPostgrad => 'Postgraduate';
+
+  @override
+  String get warehouseCategoryTools => 'General tools';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return 'Imported $count courses';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return '$count schools';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return 'Repository version $version';
+  }
+
+  @override
   String get icp => 'ICP';
 
   @override

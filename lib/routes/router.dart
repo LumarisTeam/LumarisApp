@@ -28,6 +28,8 @@ import '../ui/pages/schedule_list_page/html_import_webview_page.dart';
 import '../ui/pages/schedule_list_page/schedule_personalization_page.dart';
 import '../ui/pages/schedule_list_page/schedule_setting_page.dart';
 import '../ui/pages/schedule_list_page/schedule_list_page.dart';
+import '../ui/pages/schedule_list_page/warehouse_import_page.dart';
+import '../ui/pages/schedule_list_page/warehouse_import_webview_page.dart';
 import '../ui/pages/school_bus_page/school_bus_page.dart';
 import '../ui/pages/score_page/score_page.dart';
 import '../ui/pages/setting_page/setting_page.dart';
@@ -63,6 +65,8 @@ class AppRoutes {
   static const permissions = '/Profile/About/Permissions';
   static const htmlImport = '/Schedule/HtmlImport';
   static const htmlImportWebview = '/Schedule/HtmlImport/Webview';
+  static const warehouseImport = '/Schedule/WarehouseImport';
+  static const warehouseImportWebview = '/Schedule/WarehouseImport/Webview';
   static const campusMap = '/CampusMap';
 }
 
@@ -126,6 +130,19 @@ class AppRouter {
                           url: state.extra as String,
                           // 选中学校时由导入页带过来，解析时优先用该校适配器。
                           schoolCode: state.uri.queryParameters['school'],
+                        ),
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: 'WarehouseImport',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (context, state) => const WarehouseImportPage(),
+                    routes: [
+                      _detailRoute(
+                        'Webview',
+                        (context, state) => WarehouseImportWebViewPage(
+                          args: state.extra as WarehouseImportArgs,
                         ),
                       ),
                     ],

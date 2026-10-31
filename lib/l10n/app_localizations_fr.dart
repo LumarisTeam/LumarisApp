@@ -1966,6 +1966,73 @@ class AppLocalizationsFr extends AppLocalizations {
   String get urlHint => 'Entrer l\'URL du site web';
 
   @override
+  String get warehouseImport => 'Importer depuis le référentiel d\'adaptateurs';
+
+  @override
+  String get warehouseImportHint =>
+      'Connectez-vous au système académique, ouvrez la page d\'emploi du temps, puis appuyez sur le bouton ci-dessous.';
+
+  @override
+  String get warehouseSelectSchoolHint =>
+      'Sélectionnez un établissement pour ouvrir son système académique. Connectez-vous, ouvrez la page d\'emploi du temps, puis appuyez sur « Démarrer l\'importation ».';
+
+  @override
+  String get startImport => 'Démarrer l\'importation';
+
+  @override
+  String get selectAdapter => 'Sélectionner un adaptateur';
+
+  @override
+  String get loadingSchoolList => 'Chargement de la liste des établissements…';
+
+  @override
+  String get warehouseRepositoryUnavailable =>
+      'Le référentiel d\'adaptateurs est indisponible. Vérifiez votre réseau et réessayez.';
+
+  @override
+  String get warehouseNoSchoolFound => 'Aucun établissement correspondant';
+
+  @override
+  String get warehouseImportFailed => 'Échec de l\'importation';
+
+  @override
+  String get warehouseImportInProgress => 'Importation en cours…';
+
+  @override
+  String get pageNotReady =>
+      'La page n\'est pas encore prête. Veuillez réessayer dans un instant.';
+
+  @override
+  String get refreshRepository => 'Actualiser le référentiel d\'adaptateurs';
+
+  @override
+  String get warehouseCategoryAll => 'Tous';
+
+  @override
+  String get warehouseCategoryUndergrad => 'Licence/Associé';
+
+  @override
+  String get warehouseCategoryPostgrad => 'Troisième cycle';
+
+  @override
+  String get warehouseCategoryTools => 'Outils généraux';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return '$count cours importés';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return '$count établissements';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return 'Version du référentiel $version';
+  }
+
+  @override
   String get icp => 'ICP';
 
   @override

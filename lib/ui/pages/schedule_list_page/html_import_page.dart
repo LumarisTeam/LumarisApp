@@ -62,6 +62,14 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
     context.push(location, extra: url);
   }
 
+  Future<void> _openWarehouseImport() async {
+    final imported = await AppRouter.push<bool>(AppRoutes.warehouseImport);
+    if (imported == true && mounted) {
+      // 把成功结果继续往上传给课表页，让它重新加载游客课程。
+      AppRouter.pop(true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
@@ -98,6 +106,31 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  child: Material(
+                    color: colors.groupedBackground,
+                    shape: McSmoothCorners.shape(BorderRadius.circular(12)),
+                    clipBehavior: Clip.antiAlias,
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.travel_explore,
+                        color: colors.primary,
+                      ),
+                      title: Text(
+                        l10n.warehouseImport,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      subtitle: Text(
+                        l10n.warehouseImportHint,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      trailing: const Icon(Icons.chevron_right),
+                      onTap: _openWarehouseImport,
+                    ),
+                  ),
+                ),
                 ...selectable.map(
                   (school) => Padding(
                     padding: const EdgeInsets.symmetric(

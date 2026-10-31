@@ -13,6 +13,7 @@ import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/week_info.dart';
 import 'package:ios_club_app/features/education/services/course_service.dart';
 import 'package:ios_club_app/features/education/services/edu_time_service.dart';
+import 'package:ios_club_app/features/education/services/warehouse_course_mapper.dart';
 import 'package:ios_club_app/features/system/notifications/task_executor.dart';
 import 'package:ios_club_app/platform/android/background_service.dart';
 import 'package:ios_club_app/platform/ios/background_service.dart';
@@ -112,6 +113,42 @@ class ScheduleStore extends Notifier<ScheduleState> {
       maxWeek: weekData.maxWeek,
       currentPage: currentWeek <= 0 ? 0 : currentWeek,
     );
+  }
+
+  /// 用适配仓库导入的学期配置计算当前周与总周数。
+  ///
+  /// 游客导入没有西建大的 `/Week` 接口，若不显式设置，`currentWeek` 会停在 0，
+  /// 课表只能显示「全部课程」而无法按周切换。这里用开学日期算周次；日期缺失或
+  /// 早于开学时回退到第 1 周，并用学期总周数作为上界。
+  void applyImportedWeekConfig({
+    String? semesterStartDate,
+    int? semesterTotalWeeks,
+  }) {
+    final total = (semesterTotalWeeks ?? WarehouseCourseMapper.defaultWeeks)
+        .clamp(1, 60);
+    var current = 1;
+
+    final start = semesterStartDate == null
+        ? null
+        : DateTime.tryParse(semesterStartDate);
+    if (start != null) {
+      final now = DateTime.now();
+      final startWeek = WeekStartUtils.getWeekStart(start, _weekStartDay);
+      final currentWeekStart = WeekStartUtils.getWeekStart(now, _weekStartDay);
+      current = currentWeekStart.difference(startWeek).inDays ~/ 7 + 1;
+      current = current.clamp(1, total);
+    }
+
+    state = state.copyWith(
+      currentWeek: current,
+      weekNow: current,
+      maxWeek: total,
+      currentPage: current,
+    );
+
+    if (_allCoursesRemind.isNotEmpty) {
+      _applyCourses(_filterIgnored(_allCoursesRemind));
+    }
   }
 
   Future<void> getRemindCourses() async {

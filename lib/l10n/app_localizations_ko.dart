@@ -1881,6 +1881,71 @@ class AppLocalizationsKo extends AppLocalizations {
   String get urlHint => '웹사이트 URL 입력';
 
   @override
+  String get warehouseImport => '어댑터 저장소에서 가져오기';
+
+  @override
+  String get warehouseImportHint => '학사 시스템에 로그인하여 시간표 페이지를 연 뒤 아래 버튼을 누르세요.';
+
+  @override
+  String get warehouseSelectSchoolHint =>
+      '학교를 선택하여 학사 시스템을 엽니다. 로그인하고 시간표 페이지를 연 뒤 \'가져오기 시작\'을 누르세요.';
+
+  @override
+  String get startImport => '가져오기 시작';
+
+  @override
+  String get selectAdapter => '어댑터 선택';
+
+  @override
+  String get loadingSchoolList => '학교 목록을 불러오는 중…';
+
+  @override
+  String get warehouseRepositoryUnavailable =>
+      '어댑터 저장소를 사용할 수 없습니다. 네트워크를 확인한 후 다시 시도하세요.';
+
+  @override
+  String get warehouseNoSchoolFound => '일치하는 학교가 없습니다';
+
+  @override
+  String get warehouseImportFailed => '가져오기 실패';
+
+  @override
+  String get warehouseImportInProgress => '가져오는 중…';
+
+  @override
+  String get pageNotReady => '페이지가 아직 준비되지 않았습니다. 잠시 후 다시 시도하세요.';
+
+  @override
+  String get refreshRepository => '어댑터 저장소 새로고침';
+
+  @override
+  String get warehouseCategoryAll => '전체';
+
+  @override
+  String get warehouseCategoryUndergrad => '학부/전문대';
+
+  @override
+  String get warehouseCategoryPostgrad => '대학원';
+
+  @override
+  String get warehouseCategoryTools => '범용 도구';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return '$count개 강좌를 가져왔습니다';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return '총 $count개 학교';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return '저장소 버전 $version';
+  }
+
+  @override
   String get icp => 'ICP';
 
   @override

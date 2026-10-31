@@ -1946,6 +1946,74 @@ class AppLocalizationsRu extends AppLocalizations {
   String get urlHint => 'Введите URL веб-сайта';
 
   @override
+  String get warehouseImport => 'Импорт из репозитория адаптеров';
+
+  @override
+  String get warehouseImportHint =>
+      'Войдите в систему управления учебным процессом, откройте страницу расписания и нажмите кнопку ниже.';
+
+  @override
+  String get warehouseSelectSchoolHint =>
+      'Выберите учебное заведение, чтобы открыть его систему управления учебным процессом. Войдите, откройте страницу расписания и нажмите «Начать импорт».';
+
+  @override
+  String get startImport => 'Начать импорт';
+
+  @override
+  String get selectAdapter => 'Выбрать адаптер';
+
+  @override
+  String get loadingSchoolList => 'Загрузка списка учебных заведений…';
+
+  @override
+  String get warehouseRepositoryUnavailable =>
+      'Репозиторий адаптеров недоступен. Проверьте сеть и повторите попытку.';
+
+  @override
+  String get warehouseNoSchoolFound =>
+      'Подходящие учебные заведения не найдены';
+
+  @override
+  String get warehouseImportFailed => 'Не удалось выполнить импорт';
+
+  @override
+  String get warehouseImportInProgress => 'Импорт…';
+
+  @override
+  String get pageNotReady =>
+      'Страница ещё не готова. Повторите попытку через мгновение.';
+
+  @override
+  String get refreshRepository => 'Обновить репозиторий адаптеров';
+
+  @override
+  String get warehouseCategoryAll => 'Все';
+
+  @override
+  String get warehouseCategoryUndergrad => 'Бакалавриат/СПО';
+
+  @override
+  String get warehouseCategoryPostgrad => 'Магистратура/аспирантура';
+
+  @override
+  String get warehouseCategoryTools => 'Общие инструменты';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return 'Импортировано курсов: $count';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return 'Учебных заведений: $count';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return 'Версия репозитория $version';
+  }
+
+  @override
   String get icp => 'ICP';
 
   @override

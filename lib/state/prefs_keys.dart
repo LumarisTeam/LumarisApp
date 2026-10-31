@@ -43,6 +43,9 @@ class PrefsKeys {
   /// 作息表（各校区/季节的节次时间，GET /v1/course/ScheduleTime）
   static const String SCHEDULE_TIME_DATA = 'schedule_time_data';
 
+  /// 适配仓库导入的课表元数据（作息、开学日期、来源学校等）
+  static const String WAREHOUSE_IMPORT_DATA = 'warehouse_import_data';
+
   /// 信息完成度相关
   static const String INFO_DATA = 'info_data';
   static const String INFO_DATA_TIME = 'info_data_time';

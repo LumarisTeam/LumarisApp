@@ -1979,6 +1979,73 @@ class AppLocalizationsDe extends AppLocalizations {
   String get urlHint => 'Website-URL eingeben';
 
   @override
+  String get warehouseImport => 'Aus Adapter-Repository importieren';
+
+  @override
+  String get warehouseImportHint =>
+      'Melden Sie sich im Hochschulverwaltungssystem an, öffnen Sie die Stundenplanseite und tippen Sie dann auf die Schaltfläche unten.';
+
+  @override
+  String get warehouseSelectSchoolHint =>
+      'Wählen Sie eine Hochschule, um ihr Hochschulverwaltungssystem zu öffnen. Melden Sie sich an, öffnen Sie die Stundenplanseite und tippen Sie dann auf „Import starten“.';
+
+  @override
+  String get startImport => 'Import starten';
+
+  @override
+  String get selectAdapter => 'Adapter auswählen';
+
+  @override
+  String get loadingSchoolList => 'Schulliste wird geladen…';
+
+  @override
+  String get warehouseRepositoryUnavailable =>
+      'Das Adapter-Repository ist nicht verfügbar. Prüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut.';
+
+  @override
+  String get warehouseNoSchoolFound => 'Keine passenden Hochschulen';
+
+  @override
+  String get warehouseImportFailed => 'Import fehlgeschlagen';
+
+  @override
+  String get warehouseImportInProgress => 'Wird importiert…';
+
+  @override
+  String get pageNotReady =>
+      'Die Seite ist noch nicht bereit. Bitte versuchen Sie es gleich noch einmal.';
+
+  @override
+  String get refreshRepository => 'Adapter-Repository aktualisieren';
+
+  @override
+  String get warehouseCategoryAll => 'Alle';
+
+  @override
+  String get warehouseCategoryUndergrad => 'Bachelor/Fachschule';
+
+  @override
+  String get warehouseCategoryPostgrad => 'Postgraduiert';
+
+  @override
+  String get warehouseCategoryTools => 'Allgemeine Werkzeuge';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return '$count Kurse importiert';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return '$count Hochschulen';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return 'Repository-Version $version';
+  }
+
+  @override
   String get icp => 'ICP';
 
   @override

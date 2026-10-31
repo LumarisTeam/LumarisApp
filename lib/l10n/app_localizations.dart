@@ -3684,6 +3684,120 @@ abstract class AppLocalizations {
   /// **'请输入网址'**
   String get urlHint;
 
+  /// 从拾光适配仓库导入课表的入口
+  ///
+  /// In zh, this message translates to:
+  /// **'适配仓库导入'**
+  String get warehouseImport;
+
+  /// 适配仓库导入页顶部的操作提示
+  ///
+  /// In zh, this message translates to:
+  /// **'登录教务系统并进入课表页面后，点击下方按钮导入'**
+  String get warehouseImportHint;
+
+  /// 学校选择页的说明
+  ///
+  /// In zh, this message translates to:
+  /// **'选择学校后打开教务系统；登录并进入课表页面，再点击「开始导入」'**
+  String get warehouseSelectSchoolHint;
+
+  /// WebView 导入按钮
+  ///
+  /// In zh, this message translates to:
+  /// **'开始导入'**
+  String get startImport;
+
+  /// 一个学校有多个适配器时的选择标题
+  ///
+  /// In zh, this message translates to:
+  /// **'选择适配器'**
+  String get selectAdapter;
+
+  /// 适配仓库索引下载中
+  ///
+  /// In zh, this message translates to:
+  /// **'正在加载学校列表…'**
+  String get loadingSchoolList;
+
+  /// 适配仓库索引加载失败
+  ///
+  /// In zh, this message translates to:
+  /// **'适配仓库暂不可用，请检查网络后重试'**
+  String get warehouseRepositoryUnavailable;
+
+  /// 搜索/筛选结果为空
+  ///
+  /// In zh, this message translates to:
+  /// **'没有匹配的学校'**
+  String get warehouseNoSchoolFound;
+
+  /// 适配器执行失败或超时
+  ///
+  /// In zh, this message translates to:
+  /// **'导入失败'**
+  String get warehouseImportFailed;
+
+  /// 适配器执行中的按钮文案
+  ///
+  /// In zh, this message translates to:
+  /// **'正在导入…'**
+  String get warehouseImportInProgress;
+
+  /// WebView 尚未注入 bridge 时点击导入
+  ///
+  /// In zh, this message translates to:
+  /// **'页面尚未加载完成，请稍后再试'**
+  String get pageNotReady;
+
+  /// 强制重新拉取索引和适配器脚本
+  ///
+  /// In zh, this message translates to:
+  /// **'刷新适配仓库'**
+  String get refreshRepository;
+
+  /// 适配器类别筛选：全部
+  ///
+  /// In zh, this message translates to:
+  /// **'全部'**
+  String get warehouseCategoryAll;
+
+  /// 适配器类别筛选：本科/专科
+  ///
+  /// In zh, this message translates to:
+  /// **'本科/专科'**
+  String get warehouseCategoryUndergrad;
+
+  /// 适配器类别筛选：研究生
+  ///
+  /// In zh, this message translates to:
+  /// **'研究生'**
+  String get warehouseCategoryPostgrad;
+
+  /// 适配器类别筛选：通用工具
+  ///
+  /// In zh, this message translates to:
+  /// **'通用工具'**
+  String get warehouseCategoryTools;
+
+  /// 适配仓库导入成功
+  ///
+  /// In zh, this message translates to:
+  /// **'已导入 {count} 门课程'**
+  String warehouseImportSuccess(int count);
+
+  /// 学校列表底部计数
+  ///
+  /// In zh, this message translates to:
+  /// **'共 {count} 所学校'**
+  String warehouseSchoolCount(int count);
+
+  /// 学校列表底部的索引版本
+  ///
+  /// In zh, this message translates to:
+  /// **'仓库版本 {version}'**
+  String warehouseVersion(String version);
+
   ///
   ///
   /// In zh, this message translates to:

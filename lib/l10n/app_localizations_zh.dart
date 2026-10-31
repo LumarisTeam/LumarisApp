@@ -1861,6 +1861,69 @@ class AppLocalizationsZh extends AppLocalizations {
   String get urlHint => '请输入网址';
 
   @override
+  String get warehouseImport => '适配仓库导入';
+
+  @override
+  String get warehouseImportHint => '登录教务系统并进入课表页面后，点击下方按钮导入';
+
+  @override
+  String get warehouseSelectSchoolHint => '选择学校后打开教务系统；登录并进入课表页面，再点击「开始导入」';
+
+  @override
+  String get startImport => '开始导入';
+
+  @override
+  String get selectAdapter => '选择适配器';
+
+  @override
+  String get loadingSchoolList => '正在加载学校列表…';
+
+  @override
+  String get warehouseRepositoryUnavailable => '适配仓库暂不可用，请检查网络后重试';
+
+  @override
+  String get warehouseNoSchoolFound => '没有匹配的学校';
+
+  @override
+  String get warehouseImportFailed => '导入失败';
+
+  @override
+  String get warehouseImportInProgress => '正在导入…';
+
+  @override
+  String get pageNotReady => '页面尚未加载完成，请稍后再试';
+
+  @override
+  String get refreshRepository => '刷新适配仓库';
+
+  @override
+  String get warehouseCategoryAll => '全部';
+
+  @override
+  String get warehouseCategoryUndergrad => '本科/专科';
+
+  @override
+  String get warehouseCategoryPostgrad => '研究生';
+
+  @override
+  String get warehouseCategoryTools => '通用工具';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return '已导入 $count 门课程';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return '共 $count 所学校';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return '仓库版本 $version';
+  }
+
+  @override
   String get icp => 'ICP备案号';
 
   @override
@@ -4137,6 +4200,69 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get urlHint => '請輸入網址';
+
+  @override
+  String get warehouseImport => '適配倉庫匯入';
+
+  @override
+  String get warehouseImportHint => '登入教務系統並進入課表頁面後，點擊下方按鈕匯入';
+
+  @override
+  String get warehouseSelectSchoolHint => '選擇學校後開啟教務系統；登入並進入課表頁面，再點擊「開始匯入」';
+
+  @override
+  String get startImport => '開始匯入';
+
+  @override
+  String get selectAdapter => '選擇適配器';
+
+  @override
+  String get loadingSchoolList => '正在載入學校列表…';
+
+  @override
+  String get warehouseRepositoryUnavailable => '適配倉庫暫不可用，請檢查網路後重試';
+
+  @override
+  String get warehouseNoSchoolFound => '沒有符合的學校';
+
+  @override
+  String get warehouseImportFailed => '匯入失敗';
+
+  @override
+  String get warehouseImportInProgress => '正在匯入…';
+
+  @override
+  String get pageNotReady => '頁面尚未載入完成，請稍後再試';
+
+  @override
+  String get refreshRepository => '重新整理適配倉庫';
+
+  @override
+  String get warehouseCategoryAll => '全部';
+
+  @override
+  String get warehouseCategoryUndergrad => '大學/專科';
+
+  @override
+  String get warehouseCategoryPostgrad => '研究所';
+
+  @override
+  String get warehouseCategoryTools => '通用工具';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return '已匯入 $count 門課程';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return '共 $count 所學校';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return '倉庫版本 $version';
+  }
 
   @override
   String get icp => 'ICP';

@@ -1867,6 +1867,71 @@ class AppLocalizationsJa extends AppLocalizations {
   String get urlHint => 'ウェブサイトのURLを入力';
 
   @override
+  String get warehouseImport => 'アダプターリポジトリからインポート';
+
+  @override
+  String get warehouseImportHint => '教務システムにログインして時間割ページを開き、下のボタンをタップしてください。';
+
+  @override
+  String get warehouseSelectSchoolHint =>
+      '学校を選択して教務システムを開きます。ログインして時間割ページを開き、「インポート開始」をタップしてください。';
+
+  @override
+  String get startImport => 'インポート開始';
+
+  @override
+  String get selectAdapter => 'アダプターを選択';
+
+  @override
+  String get loadingSchoolList => '学校一覧を読み込み中…';
+
+  @override
+  String get warehouseRepositoryUnavailable =>
+      'アダプターリポジトリを利用できません。ネットワークを確認して再試行してください。';
+
+  @override
+  String get warehouseNoSchoolFound => '一致する学校がありません';
+
+  @override
+  String get warehouseImportFailed => 'インポートに失敗しました';
+
+  @override
+  String get warehouseImportInProgress => 'インポート中…';
+
+  @override
+  String get pageNotReady => 'ページの準備ができていません。しばらくしてから再試行してください。';
+
+  @override
+  String get refreshRepository => 'アダプターリポジトリを更新';
+
+  @override
+  String get warehouseCategoryAll => 'すべて';
+
+  @override
+  String get warehouseCategoryUndergrad => '学部/短期大学';
+
+  @override
+  String get warehouseCategoryPostgrad => '大学院';
+
+  @override
+  String get warehouseCategoryTools => '汎用ツール';
+
+  @override
+  String warehouseImportSuccess(int count) {
+    return '$count 件の授業をインポートしました';
+  }
+
+  @override
+  String warehouseSchoolCount(int count) {
+    return '全 $count 校';
+  }
+
+  @override
+  String warehouseVersion(String version) {
+    return 'リポジトリバージョン $version';
+  }
+
+  @override
   String get icp => 'ICP';
 
   @override
