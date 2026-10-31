@@ -72,6 +72,25 @@ class CourseModel {
   @HiveField(11)
   bool isCustom = false;
 
+  /// 是否使用自定义上下课时间，而不是节次。
+  ///
+  /// 适配仓库里少数课程没有节次，只给 `HH:mm` 起止时间。渲染时仍会映射到
+  /// 最近的节次格，但提醒和详情展示应优先使用 [customStartTime] /
+  /// [customEndTime]。
+  @JsonKey(fromJson: parseSchemaBool)
+  @HiveField(12)
+  bool isCustomTime = false;
+
+  /// 自定义开始时间，`HH:mm`；[isCustomTime] 为 false 时为空串。
+  @JsonKey(fromJson: parseSchemaString)
+  @HiveField(13)
+  String customStartTime = '';
+
+  /// 自定义结束时间，`HH:mm`；[isCustomTime] 为 false 时为空串。
+  @JsonKey(fromJson: parseSchemaString)
+  @HiveField(14)
+  String customEndTime = '';
+
   /// 创建一个新的课程实例
   ///
   /// @param weekIndexes 课程周次索引列表
@@ -98,6 +117,9 @@ class CourseModel {
     String? lessonId,
     String? campus,
     bool? isCustom,
+    bool? isCustomTime,
+    String? customStartTime,
+    String? customEndTime,
   }) {
     this.weekIndexes = weekIndexes ?? [];
     this.teachers = teachers ?? [];
@@ -111,6 +133,9 @@ class CourseModel {
     this.lessonId = lessonId ?? '';
     this.campus = campus ?? '';
     this.isCustom = isCustom ?? false;
+    this.isCustomTime = isCustomTime ?? false;
+    this.customStartTime = customStartTime ?? '';
+    this.customEndTime = customEndTime ?? '';
   }
 
   /// 从JSON数据创建课程实例
@@ -169,6 +194,9 @@ class CourseModel {
           lessonId: current.lessonId,
           campus: current.campus,
           isCustom: current.isCustom,
+          isCustomTime: current.isCustomTime,
+          customStartTime: current.customStartTime,
+          customEndTime: current.customEndTime,
         ),
       );
     }

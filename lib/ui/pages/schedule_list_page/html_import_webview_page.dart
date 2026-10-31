@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:ios_club_app/core/services/course_html_parser.dart';
+import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
 import 'package:ios_club_app/state/course_store.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
 
@@ -82,8 +84,15 @@ class _HtmlImportWebViewPageState extends ConsumerState<HtmlImportWebViewPage> {
 
       final courses = parsed.courses;
 
+      // 这次导入不再来自适配仓库，清掉导入作息，避免沿用上一所学校的节次时间。
+      TimeService.clearImportedTable();
+      await WarehouseImportStore.clear();
+
       await ref.read(courseStoreProvider.notifier).saveGuestCourses(courses);
-      ref.read(scheduleStoreProvider.notifier).loadGuestCourseData();
+      final scheduleStore = ref.read(scheduleStoreProvider.notifier);
+      await scheduleStore.loadGuestCourseData();
+      // 回到没有适配器学期配置的游客课表：第 1 周、默认 20 周。
+      scheduleStore.applyImportedWeekConfig();
 
       if (mounted) {
         McFeedback.showMessage(

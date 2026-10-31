@@ -1,3 +1,4 @@
+import 'package:curriculum/warehouse.dart' show TimeSlot;
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/schedule_time_model.dart';
 
@@ -61,6 +62,12 @@ class TimeService {
 
   /// 雁塔校区名（与 [ScheduleTable.campusName] 对齐）
   static const String yanTaCampus = '雁塔校区';
+
+  /// 适配仓库导入的作息表使用的虚拟校区名。
+  ///
+  /// 外校课表没有「草堂/雁塔」的概念；导入后所有课程都用这张表，UI 上也
+  /// 不需要展示校区。用固定名而不用学校名，避免学校改名导致旧缓存失效。
+  static const String importedCampus = '导入作息';
 
   /// 内置兜底：草堂校区开始时间（索引 0 是早自习）
   static const List<String> CanTangTimeStart = [
@@ -185,12 +192,64 @@ class TimeService {
 
   static List<ScheduleTable> _tables = builtInTables;
   static bool _isUsingRemoteTables = false;
+  static ScheduleTable? _importedTable;
 
   /// 当前生效的作息表。
-  static List<ScheduleTable> get tables => _tables;
+  ///
+  /// 导入学校激活时，导入表排在最前面；其余表保留给小组件快照做兜底。
+  static List<ScheduleTable> get tables => _importedTable == null
+      ? _tables
+      : List<ScheduleTable>.unmodifiable(<ScheduleTable>[
+          _importedTable!,
+          ..._tables,
+        ]);
 
   /// 当前是否用的是服务端下发的表（false 表示还是内置兜底）。
-  static bool get isUsingRemoteTables => _isUsingRemoteTables;
+  static bool get isUsingRemoteTables =>
+      _importedTable != null || _isUsingRemoteTables;
+
+  /// 当前是否处于适配仓库导入的作息模式。
+  static bool get isUsingImportedTable => _importedTable != null;
+
+  /// 小组件/课程默认使用的校区名。
+  static String get defaultCampusName =>
+      _importedTable?.campusName ?? caoTangCampus;
+
+  /// 装载适配仓库下发的作息。
+  ///
+  /// [slots] 的 `number` 从 1 开始；本类内部数组下标 0 是早自习，因此这里
+  /// 把 `number` 直接当数组下标，0 号位留空。没有有效节次时清除导入表，
+  /// 让课表退回内置/远端作息。
+  static void installImportedSlots(Iterable<TimeSlot> slots) {
+    final ordered = slots
+        .where((slot) => slot.number >= 1 && slot.startTime.trim().isNotEmpty)
+        .toList()
+      ..sort((a, b) => a.number.compareTo(b.number));
+    if (ordered.isEmpty) {
+      _importedTable = null;
+      return;
+    }
+
+    final maxNumber = ordered.last.number;
+    final start = List<String>.filled(maxNumber + 1, '');
+    final end = List<String>.filled(maxNumber + 1, '');
+    for (final slot in ordered) {
+      if (slot.number > maxNumber) continue;
+      start[slot.number] = slot.startTime;
+      end[slot.number] = slot.endTime;
+    }
+
+    _importedTable = ScheduleTable(
+      campusName: importedCampus,
+      start: List<String>.unmodifiable(start),
+      end: List<String>.unmodifiable(end),
+    );
+  }
+
+  /// 退出适配仓库导入作息，回到服务端/内置表。
+  static void clearImportedTable() {
+    _importedTable = null;
+  }
 
   /// 装载服务端下发的作息表；[tables] 为空时退回内置表。
   static void installTables(List<ScheduleTable> tables) {
@@ -211,8 +270,10 @@ class TimeService {
 
   /// 由课程字段判定校区名（与 [ScheduleTable.campusName] 对齐）。
   ///
-  /// 教务的校区字段可能不准，教室名以「草堂」开头的也算草堂。
+  /// 教务的校区字段可能不准，教室名以「草堂」开头的也算草堂。适配仓库导入
+  /// 学校没有校区概念，统一使用 [importedCampus]。
   static String resolveCampusName(CourseModel course) {
+    if (_importedTable != null) return importedCampus;
     final isCaoTang =
         course.campus == caoTangCampus ||
         (course.room.length >= 2 && course.room.startsWith('草堂'));
@@ -221,8 +282,15 @@ class TimeService {
 
   /// 取课程对应的起止时间。
   ///
-  /// 同步方法：表在启动/刷新时已装载好。[date] 默认取当前时间，用于选季节。
+  /// 自定义时间课程优先用课程自带的 `HH:mm`；其余按节次查表。
+  /// [date] 默认取当前时间，用于选季节。
   static StartAndEnd getStartAndEnd(CourseModel course, {DateTime? date}) {
+    if (course.isCustomTime && course.customStartTime.trim().isNotEmpty) {
+      return StartAndEnd(
+        start: course.customStartTime,
+        end: course.customEndTime,
+      );
+    }
     return getStartAndEndForCampus(
       campus: resolveCampusName(course),
       startUnit: course.startUnit,
@@ -241,6 +309,14 @@ class TimeService {
     required int endUnit,
     DateTime? date,
   }) {
+    final imported = _importedTable;
+    if (imported != null) {
+      return StartAndEnd(
+        start: _lookup(imported.start, startUnit) ?? '',
+        end: _lookup(imported.end, endUnit) ?? '',
+      );
+    }
+
     final now = date ?? DateTime.now();
     final table = _resolveTable(campus, now);
     final fallback = campus == caoTangCampus

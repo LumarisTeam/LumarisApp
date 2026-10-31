@@ -14,6 +14,7 @@ import 'package:ios_club_app/features/education/models/week_info.dart';
 import 'package:ios_club_app/features/education/services/course_service.dart';
 import 'package:ios_club_app/features/education/services/edu_time_service.dart';
 import 'package:ios_club_app/features/education/services/warehouse_course_mapper.dart';
+import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
 import 'package:ios_club_app/features/system/notifications/task_executor.dart';
 import 'package:ios_club_app/platform/android/background_service.dart';
 import 'package:ios_club_app/platform/ios/background_service.dart';
@@ -73,9 +74,24 @@ class ScheduleStore extends Notifier<ScheduleState> {
       _handleWeekData(weekData);
       final isLogin = ref.read(userStoreProvider).isLogin;
       if (isLogin) {
+        // 登录态使用学校服务端的作息；导入作息只在游客课表下生效。
+        TimeService.clearImportedTable();
         await getRemindCourses();
         await _loadCourses();
       } else {
+        final imported = WarehouseImportStore.read();
+        if (imported != null) {
+          if (imported.timeSlots.isNotEmpty) {
+            TimeService.installImportedSlots(imported.timeSlots);
+          }
+          applyImportedWeekConfig(
+            semesterStartDate: imported.config?.semesterStartDate,
+            semesterTotalWeeks: imported.config?.semesterTotalWeeks,
+            firstDayOfWeek: imported.config?.firstDayOfWeek,
+          );
+        } else {
+          TimeService.clearImportedTable();
+        }
         final guestCourses = await ref
             .read(courseStoreProvider.notifier)
             .loadGuestAndCustomCourses();
@@ -123,9 +139,11 @@ class ScheduleStore extends Notifier<ScheduleState> {
   void applyImportedWeekConfig({
     String? semesterStartDate,
     int? semesterTotalWeeks,
+    int? firstDayOfWeek,
   }) {
     final total = (semesterTotalWeeks ?? WarehouseCourseMapper.defaultWeeks)
         .clamp(1, 60);
+    final weekStartDay = firstDayOfWeek ?? _weekStartDay;
     var current = 1;
 
     final start = semesterStartDate == null
@@ -133,8 +151,8 @@ class ScheduleStore extends Notifier<ScheduleState> {
         : DateTime.tryParse(semesterStartDate);
     if (start != null) {
       final now = DateTime.now();
-      final startWeek = WeekStartUtils.getWeekStart(start, _weekStartDay);
-      final currentWeekStart = WeekStartUtils.getWeekStart(now, _weekStartDay);
+      final startWeek = WeekStartUtils.getWeekStart(start, weekStartDay);
+      final currentWeekStart = WeekStartUtils.getWeekStart(now, weekStartDay);
       current = currentWeekStart.difference(startWeek).inDays ~/ 7 + 1;
       current = current.clamp(1, total);
     }

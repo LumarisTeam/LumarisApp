@@ -5,6 +5,7 @@ import 'package:curriculum/warehouse.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/services/warehouse_course_mapper.dart';
 import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
@@ -207,10 +208,18 @@ class _WarehouseImportWebViewPageState
     if (!mounted) return;
 
     final l10n = context.l10n;
+
+    // 先切换作息，再用导入表把自定义时间映射到节次。
+    TimeService.clearImportedTable();
+    if (result.timeSlots.isNotEmpty) {
+      TimeService.installImportedSlots(result.timeSlots);
+    }
+
     final mapResult = WarehouseCourseMapper.toCourseModels(
       result.courses,
       fallbackWeeks:
           result.config?.semesterTotalWeeks ?? WarehouseCourseMapper.defaultWeeks,
+      table: TimeService.tables.first,
     );
     AppLogger.info(
       '[Warehouse] 适配器完成 ${widget.args.adapter.adapterId}\n'
@@ -245,6 +254,7 @@ class _WarehouseImportWebViewPageState
           .applyImportedWeekConfig(
             semesterStartDate: result.config?.semesterStartDate,
             semesterTotalWeeks: result.config?.semesterTotalWeeks,
+            firstDayOfWeek: result.config?.firstDayOfWeek,
           );
     } catch (error, stackTrace) {
       AppLogger.error(

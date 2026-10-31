@@ -6,6 +6,7 @@ import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/models/time_info.dart';
 import 'package:ios_club_app/features/education/models/week_info.dart';
+import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
 import '../models/edu_fetch_models.dart';
@@ -35,7 +36,7 @@ class EduTimeService {
     FetchPolicy policy = FetchPolicy.localFirst,
   }) async {
     final snapshot = await getTimeSnapshot(policy: policy);
-    return snapshot.data;
+    return _withImportedFallback(snapshot.data);
   }
 
   static Future<TimeInfo> getTime({bool isRefresh = false}) async {
@@ -72,17 +73,20 @@ class EduTimeService {
     final time = await getTimeInfo(
       policy: isRefresh ? FetchPolicy.refresh : FetchPolicy.localFirst,
     );
-    if (time.startTime == null) {
+    if (time.startTime == null || time.endTime == null) {
       return WeekInfo(week: 0, maxWeek: 0);
     }
 
     final startTime = DateTime.parse(time.startTime!);
     final endTime = DateTime.parse(time.endTime!);
     final now = DateTime.now();
+    final effectiveWeekStartDay = time.extra?['imported'] == '1'
+        ? (WarehouseImportStore.read()?.config?.firstDayOfWeek ?? weekStartDay)
+        : weekStartDay;
 
-    final startWeek = WeekStartUtils.getWeekStart(startTime, weekStartDay);
-    final currentWeek = WeekStartUtils.getWeekStart(now, weekStartDay);
-    final endWeek = WeekStartUtils.getWeekStart(endTime, weekStartDay);
+    final startWeek = WeekStartUtils.getWeekStart(startTime, effectiveWeekStartDay);
+    final currentWeek = WeekStartUtils.getWeekStart(now, effectiveWeekStartDay);
+    final endWeek = WeekStartUtils.getWeekStart(endTime, effectiveWeekStartDay);
 
     final week = currentWeek.difference(startWeek).inDays ~/ 7 + 1;
     final maxWeek = endWeek.difference(startWeek).inDays ~/ 7 + 1;
@@ -100,6 +104,34 @@ class EduTimeService {
       startTime,
       weekStartDay: weekStartDay,
     );
+  }
+
+  /// 没有学校服务端学期信息时，用适配仓库导入的开学日期兜底。
+  ///
+  /// 游客导入的课表没有 `/Time` 接口，若这里返回空值，当前周会停在 0，
+  /// 提醒和小组件也无法按周筛选。仅在起点缺失时兜底，登录态仍以学校数据为准。
+  static TimeInfo _withImportedFallback(TimeInfo time) {
+    if (time.startTime != null && time.endTime != null) return time;
+
+    final imported = WarehouseImportStore.read();
+    final start = imported?.config?.semesterStartDate;
+    final startDate = start == null ? null : DateTime.tryParse(start);
+    if (startDate == null) return time;
+
+    final totalWeeks = imported?.config?.semesterTotalWeeks ?? 20;
+    final endDate = startDate.add(Duration(days: totalWeeks * 7 - 1));
+    return TimeInfo(
+      startTime: _formatDate(startDate),
+      endTime: _formatDate(endDate),
+      semester: time.semester,
+      extra: <String, String>{...?time.extra, 'imported': '1'},
+    );
+  }
+
+  static String _formatDate(DateTime date) {
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '${date.year.toString().padLeft(4, '0')}-$month-$day';
   }
 
   static TimeInfo readTimeInfoFromPrefs() {

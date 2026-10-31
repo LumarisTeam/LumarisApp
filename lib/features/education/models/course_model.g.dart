@@ -29,13 +29,16 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       lessonId: fields[9] as String?,
       campus: fields[10] as String?,
       isCustom: fields[11] as bool?,
+      isCustomTime: fields[12] as bool?,
+      customStartTime: fields[13] as String?,
+      customEndTime: fields[14] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CourseModel obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(15)
       ..writeByte(0)
       ..write(obj.weekIndexes)
       ..writeByte(1)
@@ -59,7 +62,13 @@ class CourseModelAdapter extends TypeAdapter<CourseModel> {
       ..writeByte(10)
       ..write(obj.campus)
       ..writeByte(11)
-      ..write(obj.isCustom);
+      ..write(obj.isCustom)
+      ..writeByte(12)
+      ..write(obj.isCustomTime)
+      ..writeByte(13)
+      ..write(obj.customStartTime)
+      ..writeByte(14)
+      ..write(obj.customEndTime);
   }
 
   @override
@@ -90,6 +99,9 @@ CourseModel _$CourseModelFromJson(Map<String, dynamic> json) => CourseModel(
   lessonId: parseSchemaString(json['lessonId']),
   campus: parseSchemaString(json['campus']),
   isCustom: parseSchemaBool(json['isCustom']),
+  isCustomTime: parseSchemaBool(json['isCustomTime']),
+  customStartTime: parseSchemaString(json['customStartTime']),
+  customEndTime: parseSchemaString(json['customEndTime']),
 );
 
 Map<String, dynamic> _$CourseModelToJson(CourseModel instance) =>
@@ -106,4 +118,7 @@ Map<String, dynamic> _$CourseModelToJson(CourseModel instance) =>
       'lessonId': instance.lessonId,
       'campus': instance.campus,
       'isCustom': instance.isCustom,
+      'isCustomTime': instance.isCustomTime,
+      'customStartTime': instance.customStartTime,
+      'customEndTime': instance.customEndTime,
     };

@@ -31,7 +31,7 @@ class WidgetScheduleSnapshot {
       'semesterStart': _normalizeDate(semesterStart),
       'semesterEnd': _normalizeDate(semesterEnd),
       'weekStartDay': WeekStartUtils.normalizeWeekStartDay(weekStartDay),
-      'defaultCampus': TimeService.caoTangCampus,
+      'defaultCampus': TimeService.defaultCampusName,
       'tables': _withDefaultCampusTable(tables).map(_tableToJson).toList(),
       'courses': courses.where(_isUsable).map(_courseToJson).toList(),
     };
@@ -57,6 +57,11 @@ class WidgetScheduleSnapshot {
       'endUnit': course.endUnit,
       'weeks': course.weekIndexes,
       'campus': TimeService.resolveCampusName(course),
+      if (course.isCustomTime) ...<String, dynamic>{
+        'isCustomTime': true,
+        'customStartTime': course.customStartTime,
+        'customEndTime': course.customEndTime,
+      },
     };
   }
 
@@ -69,12 +74,13 @@ class WidgetScheduleSnapshot {
     };
   }
 
-  /// 节次查不到校区时小组件会退回草堂表，快照里必须保证草堂表一定存在。
+  /// 节次查不到校区时小组件会退回默认校区，快照里必须保证该表一定存在。
   static List<ScheduleTable> _withDefaultCampusTable(
     List<ScheduleTable> tables,
   ) {
+    final defaultCampus = TimeService.defaultCampusName;
     final hasDefault = tables.any(
-      (table) => table.campusName == TimeService.caoTangCampus,
+      (table) => table.campusName == defaultCampus,
     );
     if (hasDefault) {
       return tables;

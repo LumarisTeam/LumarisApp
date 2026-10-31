@@ -1,5 +1,6 @@
 import 'package:curriculum/warehouse.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/features/education/services/warehouse_course_mapper.dart';
 
 void main() {
@@ -76,6 +77,50 @@ void main() {
       );
 
       expect(result.courses.single.weekIndexes, List<int>.generate(18, (i) => i + 1));
+    });
+
+    test('自定义时间映射到最近的节次并保留原始时间', () {
+      const table = ScheduleTable(
+        campusName: '测试',
+        start: <String>['', '08:00', '08:55', '10:00', '10:55'],
+        end: <String>['', '08:45', '09:40', '10:45', '11:40'],
+      );
+
+      final result = WarehouseCourseMapper.toCourseModels(
+        <Course>[
+          Course(
+            name: '讲座',
+            day: 3,
+            isCustomTime: true,
+            customStartTime: '08:50',
+            customEndTime: '09:35',
+          ),
+        ],
+        table: table,
+      );
+
+      expect(result.courses, hasLength(1));
+      final course = result.courses.single;
+      expect(course.startUnit, 2);
+      expect(course.endUnit, 2);
+      expect(course.isCustomTime, isTrue);
+      expect(course.customStartTime, '08:50');
+      expect(course.customEndTime, '09:35');
+    });
+
+    test('没有作息表时无法映射自定义时间课程', () {
+      final result = WarehouseCourseMapper.toCourseModels(<Course>[
+        Course(
+          name: '讲座',
+          day: 3,
+          isCustomTime: true,
+          customStartTime: '14:00',
+          customEndTime: '15:30',
+        ),
+      ]);
+
+      expect(result.courses, isEmpty);
+      expect(result.skippedCustomTime, 1);
     });
   });
 }

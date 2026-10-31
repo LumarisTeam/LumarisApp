@@ -14,6 +14,7 @@ import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/features/education/models/time_info.dart';
 import 'package:ios_club_app/features/education/services/course_service.dart';
 import 'package:ios_club_app/features/education/services/edu_time_service.dart';
+import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
 import 'package:ios_club_app/features/system/notifications/notification_service.dart';
 import 'package:ios_club_app/features/system/widget_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
@@ -374,17 +375,37 @@ class TaskExecutor {
     }
 
     try {
+      final imported = WarehouseImportStore.read();
+      final useImported = TimeService.isUsingImportedTable && imported != null;
+      final semesterStart = useImported
+          ? imported.config?.semesterStartDate
+          : _cachedTime?.startTime;
+      final semesterEnd = useImported
+          ? _importedSemesterEnd(imported)
+          : _cachedTime?.endTime;
       await WidgetService.updateScheduleSnapshot(
         courses: courses,
         tables: TimeService.tables,
-        semesterStart: _cachedTime?.startTime,
-        semesterEnd: _cachedTime?.endTime,
+        semesterStart: semesterStart,
+        semesterEnd: semesterEnd,
         weekStartDay: _cachedWeekStartDay,
       );
       AppLogger.debug('iOS 小组件课表快照更新成功');
     } catch (e) {
       AppLogger.debug('更新 iOS 小组件课表快照失败: $e');
     }
+  }
+
+  /// 适配仓库只下发开学日期和总周数，这里补出结束日期给小组件。
+  static String? _importedSemesterEnd(WarehouseImportedTimetable imported) {
+    final start = imported.config?.semesterStartDate;
+    final startDate = start == null ? null : DateTime.tryParse(start);
+    if (startDate == null) return null;
+    final totalWeeks = imported.config?.semesterTotalWeeks ?? 20;
+    final end = startDate.add(Duration(days: totalWeeks * 7 - 1));
+    final month = end.month.toString().padLeft(2, '0');
+    final day = end.day.toString().padLeft(2, '0');
+    return '${end.year.toString().padLeft(4, '0')}-$month-$day';
   }
 
   /// 从缓存更新今日课程小组件

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
+import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
 import '../apis/course_api.dart';
@@ -22,6 +23,13 @@ class ScheduleTimeService {
     try {
       if (!PrefsService.isInitialized) {
         return;
+      }
+
+      // 适配仓库导入的作息优先于学校服务端缓存；登录时会清理这份元数据。
+      // 仍然继续装载服务端缓存，保证退出导入后能立刻回到学校作息。
+      final imported = WarehouseImportStore.read();
+      if (imported != null && imported.timeSlots.isNotEmpty) {
+        TimeService.installImportedSlots(imported.timeSlots);
       }
 
       final raw = PrefsService.instance.getString(PrefsKeys.SCHEDULE_TIME_DATA);

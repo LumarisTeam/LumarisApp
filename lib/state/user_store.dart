@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
+import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/features/education/services/auth_session_guard.dart';
 import 'package:ios_club_app/features/education/services/education_cache_service.dart';
 import 'package:ios_club_app/features/education/services/education_logout_service.dart';
+import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 
@@ -38,6 +40,7 @@ class UserStore extends Notifier<UserState> {
           await prefs.remove(PrefsKeys.USER_DATA);
         } else {
           state = state.copyWith(userData: userData, isLogin: true);
+          await _clearImportedTimetable();
         }
       } catch (_) {
         await _clearUserData();
@@ -47,6 +50,13 @@ class UserStore extends Notifier<UserState> {
 
   Future<void> setUserData(UserData userData) async {
     state = state.copyWith(userData: userData, isLogin: true);
+    await _clearImportedTimetable();
+  }
+
+  /// 登录后改用学校服务端的作息/学期数据，清理游客的适配仓库导入状态。
+  Future<void> _clearImportedTimetable() async {
+    TimeService.clearImportedTable();
+    await WarehouseImportStore.clear();
   }
 
   Future<void> _clearUserData() async {
