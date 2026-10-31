@@ -270,10 +270,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: bf5367eb8bbb1d806d0536c5851796f8fff51fb4
+      resolved-ref: e1090f1f0577408b37be2323ffb663dcd82fd08b
       url: "https://github.com/LumarisTeam/curriculum.git"
     source: git
-    version: "0.1.0"
+    version: "0.2.0"
   dart_earcut:
     dependency: transitive
     description:
