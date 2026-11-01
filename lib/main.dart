@@ -102,12 +102,15 @@ void main() async {
     await windowManager.ensureInitialized();
     final appName = AppLocaleService.currentL10n().appName;
 
-    // 所有桌面端都使用系统原生标题栏，Flutter 内容从标题栏下方开始。
+    // macOS 将 Flutter 工具栏绘制到透明标题栏内，保留系统窗口按钮。
     WindowOptions windowOptions = WindowOptions(
       minimumSize: Size(800, 600),
       center: true,
       skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.normal,
+      titleBarStyle: PlatformUtils.isMacOS
+          ? TitleBarStyle.hidden
+          : TitleBarStyle.normal,
+      windowButtonVisibility: true,
       title: appName,
     );
 

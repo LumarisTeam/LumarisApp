@@ -1,12 +1,17 @@
-import 'package:material_ui/material_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:ios_club_app/core/utils/sidebar_destination.dart';
-import 'package:ios_club_app/platform/macos/macos_sidebar.dart';
+import 'package:window_manager/window_manager.dart';
+
+import '../../core/extensions/localization_extensions.dart';
+import '../../core/utils/app_logger.dart';
+import '../../core/utils/sidebar_destination.dart';
+import 'macos_sidebar.dart';
 
 /// macOS 窗口外壳：左侧侧边栏 + 右侧内容区。
 ///
-/// 取代 macos_ui 的 `MacosWindow`。标题栏交还系统原生绘制，因此这里只负责
-/// 内容区布局和侧边栏宽度。
+/// 顶部工具栏与系统红黄绿按钮共用一行，替代标准窗口标题栏。
+/// 原生侧将内容扩展到透明标题栏，并为 Flutter 工具栏转发鼠标事件。
 class MacosShell extends StatefulWidget {
   const MacosShell({
     super.key,
@@ -14,6 +19,8 @@ class MacosShell extends StatefulWidget {
     required this.items,
     required this.selectedIndex,
     required this.onItemSelected,
+    this.toolbar,
+    this.controller,
     this.initialWidth = 220,
     this.minWidth = 180,
     this.maxWidth = 280,
@@ -23,6 +30,8 @@ class MacosShell extends StatefulWidget {
   final List<SidebarDestination> items;
   final int selectedIndex;
   final ValueChanged<int> onItemSelected;
+  final PreferredSizeWidget? toolbar;
+  final McSidebarController? controller;
 
   /// 侧边栏初始宽度。
   final double initialWidth;
@@ -38,81 +47,127 @@ class MacosShell extends StatefulWidget {
 }
 
 class _MacosShellState extends State<MacosShell> {
-  /// 拖到比 [MacosShell.minWidth] 再窄这么多的位置时收起侧边栏，
-  /// 对应 macos_ui 的 `Sidebar.dragClosedBuffer`。
-  static const double _dragClosedBuffer = 90;
+  McSidebarController? _ownedController;
+  bool _canPop = false;
 
-  late double _width = widget.initialWidth;
-  bool _visible = true;
-  double _dragStartWidth = 0;
-  double _dragStartX = 0;
-  MouseCursor _cursor = SystemMouseCursors.resizeColumn;
+  McSidebarController get _controller =>
+      widget.controller ?? (_ownedController ??= McSidebarController());
 
-  double get _visibleWidth => _visible ? _width : 0;
-
-  void _handleDragStart(DragStartDetails details) {
-    _dragStartWidth = _width;
-    _dragStartX = details.globalPosition.dx;
+  @override
+  void dispose() {
+    _ownedController?.dispose();
+    super.dispose();
   }
 
-  void _handleDragUpdate(DragUpdateDetails details) {
-    final newWidth = _dragStartWidth + details.globalPosition.dx - _dragStartX;
-    final clampedWidth = newWidth.clamp(widget.minWidth, widget.maxWidth);
+  Future<void> _startWindowDrag(DragStartDetails _) async {
+    try {
+      await windowManager.startDragging();
+    } catch (error) {
+      AppLogger.error('拖动 macOS 窗口失败', error: error);
+    }
+  }
 
-    setState(() {
-      _visible = newWidth >= widget.minWidth - _dragClosedBuffer;
-      _width = clampedWidth;
-      if (_width == widget.minWidth) {
-        _cursor = SystemMouseCursors.resizeRight;
-      } else if (_width == widget.maxWidth) {
-        _cursor = SystemMouseCursors.resizeLeft;
+  Future<void> _toggleWindowZoom() async {
+    try {
+      if (await windowManager.isMaximized()) {
+        await windowManager.unmaximize();
       } else {
-        _cursor = SystemMouseCursors.resizeColumn;
+        await windowManager.maximize();
       }
-    });
+    } catch (error) {
+      AppLogger.error('切换 macOS 窗口缩放失败', error: error);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // macos_ui 的 MacosWindow 会把 canvasColor（即 groupedBackground）铺满窗口，
-    // 这里补上同样的底色，避免内容区之外出现透明区域。
-    return ColoredBox(
-      color: context.mc.colors.groupedBackground,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Row(
-            children: [
-              SizedBox(
-                width: _visibleWidth,
-                child: _visible
-                    ? MacosSidebar(
-                        items: widget.items,
-                        selectedIndex: widget.selectedIndex,
-                        onItemSelected: widget.onItemSelected,
-                      )
-                    : null,
-              ),
-              Expanded(child: widget.child),
-            ],
+    final router = GoRouter.maybeOf(context);
+    final controller = _controller;
+    final toolbar =
+        widget.toolbar ??
+        PreferredSize(
+          preferredSize: const Size.fromHeight(52),
+          child: ListenableBuilder(
+            listenable: Listenable.merge([controller, ?router?.routerDelegate]),
+            builder: (context, _) {
+              final l10n = context.l10n;
+              final appTitle = l10n.appName;
+              final canPop =
+                  router?.canPop() ?? (ModalRoute.of(context)?.canPop ?? false);
+              return McToolBar(
+                title: Text(appTitle),
+                automaticallyImplyLeading: false,
+                // 与 MainFlutterWindow.swift 的原生窗口按钮预留区域一致。
+                leadingWidth: 160,
+                onBackgroundPanStart: _startWindowDrag,
+                onBackgroundDoubleTap: _toggleWindowZoom,
+                leading: Row(
+                  children: [
+                    const SizedBox(width: 80),
+                    SizedBox(
+                      width: 40,
+                      child: McToolBarIconButton(
+                        label: controller.isVisible
+                            ? l10n.collapseSidebar
+                            : l10n.expandSidebar,
+                        icon: const Icon(CupertinoIcons.sidebar_left),
+                        onPressed: controller.toggle,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 40,
+                      child: McToolBarIconButton(
+                        label: l10n.back,
+                        icon: const Icon(CupertinoIcons.chevron_back),
+                        onPressed: canPop
+                            ? () {
+                                if (router != null) {
+                                  router.pop();
+                                } else {
+                                  Navigator.of(context).maybePop();
+                                }
+                              }
+                            : null,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
-          // 拖拽热区骑在侧边栏右边缘上，与 macos_ui 一样向内容区探出 3px。
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: _visibleWidth - 4,
-            width: 7,
-            child: MouseRegion(
-              cursor: _cursor,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onHorizontalDragStart: _handleDragStart,
-                onHorizontalDragUpdate: _handleDragUpdate,
-              ),
+        );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(height: toolbar.preferredSize.height, child: toolbar),
+        Expanded(
+          child: McSidebarShell(
+            controller: controller,
+            initialWidth: widget.initialWidth,
+            minWidth: widget.minWidth,
+            maxWidth: widget.maxWidth,
+            sidebar: MacosSidebar(
+              items: widget.items,
+              selectedIndex: widget.selectedIndex,
+              onItemSelected: widget.onItemSelected,
+            ),
+            // GoRouter 通知时分支 Navigator 可能尚未挂载或更新完毕，
+            // 在导航栈实际更新后再刷新返回按钮（也覆盖直接打开详情页）。
+            child: NotificationListener<NavigationNotification>(
+              onNotification: (_) {
+                final canPop =
+                    router?.canPop() ??
+                    (ModalRoute.of(context)?.canPop ?? false);
+                if (_canPop != canPop) {
+                  setState(() => _canPop = canPop);
+                }
+                return false;
+              },
+              child: widget.child,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

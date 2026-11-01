@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/main_app.dart';
 import 'package:ios_club_app/ui/pages/campus_map_page/campus_map_page.dart';
 
+import '../core/utils/platform_utils.dart';
 import '../ui/pages/under_maintenance_screen/under_maintenance_screen.dart';
 import '../ui/pages/agreement_page/agreement_page.dart';
 import '../ui/pages/author_page/author_page.dart';
@@ -76,6 +77,11 @@ class AppRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =
       GlobalKey<NavigatorState>();
 
+  // macOS 详情页留在分支内容区，使侧边栏与顶部工具栏持续可见。
+  // 其他平台继续在根 Navigator 打开详情页。
+  static GlobalKey<NavigatorState>? get _detailNavigatorKey =>
+      PlatformUtils.isMacOS ? null : rootNavigatorKey;
+
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.home,
@@ -104,7 +110,7 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: 'ScheduleSetting',
-                    parentNavigatorKey: rootNavigatorKey,
+                    parentNavigatorKey: _detailNavigatorKey,
                     builder: (context, state) => const ScheduleSettingPage(),
                     routes: [
                       _detailRoute(
@@ -115,13 +121,13 @@ class AppRouter {
                   ),
                   GoRoute(
                     path: 'Personalization',
-                    parentNavigatorKey: rootNavigatorKey,
+                    parentNavigatorKey: _detailNavigatorKey,
                     builder: (context, state) =>
                         const SchedulePersonalizationPage(),
                   ),
                   GoRoute(
                     path: 'HtmlImport',
-                    parentNavigatorKey: rootNavigatorKey,
+                    parentNavigatorKey: _detailNavigatorKey,
                     builder: (context, state) => const HtmlImportPage(),
                     routes: [
                       _detailRoute(
@@ -136,7 +142,7 @@ class AppRouter {
                   ),
                   GoRoute(
                     path: 'WarehouseImport',
-                    parentNavigatorKey: rootNavigatorKey,
+                    parentNavigatorKey: _detailNavigatorKey,
                     builder: (context, state) => const WarehouseImportPage(),
                     routes: [
                       _detailRoute(
@@ -175,7 +181,7 @@ class AppRouter {
                   ),
                   GoRoute(
                     path: 'About',
-                    parentNavigatorKey: rootNavigatorKey,
+                    parentNavigatorKey: _detailNavigatorKey,
                     builder: (context, state) => const SettingPage(),
                     routes: [
                       _detailRoute(
@@ -290,7 +296,7 @@ class AppRouter {
   ) {
     return GoRoute(
       path: path,
-      parentNavigatorKey: rootNavigatorKey,
+      parentNavigatorKey: _detailNavigatorKey,
       builder: builder,
     );
   }

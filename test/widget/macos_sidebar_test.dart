@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
@@ -169,6 +170,118 @@ void main() {
   });
 
   group('MacosShell', () {
+    testWidgets('should_drag_and_zoom_window_when_header_background_is_used', (
+      tester,
+    ) async {
+      const channel = MethodChannel('window_manager');
+      final calls = <String>[];
+      var maximized = false;
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(channel, (
+        call,
+      ) async {
+        calls.add(call.method);
+        switch (call.method) {
+          case 'isFocused':
+            return true;
+          case 'isMaximized':
+            return maximized;
+          case 'maximize':
+            maximized = true;
+            return null;
+          case 'unmaximize':
+            maximized = false;
+            return null;
+          default:
+            return null;
+        }
+      });
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          channel,
+          null,
+        ),
+      );
+      await tester.pumpWidget(
+        _wrap(
+          MacosShell(
+            items: _items,
+            selectedIndex: 0,
+            onItemSelected: (_) {},
+            child: const Text('content'),
+          ),
+        ),
+      );
+      await tester.dragFrom(const Offset(600, 26), const Offset(50, 0));
+      await tester.pumpAndSettle();
+      expect(calls, contains('startDragging'));
+      Future<void> doubleTapHeader() async {
+        await tester.tapAt(const Offset(600, 26));
+        await tester.pump(const Duration(milliseconds: 50));
+        await tester.tapAt(const Offset(600, 26));
+        await tester.pumpAndSettle();
+      }
+
+      await doubleTapHeader();
+      expect(maximized, isTrue);
+      await doubleTapHeader();
+      expect(maximized, isFalse);
+      expect(calls, containsAllInOrder(['maximize', 'unmaximize']));
+    });
+
+    testWidgets(
+      'should_show_default_toolbar_and_toggle_its_owned_sidebar_controller',
+      (tester) async {
+        await tester.pumpWidget(
+          _wrap(
+            MacosShell(
+              items: _items,
+              selectedIndex: 0,
+              onItemSelected: (_) {},
+              child: const Text('content'),
+            ),
+          ),
+        );
+        expect(find.text('光序'), findsOneWidget);
+        final toolbar = find.byType(McToolBar);
+        expect(toolbar, findsOneWidget);
+        expect(tester.getTopLeft(toolbar), Offset.zero);
+        expect(tester.getSize(toolbar).width, 800);
+        expect(tester.getTopLeft(find.byType(MacosSidebar)).dy, 52);
+        final buttons = tester
+            .widgetList<McToolBarIconButton>(
+              find.descendant(
+                of: toolbar,
+                matching: find.byType(McToolBarIconButton),
+              ),
+            )
+            .toList();
+        expect(buttons, hasLength(2));
+        expect(buttons[1].onPressed, isNull);
+        final toggle = find.byIcon(CupertinoIcons.sidebar_left);
+        expect(tester.getCenter(toggle).dx, greaterThan(80));
+        await tester.tap(toggle);
+        await tester.pumpAndSettle();
+        expect(find.byType(MacosSidebar), findsNothing);
+        expect(
+          tester
+              .widget<McToolBarIconButton>(
+                find
+                    .ancestor(
+                      of: toggle,
+                      matching: find.byType(McToolBarIconButton),
+                    )
+                    .first,
+              )
+              .label,
+          '展开侧边栏',
+        );
+        await tester.tap(toggle);
+        await tester.pumpAndSettle();
+        expect(find.byType(MacosSidebar), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
     testWidgets('should lay the sidebar out next to the child at 220 wide', (
       WidgetTester tester,
     ) async {
@@ -185,6 +298,39 @@ void main() {
 
       expect(tester.getSize(find.byType(MacosSidebar)).width, 220);
       expect(find.text('content'), findsOneWidget);
+    });
+
+    testWidgets('should_toggle_sidebar_when_toolbar_control_is_activated', (
+      tester,
+    ) async {
+      final controller = McSidebarController();
+      await tester.pumpWidget(
+        _wrap(
+          MacosShell(
+            items: _items,
+            selectedIndex: 0,
+            onItemSelected: (_) {},
+            controller: controller,
+            toolbar: McToolBar(
+              leading: McToolBarIconButton(
+                label: '切换侧边栏',
+                icon: const Icon(CupertinoIcons.sidebar_left),
+                onPressed: controller.toggle,
+              ),
+              title: const Text('工具栏标题'),
+            ),
+            child: const Text('content'),
+          ),
+        ),
+      );
+      expect(find.byType(MacosSidebar), findsOneWidget);
+      await tester.tap(find.byIcon(CupertinoIcons.sidebar_left));
+      await tester.pumpAndSettle();
+      expect(find.byType(MacosSidebar), findsNothing);
+      expect(find.text('工具栏标题'), findsOneWidget);
+      expect(find.text('content'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+      controller.dispose();
     });
 
     testWidgets('should report the tapped index', (WidgetTester tester) async {
