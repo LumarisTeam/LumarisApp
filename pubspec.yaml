@@ -123,18 +123,17 @@ flutter_launcher_icons:
   ios: true
   macos:
     generate: true
-    image_path: "assets/mac_icon.png"
+    image_path: "assets/icon.png"
   image_path: "assets/icon.png"  # 提供 1024x1024 原始图标
   min_sdk_android: 21
 
 flutter_native_splash:
   color: "#FFFFFF"
-  # 启动页用带圆角的 c_icon（icon.png 已改为无圆角全幅图标，供启动器裁切使用）
-  image: assets/c_icon.png
+  image: assets/icon.png
   android: true
   ios: true
   color_dark: "#121212"
-  image_dark: assets/c_icon.png
+  image_dark: assets/mac_icon.png
   web: true
 
 msix_config:

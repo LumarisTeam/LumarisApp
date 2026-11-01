@@ -25,7 +25,7 @@
   </defs>
 
   <!-- 背景底色 -->
-  <rect width="240" height="240" fill="url(#bgGrad)"/>
+  <rect width="240" height="240" rx="54" fill="url(#bgGrad)"/>
 
   <!-- 日历图标 -->
   <g transform="translate(120,120) scale(6.2) translate(-12,-12)">
