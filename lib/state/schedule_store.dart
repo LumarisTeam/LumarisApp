@@ -358,12 +358,9 @@ class ScheduleStore extends Notifier<ScheduleState> {
     state = state.copyWith(currentPage: page);
   }
 
-  Future<void> toggleShowTomorrow() async {
-    final settingsStore = ref.read(settingsStoreProvider.notifier);
-    await settingsStore.setIsShowTomorrow(!settingsStore.isShowTomorrow);
-  }
-
-  List<CourseModel> getTodayCourses() {
+  ({bool showTomorrow, List<CourseModel> courses}) getHomeCourses({
+    required bool showTomorrow,
+  }) {
     final now = DateTime.now();
     final weekDay = now.weekday;
     var isShowingTomorrow = false;
@@ -371,7 +368,7 @@ class ScheduleStore extends Notifier<ScheduleState> {
     final weekIndex = state.currentWeek;
 
     if (weekIndex < 0 || weekIndex >= state.allCourses.length) {
-      return [];
+      return (showTomorrow: false, courses: <CourseModel>[]);
     }
 
     // Index 0 is the unfiltered "all schedules" bucket, not a real semester
@@ -405,7 +402,7 @@ class ScheduleStore extends Notifier<ScheduleState> {
     filteredCourses = CourseModel.mergeSameNameCourses(filteredCourses)
       ..sort((a, b) => a.startUnit.compareTo(b.startUnit));
 
-    if (isShowTomorrow && filteredCourses.isEmpty) {
+    if (showTomorrow && filteredCourses.isEmpty) {
       final tomorrow = now.add(const Duration(days: 1));
       var tomorrowWeekDay = tomorrow.weekday;
       if (tomorrowWeekDay > 7) {
@@ -432,17 +429,7 @@ class ScheduleStore extends Notifier<ScheduleState> {
       }
     }
 
-    // 仅在值真正变化时更新，避免 home 构建期间的 microtask 触发
-    // schedule store 的无限重建循环（Riverpod 按对象身份通知）。
-    if (state.showTomorrow != isShowingTomorrow) {
-      Future<void>.microtask(() {
-        if (state.showTomorrow != isShowingTomorrow) {
-          state = state.copyWith(showTomorrow: isShowingTomorrow);
-        }
-      });
-    }
-
-    return filteredCourses;
+    return (showTomorrow: isShowingTomorrow, courses: filteredCourses);
   }
 
   void clean() {

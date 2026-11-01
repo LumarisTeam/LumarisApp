@@ -325,40 +325,6 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: ShapeDecoration(
-              shape: McSmoothCorners.shape(McRadii.cardBorder),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.grid_on_outlined, color: colors.secondaryLabel),
-                    const SizedBox(width: 12),
-                    Text(
-                      l10n.showCourseGrid,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    CupertinoSwitch(
-                      value: settingsStore.showCourseGrid,
-                      onChanged: (value) {
-                        setState(() {
-                          settingsStore.setShowCourseGrid(value);
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

@@ -1101,6 +1101,17 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                   IconButton.filled(
                     onPressed: _isOpeningNavigation
                         ? null
+                        : () => _openNavigation(chooseApp: true),
+                    tooltip: l10n.otherNavigationMaps,
+                    icon: const Icon(Icons.more),
+                    style: IconButton.styleFrom(
+                      backgroundColor: colors.onAccent,
+                      foregroundColor: colors.primary,
+                    ),
+                  ),
+                  IconButton.filled(
+                    onPressed: _isOpeningNavigation
+                        ? null
                         : () => _openNavigation(),
                     tooltip: l10n.startWalkingNavigation,
                     icon: const Icon(Icons.directions_rounded),
@@ -1111,23 +1122,16 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                   ),
                 ],
               ),
-              Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: TextButton(
-                  onPressed: _isOpeningNavigation
-                      ? null
-                      : () => _openNavigation(chooseApp: true),
-                  child: Text(l10n.otherNavigationMaps),
-                ),
-              ),
               const SizedBox(height: 24),
-              _buildInfoSection(
-                title: l10n.buildingIntro,
-                content: _selectedPOI!.description,
-                icon: Icons.info_outline_rounded,
-                colors: colors,
-              ),
-              const SizedBox(height: 16),
+              if (_selectedPOI!.description.isNotEmpty) ...[
+                _buildInfoSection(
+                  title: l10n.buildingIntro,
+                  content: _selectedPOI!.description,
+                  icon: Icons.info_outline_rounded,
+                  colors: colors,
+                ),
+                const SizedBox(height: 16),
+              ],
               _buildInfoSection(
                 title: l10n.specificLocation,
                 content:

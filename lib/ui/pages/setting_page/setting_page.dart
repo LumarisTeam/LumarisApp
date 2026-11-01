@@ -137,24 +137,6 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                     onTap: () => AppRouter.push(AppRoutes.mcp),
                   ),
                   if (userState.isLogin) _buildLogoutTile(context, userStore),
-                  McListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    leading: Icon(
-                      CupertinoIcons.grid,
-                      size: 20,
-                      color: colors.tertiaryLabel,
-                    ),
-                    title: Text(context.l10n.showCourseGrid),
-                    trailing: CupertinoSwitch(
-                      value: settings.showCourseGrid,
-                      onChanged: (value) {
-                        settingsStore.setShowCourseGrid(value);
-                      },
-                    ),
-                  ),
                   if (kDebugMode)
                     McListTile(
                       contentPadding: const EdgeInsets.symmetric(

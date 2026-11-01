@@ -31,8 +31,14 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final scheduleState = ref.watch(scheduleStoreProvider);
+    ref.watch(scheduleStoreProvider);
+    final showTomorrow = ref.watch(
+      settingsStoreProvider.select((settings) => settings.isShowTomorrow),
+    );
     final scheduleStore = ref.read(scheduleStoreProvider.notifier);
+    final homeCourses = scheduleStore.getHomeCourses(
+      showTomorrow: showTomorrow,
+    );
     final isTablet = screenWidth > 600;
     final l10n = context.l10n;
 
@@ -44,7 +50,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                scheduleState.showTomorrow
+                homeCourses.showTomorrow
                     ? l10n.tomorrowSchedule
                     : l10n.todayScheduleLabel,
                 style: const TextStyle(
@@ -61,9 +67,6 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                     content: Consumer(
                       builder: (context, ref, child) {
                         final settings = ref.watch(settingsStoreProvider);
-                        final scheduleStore = ref.read(
-                          scheduleStoreProvider.notifier,
-                        );
                         final settingsStore = ref.read(
                           settingsStoreProvider.notifier,
                         );
@@ -76,7 +79,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                               trailing: CupertinoSwitch(
                                 value: settings.isShowTomorrow,
                                 onChanged: (value) async {
-                                  await scheduleStore.toggleShowTomorrow();
+                                  await settingsStore.setIsShowTomorrow(value);
                                 },
                               ),
                             ),
@@ -111,7 +114,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
               padding: EdgeInsets.zero,
               child: Builder(
                 builder: (context) {
-                  final todayCourses = scheduleStore.getTodayCourses();
+                  final todayCourses = homeCourses.courses;
 
                   return todayCourses.isEmpty
                       ? Padding(
