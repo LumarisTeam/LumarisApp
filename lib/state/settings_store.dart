@@ -144,6 +144,12 @@ class SettingsStore extends Notifier<SettingsState> {
         backgroundImageFor(isDark: isDark).isNotEmpty;
   }
 
+  /// 课表颜色使用的亮暗模式，自定义壁纸可覆盖系统主题。
+  bool scheduleIsDark({required bool systemIsDark}) {
+    if (!hasBackgroundFor(isDark: systemIsDark)) return systemIsDark;
+    return backgroundIsDarkFor(isDark: systemIsDark) ?? systemIsDark;
+  }
+
   String get schoolId => state.schoolId;
   bool get hasAcceptedAgreement => state.hasAcceptedAgreement;
   AppLocaleCode get localeCode => state.localeCode;

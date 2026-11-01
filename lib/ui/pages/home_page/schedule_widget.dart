@@ -9,7 +9,8 @@ import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
 import 'package:ios_club_app/ui/components/empty_widget.dart';
 import 'package:ios_club_app/state/settings_store.dart';
-import 'package:ios_club_app/core/services/course_color_manager.dart';
+import 'package:ios_club_app/core/services/schedule_color_resolver.dart';
+import 'package:ios_club_app/state/schedule_style_store.dart';
 
 import 'package:ios_club_app/features/system/notifications/notification_service.dart';
 import 'package:ios_club_app/ui/components/schedule/course_detail_sheet.dart';
@@ -36,6 +37,12 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
       settingsStoreProvider.select((settings) => settings.isShowTomorrow),
     );
     final scheduleStore = ref.read(scheduleStoreProvider.notifier);
+    ref.watch(settingsStoreProvider);
+    final settingsStore = ref.read(settingsStoreProvider.notifier);
+    final isDark = settingsStore.scheduleIsDark(
+      systemIsDark: Theme.of(context).brightness == Brightness.dark,
+    );
+    final style = ref.watch(scheduleStyleStoreProvider);
     final homeCourses = scheduleStore.getHomeCourses(
       showTomorrow: showTomorrow,
     );
@@ -148,7 +155,22 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                             );
                             return McAnimatedListItem(
                               index: index,
-                              child: _buildScheduleItem(course, item, isTablet),
+                              child: _buildScheduleItem(
+                                course,
+                                item,
+                                isTablet,
+                                isDark,
+                                ScheduleColorResolver.colorForCourse(
+                                  course,
+                                  isDark
+                                      ? style.darkColorPool
+                                      : style.lightColorPool,
+                                  style.courseColorOverrides,
+                                  themeId: isDark
+                                      ? style.darkColorPoolThemeId
+                                      : style.lightColorPoolThemeId,
+                                ),
+                              ),
                             );
                           }).toList(),
                         );
@@ -165,6 +187,8 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
     CourseModel course,
     ScheduleItem item,
     bool isTablet,
+    bool isDark,
+    Color courseColor,
   ) {
     final colors = context.mc.colors;
     return Material(
@@ -175,7 +199,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
         borderRadius: McRadii.cardBorder,
         customBorder: McSmoothCorners.shape(McRadii.cardBorder),
         onTap: () {
-          CourseDetailSheet.show(context, course);
+          CourseDetailSheet.show(context, course, isDark: isDark);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -183,10 +207,11 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
             children: [
               const SizedBox(width: 20),
               Container(
+                key: const ValueKey('homeCourseColorBar'),
                 width: 5,
                 height: 52,
                 decoration: ShapeDecoration(
-                  color: CourseColorManager.generateSoftColor(item.title),
+                  color: courseColor,
                   shape: McSmoothCorners.shape(McRadii.xsBorder),
                 ),
               ),

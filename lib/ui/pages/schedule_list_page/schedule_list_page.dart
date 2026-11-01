@@ -91,11 +91,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     );
     final hasCustomBackground =
         settings.scheduleBackground == 'custom' && backgroundPath.isNotEmpty;
-    // 有自定义背景时，根据背景亮暗决定文字/颜色池；未计算完成前回退系统主题。
-    final isDark = hasCustomBackground
-        ? (settingsStore.backgroundIsDarkFor(isDark: systemIsDark) ??
-              systemIsDark)
-        : systemIsDark;
+    final isDark = settingsStore.scheduleIsDark(systemIsDark: systemIsDark);
 
     final visualStyle = ScheduleVisualStyle.from(
       styleState: styleState,

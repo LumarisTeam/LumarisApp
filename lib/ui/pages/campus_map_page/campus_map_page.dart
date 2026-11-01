@@ -854,6 +854,9 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                                 ),
                                 border: InputBorder.none,
                                 isDense: true,
+                                filled: false,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
                                 suffixIcon: mapState.searchQuery.isNotEmpty
                                     ? GestureDetector(
                                         onTap: () {
