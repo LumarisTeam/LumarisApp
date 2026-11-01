@@ -2455,4 +2455,16 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get resetNorth => 'Повернуть на север';
+
+  @override
+  String get appThemeColor => 'Цвет темы';
+
+  @override
+  String get appThemeColorBlue => 'Синий';
+
+  @override
+  String get appThemeColorGreen => 'Зелёный';
+
+  @override
+  String get appThemeColorOrange => 'Оранжевый';
 }

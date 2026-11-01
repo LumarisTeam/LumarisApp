@@ -834,5 +834,9 @@
   "navigationGoogleMaps": "Google Maps",
   "navigationAmap": "Amap",
   "navigationBaiduMaps": "Baidu Maps",
-  "resetNorth": "Nach Norden ausrichten"
+  "resetNorth": "Nach Norden ausrichten",
+  "appThemeColor": "Designfarbe",
+  "appThemeColorBlue": "Blau",
+  "appThemeColorGreen": "Grün",
+  "appThemeColorOrange": "Orange"
 }

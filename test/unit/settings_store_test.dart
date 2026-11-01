@@ -5,6 +5,7 @@ import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/state/settings_store.dart';
+import 'package:ios_club_app/ui/theme/app_theme_color.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -34,10 +35,28 @@ void main() {
       expect(settingsStore.fontFamily, '');
       expect(settingsStore.showCourseGrid, isFalse);
       expect(settingsStore.themeMode, ThemeMode.system);
+      expect(settingsStore.themeColor, AppThemeColor.blue);
       expect(settingsStore.scheduleBackground, '');
       expect(settingsStore.customBackgroundImage, '');
       expect(settingsStore.schoolId, School.defaultCode);
       expect(settingsStore.currentSchool?.code, School.defaultCode);
+    });
+
+    test('should persist and reload the selected theme color', () async {
+      final settingsStore = store();
+      await settingsStore.setThemeColor(AppThemeColor.green);
+      expect(settingsStore.themeColor, AppThemeColor.green);
+      expect(PrefsService.instance.getString(PrefsKeys.THEME_COLOR), 'green');
+      await settingsStore.reload();
+      expect(settingsStore.themeColor, AppThemeColor.green);
+    });
+
+    test('should use blue when stored theme color is unknown', () async {
+      await PrefsService.instance.setString(PrefsKeys.THEME_COLOR, 'unknown');
+      expect(store().themeColor, AppThemeColor.blue);
+      for (final removed in ['purple', 'red']) {
+        expect(AppThemeColor.fromPreference(removed), AppThemeColor.blue);
+      }
     });
 
     test('should load existing values from prefs', () async {

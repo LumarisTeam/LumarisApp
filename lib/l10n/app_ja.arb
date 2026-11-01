@@ -837,5 +837,9 @@
   "navigationGoogleMaps": "Google マップ",
   "navigationAmap": "高徳地図",
   "navigationBaiduMaps": "百度地図",
-  "resetNorth": "北を上に戻す"
+  "resetNorth": "北を上に戻す",
+  "appThemeColor": "テーマカラー",
+  "appThemeColorBlue": "青",
+  "appThemeColorGreen": "緑",
+  "appThemeColorOrange": "オレンジ"
 }

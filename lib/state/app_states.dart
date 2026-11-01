@@ -10,6 +10,7 @@ import 'package:ios_club_app/features/education/models/plan_course.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/core/services/app_locale_service.dart';
 import 'package:ios_club_app/state/schedule_color_themes.dart';
+import '../ui/theme/app_theme_color.dart';
 
 part 'app_states.freezed.dart';
 
@@ -91,6 +92,7 @@ class SettingsState with _$SettingsState {
     @Default('') String fontFamily,
     @Default(false) bool showCourseGrid,
     @Default(ThemeMode.system) ThemeMode themeMode,
+    @Default(AppThemeColor.blue) AppThemeColor themeColor,
     @Default(AppLocaleCode.system) AppLocaleCode localeCode,
     @Default('') String scheduleBackground,
     @Default('') String customBackgroundImage,

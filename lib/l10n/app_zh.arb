@@ -1605,5 +1605,13 @@
   "navigationBaiduMaps": "百度地图",
   "@navigationBaiduMaps": {"description": "外部地图导航文案"},
   "resetNorth": "正北朝上",
-  "@resetNorth": {"description": "校园地图指南针按钮：把旋转后的地图校正为正北朝上"}
+  "@resetNorth": {"description": "校园地图指南针按钮：把旋转后的地图校正为正北朝上"},
+  "appThemeColor": "主题色",
+  "@appThemeColor": {"description": "App accent color setting"},
+  "appThemeColorBlue": "蓝色",
+  "@appThemeColorBlue": {"description": "App accent color setting"},
+  "appThemeColorGreen": "绿色",
+  "@appThemeColorGreen": {"description": "App accent color setting"},
+  "appThemeColorOrange": "橙色",
+  "@appThemeColorOrange": {"description": "App accent color setting"}
 }

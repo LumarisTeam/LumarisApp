@@ -833,5 +833,9 @@
   "navigationGoogleMaps": "Google Карты",
   "navigationAmap": "Amap",
   "navigationBaiduMaps": "Baidu Maps",
-  "resetNorth": "Повернуть на север"
+  "resetNorth": "Повернуть на север",
+  "appThemeColor": "Цвет темы",
+  "appThemeColorBlue": "Синий",
+  "appThemeColorGreen": "Зелёный",
+  "appThemeColorOrange": "Оранжевый"
 }

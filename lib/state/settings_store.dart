@@ -5,6 +5,7 @@ import 'package:ios_club_app/features/system/notifications/notification_service.
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/core/services/app_locale_service.dart';
 import 'package:ios_club_app/ui/theme/theme_mode_codec.dart';
+import '../ui/theme/app_theme_color.dart';
 
 import '../features/basic/models/school.dart';
 import '../features/basic/services/school_api.dart';
@@ -89,6 +90,7 @@ class SettingsStore extends Notifier<SettingsState> {
   String get fontFamily => state.fontFamily;
   bool get showCourseGrid => state.showCourseGrid;
   ThemeMode get themeMode => state.themeMode;
+  AppThemeColor get themeColor => state.themeColor;
   String get scheduleBackground => state.scheduleBackground;
   String get customBackgroundImage => state.customBackgroundImage;
   bool? get customBackgroundIsDark => state.customBackgroundIsDark;
@@ -183,6 +185,9 @@ class SettingsStore extends Notifier<SettingsState> {
       themeMode: ThemeModeCodec.fromPreference(
         prefs.getString(PrefsKeys.THEME_MODE),
       ),
+      themeColor: AppThemeColor.fromPreference(
+        prefs.getString(PrefsKeys.THEME_COLOR),
+      ),
       localeCode: AppLocaleService.fromPreference(
         prefs.getString(PrefsKeys.LOCALE_CODE),
       ),
@@ -270,6 +275,11 @@ class SettingsStore extends Notifier<SettingsState> {
       PrefsKeys.THEME_MODE,
       ThemeModeCodec.toPreference(value),
     );
+  }
+
+  Future<void> setThemeColor(AppThemeColor value) async {
+    state = state.copyWith(themeColor: value);
+    await PrefsService.instance.setString(PrefsKeys.THEME_COLOR, value.name);
   }
 
   Future<void> setLocaleCode(AppLocaleCode value) async {

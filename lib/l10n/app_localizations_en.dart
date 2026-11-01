@@ -2445,4 +2445,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetNorth => 'Reset to north';
+
+  @override
+  String get appThemeColor => 'Theme color';
+
+  @override
+  String get appThemeColorBlue => 'Blue';
+
+  @override
+  String get appThemeColorGreen => 'Green';
+
+  @override
+  String get appThemeColorOrange => 'Orange';
 }

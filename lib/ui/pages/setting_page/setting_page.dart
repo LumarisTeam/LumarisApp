@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../../theme/app_theme_color.dart';
+
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter/foundation.dart';
@@ -81,6 +83,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 _buildSettingsGroup([
                   _buildRefreshTile(context),
                   _buildThemeModeTile(context, settings, settingsStore),
+                  _buildThemeColorTile(context, settings, settingsStore),
                   const LanguageSetting(),
                   const ShowTomorrowSetting(),
                   if (PlatformUtils.isMobile) const RemindSetting(),
@@ -280,6 +283,91 @@ class _SettingPageState extends ConsumerState<SettingPage> {
       showChevron: true,
       onTap: () => _showThemeModePicker(context, settingsStore),
     );
+  }
+
+  Widget _buildThemeColorTile(
+    BuildContext context,
+    SettingsState settings,
+    SettingsStore settingsStore,
+  ) {
+    final colors = context.mc.colors;
+    return McListTile(
+      leading: Icon(CupertinoIcons.paintbrush, size: 20, color: colors.primary),
+      title: Text(context.l10n.appThemeColor),
+      subtitle: Text(_themeColorLabel(context, settings.themeColor)),
+      showChevron: true,
+      onTap: () => _showThemeColorPicker(context, settingsStore),
+    );
+  }
+
+  String _themeColorLabel(BuildContext context, AppThemeColor color) {
+    final l10n = context.l10n;
+    return switch (color) {
+      AppThemeColor.blue => l10n.appThemeColorBlue,
+      AppThemeColor.green => l10n.appThemeColorGreen,
+      AppThemeColor.orange => l10n.appThemeColorOrange,
+    };
+  }
+
+  Future<void> _showThemeColorPicker(
+    BuildContext context,
+    SettingsStore settingsStore,
+  ) async {
+    final colors = context.mc.colors;
+    final current = settingsStore.themeColor;
+    final selected = await showCupertinoModalPopup<AppThemeColor>(
+      context: context,
+      builder: (popupContext) => MediaQuery(
+        data: MediaQuery.of(
+          popupContext,
+        ).copyWith(platformBrightness: colors.brightness),
+        child: CupertinoActionSheet(
+          title: Text(context.l10n.appThemeColor),
+          actions: [
+            for (final color in AppThemeColor.values)
+              CupertinoActionSheetAction(
+                onPressed: () => Navigator.of(popupContext).pop(color),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: color.colorsFor(colors.brightness).primary,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      _themeColorLabel(context, color),
+                      style: TextStyle(
+                        color: color == current ? colors.primary : colors.label,
+                        fontWeight: color == current
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                      ),
+                    ),
+                    if (color == current) ...[
+                      const SizedBox(width: 8),
+                      Icon(
+                        CupertinoIcons.check_mark,
+                        size: 18,
+                        color: colors.primary,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.of(popupContext).pop(),
+            child: Text(context.l10n.cancel),
+          ),
+        ),
+      ),
+    );
+    if (selected != null) await settingsStore.setThemeColor(selected);
   }
 
   Future<void> _syncHomeWidget() async {

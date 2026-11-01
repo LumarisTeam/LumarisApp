@@ -197,13 +197,13 @@ class _AppLauncher extends ConsumerWidget {
         AppLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
       ],
-      theme: McThemeData.materialTheme(
-        McColors.light,
+      theme: settingsStore.themeColor.materialTheme(
+        Brightness.light,
         fontFamily: fontFamily,
         locale: locale,
       ),
-      darkTheme: McThemeData.materialTheme(
-        McColors.dark,
+      darkTheme: settingsStore.themeColor.materialTheme(
+        Brightness.dark,
         fontFamily: fontFamily,
         locale: locale,
       ),

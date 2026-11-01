@@ -834,5 +834,9 @@
   "navigationGoogleMaps": "Google 지도",
   "navigationAmap": "Amap",
   "navigationBaiduMaps": "Baidu 지도",
-  "resetNorth": "북쪽을 위로"
+  "resetNorth": "북쪽을 위로",
+  "appThemeColor": "테마 색상",
+  "appThemeColorBlue": "파란색",
+  "appThemeColorGreen": "초록색",
+  "appThemeColorOrange": "주황색"
 }

@@ -2373,4 +2373,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get resetNorth => '북쪽을 위로';
+
+  @override
+  String get appThemeColor => '테마 색상';
+
+  @override
+  String get appThemeColorBlue => '파란색';
+
+  @override
+  String get appThemeColorGreen => '초록색';
+
+  @override
+  String get appThemeColorOrange => '주황색';
 }

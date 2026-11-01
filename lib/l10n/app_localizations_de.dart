@@ -2490,4 +2490,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get resetNorth => 'Nach Norden ausrichten';
+
+  @override
+  String get appThemeColor => 'Designfarbe';
+
+  @override
+  String get appThemeColorBlue => 'Blau';
+
+  @override
+  String get appThemeColorGreen => 'Grün';
+
+  @override
+  String get appThemeColorOrange => 'Orange';
 }

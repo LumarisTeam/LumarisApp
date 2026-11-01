@@ -647,6 +647,7 @@ mixin _$SettingsState {
   String get fontFamily => throw _privateConstructorUsedError;
   bool get showCourseGrid => throw _privateConstructorUsedError;
   ThemeMode get themeMode => throw _privateConstructorUsedError;
+  AppThemeColor get themeColor => throw _privateConstructorUsedError;
   AppLocaleCode get localeCode => throw _privateConstructorUsedError;
   String get scheduleBackground => throw _privateConstructorUsedError;
   String get customBackgroundImage => throw _privateConstructorUsedError;
@@ -680,6 +681,7 @@ abstract class $SettingsStateCopyWith<$Res> {
     String fontFamily,
     bool showCourseGrid,
     ThemeMode themeMode,
+    AppThemeColor themeColor,
     AppLocaleCode localeCode,
     String scheduleBackground,
     String customBackgroundImage,
@@ -715,6 +717,7 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
     Object? fontFamily = null,
     Object? showCourseGrid = null,
     Object? themeMode = null,
+    Object? themeColor = null,
     Object? localeCode = null,
     Object? scheduleBackground = null,
     Object? customBackgroundImage = null,
@@ -764,6 +767,10 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
                 ? _value.themeMode
                 : themeMode // ignore: cast_nullable_to_non_nullable
                       as ThemeMode,
+            themeColor: null == themeColor
+                ? _value.themeColor
+                : themeColor // ignore: cast_nullable_to_non_nullable
+                      as AppThemeColor,
             localeCode: null == localeCode
                 ? _value.localeCode
                 : localeCode // ignore: cast_nullable_to_non_nullable
@@ -829,6 +836,7 @@ abstract class _$$SettingsStateImplCopyWith<$Res>
     String fontFamily,
     bool showCourseGrid,
     ThemeMode themeMode,
+    AppThemeColor themeColor,
     AppLocaleCode localeCode,
     String scheduleBackground,
     String customBackgroundImage,
@@ -863,6 +871,7 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
     Object? fontFamily = null,
     Object? showCourseGrid = null,
     Object? themeMode = null,
+    Object? themeColor = null,
     Object? localeCode = null,
     Object? scheduleBackground = null,
     Object? customBackgroundImage = null,
@@ -912,6 +921,10 @@ class __$$SettingsStateImplCopyWithImpl<$Res>
             ? _value.themeMode
             : themeMode // ignore: cast_nullable_to_non_nullable
                   as ThemeMode,
+        themeColor: null == themeColor
+            ? _value.themeColor
+            : themeColor // ignore: cast_nullable_to_non_nullable
+                  as AppThemeColor,
         localeCode: null == localeCode
             ? _value.localeCode
             : localeCode // ignore: cast_nullable_to_non_nullable
@@ -970,6 +983,7 @@ class _$SettingsStateImpl implements _SettingsState {
     this.fontFamily = '',
     this.showCourseGrid = false,
     this.themeMode = ThemeMode.system,
+    this.themeColor = AppThemeColor.blue,
     this.localeCode = AppLocaleCode.system,
     this.scheduleBackground = '',
     this.customBackgroundImage = '',
@@ -1011,6 +1025,9 @@ class _$SettingsStateImpl implements _SettingsState {
   final ThemeMode themeMode;
   @override
   @JsonKey()
+  final AppThemeColor themeColor;
+  @override
+  @JsonKey()
   final AppLocaleCode localeCode;
   @override
   @JsonKey()
@@ -1039,7 +1056,7 @@ class _$SettingsStateImpl implements _SettingsState {
 
   @override
   String toString() {
-    return 'SettingsState(isRemind: $isRemind, remindTime: $remindTime, isShowTomorrow: $isShowTomorrow, pageIndex: $pageIndex, enableHapticFeedback: $enableHapticFeedback, updateIgnored: $updateIgnored, fontFamily: $fontFamily, showCourseGrid: $showCourseGrid, themeMode: $themeMode, localeCode: $localeCode, scheduleBackground: $scheduleBackground, customBackgroundImage: $customBackgroundImage, customBackgroundIsDark: $customBackgroundIsDark, customBackgroundImageLight: $customBackgroundImageLight, customBackgroundImageDark: $customBackgroundImageDark, customBackgroundIsDarkLight: $customBackgroundIsDarkLight, customBackgroundIsDarkDark: $customBackgroundIsDarkDark, schoolId: $schoolId, hasAcceptedAgreement: $hasAcceptedAgreement)';
+    return 'SettingsState(isRemind: $isRemind, remindTime: $remindTime, isShowTomorrow: $isShowTomorrow, pageIndex: $pageIndex, enableHapticFeedback: $enableHapticFeedback, updateIgnored: $updateIgnored, fontFamily: $fontFamily, showCourseGrid: $showCourseGrid, themeMode: $themeMode, themeColor: $themeColor, localeCode: $localeCode, scheduleBackground: $scheduleBackground, customBackgroundImage: $customBackgroundImage, customBackgroundIsDark: $customBackgroundIsDark, customBackgroundImageLight: $customBackgroundImageLight, customBackgroundImageDark: $customBackgroundImageDark, customBackgroundIsDarkLight: $customBackgroundIsDarkLight, customBackgroundIsDarkDark: $customBackgroundIsDarkDark, schoolId: $schoolId, hasAcceptedAgreement: $hasAcceptedAgreement)';
   }
 
   @override
@@ -1065,6 +1082,8 @@ class _$SettingsStateImpl implements _SettingsState {
                 other.showCourseGrid == showCourseGrid) &&
             (identical(other.themeMode, themeMode) ||
                 other.themeMode == themeMode) &&
+            (identical(other.themeColor, themeColor) ||
+                other.themeColor == themeColor) &&
             (identical(other.localeCode, localeCode) ||
                 other.localeCode == localeCode) &&
             (identical(other.scheduleBackground, scheduleBackground) ||
@@ -1114,6 +1133,7 @@ class _$SettingsStateImpl implements _SettingsState {
     fontFamily,
     showCourseGrid,
     themeMode,
+    themeColor,
     localeCode,
     scheduleBackground,
     customBackgroundImage,
@@ -1144,6 +1164,7 @@ abstract class _SettingsState implements SettingsState {
     final String fontFamily,
     final bool showCourseGrid,
     final ThemeMode themeMode,
+    final AppThemeColor themeColor,
     final AppLocaleCode localeCode,
     final String scheduleBackground,
     final String customBackgroundImage,
@@ -1174,6 +1195,8 @@ abstract class _SettingsState implements SettingsState {
   bool get showCourseGrid;
   @override
   ThemeMode get themeMode;
+  @override
+  AppThemeColor get themeColor;
   @override
   AppLocaleCode get localeCode;
   @override

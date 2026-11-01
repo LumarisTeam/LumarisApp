@@ -2356,4 +2356,16 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get resetNorth => '北を上に戻す';
+
+  @override
+  String get appThemeColor => 'テーマカラー';
+
+  @override
+  String get appThemeColorBlue => '青';
+
+  @override
+  String get appThemeColorGreen => '緑';
+
+  @override
+  String get appThemeColorOrange => 'オレンジ';
 }

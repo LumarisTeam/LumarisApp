@@ -2342,6 +2342,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get resetNorth => '正北朝上';
+
+  @override
+  String get appThemeColor => '主题色';
+
+  @override
+  String get appThemeColorBlue => '蓝色';
+
+  @override
+  String get appThemeColorGreen => '绿色';
+
+  @override
+  String get appThemeColorOrange => '橙色';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4683,4 +4695,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get resetNorth => '正北朝上';
+
+  @override
+  String get appThemeColor => '主題色';
+
+  @override
+  String get appThemeColorBlue => '藍色';
+
+  @override
+  String get appThemeColorGreen => '綠色';
+
+  @override
+  String get appThemeColorOrange => '橙色';
 }

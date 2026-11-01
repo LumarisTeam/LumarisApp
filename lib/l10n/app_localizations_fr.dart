@@ -2478,4 +2478,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get resetNorth => 'Remettre le nord en haut';
+
+  @override
+  String get appThemeColor => 'Couleur du thème';
+
+  @override
+  String get appThemeColorBlue => 'Bleu';
+
+  @override
+  String get appThemeColorGreen => 'Vert';
+
+  @override
+  String get appThemeColorOrange => 'Orange';
 }

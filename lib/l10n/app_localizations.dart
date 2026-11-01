@@ -4607,6 +4607,30 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'正北朝上'**
   String get resetNorth;
+
+  /// App accent color setting
+  ///
+  /// In zh, this message translates to:
+  /// **'主题色'**
+  String get appThemeColor;
+
+  /// App accent color setting
+  ///
+  /// In zh, this message translates to:
+  /// **'蓝色'**
+  String get appThemeColorBlue;
+
+  /// App accent color setting
+  ///
+  /// In zh, this message translates to:
+  /// **'绿色'**
+  String get appThemeColorGreen;
+
+  /// App accent color setting
+  ///
+  /// In zh, this message translates to:
+  /// **'橙色'**
+  String get appThemeColorOrange;
 }
 
 class _AppLocalizationsDelegate

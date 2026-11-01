@@ -91,6 +91,7 @@ class PrefsKeys {
   /// 课表网格线显示相关
   static const String SHOW_COURSE_GRID = 'show_course_grid';
   static const String THEME_MODE = 'theme_mode';
+  static const String THEME_COLOR = 'theme_color';
   static const String SCHEDULE_BACKGROUND = 'schedule_background';
   static const String CUSTOM_BACKGROUND_IMAGE = 'custom_background_image';
   static const String CUSTOM_BACKGROUND_IS_DARK = 'custom_background_is_dark';

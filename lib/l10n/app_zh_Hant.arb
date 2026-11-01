@@ -836,5 +836,9 @@
   "navigationGoogleMaps": "Google 地圖",
   "navigationAmap": "高德地圖",
   "navigationBaiduMaps": "百度地圖",
-  "resetNorth": "正北朝上"
+  "resetNorth": "正北朝上",
+  "appThemeColor": "主題色",
+  "appThemeColorBlue": "藍色",
+  "appThemeColorGreen": "綠色",
+  "appThemeColorOrange": "橙色"
 }
