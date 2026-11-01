@@ -123,17 +123,18 @@ flutter_launcher_icons:
   ios: true
   macos:
     generate: true
-    image_path: "assets/icon.png"
+    image_path: "assets/mac_icon.png"
   image_path: "assets/icon.png"  # 提供 1024x1024 原始图标
   min_sdk_android: 21
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/icon.png
+  # 启动图单独使用 512 源图（按源图尺寸 /4 显示），启动器图标仍用 1024 的 icon.png
+  image: assets/splash_icon.png
   android: true
   ios: true
   color_dark: "#121212"
-  image_dark: assets/mac_icon.png
+  image_dark: assets/splash_icon.png
   web: true
 
 msix_config:
