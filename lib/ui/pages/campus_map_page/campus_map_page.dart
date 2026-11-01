@@ -213,152 +213,162 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
               )
               .toList();
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isWide = constraints.maxWidth > 700;
-          final effectiveSidebarOpen = isWide && _isSidebarOpen;
-          // 平板窗口没有底部导航栏兜底，无论侧边栏展开还是收起都要有返回键。
-          final showBackButton =
-              isWide ||
-              MediaQuery.sizeOf(context).width > _tabletMinWindowWidth;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: isDarkMode
+            ? Brightness.light
+            : Brightness.dark,
+        statusBarBrightness: isDarkMode ? Brightness.dark : Brightness.light,
+        systemStatusBarContrastEnforced: false,
+      ),
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = constraints.maxWidth > 700;
+            final effectiveSidebarOpen = isWide && _isSidebarOpen;
+            // 平板窗口没有底部导航栏兜底，无论侧边栏展开还是收起都要有返回键。
+            final showBackButton =
+                isWide ||
+                MediaQuery.sizeOf(context).width > _tabletMinWindowWidth;
 
-          return Stack(
-            children: [
-              // 1. Map Layer (Now always full screen)
-              FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter: mapState.campusPOIs.isNotEmpty
-                      ? mapState.campusPOIs.first.position
-                      : const LatLng(34.2312, 108.9632),
-                  initialZoom: 16.0,
-                  maxZoom: _maxMapZoom,
-                  onMapEvent: _onMapEvent,
-                  onTap: (_, _) {
-                    setState(() => _selectedPOI = null);
-                    if (_sheetController.isAttached) {
-                      _sheetController.animateTo(
-                        0.0,
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeIn,
-                      );
-                    }
-                  },
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
-                    subdomains: const ['1', '2', '3', '4'],
+            return Stack(
+              children: [
+                // 1. Map Layer (Now always full screen)
+                FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: mapState.campusPOIs.isNotEmpty
+                        ? mapState.campusPOIs.first.position
+                        : const LatLng(34.2312, 108.9632),
+                    initialZoom: 16.0,
                     maxZoom: _maxMapZoom,
-                    maxNativeZoom: _maxNativeTileZoom,
-                    tileBuilder: isDarkMode
-                        ? (context, tileWidget, tile) {
-                            return ColorFiltered(
-                              colorFilter: const ColorFilter.matrix(<double>[
-                                -1, 0, 0, 0, 255, // R
-                                0, -1, 0, 0, 255, // G
-                                0, 0, -1, 0, 255, // B
-                                0, 0, 0, 1, 0, // A
-                              ]),
-                              child: ColorFiltered(
-                                colorFilter: ColorFilter.mode(
-                                  colors.primary.withValues(alpha: 0.05),
-                                  BlendMode.colorBurn,
-                                ),
-                                child: tileWidget,
-                              ),
-                            );
-                          }
-                        : null,
+                    onMapEvent: _onMapEvent,
+                    onTap: (_, _) {
+                      setState(() => _selectedPOI = null);
+                      if (_sheetController.isAttached) {
+                        _sheetController.animateTo(
+                          0.0,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeIn,
+                        );
+                      }
+                    },
                   ),
-                  MarkerLayer(
-                    markers: [
-                      ...filteredPOIs.map(
-                        (poi) => Marker(
-                          point: poi.position,
-                          width: 120,
-                          height: 60,
-                          child: GestureDetector(
-                            onTap: () => _onPOITap(poi),
-                            child: _buildPOIMarker(
-                              poi,
-                              colors,
-                              _selectedPOI == poi,
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+                      subdomains: const ['1', '2', '3', '4'],
+                      maxZoom: _maxMapZoom,
+                      maxNativeZoom: _maxNativeTileZoom,
+                      tileBuilder: isDarkMode
+                          ? (context, tileWidget, tile) {
+                              return ColorFiltered(
+                                colorFilter: const ColorFilter.matrix(<double>[
+                                  -1, 0, 0, 0, 255, // R
+                                  0, -1, 0, 0, 255, // G
+                                  0, 0, -1, 0, 255, // B
+                                  0, 0, 0, 1, 0, // A
+                                ]),
+                                child: ColorFiltered(
+                                  colorFilter: ColorFilter.mode(
+                                    colors.primary.withValues(alpha: 0.05),
+                                    BlendMode.colorBurn,
+                                  ),
+                                  child: tileWidget,
+                                ),
+                              );
+                            }
+                          : null,
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        ...filteredPOIs.map(
+                          (poi) => Marker(
+                            point: poi.position,
+                            width: 120,
+                            height: 60,
+                            child: GestureDetector(
+                              onTap: () => _onPOITap(poi),
+                              child: _buildPOIMarker(
+                                poi,
+                                colors,
+                                _selectedPOI == poi,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      if (mapState.currentLocation != null)
-                        Marker(
-                          point: mapState.currentLocation!,
-                          width: 60,
-                          height: 60,
-                          child: _buildMyLocationMarker(colors),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
+                        if (mapState.currentLocation != null)
+                          Marker(
+                            point: mapState.currentLocation!,
+                            width: 60,
+                            height: 60,
+                            child: _buildMyLocationMarker(colors),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
 
-              // 2. Search & Categories Panel (Top - Mobile Only)
-              if (!isWide)
+                // 2. Search & Categories Panel (Top - Mobile Only)
+                if (!isWide)
+                  Positioned(
+                    top: padding.top + 12,
+                    left: 16,
+                    right: 16,
+                    child: _buildFloatingTopPanel(
+                      mapState,
+                      colors,
+                      filteredPOIs,
+                      showBackButton: showBackButton,
+                    ),
+                  ),
+
+                // 3. Wide Screen Sidebar (Animated Floating)
+                if (isWide)
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOutCubic,
+                    top: padding.top + 20,
+                    left: effectiveSidebarOpen ? 20 : -320,
+                    bottom: 20,
+                    width: 320,
+                    child: _buildSidebar(mapState, colors, filteredPOIs),
+                  ),
+
+                // 4. Top-left Floating Controls (Wide Screen Only)
+                //    返回键跟随侧边栏折叠按钮一起移动，保证始终可见。
+                if (isWide)
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOutCubic,
+                    top: padding.top + 20,
+                    left: effectiveSidebarOpen ? 350 : 20,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildBackButton(colors),
+                        const SizedBox(width: 8),
+                        _buildSidebarToggle(colors),
+                      ],
+                    ),
+                  ),
+
+                // 5. Map Controls (Right)
                 Positioned(
-                  top: padding.top + 12,
-                  left: 16,
+                  bottom: isWide ? 40 : 120,
                   right: 16,
-                  child: _buildFloatingTopPanel(
-                    mapState,
-                    colors,
-                    filteredPOIs,
-                    showBackButton: showBackButton,
-                  ),
+                  child: _buildMapControls(mapState, colors),
                 ),
 
-              // 3. Wide Screen Sidebar (Animated Floating)
-              if (isWide)
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  top: padding.top + 20,
-                  left: effectiveSidebarOpen ? 20 : -320,
-                  bottom: 20,
-                  width: 320,
-                  child: _buildSidebar(mapState, colors, filteredPOIs),
-                ),
-
-              // 4. Top-left Floating Controls (Wide Screen Only)
-              //    返回键跟随侧边栏折叠按钮一起移动，保证始终可见。
-              if (isWide)
-                AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  curve: Curves.easeInOutCubic,
-                  top: padding.top + 20,
-                  left: effectiveSidebarOpen ? 350 : 20,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildBackButton(colors),
-                      const SizedBox(width: 8),
-                      _buildSidebarToggle(colors),
-                    ],
-                  ),
-                ),
-
-              // 5. Map Controls (Right)
-              Positioned(
-                bottom: isWide ? 40 : 120,
-                right: 16,
-                child: _buildMapControls(mapState, colors),
-              ),
-
-              // 6. Bottom Sheet (Mobile)
-              if (!isWide) _buildPOIBottomSheet(colors),
-            ],
-          );
-        },
+                // 6. Bottom Sheet (Mobile)
+                if (!isWide) _buildPOIBottomSheet(colors),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

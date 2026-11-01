@@ -68,7 +68,7 @@ class AppRoutes {
   static const htmlImportWebview = '/Schedule/HtmlImport/Webview';
   static const warehouseImport = '/Schedule/WarehouseImport';
   static const warehouseImportWebview = '/Schedule/WarehouseImport/Webview';
-  static const campusMap = '/CampusMap';
+  static const campusMap = '/Profile/CampusMap';
 }
 
 class AppRouter {
@@ -223,6 +223,10 @@ class AppRouter {
                       ),
                     ],
                   ),
+                  _detailRoute(
+                    'CampusMap',
+                    (context, state) => const CampusMapPage(),
+                  ),
                 ],
               ),
             ],
@@ -254,14 +258,6 @@ class AppRouter {
                     (context, state) => const PaymentQrPage(),
                   ),
                 ],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.campusMap,
-                builder: (context, state) => const CampusMapPage(),
               ),
             ],
           ),

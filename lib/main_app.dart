@@ -238,11 +238,6 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
         selectedIcon: CupertinoIcons.money_dollar_circle_fill,
         label: l10n.payment,
       ),
-      SidebarDestination(
-        icon: CupertinoIcons.map,
-        selectedIcon: CupertinoIcons.map_fill,
-        label: l10n.map,
-      ),
     ];
   }
 
