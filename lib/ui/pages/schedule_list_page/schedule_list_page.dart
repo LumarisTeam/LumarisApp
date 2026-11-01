@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,6 +26,8 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/ui/pages/schedule_list_page/custom_course_manage_page.dart';
+
+enum _CustomCourseAction { edit, delete }
 
 // 条件导入 dart:io，仅在非 Web 环境中使用
 // import 'dart:io' if (dart.library.html) 'dart:html' as io;
@@ -432,41 +435,50 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     );
   }
 
-  void _showCourseActions(CourseModel course) {
+  Future<void> _showCourseActions(CourseModel course) async {
     final colors = context.mc.colors;
     final l10n = context.l10n;
 
-    showMcBottomSheet(
+    final action = await showCupertinoModalPopup<_CustomCourseAction>(
       context: context,
-      showHandle: true,
-      contentPadding: const EdgeInsets.all(24),
-      scrollable: true,
-      maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-      builder: (sheetContext) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          McListTile(
-            leading: const Icon(Icons.edit),
-            title: Text(l10n.editCourse),
-            onTap: () {
-              Navigator.pop(sheetContext);
-              _editCustomCourse(course);
-            },
-          ),
-          McListTile(
-            leading: Icon(Icons.delete, color: colors.danger),
-            title: Text(
-              l10n.deleteCourse,
-              style: TextStyle(color: colors.danger),
+      builder: (popupContext) => MediaQuery(
+        data: MediaQuery.of(
+          popupContext,
+        ).copyWith(platformBrightness: colors.brightness),
+        child: CupertinoActionSheet(
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () =>
+                  Navigator.of(popupContext).pop(_CustomCourseAction.edit),
+              child: Text(
+                l10n.editCourse,
+                style: TextStyle(color: colors.label),
+              ),
             ),
-            onTap: () {
-              Navigator.pop(sheetContext);
-              _deleteCustomCourse(course);
-            },
+            CupertinoActionSheetAction(
+              isDestructiveAction: true,
+              onPressed: () =>
+                  Navigator.of(popupContext).pop(_CustomCourseAction.delete),
+              child: Text(l10n.deleteCourse),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.of(popupContext).pop(),
+            child: Text(l10n.cancel),
           ),
-        ],
+        ),
       ),
     );
+    if (!mounted) return;
+
+    switch (action) {
+      case _CustomCourseAction.edit:
+        _editCustomCourse(course);
+      case _CustomCourseAction.delete:
+        await _deleteCustomCourse(course);
+      case null:
+        break;
+    }
   }
 
   void _editCustomCourse(CourseModel course) {
