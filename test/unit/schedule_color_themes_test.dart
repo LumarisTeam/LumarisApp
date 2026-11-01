@@ -5,10 +5,11 @@ import 'package:ios_club_app/state/schedule_color_themes.dart';
 
 void main() {
   group('ScheduleColorThemeCatalog', () {
-    test('should expose Lumaris and 14 accents for Latte and Macchiato', () {
-      expect(ScheduleColorThemeCatalog.accentsById, hasLength(3));
+    test('should expose all built-in color themes', () {
+      expect(ScheduleColorThemeCatalog.accentsById, hasLength(4));
       expect(ScheduleColorThemeCatalog.accentsById.keys, <String>[
         'lumaris',
+        'apple',
         'latte',
         'macchiato',
       ]);
@@ -17,7 +18,8 @@ void main() {
             .lumarisId],
         hasLength(14),
       );
-      for (final id in ScheduleColorThemeCatalog.builtInIds) {
+      expect(ScheduleColorThemeCatalog.appleAccents, hasLength(10));
+      for (final id in <String>['latte', 'macchiato']) {
         expect(
           ScheduleColorThemeCatalog.accentsById[id],
           hasLength(14),
@@ -82,6 +84,13 @@ void main() {
 
       expect(
         ScheduleColorThemeCatalog.resolvePool(
+          themeId: 'apple',
+          customThemes: customThemes,
+        ),
+        ScheduleColorThemeCatalog.appleAccents,
+      );
+      expect(
+        ScheduleColorThemeCatalog.resolvePool(
           themeId: 'latte',
           customThemes: customThemes,
         ),
@@ -136,6 +145,7 @@ void main() {
       expect(ScheduleColorThemeCatalog.isReservedName('latte'), isTrue);
       expect(ScheduleColorThemeCatalog.isReservedName('LATTE'), isTrue);
       expect(ScheduleColorThemeCatalog.isReservedName('Lumaris'), isTrue);
+      expect(ScheduleColorThemeCatalog.isReservedName('APPLE'), isTrue);
       expect(ScheduleColorThemeCatalog.isReservedName('Macchiato'), isTrue);
       expect(ScheduleColorThemeCatalog.isReservedName('MACCHIATO'), isTrue);
       expect(ScheduleColorThemeCatalog.isReservedName('Frappé'), isFalse);

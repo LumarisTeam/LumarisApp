@@ -41,7 +41,7 @@ class ScheduleColorTheme {
   }
 }
 
-/// Lumaris 旧版配色与 Catppuccin Latte / Macchiato 色板。
+/// Lumaris、Apple 风格与 Catppuccin Latte / Macchiato 色板。
 ///
 /// 每个 flavor 使用官方 accent 顺序：
 /// rosewater, flamingo, pink, mauve, red, maroon, peach, yellow,
@@ -50,6 +50,7 @@ abstract final class ScheduleColorThemeCatalog {
   static const String latteId = 'latte';
   static const String macchiatoId = 'macchiato';
   static const String lumarisId = 'lumaris';
+  static const String appleId = 'apple';
 
   /// 自定义主题 ID 前缀，避免与内置 ID 碰撞。
   static const String customIdPrefix = 'custom:';
@@ -95,6 +96,20 @@ abstract final class ScheduleColorThemeCatalog {
     Color(0xFFB7BDF8), // lavender
   ];
 
+  /// 参考 Apple 系统强调色的固定色板，可用于浅色和深色课表。
+  static const List<Color> appleAccents = <Color>[
+    Color(0xFF007AFF), // blue
+    Color(0xFFAF52DE), // purple
+    Color(0xFFFF2D55), // pink
+    Color(0xFFFF3B30), // red
+    Color(0xFFFF9500), // orange
+    Color(0xFFFFCC00), // yellow
+    Color(0xFF34C759), // green
+    Color(0xFF00C7BE), // teal
+    Color(0xFF32ADE6), // cyan
+    Color(0xFF5856D6), // indigo
+  ];
+
   /// 旧版课表使用按课程名生成的 HSL 颜色，没有固定色池。这里的颜色仅用于
   /// 主题选择器预览；实际渲染由 [ScheduleColorResolver] 恢复旧算法。
   static const List<Color> lumarisPreviewColors = <Color>[
@@ -116,12 +131,14 @@ abstract final class ScheduleColorThemeCatalog {
 
   static const Map<String, List<Color>> accentsById = <String, List<Color>>{
     lumarisId: lumarisPreviewColors,
+    appleId: appleAccents,
     latteId: latteAccents,
     macchiatoId: macchiatoAccents,
   };
 
   static const Map<String, String> displayNames = <String, String>{
     lumarisId: 'Lumaris',
+    appleId: 'Apple',
     latteId: 'Latte',
     macchiatoId: 'Macchiato',
   };
@@ -129,6 +146,7 @@ abstract final class ScheduleColorThemeCatalog {
   /// 一级菜单中的内置主题顺序。
   static const List<String> builtInIds = <String>[
     lumarisId,
+    appleId,
     latteId,
     macchiatoId,
   ];

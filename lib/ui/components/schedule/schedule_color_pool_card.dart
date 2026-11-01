@@ -9,7 +9,7 @@ import 'package:ios_club_app/ui/components/schedule/schedule_color_picker.dart';
 
 /// 单个课表颜色池卡片。
 ///
-/// 一级交互是顶部主题选择行（内置 Catppuccin flavor / 自定义主题）；
+/// 一级交互是顶部主题选择行（内置主题 / 自定义主题）；
 /// 二级交互是卡片内展开的颜色编辑器。内置主题只读，需先复制为自定义主题。
 class ScheduleColorPoolCard extends ConsumerStatefulWidget {
   const ScheduleColorPoolCard({
@@ -462,7 +462,6 @@ class _ScheduleColorPoolCardState extends ConsumerState<ScheduleColorPoolCard> {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
-            _themeSectionTitle('Lumaris / Catppuccin'),
             ...ScheduleColorThemeCatalog.builtInIds.map((id) {
               return McListTile(
                 key: ValueKey('schedule-color-theme-option-$id'),

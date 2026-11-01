@@ -87,7 +87,7 @@ void main() {
   testWidgets('should show the built-in theme as read-only', (tester) async {
     await pumpCard(tester);
 
-    expect(find.text('Macchiato'), findsOneWidget);
+    expect(find.text('Lumaris'), findsOneWidget);
     expect(find.text('14 种颜色'), findsOneWidget);
 
     await expandEditor(tester);
@@ -110,7 +110,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    for (final id in <String>['latte', 'macchiato']) {
+    for (final id in <String>['apple', 'latte', 'macchiato']) {
       expect(
         find.byKey(ValueKey('schedule-color-theme-option-$id')),
         findsOneWidget,
@@ -128,15 +128,15 @@ void main() {
     );
 
     await tester.tap(
-      find.byKey(const ValueKey('schedule-color-theme-option-latte')),
+      find.byKey(const ValueKey('schedule-color-theme-option-apple')),
     );
     await tester.pumpAndSettle();
 
     expect(
       container.read(scheduleStyleStoreProvider).lightColorPoolThemeId,
-      'latte',
+      'apple',
     );
-    expect(find.text('Latte'), findsOneWidget);
+    expect(find.text('Apple'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -248,8 +248,8 @@ void main() {
 
     final style = container.read(scheduleStyleStoreProvider);
     expect(style.customColorPoolThemes, isEmpty);
-    expect(style.lightColorPoolThemeId, 'macchiato');
-    expect(find.text('Macchiato'), findsOneWidget);
+    expect(style.lightColorPoolThemeId, 'lumaris');
+    expect(find.text('Lumaris'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
