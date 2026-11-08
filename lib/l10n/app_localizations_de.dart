@@ -1122,6 +1122,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'WeChat zum Aufladen des Stroms öffnen';
 
   @override
+  String get paymentTileOpenQrCode => 'Zahlungscode über Kachel öffnen';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle =>
+      'Die Mensakarten-Kachel auf der Startseite öffnet direkt den Zahlungscode';
+
+  @override
   String get showPaymentTile => 'Karten-Kachel anzeigen';
 
   @override
@@ -1419,6 +1426,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get paymentSaveAndRefresh => 'Speichern und aktualisieren';
+
+  @override
+  String get returnToPaymentPage => 'Zurück zur Mensakarte';
 
   @override
   String get paymentQrCode => 'Zahlungscode';

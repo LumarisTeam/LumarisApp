@@ -386,6 +386,8 @@
   "electricityRecharge": "전기요금 충전",
   "electricityRechargeSubtitle": "WeChat으로 이동하여 전기요금 충전",
 
+  "paymentTileOpenQrCode": "타일에서 결제 코드 바로 열기",
+  "paymentTileOpenQrCodeSubtitle": "홈 화면의 식당 카드 타일을 누르면 결제 코드가 바로 표시됩니다",
   "showPaymentTile": "식권 타일 표시",
   "showPaymentTileSubtitle": "홈에서 잔액 개요 표시",
 
@@ -486,6 +488,7 @@
   "@paymentPasswordSubtitle": {"description": "Helper text for optional card password"},
   "paymentSaveAndRefresh": "저장 후 새로고침",
   "@paymentSaveAndRefresh": {"description": "Save card password and refresh data"},
+  "returnToPaymentPage": "식당 카드 페이지로 돌아가기",
   "paymentQrCode": "결제 코드",
   "@paymentQrCode": {"description": "Campus card offline payment QR code title"},
   "paymentQrCodeSubtitle": "스캐너에 이 코드를 표시하면 결제됩니다",

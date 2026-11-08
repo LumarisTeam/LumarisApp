@@ -1068,6 +1068,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get electricityRechargeSubtitle => 'WeChatで電気料金チャージを開く';
 
   @override
+  String get paymentTileOpenQrCode => 'タイルから支払いコードを開く';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle =>
+      'ホームの食堂カードタイルをタップすると支払いコードを直接表示します';
+
+  @override
   String get showPaymentTile => 'カードタイルを表示';
 
   @override
@@ -1349,6 +1356,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get paymentSaveAndRefresh => '保存して更新';
+
+  @override
+  String get returnToPaymentPage => '食堂カード画面に戻る';
 
   @override
   String get paymentQrCode => '支払いコード';

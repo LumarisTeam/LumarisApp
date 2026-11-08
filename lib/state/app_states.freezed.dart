@@ -2123,6 +2123,7 @@ mixin _$PaymentState {
   List<PaymentModel> get records => throw _privateConstructorUsedError;
   double get totalRecharge => throw _privateConstructorUsedError;
   bool get isShowTile => throw _privateConstructorUsedError;
+  bool get openQrCodeFromTile => throw _privateConstructorUsedError;
   String get password => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -2144,6 +2145,7 @@ abstract class $PaymentStateCopyWith<$Res> {
     List<PaymentModel> records,
     double totalRecharge,
     bool isShowTile,
+    bool openQrCodeFromTile,
     String password,
   });
 }
@@ -2167,6 +2169,7 @@ class _$PaymentStateCopyWithImpl<$Res, $Val extends PaymentState>
     Object? records = null,
     Object? totalRecharge = null,
     Object? isShowTile = null,
+    Object? openQrCodeFromTile = null,
     Object? password = null,
   }) {
     return _then(
@@ -2195,6 +2198,10 @@ class _$PaymentStateCopyWithImpl<$Res, $Val extends PaymentState>
                 ? _value.isShowTile
                 : isShowTile // ignore: cast_nullable_to_non_nullable
                       as bool,
+            openQrCodeFromTile: null == openQrCodeFromTile
+                ? _value.openQrCodeFromTile
+                : openQrCodeFromTile // ignore: cast_nullable_to_non_nullable
+                      as bool,
             password: null == password
                 ? _value.password
                 : password // ignore: cast_nullable_to_non_nullable
@@ -2221,6 +2228,7 @@ abstract class _$$PaymentStateImplCopyWith<$Res>
     List<PaymentModel> records,
     double totalRecharge,
     bool isShowTile,
+    bool openQrCodeFromTile,
     String password,
   });
 }
@@ -2243,6 +2251,7 @@ class __$$PaymentStateImplCopyWithImpl<$Res>
     Object? records = null,
     Object? totalRecharge = null,
     Object? isShowTile = null,
+    Object? openQrCodeFromTile = null,
     Object? password = null,
   }) {
     return _then(
@@ -2271,6 +2280,10 @@ class __$$PaymentStateImplCopyWithImpl<$Res>
             ? _value.isShowTile
             : isShowTile // ignore: cast_nullable_to_non_nullable
                   as bool,
+        openQrCodeFromTile: null == openQrCodeFromTile
+            ? _value.openQrCodeFromTile
+            : openQrCodeFromTile // ignore: cast_nullable_to_non_nullable
+                  as bool,
         password: null == password
             ? _value.password
             : password // ignore: cast_nullable_to_non_nullable
@@ -2290,6 +2303,7 @@ class _$PaymentStateImpl implements _PaymentState {
     final List<PaymentModel> records = const <PaymentModel>[],
     this.totalRecharge = 0.0,
     this.isShowTile = false,
+    this.openQrCodeFromTile = false,
     this.password = '',
   }) : _records = records;
 
@@ -2319,11 +2333,14 @@ class _$PaymentStateImpl implements _PaymentState {
   final bool isShowTile;
   @override
   @JsonKey()
+  final bool openQrCodeFromTile;
+  @override
+  @JsonKey()
   final String password;
 
   @override
   String toString() {
-    return 'PaymentState(isLoading: $isLoading, hasData: $hasData, errorMessage: $errorMessage, records: $records, totalRecharge: $totalRecharge, isShowTile: $isShowTile, password: $password)';
+    return 'PaymentState(isLoading: $isLoading, hasData: $hasData, errorMessage: $errorMessage, records: $records, totalRecharge: $totalRecharge, isShowTile: $isShowTile, openQrCodeFromTile: $openQrCodeFromTile, password: $password)';
   }
 
   @override
@@ -2341,6 +2358,8 @@ class _$PaymentStateImpl implements _PaymentState {
                 other.totalRecharge == totalRecharge) &&
             (identical(other.isShowTile, isShowTile) ||
                 other.isShowTile == isShowTile) &&
+            (identical(other.openQrCodeFromTile, openQrCodeFromTile) ||
+                other.openQrCodeFromTile == openQrCodeFromTile) &&
             (identical(other.password, password) ||
                 other.password == password));
   }
@@ -2354,6 +2373,7 @@ class _$PaymentStateImpl implements _PaymentState {
     const DeepCollectionEquality().hash(_records),
     totalRecharge,
     isShowTile,
+    openQrCodeFromTile,
     password,
   );
 
@@ -2372,6 +2392,7 @@ abstract class _PaymentState implements PaymentState {
     final List<PaymentModel> records,
     final double totalRecharge,
     final bool isShowTile,
+    final bool openQrCodeFromTile,
     final String password,
   }) = _$PaymentStateImpl;
 
@@ -2387,6 +2408,8 @@ abstract class _PaymentState implements PaymentState {
   double get totalRecharge;
   @override
   bool get isShowTile;
+  @override
+  bool get openQrCodeFromTile;
   @override
   String get password;
   @override

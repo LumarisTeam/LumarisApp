@@ -70,6 +70,7 @@ dependencies:
       url: https://github.com/LumarisTeam/luamris_ui.git
       ref: v0.5.1
   qr_flutter: ^4.1.0
+  screen_protector: ^1.5.1
 
 dev_dependencies:
   flutter_test:

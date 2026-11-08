@@ -156,6 +156,7 @@ class PaymentState with _$PaymentState {
     @Default(<PaymentModel>[]) List<PaymentModel> records,
     @Default(0.0) double totalRecharge,
     @Default(false) bool isShowTile,
+    @Default(false) bool openQrCodeFromTile,
     @Default('') String password,
   }) = _PaymentState;
 }

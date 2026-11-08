@@ -255,7 +255,10 @@ class AppRouter {
                 routes: [
                   _detailRoute(
                     'QrCode',
-                    (context, state) => const PaymentQrPage(),
+                    (context, state) => PaymentQrPage(
+                      fromPaymentTile:
+                          state.uri.queryParameters['from'] == 'tile',
+                    ),
                   ),
                 ],
               ),

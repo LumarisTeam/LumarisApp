@@ -72,6 +72,7 @@ class PrefsKeys {
   /// 支付相关
   static const String PAYMENT_NUM = 'payment_num';
   static const String PAYMENT_PASSWORD = 'payment_password';
+  static const String PAYMENT_TILE_OPEN_QR_CODE = 'payment_tile_open_qr_code';
 
   /// 更新相关
   static const String UPDATE_IGNORED = 'update_ignored';

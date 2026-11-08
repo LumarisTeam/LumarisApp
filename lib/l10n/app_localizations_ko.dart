@@ -1075,6 +1075,13 @@ class AppLocalizationsKo extends AppLocalizations {
   String get electricityRechargeSubtitle => 'WeChat으로 이동하여 전기요금 충전';
 
   @override
+  String get paymentTileOpenQrCode => '타일에서 결제 코드 바로 열기';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle =>
+      '홈 화면의 식당 카드 타일을 누르면 결제 코드가 바로 표시됩니다';
+
+  @override
   String get showPaymentTile => '식권 타일 표시';
 
   @override
@@ -1358,6 +1365,9 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get paymentSaveAndRefresh => '저장 후 새로고침';
+
+  @override
+  String get returnToPaymentPage => '식당 카드 페이지로 돌아가기';
 
   @override
   String get paymentQrCode => '결제 코드';

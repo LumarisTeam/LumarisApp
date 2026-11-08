@@ -1,17 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/features/education/apis/payment_api.dart';
-import 'package:ios_club_app/features/education/services/payment_service.dart';
-import 'package:ios_club_app/core/services/prefs_service.dart';
-import 'package:ios_club_app/core/services/secure_storage_service.dart';
-import 'package:ios_club_app/features/education/models/payment_model.dart';
-import 'package:ios_club_app/features/education/models/payment_qr_code.dart';
-import 'package:ios_club_app/state/tile_edit_notifier.dart';
-import 'package:ios_club_app/features/system/tile_service.dart';
-import 'package:ios_club_app/core/utils/stale_request_guard.dart';
-import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/prefs_keys.dart' show PrefsKeys;
-import 'package:ios_club_app/state/tile_store_providers.dart';
-import 'package:ios_club_app/state/user_store.dart';
+
+import '../core/services/prefs_service.dart';
+import '../core/services/secure_storage_service.dart';
+import '../core/utils/stale_request_guard.dart';
+import '../features/education/apis/payment_api.dart';
+import '../features/education/models/payment_model.dart';
+import '../features/education/models/payment_qr_code.dart';
+import '../features/education/services/payment_service.dart';
+import '../features/system/tile_service.dart';
+import 'app_states.dart';
+import 'tile_edit_notifier.dart';
+import 'tile_store_providers.dart';
+import 'user_store.dart';
 
 typedef PaymentDataFetcher =
     Future<PaymentData> Function(String cardNumber, String? password);
@@ -97,7 +98,11 @@ class PaymentStore extends Notifier<PaymentState> {
     if (ref.read(tileStoreAutoLoadProvider)) {
       Future<void>.microtask(loadData);
     }
-    return const PaymentState();
+    return PaymentState(
+      openQrCodeFromTile:
+          PrefsService.instance.getBool(PrefsKeys.PAYMENT_TILE_OPEN_QR_CODE) ??
+          false,
+    );
   }
 
   bool get isLoading => state.isLoading;
@@ -108,11 +113,23 @@ class PaymentStore extends Notifier<PaymentState> {
   String get password => state.password;
 
   final _loadGuard = StaleRequestGuard();
+  int _tileVisibilityRevision = 0;
+  bool _isUpdatingTileVisibility = false;
 
   Future<void> loadData() async {
     final requestId = _loadGuard.beginRequest();
+    final tileVisibilityRevision = _tileVisibilityRevision;
+    final shouldUpdateTileVisibility = !_isUpdatingTileVisibility;
     try {
       state = state.copyWith(isLoading: true, errorMessage: '');
+
+      // 磁贴设置独立于余额请求，未登录或请求失败时也应正确显示。
+      final isVisible = await ref.read(tileVisibilityReaderProvider)('饭卡');
+      if (!_loadGuard.isCurrent(requestId)) return;
+      if (shouldUpdateTileVisibility &&
+          tileVisibilityRevision == _tileVisibilityRevision) {
+        state = state.copyWith(isShowTile: isVisible);
+      }
 
       final studentId = await ref.read(paymentStudentIdReaderProvider)();
       final password = await ref.read(paymentPasswordReaderProvider)();
@@ -130,14 +147,12 @@ class PaymentStore extends Notifier<PaymentState> {
         studentId,
         password,
       );
-      final isVisible = await ref.read(tileVisibilityReaderProvider)('饭卡');
 
       if (!_loadGuard.isCurrent(requestId)) return;
 
       state = state.copyWith(
         records: recordsResult.payments,
         totalRecharge: recordsResult.balance,
-        isShowTile: isVisible,
         hasData: true,
         password: password ?? '',
       );
@@ -164,14 +179,28 @@ class PaymentStore extends Notifier<PaymentState> {
     return success;
   }
 
-  Future<void> toggleTileShow(bool value) async {
-    state = state.copyWith(isShowTile: value);
-    if (value) {
-      await ref.read(tileAdderProvider)('饭卡');
-    } else {
-      await ref.read(tileRemoverProvider)('饭卡');
-    }
+  Future<void> setOpenQrCodeFromTile(bool value) async {
+    await PrefsService.instance.setBool(
+      PrefsKeys.PAYMENT_TILE_OPEN_QR_CODE,
+      value,
+    );
+    state = state.copyWith(openQrCodeFromTile: value);
+  }
 
-    await ref.read(tileEditControllerProvider.notifier).reload();
+  Future<void> toggleTileShow(bool value) async {
+    _tileVisibilityRevision++;
+    _isUpdatingTileVisibility = true;
+    state = state.copyWith(isShowTile: value);
+    try {
+      if (value) {
+        await ref.read(tileAdderProvider)('饭卡');
+      } else {
+        await ref.read(tileRemoverProvider)('饭卡');
+      }
+
+      await ref.read(tileEditControllerProvider.notifier).reload();
+    } finally {
+      _isUpdatingTileVisibility = false;
+    }
   }
 }

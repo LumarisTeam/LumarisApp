@@ -385,6 +385,8 @@
   "electricityRecharge": "電費儲值",
   "electricityRechargeSubtitle": "跳轉至微信進行電費儲值",
 
+  "paymentTileOpenQrCode": "進入磁貼直接顯示付款碼",
+  "paymentTileOpenQrCodeSubtitle": "點擊首頁飯卡磁貼時直接開啟付款碼",
   "showPaymentTile": "顯示飯卡磁貼",
   "showPaymentTileSubtitle": "在首頁顯示餘額概覽",
 
@@ -485,6 +487,7 @@
   "@paymentPasswordSubtitle": {"description": "飯卡密碼輸入說明"},
   "paymentSaveAndRefresh": "儲存並重新整理",
   "@paymentSaveAndRefresh": {"description": "儲存飯卡密碼並立即重新整理"},
+  "returnToPaymentPage": "返回飯卡頁面",
   "paymentQrCode": "支付碼",
   "@paymentQrCode": {"description": "校園卡離線支付二維碼標題"},
   "paymentQrCodeSubtitle": "向掃碼裝置出示此碼即可完成消費",

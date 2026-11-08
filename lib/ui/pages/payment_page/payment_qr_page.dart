@@ -3,20 +3,25 @@ import 'dart:math' as math;
 
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/l10n/app_localizations.dart';
-import 'package:ios_club_app/state/payment_store.dart';
-import 'package:ios_club_app/ui/components/empty_widget.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../../../core/extensions/localization_extensions.dart';
+import '../../../features/system/screen_capture_protection.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../routes/router.dart';
+import '../../../state/payment_store.dart';
+import '../../components/empty_widget.dart';
 
 /// 校园卡离线支付码。
 ///
 /// 支付码有时效，页面打开期间每 50 秒自动重新获取一次；App 退到后台时
 /// 暂停计时，回到前台立即刷新，避免把已失效的码留在屏幕上。
 class PaymentQrPage extends ConsumerStatefulWidget {
-  const PaymentQrPage({super.key});
+  const PaymentQrPage({super.key, this.fromPaymentTile = false});
+
+  final bool fromPaymentTile;
 
   @override
   ConsumerState<PaymentQrPage> createState() => _PaymentQrPageState();
@@ -32,11 +37,16 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
   bool _isLoading = true;
   bool _isFetching = false;
   String _errorMessage = '';
+  late final ScreenCaptureProtection _setCaptureProtection;
+  Future<bool>? _protectionReady;
+  bool _isForeground = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _setCaptureProtection = ref.read(screenCaptureProtectionProvider);
+    _protectionReady = _setCaptureProtection(true);
     _startTicker();
     Future<void>.microtask(_loadQrCode);
   }
@@ -45,11 +55,16 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _ticker?.cancel();
+    unawaited(_setCaptureProtection(false));
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    setState(() {
+      _isForeground = state == AppLifecycleState.resumed;
+      _qrCode = null;
+    });
     if (state == AppLifecycleState.resumed) {
       _startTicker();
       _loadQrCode();
@@ -93,6 +108,13 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
     }
 
     try {
+      _protectionReady ??= _setCaptureProtection(true);
+      if (!await _protectionReady!) {
+        _protectionReady = null;
+        throw StateError('支付码页面截图保护未能开启');
+      }
+      if (!mounted) return;
+
       final studentId = await ref.read(paymentStudentIdReaderProvider)();
       if (studentId == null || studentId.isEmpty) {
         if (!mounted) return;
@@ -117,7 +139,7 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
         errorCorrectLevel: QrErrorCorrectLevel.L,
       );
 
-      if (!mounted) return;
+      if (!mounted || !_isForeground) return;
       setState(() {
         _qrCode = qrCode;
         _isLoading = false;
@@ -155,34 +177,66 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
           ),
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (_qrCode == null && _errorMessage.isNotEmpty)
-                  _buildError(l10n)
-                else ...[
-                  _buildQrCode(context, l10n),
-                  const SizedBox(height: 24),
-                  Text(
-                    l10n.paymentQrCodeSubtitle,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: colors.secondaryLabel,
+      bottomNavigationBar: widget.fromPaymentTile && _isForeground
+          ? SafeArea(
+              top: false,
+              minimum: const EdgeInsets.fromLTRB(24, 8, 24, 12),
+              child: Align(
+                heightFactor: 1,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 360),
+                  child: CupertinoButton(
+                    foregroundColor: colors.primary,
+                    minimumSize: const Size(44, 44),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 14,
+                    ),
+                    onPressed: () => ref
+                        .read(appRouterProvider)
+                        .replace<void>(AppRoutes.payment),
+                    child: Text(
+                      l10n.returnToPaymentPage,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  _buildStatusLine(colors, l10n),
-                ],
-              ],
+                ),
+              ),
+            )
+          : null,
+      body: !_isForeground
+          ? const SizedBox.shrink()
+          : SafeArea(
+              child: Center(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 24,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (_qrCode == null && _errorMessage.isNotEmpty)
+                        _buildError(l10n)
+                      else ...[
+                        _buildQrCode(context, l10n),
+                        const SizedBox(height: 24),
+                        Text(
+                          l10n.paymentQrCodeSubtitle,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: colors.secondaryLabel,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        _buildStatusLine(colors, l10n),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 

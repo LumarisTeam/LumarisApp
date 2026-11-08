@@ -37,6 +37,15 @@
       }
     },
     {
+      "identity" : "screenprotectorkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/prongbang/ScreenProtectorKit.git",
+      "state" : {
+        "revision" : "1d00d802ed3b919988e273072052388e32a92920",
+        "version" : "1.5.1"
+      }
+    },
+    {
       "identity" : "sdwebimage",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage",

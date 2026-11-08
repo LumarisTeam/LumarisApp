@@ -2124,6 +2124,18 @@ abstract class AppLocalizations {
   /// **'跳转至微信进行电费充值'**
   String get electricityRechargeSubtitle;
 
+  /// 饭卡磁贴直接打开支付码的开关标题
+  ///
+  /// In zh, this message translates to:
+  /// **'进入磁贴直接展示支付码'**
+  String get paymentTileOpenQrCode;
+
+  /// 饭卡磁贴直接打开支付码的说明
+  ///
+  /// In zh, this message translates to:
+  /// **'点击首页饭卡磁贴时直接打开支付码'**
+  String get paymentTileOpenQrCodeSubtitle;
+
   ///
   ///
   /// In zh, this message translates to:
@@ -2669,6 +2681,12 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'保存并刷新'**
   String get paymentSaveAndRefresh;
+
+  /// 从支付码页面返回饭卡详情的底部按钮
+  ///
+  /// In zh, this message translates to:
+  /// **'返回到饭卡页面'**
+  String get returnToPaymentPage;
 
   /// 校园卡离线支付二维码标题
   ///

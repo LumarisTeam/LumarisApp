@@ -1104,6 +1104,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Открыть WeChat для пополнения электричества';
 
   @override
+  String get paymentTileOpenQrCode => 'Открывать код оплаты из плитки';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle =>
+      'Нажатие на плитку карты на главном экране сразу открывает код оплаты';
+
+  @override
   String get showPaymentTile => 'Показать плитку карты';
 
   @override
@@ -1394,6 +1401,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get paymentSaveAndRefresh => 'Сохранить и обновить';
+
+  @override
+  String get returnToPaymentPage => 'Вернуться к карте кампуса';
 
   @override
   String get paymentQrCode => 'Код оплаты';

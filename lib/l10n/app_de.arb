@@ -374,6 +374,8 @@
   "electricityRecharge": "Aufladen",
   "electricityRechargeSubtitle": "WeChat zum Aufladen des Stroms öffnen",
 
+  "paymentTileOpenQrCode": "Zahlungscode über Kachel öffnen",
+  "paymentTileOpenQrCodeSubtitle": "Die Mensakarten-Kachel auf der Startseite öffnet direkt den Zahlungscode",
   "showPaymentTile": "Karten-Kachel anzeigen",
   "showPaymentTileSubtitle": "Guthabenübersicht auf der Startseite anzeigen",
 
@@ -458,6 +460,7 @@
   "@paymentPasswordSubtitle": {"description": "Helper text for optional card password"},
   "paymentSaveAndRefresh": "Speichern und aktualisieren",
   "@paymentSaveAndRefresh": {"description": "Save card password and refresh data"},
+  "returnToPaymentPage": "Zurück zur Mensakarte",
   "paymentQrCode": "Zahlungscode",
   "@paymentQrCode": {"description": "Campus card offline payment QR code title"},
   "paymentQrCodeSubtitle": "Zeigen Sie diesen Code am Scanner zum Bezahlen",

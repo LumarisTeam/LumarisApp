@@ -1,16 +1,17 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/features/basic/models/school.dart';
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/l10n/app_localizations.dart';
-import 'package:ios_club_app/routes/router.dart';
-import 'package:ios_club_app/state/school_store.dart';
-import 'package:ios_club_app/features/education/models/payment_model.dart';
-import 'package:ios_club_app/state/app_states.dart';
-import 'package:ios_club_app/ui/components/loading_state_view.dart';
-import 'package:ios_club_app/state/payment_store.dart';
+
+import '../../../core/extensions/localization_extensions.dart';
+import '../../../features/basic/models/school.dart';
+import '../../../features/education/models/payment_model.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../routes/router.dart';
+import '../../../state/app_states.dart';
+import '../../../state/payment_store.dart';
+import '../../../state/school_store.dart';
+import '../../components/loading_state_view.dart';
 
 class PaymentPage extends ConsumerStatefulWidget {
   const PaymentPage({super.key});
@@ -387,6 +388,16 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                   onChanged: (value) => controller.toggleTileShow(value),
                 ),
               ),
+              if (payment.isShowTile)
+                McListTile(
+                  leading: Icon(Icons.qr_code_2_rounded, color: colors.primary),
+                  title: Text(l10n.paymentTileOpenQrCode),
+                  subtitle: Text(l10n.paymentTileOpenQrCodeSubtitle),
+                  trailing: CupertinoSwitch(
+                    value: payment.openQrCodeFromTile,
+                    onChanged: controller.setOpenQrCodeFromTile,
+                  ),
+                ),
             ],
           ),
         ),

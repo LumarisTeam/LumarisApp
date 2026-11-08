@@ -1064,6 +1064,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get electricityRechargeSubtitle => '跳转至微信进行电费充值';
 
   @override
+  String get paymentTileOpenQrCode => '进入磁贴直接展示支付码';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle => '点击首页饭卡磁贴时直接打开支付码';
+
+  @override
   String get showPaymentTile => '显示饭卡磁贴';
 
   @override
@@ -1344,6 +1350,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get paymentSaveAndRefresh => '保存并刷新';
+
+  @override
+  String get returnToPaymentPage => '返回到饭卡页面';
 
   @override
   String get paymentQrCode => '支付码';
@@ -3417,6 +3426,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get electricityRechargeSubtitle => '跳轉至微信進行電費儲值';
 
   @override
+  String get paymentTileOpenQrCode => '進入磁貼直接顯示付款碼';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle => '點擊首頁飯卡磁貼時直接開啟付款碼';
+
+  @override
   String get showPaymentTile => '顯示飯卡磁貼';
 
   @override
@@ -3697,6 +3712,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get paymentSaveAndRefresh => '儲存並重新整理';
+
+  @override
+  String get returnToPaymentPage => '返回飯卡頁面';
 
   @override
   String get paymentQrCode => '支付碼';

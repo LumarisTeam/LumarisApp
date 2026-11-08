@@ -1103,6 +1103,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Open WeChat for electricity recharge';
 
   @override
+  String get paymentTileOpenQrCode => 'Open payment code from tile';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle =>
+      'Tap the home screen card tile to open the payment code directly';
+
+  @override
   String get showPaymentTile => 'Show Card Tile';
 
   @override
@@ -1393,6 +1400,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentSaveAndRefresh => 'Save and Refresh';
+
+  @override
+  String get returnToPaymentPage => 'Return to Campus Card';
 
   @override
   String get paymentQrCode => 'Payment Code';

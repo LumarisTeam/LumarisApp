@@ -1,9 +1,10 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/state/settings_store.dart';
+
+import '../../../core/extensions/localization_extensions.dart';
+import '../../../state/settings_store.dart';
 
 class HomePageSetting extends ConsumerWidget {
   const HomePageSetting({super.key});
@@ -25,31 +26,56 @@ class HomePageSetting extends ConsumerWidget {
       leading: Icon(Icons.pageview, size: 20, color: colors.primary),
       title: Text(l10n.firstPageOnLaunch),
       trailing: Text(pageNames[settings.pageIndex]),
-      onTap: () => showMcBottomSheet(
-        context: context,
-        builder: (_) => SizedBox(
-          height: 200, // 给 CupertinoPicker 固定高度
-          child: CupertinoPicker(
-            magnification: 1.22,
-            squeeze: 1.2,
-            useMagnifier: true,
-            itemExtent: 32.0,
-            scrollController: FixedExtentScrollController(
-              initialItem: settings.pageIndex,
+      onTap: () async {
+        final selected = await showCupertinoModalPopup<int>(
+          context: context,
+          builder: (popupContext) => MediaQuery(
+            data: MediaQuery.of(
+              popupContext,
+            ).copyWith(platformBrightness: colors.brightness),
+            child: CupertinoActionSheet(
+              title: Text(l10n.firstPageOnLaunch),
+              actions: [
+                for (var index = 0; index < pageNames.length; index++)
+                  CupertinoActionSheetAction(
+                    onPressed: () => Navigator.of(popupContext).pop(index),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          pageNames[index],
+                          style: TextStyle(
+                            color: index == settings.pageIndex
+                                ? colors.primary
+                                : colors.label,
+                            fontWeight: index == settings.pageIndex
+                                ? FontWeight.w600
+                                : FontWeight.w400,
+                          ),
+                        ),
+                        if (index == settings.pageIndex) ...[
+                          const SizedBox(width: 8),
+                          Icon(
+                            CupertinoIcons.check_mark,
+                            size: 18,
+                            color: colors.primary,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+              ],
+              cancelButton: CupertinoActionSheetAction(
+                onPressed: () => Navigator.of(popupContext).pop(),
+                child: Text(l10n.cancel),
+              ),
             ),
-            onSelectedItemChanged: (int selectedItem) {
-              settingsStore.setPageIndex(selectedItem);
-            },
-            children: List.generate(pageNames.length, (int index) {
-              return Center(child: Text(pageNames[index]));
-            }),
           ),
-        ),
-        showHandle: true,
-        contentPadding: const EdgeInsets.all(24),
-        scrollable: true,
-        maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-      ),
+        );
+        if (selected != null) {
+          await settingsStore.setPageIndex(selected);
+        }
+      },
     );
   }
 }

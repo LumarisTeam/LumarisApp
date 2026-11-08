@@ -425,6 +425,10 @@
   "electricityRecharge": "电费充值",
   "electricityRechargeSubtitle": "跳转至微信进行电费充值",
 
+  "paymentTileOpenQrCode": "进入磁贴直接展示支付码",
+  "@paymentTileOpenQrCode": {"description": "饭卡磁贴直接打开支付码的开关标题"},
+  "paymentTileOpenQrCodeSubtitle": "点击首页饭卡磁贴时直接打开支付码",
+  "@paymentTileOpenQrCodeSubtitle": {"description": "饭卡磁贴直接打开支付码的说明"},
   "showPaymentTile": "显示饭卡磁贴",
   "showPaymentTileSubtitle": "在首页显示余额概览",
 
@@ -525,6 +529,8 @@
   "@paymentPasswordSubtitle": {"description": "饭卡密码输入说明"},
   "paymentSaveAndRefresh": "保存并刷新",
   "@paymentSaveAndRefresh": {"description": "保存饭卡密码并立即刷新"},
+  "returnToPaymentPage": "返回到饭卡页面",
+  "@returnToPaymentPage": {"description": "从支付码页面返回饭卡详情的底部按钮"},
   "paymentQrCode": "支付码",
   "@paymentQrCode": {"description": "校园卡离线支付二维码标题"},
   "paymentQrCodeSubtitle": "向扫码设备出示此码即可完成消费",

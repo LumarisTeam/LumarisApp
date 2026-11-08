@@ -1117,6 +1117,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ouvrir WeChat pour recharger l\'électricité';
 
   @override
+  String get paymentTileOpenQrCode =>
+      'Ouvrir le code de paiement depuis la tuile';
+
+  @override
+  String get paymentTileOpenQrCodeSubtitle =>
+      'La tuile de carte du campus ouvre directement le code de paiement';
+
+  @override
   String get showPaymentTile => 'Afficher le widget Carte';
 
   @override
@@ -1414,6 +1422,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get paymentSaveAndRefresh => 'Enregistrer et actualiser';
+
+  @override
+  String get returnToPaymentPage => 'Retour à la carte du campus';
 
   @override
   String get paymentQrCode => 'Code de paiement';

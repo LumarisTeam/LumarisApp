@@ -1,11 +1,12 @@
-import 'package:material_ui/material_ui.dart';
-import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/core/utils/error_message_resolver.dart';
-import 'package:ios_club_app/routes/router.dart';
-import 'package:ios_club_app/ui/components/loading_state_view.dart';
+import 'package:luamris_ui/luamris_ui.dart';
+import 'package:material_ui/material_ui.dart';
+
+import '../../../core/extensions/localization_extensions.dart';
+import '../../../core/utils/error_message_resolver.dart';
+import '../../../routes/router.dart';
 import '../../../state/payment_store.dart';
+import '../loading_state_view.dart';
 
 class PaymentTile extends ConsumerWidget {
   const PaymentTile({super.key});
@@ -24,7 +25,13 @@ class PaymentTile extends ConsumerWidget {
         child: InkWell(
           borderRadius: McRadii.tileBorder,
           customBorder: McSmoothCorners.shape(McRadii.tileBorder),
-          onTap: () => AppRouter.push(AppRoutes.payment),
+          onTap: () => ref
+              .read(appRouterProvider)
+              .push(
+                payment.openQrCodeFromTile
+                    ? '${AppRoutes.paymentQrCode}?from=tile'
+                    : AppRoutes.payment,
+              ),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Builder(

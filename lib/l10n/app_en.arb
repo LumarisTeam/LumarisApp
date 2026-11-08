@@ -396,6 +396,8 @@
   "electricityRecharge": "Recharge",
   "electricityRechargeSubtitle": "Open WeChat for electricity recharge",
 
+  "paymentTileOpenQrCode": "Open payment code from tile",
+  "paymentTileOpenQrCodeSubtitle": "Tap the home screen card tile to open the payment code directly",
   "showPaymentTile": "Show Card Tile",
   "showPaymentTileSubtitle": "Show balance overview on home page",
 
@@ -496,6 +498,7 @@
   "@paymentPasswordSubtitle": {"description": "Helper text for optional card password"},
   "paymentSaveAndRefresh": "Save and Refresh",
   "@paymentSaveAndRefresh": {"description": "Save card password and refresh data"},
+  "returnToPaymentPage": "Return to Campus Card",
   "paymentQrCode": "Payment Code",
   "@paymentQrCode": {"description": "Campus card offline payment QR code title"},
   "paymentQrCodeSubtitle": "Show this code to the scanner to pay",

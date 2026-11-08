@@ -374,6 +374,8 @@
   "electricityRecharge": "Recharger",
   "electricityRechargeSubtitle": "Ouvrir WeChat pour recharger l'électricité",
 
+  "paymentTileOpenQrCode": "Ouvrir le code de paiement depuis la tuile",
+  "paymentTileOpenQrCodeSubtitle": "La tuile de carte du campus ouvre directement le code de paiement",
   "showPaymentTile": "Afficher le widget Carte",
   "showPaymentTileSubtitle": "Afficher l'aperçu du solde sur l'accueil",
 
@@ -458,6 +460,7 @@
   "@paymentPasswordSubtitle": {"description": "Helper text for optional card password"},
   "paymentSaveAndRefresh": "Enregistrer et actualiser",
   "@paymentSaveAndRefresh": {"description": "Save card password and refresh data"},
+  "returnToPaymentPage": "Retour à la carte du campus",
   "paymentQrCode": "Code de paiement",
   "@paymentQrCode": {"description": "Campus card offline payment QR code title"},
   "paymentQrCodeSubtitle": "Présentez ce code au lecteur pour payer",
