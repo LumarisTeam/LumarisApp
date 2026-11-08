@@ -333,12 +333,16 @@ class _CourseColorSwatch extends ConsumerWidget {
       child: Semantics(
         button: true,
         label: label,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: () => _openPicker(context, ref, color),
-          child: Padding(
-            padding: const EdgeInsets.all(_tapPadding),
-            child: dot,
+        child: Material(
+          color: Colors.transparent,
+          shape: const CircleBorder(),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: () => _openPicker(context, ref, color),
+            child: Padding(
+              padding: const EdgeInsets.all(_tapPadding),
+              child: dot,
+            ),
           ),
         ),
       ),

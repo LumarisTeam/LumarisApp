@@ -112,6 +112,30 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('should open the color picker from the course detail sheet', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        Builder(
+          builder: (context) => TextButton(
+            onPressed: () => CourseDetailSheet.show(context, _course()),
+            child: const Text('Open course'),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Open course'));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+
+    await tester.tap(find.byIcon(Icons.palette_outlined));
+    await tester.pumpAndSettle();
+    expect(find.text('H'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('should show the swatch next to the custom course menu', (
     tester,
   ) async {
