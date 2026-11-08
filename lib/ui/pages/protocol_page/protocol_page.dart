@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
@@ -6,6 +7,8 @@ import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../components/page_app_bar.dart';
 
 /// 协议正文只在服务端维护一份，App 内不再内置副本：修订条款不需要发版，
 /// 也就不会出现内置文案与线上版本对不上的情况。
@@ -119,7 +122,7 @@ class _ProtocolPageState extends State<ProtocolPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: McAppBar(title: widget.document.title(context.l10n)),
+      appBar: PageAppBar(title: widget.document.title(context.l10n)),
       body: _buildBody(context),
     );
   }
@@ -180,7 +183,7 @@ class _ProtocolFallback extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.cloud_off_outlined,
+              CupertinoIcons.wifi_slash,
               size: 48,
               color: colors.secondaryLabel,
             ),

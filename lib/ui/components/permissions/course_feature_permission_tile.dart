@@ -1,6 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:permission_handler/permission_handler.dart'
     show openAppSettings;
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
@@ -81,7 +80,7 @@ class _CourseFeaturePermissionTileState
       leading: Icon(
         widget.feature == CourseFeaturePermission.reminder
             ? CupertinoIcons.alarm_fill
-            : Icons.widgets,
+            : CupertinoIcons.square_grid_2x2_fill,
         size: 20,
         color: widget.feature == CourseFeaturePermission.reminder
             ? colors.warning

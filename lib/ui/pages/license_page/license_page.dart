@@ -1,9 +1,11 @@
-import 'package:material_ui/material_ui.dart';
-import 'package:luamris_ui/luamris_ui.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/ui/components/loading_state_view.dart';
 import 'dart:async' show Future;
+
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:material_ui/material_ui.dart';
+
+import '../../../core/extensions/localization_extensions.dart';
+import '../../components/loading_state_view.dart';
+import '../../components/page_app_bar.dart';
 
 class LicensePage extends StatefulWidget {
   const LicensePage({super.key});
@@ -40,7 +42,7 @@ class _LicensePageState extends State<LicensePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: McAppBar(title: context.l10n.openSourceLicense),
+      appBar: PageAppBar(title: context.l10n.openSourceLicense),
       body: _loading
           ? Center(
               child: LoadingStateView(

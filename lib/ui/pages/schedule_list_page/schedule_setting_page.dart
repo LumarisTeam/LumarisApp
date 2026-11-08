@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:luamris_ui/luamris_ui.dart';
 
 import 'package:android_intent_plus/android_intent.dart';
@@ -19,6 +20,8 @@ import 'package:ios_club_app/core/utils/app_logger.dart';
 
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
+
+import '../../components/page_app_bar.dart';
 
 class ScheduleSettingPage extends ConsumerStatefulWidget {
   const ScheduleSettingPage({super.key});
@@ -151,7 +154,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
     final canEdit = school?.supports(Feature.timetable) ?? false;
 
     return Scaffold(
-      appBar: McAppBar(title: l10n.scheduleSettingsTitle),
+      appBar: PageAppBar(title: l10n.scheduleSettingsTitle),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -197,13 +200,13 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
       child: Column(
         children: [
           McListTile(
-            leading: Icon(Icons.calendar_today_outlined, color: colors.primary),
+            leading: Icon(CupertinoIcons.calendar, color: colors.primary),
             title: Text(
               l10n.scheduleWidgetTitle,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
             trailing: IconButton(
-              icon: const Icon(Icons.open_in_new, size: 20),
+              icon: const Icon(CupertinoIcons.arrow_up_right_square, size: 20),
               onPressed: () => _launchCalendar(context),
             ),
           ),
@@ -242,7 +245,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.copy, size: 18),
+                        icon: const Icon(CupertinoIcons.doc_on_doc, size: 18),
                         onPressed: () {
                           final webcalUrl = _webcalCalendarSubscriptionUrl;
                           if (webcalUrl == null || webcalUrl.isEmpty) {
@@ -265,7 +268,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
                 const SizedBox(height: 12),
                 TextButton.icon(
                   onPressed: () => showCalendarGuidanceDialog(context),
-                  icon: const Icon(Icons.help_outline, size: 18),
+                  icon: const Icon(CupertinoIcons.question_circle, size: 18),
                   label: Text(l10n.howToImport),
                   style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 ),
@@ -302,7 +305,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
                     Row(
                       children: [
                         Icon(
-                          Icons.edit_calendar_outlined,
+                          CupertinoIcons.square_pencil,
                           color: colors.secondaryLabel,
                         ),
                         const SizedBox(width: 12),
@@ -314,7 +317,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
                     ),
                     Row(
                       children: [
-                        const Icon(Icons.arrow_forward_ios, size: 16),
+                        const Icon(CupertinoIcons.chevron_forward, size: 16),
                         const SizedBox(width: 8),
                       ],
                     ),
@@ -439,7 +442,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.copy),
+                    icon: const Icon(CupertinoIcons.doc_on_doc),
                     onPressed: () async {
                       await Clipboard.setData(ClipboardData(text: httpsUrl));
                       if (context.mounted) {
@@ -492,8 +495,8 @@ class CourseIgnoreItem extends StatelessWidget {
             children: [
               Icon(
                 ignore.isCompleted
-                    ? Icons.check_box
-                    : Icons.check_box_outline_blank,
+                    ? CupertinoIcons.checkmark_square_fill
+                    : CupertinoIcons.square,
                 color: ignore.isCompleted
                     ? Theme.of(context).colorScheme.primary
                     : colors.tertiaryLabel,

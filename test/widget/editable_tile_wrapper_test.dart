@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -61,10 +62,10 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.byIcon(Icons.remove), findsNothing);
+    expect(find.byIcon(CupertinoIcons.minus), findsNothing);
 
     await tester.tap(find.text('编辑'));
     await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byIcon(Icons.remove), findsOneWidget);
+    expect(find.byIcon(CupertinoIcons.minus), findsOneWidget);
   });
 }

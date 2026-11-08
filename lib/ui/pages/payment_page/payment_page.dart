@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../components/page_app_bar.dart';
 import '../../../core/extensions/localization_extensions.dart';
 import '../../../features/basic/models/school.dart';
 import '../../../features/education/models/payment_model.dart';
@@ -75,17 +76,17 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
 
     if (school != null && !canPayment) {
       return Scaffold(
-        appBar: McAppBar(title: l10n.payment),
+        appBar: PageAppBar(title: l10n.payment),
         body: Center(child: Text(l10n.schoolNotSupported)),
       );
     }
 
     return Scaffold(
-      appBar: McAppBar(
+      appBar: PageAppBar(
         title: l10n.payment,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const Icon(CupertinoIcons.arrow_clockwise),
             onPressed: controller.loadData,
             tooltip: l10n.refreshData,
           ),
@@ -172,7 +173,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                 ),
               ),
               Icon(
-                Icons.contactless_outlined,
+                CupertinoIcons.dot_radiowaves_left_right,
                 color: colors.onAccent.withValues(alpha: 0.6),
                 size: 24,
               ),
@@ -209,7 +210,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
     return McCard.elevated(
       padding: EdgeInsets.zero,
       child: McListTile(
-        leading: Icon(Icons.qr_code_2_rounded, color: colors.primary),
+        leading: Icon(CupertinoIcons.qrcode, color: colors.primary),
         title: Text(l10n.paymentQrCode),
         subtitle: Text(l10n.paymentQrCodeSubtitle),
         trailing: Icon(
@@ -313,7 +314,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              Icons.account_balance_wallet_outlined,
+              CupertinoIcons.creditcard,
               size: 40,
               color: colors.tertiaryLabel,
             ),
@@ -360,10 +361,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
           child: Column(
             children: [
               McListTile(
-                leading: Icon(
-                  Icons.lock_outline_rounded,
-                  color: colors.primary,
-                ),
+                leading: Icon(CupertinoIcons.lock, color: colors.primary),
                 title: Text(l10n.paymentPasswordTitle),
                 subtitle: Text(
                   payment.password.isEmpty
@@ -380,7 +378,10 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
                     : () => _showPasswordDialog(controller, payment),
               ),
               McListTile(
-                leading: Icon(Icons.apps_rounded, color: colors.primary),
+                leading: Icon(
+                  CupertinoIcons.square_grid_3x2,
+                  color: colors.primary,
+                ),
                 title: Text(l10n.showPaymentTile),
                 subtitle: Text(l10n.showPaymentTileSubtitle),
                 trailing: CupertinoSwitch(
@@ -390,7 +391,7 @@ class _PaymentPageState extends ConsumerState<PaymentPage> {
               ),
               if (payment.isShowTile)
                 McListTile(
-                  leading: Icon(Icons.qr_code_2_rounded, color: colors.primary),
+                  leading: Icon(CupertinoIcons.qrcode, color: colors.primary),
                   title: Text(l10n.paymentTileOpenQrCode),
                   subtitle: Text(l10n.paymentTileOpenQrCodeSubtitle),
                   trailing: CupertinoSwitch(

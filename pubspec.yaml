@@ -110,14 +110,7 @@ flutter:
   assets:
     - assets/icon.ico
     - assets/icon.webp
-    - assets/iconfont/iconfont.json
-    - assets/iconfont/iconfont.ttf
     - LICENSE
-
-  fonts:
-    - family: IconFont
-      fonts:
-        - asset: assets/iconfont/iconfont.ttf
 
 flutter_launcher_icons:
   android: "ic_launcher"

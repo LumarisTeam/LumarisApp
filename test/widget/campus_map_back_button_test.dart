@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
@@ -94,9 +95,9 @@ void main() {
     await _openCampusMap(tester);
 
     expect(find.byType(CampusMapPage), findsOneWidget);
-    expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+    expect(find.byIcon(CupertinoIcons.arrow_left), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+    await tester.tap(find.byIcon(CupertinoIcons.arrow_left));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
 
@@ -112,9 +113,9 @@ void main() {
       await _openCampusMap(tester);
 
       expect(find.byType(CampusMapPage), findsOneWidget);
-      expect(find.byIcon(Icons.arrow_back_rounded), findsOneWidget);
+      expect(find.byIcon(CupertinoIcons.arrow_left), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.arrow_back_rounded));
+      await tester.tap(find.byIcon(CupertinoIcons.arrow_left));
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
 
@@ -148,6 +149,6 @@ void main() {
 
     expect(find.byType(CampusMapPage), findsOneWidget);
     // 手机端继续依赖系统返回手势，地图内不额外增加返回键。
-    expect(find.byIcon(Icons.arrow_back_rounded), findsNothing);
+    expect(find.byIcon(CupertinoIcons.arrow_left), findsNothing);
   });
 }

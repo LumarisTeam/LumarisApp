@@ -124,14 +124,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           route: AppRoutes.link,
         ),
       ProfileButtonItem(
-        icon: Icons.settings,
+        icon: CupertinoIcons.gear_solid,
         title: l10n.settingsAbout,
         route: AppRoutes.about,
       ),
       if (isLogin)
         ProfileButtonItem(
           title: l10n.schoolBus,
-          icon: Icons.directions_bus_rounded,
+          icon: CupertinoIcons.bus,
           route: AppRoutes.schoolBus,
         ),
       if (!kIsWeb && isLogin)
@@ -142,19 +142,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         ),
       if (isLogin)
         ProfileButtonItem(
-          icon: Icons.toc,
+          icon: CupertinoIcons.list_bullet,
           title: l10n.programLabel,
           route: AppRoutes.program,
         ),
       if (isLogin)
         ProfileButtonItem(
-          icon: Icons.monetization_on_outlined,
+          icon: CupertinoIcons.money_yen_circle,
           title: l10n.payment,
           route: AppRoutes.payment,
         ),
       if (!isLogin)
         ProfileButtonItem(
-          icon: Icons.login,
+          icon: CupertinoIcons.square_arrow_right,
           title: l10n.loginEduSystem,
           onPressed: () {
             _enterLoginMode(isOnlyLoginMember: false);
@@ -167,7 +167,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           route: AppRoutes.campusMap,
         ),
       ProfileButtonItem(
-        icon: Icons.help_outline,
+        icon: CupertinoIcons.question_circle,
         title: l10n.help,
         route: AppRoutes.helper,
       ),
@@ -363,7 +363,7 @@ class ProfileButtonItem {
             children: [
               Icon(
                 icon,
-                size: isTablet ? 32 : 40,
+                size: isTablet ? 32 : 36,
                 color: CourseColorManager.generateSoftColor(
                   title,
                   isDark: true,
@@ -376,7 +376,7 @@ class ProfileButtonItem {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: isTablet ? 9 : 12,
+                  fontSize: isTablet ? 9 : 11,
                   fontWeight: FontWeight.bold,
                   color: colors.secondaryLabel,
                 ),

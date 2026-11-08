@@ -231,7 +231,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         leading: IconButton(
           onPressed: () => AppRouter.pop(),
           icon: Icon(
-            Icons.arrow_back_ios_new,
+            CupertinoIcons.chevron_back,
             color: Theme.of(context).textTheme.bodyLarge?.color,
           ),
         ),
@@ -314,7 +314,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     context,
                     controller: _usernameController,
                     hintText: l10n.studentId,
-                    icon: Icons.person_outline,
+                    icon: CupertinoIcons.person,
                     isFirst: true,
                     isLast: false,
                   ),
@@ -322,7 +322,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     context,
                     controller: _passwordController,
                     hintText: l10n.password,
-                    icon: Icons.lock_outline,
+                    icon: CupertinoIcons.lock,
                     obscureText: _obscureText,
                     isPassword: true,
                     isFirst: false,
@@ -523,7 +523,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
-                  obscureText ? Icons.visibility_off : Icons.visibility,
+                  obscureText ? CupertinoIcons.eye_slash : CupertinoIcons.eye,
                   color: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),

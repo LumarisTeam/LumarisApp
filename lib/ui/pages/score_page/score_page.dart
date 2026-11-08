@@ -212,7 +212,11 @@ class _ScorePageState extends ConsumerState<ScorePage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.warning, size: 48, color: colors.secondaryLabel),
+              Icon(
+                CupertinoIcons.exclamationmark_triangle_fill,
+                size: 48,
+                color: colors.secondaryLabel,
+              ),
               SizedBox(height: 16),
               Text(
                 context.l10n.notLoggedIn,
@@ -274,8 +278,8 @@ class _ScorePageState extends ConsumerState<ScorePage>
                       onPressed: _changeScoreList,
                       icon: Icon(
                         _isYear
-                            ? Icons.calendar_today_rounded
-                            : Icons.calendar_view_day_rounded,
+                            ? CupertinoIcons.calendar_today
+                            : CupertinoIcons.list_bullet_below_rectangle,
                       ),
                     ),
                   ),
@@ -310,11 +314,11 @@ class _ScorePageState extends ConsumerState<ScorePage>
               if (!_isFool)
                 IconButton(
                   onPressed: _handleFoolishMode,
-                  icon: const Icon(Icons.mood),
+                  icon: const Icon(CupertinoIcons.smiley),
                 ),
               IconButton(
                 onPressed: () => refresh(isRefresh: true),
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(CupertinoIcons.arrow_clockwise),
               ),
             ],
           ),
@@ -400,28 +404,31 @@ class _ScorePageState extends ConsumerState<ScorePage>
         children: [
           if (canGpa)
             _buildStatItem(
-              icon: Icons.credit_score,
+              icon: CupertinoIcons.checkmark_seal,
               value: scoreList == null
                   ? ScoreList.getTotalGpa(_scoreList).toStringAsFixed(2)
                   : scoreList.totalGpa.toStringAsFixed(2),
               label: 'GPA',
+              color: context.mc.colors.success,
             ),
           _buildStatItem(
-            icon: Icons.library_books,
+            icon: CupertinoIcons.book,
             value: scoreList == null
                 ? ScoreList.getTotalCourse(_scoreList).toString()
                 : scoreList.totalCourse.toString(),
             label: context.l10n.passedCourses,
+            color: context.mc.colors.primary,
           ),
           InkWell(
             onTap: _showCreditInfoDialog,
             child: _buildStatItem(
-              icon: Icons.equalizer,
+              icon: CupertinoIcons.chart_bar,
               value: scoreList == null
                   ? ScoreList.getTotalCredit(_scoreList).toStringAsFixed(1)
                   : scoreList.totalCredit.toStringAsFixed(1),
               label: context.l10n.totalCredits,
               withInfo: true,
+              color: context.mc.colors.cyan,
             ),
           ),
         ],
@@ -434,11 +441,12 @@ class _ScorePageState extends ConsumerState<ScorePage>
     required String value,
     required String label,
     bool withInfo = false,
+    Color? color,
   }) {
     final colors = context.mc.colors;
     return Column(
       children: [
-        Icon(icon, size: 32),
+        Icon(icon, size: 32, color: color),
         Text(
           value,
           style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -447,7 +455,11 @@ class _ScorePageState extends ConsumerState<ScorePage>
           mainAxisSize: MainAxisSize.min,
           children: [
             if (withInfo)
-              Icon(Icons.info_outline, size: 9, color: colors.secondaryLabel),
+              Icon(
+                CupertinoIcons.info_circle,
+                size: 9,
+                color: colors.secondaryLabel,
+              ),
             Text(
               label,
               style: TextStyle(
@@ -618,7 +630,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
           EmptyWidget(
             title: context.l10n.noScores,
             subtitle: context.l10n.noScoresSubtitle,
-            icon: Icons.school,
+            icon: CupertinoIcons.book_fill,
           ),
           const SizedBox(height: 16),
           CupertinoButton.filled(

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/ui/pages/campus_map_page/map_compass_button.dart';
 import 'package:material_ui/material_ui.dart';
@@ -14,7 +15,7 @@ Transform _needleTransform(WidgetTester tester) {
   return tester.widget<Transform>(
     find
         .ancestor(
-          of: find.byIcon(Icons.navigation_rounded),
+          of: find.byIcon(CupertinoIcons.location_north_fill),
           matching: find.byType(Transform),
         )
         .first,
@@ -32,7 +33,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(Icons.navigation_rounded), findsOneWidget);
+      expect(find.byIcon(CupertinoIcons.location_north_fill), findsOneWidget);
       expect(find.byTooltip('正北朝上'), findsOneWidget);
     });
 

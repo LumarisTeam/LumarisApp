@@ -84,9 +84,13 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
           leading: isNeedUpdate
               ? Badge(
                   backgroundColor: colors.danger,
-                  child: Icon(Icons.update, size: 20),
+                  child: Icon(CupertinoIcons.arrow_down_circle, size: 20),
                 )
-              : Icon(Icons.verified, size: 20, color: colors.success),
+              : Icon(
+                  CupertinoIcons.checkmark_seal_fill,
+                  size: 20,
+                  color: colors.success,
+                ),
           title: Text(l10n.version),
           subtitle: Text(
             buildNumber.isEmpty ? version : '$version.$buildNumber',
@@ -135,7 +139,11 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
               vertical: 12,
               horizontal: 16,
             ),
-            leading: Icon(Icons.update, size: 20, color: colors.warning),
+            leading: Icon(
+              CupertinoIcons.arrow_down_circle,
+              size: 20,
+              color: colors.warning,
+            ),
             title: Text(l10n.updateLog),
             subtitle: Text(l10n.ignoreVersionUpdate),
             subtitleTextStyle: TextStyle(

@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,7 +56,7 @@ class BusTile extends ConsumerWidget {
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
-                            Icons.directions_bus_rounded,
+                            CupertinoIcons.bus,
                             color: primaryColor,
                             size: 24,
                           ),

@@ -69,7 +69,7 @@ void main() {
         scheduleDefaultLightColorPool,
       ),
     );
-    expect(find.byIcon(Icons.palette_outlined), findsOneWidget);
+    expect(find.byIcon(CupertinoIcons.paintbrush), findsOneWidget);
   });
 
   testWidgets('should show the persisted override color', (tester) async {
@@ -103,7 +103,7 @@ void main() {
   ) async {
     await tester.pumpWidget(_wrap(CourseDetailSheet(course: _course())));
 
-    await tester.tap(find.byIcon(Icons.palette_outlined));
+    await tester.tap(find.byIcon(CupertinoIcons.paintbrush));
     await tester.pumpAndSettle();
 
     expect(find.text('H'), findsOneWidget);
@@ -130,7 +130,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
 
-    await tester.tap(find.byIcon(Icons.palette_outlined));
+    await tester.tap(find.byIcon(CupertinoIcons.paintbrush));
     await tester.pumpAndSettle();
     expect(find.text('H'), findsOneWidget);
     expect(tester.takeException(), isNull);
@@ -149,7 +149,7 @@ void main() {
       ),
     );
 
-    expect(find.byIcon(Icons.palette_outlined), findsOneWidget);
+    expect(find.byIcon(CupertinoIcons.paintbrush), findsOneWidget);
     expect(find.byIcon(CupertinoIcons.ellipsis_circle), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

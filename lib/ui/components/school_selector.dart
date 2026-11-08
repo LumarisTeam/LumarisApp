@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
@@ -43,7 +44,7 @@ class SchoolSelector extends StatelessWidget {
               ).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
             ),
             prefixIcon: Icon(
-              Icons.school_outlined,
+              CupertinoIcons.building_2_fill,
               color: Theme.of(
                 context,
               ).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
@@ -86,7 +87,7 @@ class SchoolSelector extends StatelessWidget {
                     selected: isSelected,
                     selectedTileColor: colors.primary.withValues(alpha: 0.1),
                     leading: Icon(
-                      Icons.school_outlined,
+                      CupertinoIcons.building_2_fill,
                       color: isSelected ? colors.primary : null,
                       size: 22,
                     ),

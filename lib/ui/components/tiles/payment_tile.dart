@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
@@ -67,7 +68,7 @@ class PaymentTile extends ConsumerWidget {
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              Icons.monetization_on_rounded,
+                              CupertinoIcons.money_yen_circle_fill,
                               color: primaryColor,
                               size: 24,
                             ),
@@ -110,7 +111,7 @@ class PaymentTile extends ConsumerWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        Icons.monetization_on_rounded,
+                        CupertinoIcons.money_yen_circle_fill,
                         color: colors.secondaryLabel,
                         size: 24,
                       ),

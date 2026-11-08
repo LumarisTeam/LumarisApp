@@ -12,6 +12,8 @@ import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 
+import '../../components/page_app_bar.dart';
+
 /// 自定义课程管理页面
 ///
 /// 提供自定义课程的增删改查功能
@@ -183,7 +185,7 @@ class _CustomCourseManagePageState
     final colors = context.mc.colors;
     final primaryColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
-      appBar: McAppBar(
+      appBar: PageAppBar(
         titleWidget: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -211,7 +213,7 @@ class _CustomCourseManagePageState
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(CupertinoIcons.add),
             onPressed: _showAddCourseDialog,
             tooltip: l10n.addCourse,
           ),
@@ -239,7 +241,7 @@ class _CustomCourseManagePageState
                             borderRadius: McRadii.cardBorder,
                           ),
                           child: Icon(
-                            Icons.event_available,
+                            CupertinoIcons.calendar_badge_plus,
                             size: 48,
                             color: primaryColor,
                           ),
@@ -305,14 +307,14 @@ class _CustomCourseManagePageState
                                           runSpacing: 8,
                                           children: [
                                             _buildInfoChip(
-                                              Icons.location_on_outlined,
+                                              CupertinoIcons.placemark,
                                               course.room.isEmpty
                                                   ? l10n.noLocation
                                                   : course.room,
                                               colors.primary,
                                             ),
                                             _buildInfoChip(
-                                              Icons.schedule_outlined,
+                                              CupertinoIcons.clock,
                                               _formatCourseTime(course),
                                               colors.success,
                                             ),
@@ -328,12 +330,12 @@ class _CustomCourseManagePageState
                                       McPopoverMenuItem<String>(
                                         value: 'edit',
                                         label: l10n.editCourse,
-                                        icon: Icons.edit_outlined,
+                                        icon: CupertinoIcons.pencil,
                                       ),
                                       McPopoverMenuItem<String>(
                                         value: 'delete',
                                         label: l10n.deleteCourse,
-                                        icon: Icons.delete_outline,
+                                        icon: CupertinoIcons.trash,
                                         isDestructive: true,
                                       ),
                                     ],
@@ -597,7 +599,7 @@ class _AddEditCourseDialogState extends State<AddEditCourseDialog> {
               l10n.courseName,
               _courseNameController,
               l10n.courseName,
-              Icons.book_outlined,
+              CupertinoIcons.book,
               required: true,
             ),
             const SizedBox(height: 16),
@@ -605,21 +607,21 @@ class _AddEditCourseDialogState extends State<AddEditCourseDialog> {
               l10n.courseRoom,
               _roomController,
               l10n.courseRoom,
-              Icons.location_on_outlined,
+              CupertinoIcons.placemark,
             ),
             const SizedBox(height: 16),
             _buildTextField(
               l10n.courseTeacher,
               _teacherController,
               l10n.courseTeacher,
-              Icons.person_outline,
+              CupertinoIcons.person,
             ),
             const SizedBox(height: 16),
             _buildTextField(
               l10n.courseCredits,
               _creditsController,
               l10n.courseCredits,
-              Icons.school_outlined,
+              CupertinoIcons.building_2_fill,
             ),
             const SizedBox(height: 20),
 

@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -69,7 +70,7 @@ class TileEditControls extends ConsumerWidget {
     return TextButton.icon(
       key: const ValueKey('edit_button'),
       onPressed: () => controller.toggleEditMode(),
-      icon: const Icon(Icons.edit_outlined, size: 18),
+      icon: const Icon(CupertinoIcons.pencil, size: 18),
       label: Text(l10n.edit),
       style: TextButton.styleFrom(
         foregroundColor: colors.primary,
@@ -86,7 +87,7 @@ class TileEditControls extends ConsumerWidget {
     return ElevatedButton.icon(
       key: const ValueKey('done_button'),
       onPressed: () => controller.toggleEditMode(),
-      icon: const Icon(Icons.check, size: 18),
+      icon: const Icon(CupertinoIcons.checkmark, size: 18),
       label: Text(l10n.done),
       style: ElevatedButton.styleFrom(
         backgroundColor: colors.primary,
@@ -141,7 +142,7 @@ class EmptyTilesMessage extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: EmptyWidget(
         title: l10n.noShortcuts,
-        icon: Icons.widgets_outlined,
+        icon: CupertinoIcons.square_grid_2x2,
         subtitle: l10n.addInEditMode,
       ),
     );
@@ -198,7 +199,11 @@ class AvailableTilesList extends ConsumerWidget {
                       color: colors.success,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.add, color: colors.onAccent, size: 16),
+                    child: Icon(
+                      CupertinoIcons.add,
+                      color: colors.onAccent,
+                      size: 16,
+                    ),
                   ),
                   title: Text(
                     _tileDisplayName(tileId, context.l10n),

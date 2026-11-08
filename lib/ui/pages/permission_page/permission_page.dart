@@ -6,6 +6,8 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
 
+import '../../components/page_app_bar.dart';
+
 /// 权限管理页：集中展示应用用到的系统权限，并支持申请或跳转系统设置。
 class PermissionPage extends StatefulWidget {
   const PermissionPage({super.key, this.isMobileOverride});
@@ -121,7 +123,7 @@ class _PermissionPageState extends State<PermissionPage>
         .length;
 
     return Scaffold(
-      appBar: McAppBar(
+      appBar: PageAppBar(
         title: l10n.permissionManagement,
         actions: [
           IconButton(
@@ -133,7 +135,7 @@ class _PermissionPageState extends State<PermissionPage>
                     height: 20,
                     child: CupertinoActivityIndicator(radius: 9),
                   )
-                : const Icon(Icons.refresh),
+                : const Icon(CupertinoIcons.arrow_clockwise),
           ),
         ],
       ),

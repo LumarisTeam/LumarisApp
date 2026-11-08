@@ -209,8 +209,8 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
         label: l10n.home,
       ),
       SidebarDestination(
-        icon: Icons.schedule_outlined,
-        selectedIcon: Icons.schedule,
+        icon: CupertinoIcons.clock,
+        selectedIcon: CupertinoIcons.clock_fill,
         label: l10n.schedule,
       ),
       SidebarDestination(
@@ -229,8 +229,8 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
         label: l10n.electricity,
       ),
       SidebarDestination(
-        icon: Icons.directions_bus_outlined,
-        selectedIcon: Icons.directions_bus_rounded,
+        icon: CupertinoIcons.bus,
+        selectedIcon: CupertinoIcons.bus,
         label: l10n.schoolBus,
       ),
       SidebarDestination(

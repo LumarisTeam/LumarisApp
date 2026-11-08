@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/school_store.dart';
+
+import '../../components/page_app_bar.dart';
 
 class HtmlImportPage extends ConsumerStatefulWidget {
   const HtmlImportPage({super.key});
@@ -77,7 +80,7 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
         _selectedUrl != null || _urlController.text.trim().isNotEmpty;
 
     return Scaffold(
-      appBar: McAppBar(title: l10n.htmlImport),
+      appBar: PageAppBar(title: l10n.htmlImport),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -104,7 +107,7 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
                     clipBehavior: Clip.antiAlias,
                     child: ListTile(
                       leading: Icon(
-                        Icons.travel_explore,
+                        CupertinoIcons.compass,
                         color: colors.primary,
                       ),
                       title: Text(
@@ -116,7 +119,7 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      trailing: const Icon(Icons.chevron_right),
+                      trailing: const Icon(CupertinoIcons.chevron_right),
                       onTap: _openWarehouseImport,
                     ),
                   ),
@@ -169,7 +172,7 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
                 //                 ),
                 //               ),
                 //               if (_selectedCode == school.code)
-                //                 Icon(Icons.check_circle, color: colors.primary),
+                //                 Icon(CupertinoIcons.checkmark_circle_fill, color: colors.primary),
                 //             ],
                 //           ),
                 //         ),
@@ -222,7 +225,7 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: canImport ? _openWebView : null,
-                icon: const Icon(Icons.open_in_browser),
+                icon: const Icon(CupertinoIcons.globe),
                 label: Text(l10n.htmlImport),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,

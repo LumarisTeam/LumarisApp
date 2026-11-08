@@ -66,7 +66,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.settings),
+                icon: const Icon(CupertinoIcons.gear_solid),
                 onPressed: () {
                   showMcDialog(
                     context: context,
@@ -128,7 +128,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                           padding: const EdgeInsets.all(16.0),
                           child: EmptyWidget(
                             title: l10n.noCourseToday,
-                            icon: Icons.school,
+                            icon: CupertinoIcons.book_fill,
                             subtitle: l10n.noCourseTodaySubtitle,
                           ),
                         )
@@ -233,7 +233,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                     Row(
                       children: [
                         Icon(
-                          Icons.access_time,
+                          CupertinoIcons.clock,
                           size: 18,
                           color: colors.secondaryLabel,
                         ),
@@ -253,7 +253,7 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                     Row(
                       children: [
                         Icon(
-                          Icons.location_on,
+                          CupertinoIcons.placemark_fill,
                           size: 18,
                           color: colors.secondaryLabel,
                         ),

@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -83,7 +84,7 @@ class MapCompassButton extends StatelessWidget {
                   child: Transform.rotate(
                     angle: normalized * math.pi / 180,
                     child: Icon(
-                      Icons.navigation_rounded,
+                      CupertinoIcons.location_north_fill,
                       size: 22,
                       color: isNorthUp ? colors.secondaryLabel : colors.primary,
                     ),

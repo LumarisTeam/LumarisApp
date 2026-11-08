@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter/services.dart';
@@ -100,12 +101,12 @@ void main() {
     await pumpPage(tester);
 
     expect(find.text('高等数学'), findsOneWidget);
-    expect(find.byIcon(Icons.check_box), findsNothing);
+    expect(find.byIcon(CupertinoIcons.checkmark_square_fill), findsNothing);
 
     await tapCourse(tester, '高等数学');
 
     expect(container.read(courseStoreProvider).ignoreCourses, ['高等数学']);
-    expect(find.byIcon(Icons.check_box), findsOneWidget);
+    expect(find.byIcon(CupertinoIcons.checkmark_square_fill), findsOneWidget);
   });
 
   testWidgets('should_persist_ignored_course', (tester) async {
@@ -126,7 +127,7 @@ void main() {
     await tapCourse(tester, '高等数学');
 
     expect(container.read(courseStoreProvider).ignoreCourses, isEmpty);
-    expect(find.byIcon(Icons.check_box), findsNothing);
+    expect(find.byIcon(CupertinoIcons.checkmark_square_fill), findsNothing);
     expect(
       PrefsService.instance.getString(PrefsKeys.IGNORE_DATA),
       '{"data":[]}',
@@ -140,6 +141,6 @@ void main() {
     await tapCourse(tester, '大学英语');
 
     expect(container.read(courseStoreProvider).ignoreCourses, ['高等数学', '大学英语']);
-    expect(find.byIcon(Icons.check_box), findsNWidgets(2));
+    expect(find.byIcon(CupertinoIcons.checkmark_square_fill), findsNWidgets(2));
   });
 }

@@ -16,6 +16,8 @@ import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/ui/components/schedule/schedule_components.dart';
 
+import '../../components/page_app_bar.dart';
+
 /// 课表个性化配置页。
 ///
 /// 顶部是固定示例课表的预览（只在设置提交后刷新一次，拖动时不重建），
@@ -142,7 +144,7 @@ class _SchedulePersonalizationPageState
     );
 
     return Scaffold(
-      appBar: McAppBar(title: l10n.schedulePersonalization),
+      appBar: PageAppBar(title: l10n.schedulePersonalization),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -426,7 +428,7 @@ class _SchedulePersonalizationPageState
         settingsStore.hasBackgroundFor(isDark: isDark) && path.isNotEmpty;
 
     return McListTile(
-      leading: Icon(Icons.image_outlined, color: colors.primary),
+      leading: Icon(CupertinoIcons.photo, color: colors.primary),
       title: Text(
         '${l10n.scheduleWallpaper} · '
         '${isDark ? l10n.wallpaperEditingDark : l10n.wallpaperEditingLight}',
@@ -435,7 +437,9 @@ class _SchedulePersonalizationPageState
         hasWallpaper ? l10n.wallpaperClearHint : l10n.wallpaperTapHint,
       ),
       trailing: Icon(
-        hasWallpaper ? Icons.check_circle : Icons.circle_outlined,
+        hasWallpaper
+            ? CupertinoIcons.checkmark_circle_fill
+            : CupertinoIcons.circle,
         color: hasWallpaper ? colors.primary : colors.tertiaryLabel,
       ),
       onTap: () => pickScheduleBackgroundImage(context, ref, isDark: isDark),

@@ -16,7 +16,11 @@ class HapticFeedbackSetting extends ConsumerWidget {
 
     return McListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      leading: Icon(Icons.vibration, size: 20, color: Colors.deepPurple),
+      leading: Icon(
+        CupertinoIcons.device_phone_portrait,
+        size: 20,
+        color: Colors.deepPurple,
+      ),
       title: Text(context.l10n.hapticFeedback),
       subtitle: Text(context.l10n.hapticFeedbackSubtitle),
       trailing: CupertinoSwitch(

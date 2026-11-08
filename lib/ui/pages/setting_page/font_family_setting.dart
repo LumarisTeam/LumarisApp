@@ -1,6 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
@@ -29,7 +28,7 @@ class FontFamilySetting extends ConsumerWidget {
     final l10n = context.l10n;
 
     return McListTile(
-      leading: Icon(Icons.font_download, size: 20, color: colors.primary),
+      leading: Icon(CupertinoIcons.textformat, size: 20, color: colors.primary),
       title: Text(l10n.fontSetting),
       subtitle: Text(l10n.fontSettingSubtitle),
       trailing: Text(

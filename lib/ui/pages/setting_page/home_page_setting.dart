@@ -1,7 +1,6 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:material_ui/material_ui.dart';
 
 import '../../../core/extensions/localization_extensions.dart';
 import '../../../state/settings_store.dart';
@@ -23,7 +22,11 @@ class HomePageSetting extends ConsumerWidget {
     ];
 
     return McListTile(
-      leading: Icon(Icons.pageview, size: 20, color: colors.primary),
+      leading: Icon(
+        CupertinoIcons.rectangle_stack,
+        size: 20,
+        color: colors.primary,
+      ),
       title: Text(l10n.firstPageOnLaunch),
       trailing: Text(pageNames[settings.pageIndex]),
       onTap: () async {

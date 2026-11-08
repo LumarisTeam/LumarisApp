@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:curriculum/warehouse.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
@@ -8,6 +9,8 @@ import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/ui/pages/schedule_list_page/warehouse_import_webview_page.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../../components/page_app_bar.dart';
 
 /// 从拾光适配仓库选择学校和适配器的页面。
 class WarehouseImportPage extends StatefulWidget {
@@ -47,11 +50,11 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
     final colors = context.mc.colors;
 
     return Scaffold(
-      appBar: McAppBar(
+      appBar: PageAppBar(
         title: l10n.warehouseImport,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(CupertinoIcons.arrow_clockwise),
             tooltip: l10n.refreshRepository,
             onPressed: () => _reload(forceRefresh: true),
           ),
@@ -152,7 +155,7 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
         onChanged: (_) => setState(() {}),
         decoration: InputDecoration(
           hintText: l10n.searchSchool,
-          prefixIcon: const Icon(Icons.search),
+          prefixIcon: const Icon(CupertinoIcons.search),
           filled: true,
           fillColor: colors.groupedBackground,
           border: OutlineInputBorder(
@@ -235,7 +238,7 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                trailing: const Icon(Icons.chevron_right),
+                trailing: const Icon(CupertinoIcons.chevron_right),
                 onTap: () => Navigator.of(context).pop(adapter),
               ),
           ],
@@ -335,7 +338,7 @@ class _SchoolTile extends StatelessWidget {
                   style: TextStyle(color: colors.secondaryLabel, fontSize: 12),
                 ),
               const SizedBox(width: 4),
-              const Icon(Icons.chevron_right),
+              const Icon(CupertinoIcons.chevron_right),
             ],
           ),
           onTap: onTap,
@@ -384,7 +387,7 @@ class _ErrorState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.cloud_off, size: 40),
+            const Icon(CupertinoIcons.wifi_slash, size: 40),
             const SizedBox(height: 12),
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),

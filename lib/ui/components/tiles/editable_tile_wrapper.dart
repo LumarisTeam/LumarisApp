@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -147,7 +148,7 @@ class _EditableTileWrapperState extends ConsumerState<EditableTileWrapper>
           shape: BoxShape.circle,
         ),
         child: Icon(
-          Icons.remove, // Simple minus
+          CupertinoIcons.minus, // Simple minus
           color: colors.onAccent,
           size: 16,
         ),

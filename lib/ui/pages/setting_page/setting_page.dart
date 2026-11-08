@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../components/page_app_bar.dart';
 import '../../theme/app_theme_color.dart';
 
 import 'package:cupertino_ui/cupertino_ui.dart';
@@ -65,7 +66,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
     final settingsStore = ref.read(settingsStoreProvider.notifier);
 
     return Scaffold(
-      appBar: McAppBar(title: context.l10n.settings),
+      appBar: PageAppBar(title: context.l10n.settings),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final isTablet = constraints.maxWidth > 600;
@@ -398,7 +399,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
   Widget _buildFeedbackTile(BuildContext context) {
     return McListTile(
       leading: Icon(
-        Icons.feedback_rounded,
+        CupertinoIcons.chat_bubble_text,
         size: 20,
         color: context.mc.colors.primary,
       ),
@@ -491,7 +492,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
   Widget _buildLogoutTile(BuildContext context, UserStore userStore) {
     return McListTile(
       leading: Icon(
-        Icons.logout_outlined,
+        CupertinoIcons.square_arrow_left,
         size: 20,
         color: context.mc.colors.tertiaryLabel,
       ),
@@ -515,7 +516,11 @@ class _SettingPageState extends ConsumerState<SettingPage> {
 
   Widget _buildWidgetTile(BuildContext context) {
     return McListTile(
-      leading: Icon(Icons.widgets, size: 20, color: context.mc.colors.primary),
+      leading: Icon(
+        CupertinoIcons.square_grid_2x2_fill,
+        size: 20,
+        color: context.mc.colors.primary,
+      ),
       title: Text(context.l10n.addToDesktop),
       showChevron: true,
       onTap: _handleWidgetSetup,

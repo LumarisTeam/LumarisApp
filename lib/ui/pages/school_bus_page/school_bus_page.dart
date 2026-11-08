@@ -40,7 +40,7 @@ class SchoolBusPage extends ConsumerWidget {
         body: EmptyWidget(
           title: context.l10n.guestMode,
           subtitle: context.l10n.guestModeSubtitle,
-          icon: Icons.lock_outline,
+          icon: CupertinoIcons.lock,
         ),
       );
     }
@@ -51,12 +51,12 @@ class SchoolBusPage extends ConsumerWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const Icon(CupertinoIcons.arrow_clockwise),
             onPressed: busController.refreshData,
             tooltip: context.l10n.refreshData,
           ),
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(CupertinoIcons.gear),
             onPressed: () => _showSettingsModalBottomSheet(context),
             tooltip: context.l10n.settings,
           ),
@@ -264,7 +264,11 @@ class SchoolBusPage extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.error_outline_rounded, size: 48, color: colors.danger),
+              Icon(
+                CupertinoIcons.exclamationmark_circle,
+                size: 48,
+                color: colors.danger,
+              ),
               const SizedBox(height: 16),
               Text(
                 resolveErrorMessage(busState.errorMessage, context.l10n),
@@ -289,7 +293,7 @@ class SchoolBusPage extends ConsumerWidget {
         child: EmptyWidget(
           title: context.l10n.noBusToday,
           subtitle: context.l10n.noBusTodaySubtitle,
-          icon: Icons.directions_bus_filled_rounded,
+          icon: CupertinoIcons.bus,
         ),
       );
     }
@@ -309,7 +313,7 @@ class SchoolBusPage extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline_rounded, color: colors.warning),
+                  Icon(CupertinoIcons.info_circle, color: colors.warning),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -401,28 +405,28 @@ class SchoolBusPage extends ConsumerWidget {
         const SizedBox(height: 12),
         _buildInfoRow(
           context: context,
-          icon: Icons.access_time_filled_rounded,
+          icon: CupertinoIcons.clock_fill,
           label: context.l10n.departureTime,
           content: bus.runTime,
           color: colors.primary,
         ),
         _buildInfoRow(
           context: context,
-          icon: Icons.location_on_rounded,
+          icon: CupertinoIcons.placemark_fill,
           label: context.l10n.destination,
           content: bus.arrivalStation,
           color: colors.danger,
         ),
         _buildInfoRow(
           context: context,
-          icon: Icons.schedule_rounded,
+          icon: CupertinoIcons.clock,
           label: context.l10n.estimatedArrival,
           content: bus.arrivalTime,
           color: colors.success,
         ),
         _buildInfoRow(
           context: context,
-          icon: Icons.info_outline_rounded,
+          icon: CupertinoIcons.info_circle,
           label: context.l10n.busInfo,
           content: bus.description,
           color: colors.warning,
@@ -525,7 +529,7 @@ class BusTimelineTile extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Icon(
-                      Icons.arrow_forward_rounded,
+                      CupertinoIcons.arrow_right,
                       size: 20,
                       color: colors.tertiaryLabel,
                     ),
@@ -589,7 +593,7 @@ class BusTimelineTile extends StatelessWidget {
                     ),
                   ),
                   Icon(
-                    Icons.chevron_right_rounded,
+                    CupertinoIcons.chevron_right,
                     color: colors.quaternaryLabel,
                   ),
                 ],

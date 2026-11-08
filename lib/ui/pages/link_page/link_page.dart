@@ -4,6 +4,7 @@ import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../components/page_app_bar.dart';
 import '../../../core/extensions/localization_extensions.dart';
 import '../../../features/education/apis/link_api.dart';
 import '../../../features/education/models/link_model.dart';
@@ -38,13 +39,13 @@ class _LinkPageState extends ConsumerState<LinkPage> {
     final isLogin = ref.watch(userStoreProvider).isLogin;
 
     return Scaffold(
-      appBar: McAppBar(
+      appBar: PageAppBar(
         title: l10n.campusNavigation,
         actions: [
           if (isLogin)
             IconButton(
               onPressed: _refreshLinks,
-              icon: const Icon(Icons.refresh),
+              icon: const Icon(CupertinoIcons.arrow_clockwise),
               tooltip: l10n.refreshData,
             ),
         ],

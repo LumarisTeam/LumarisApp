@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -42,6 +43,10 @@ enum AppThemeColor {
       locale: locale,
     );
     return theme.copyWith(
+      actionIconTheme: ActionIconThemeData(
+        backButtonIconBuilder: (_) => const Icon(CupertinoIcons.chevron_back),
+        closeButtonIconBuilder: (_) => const Icon(CupertinoIcons.xmark),
+      ),
       colorScheme: theme.colorScheme.copyWith(
         onPrimary: colors.primaryForeground,
         onSecondary: colors.primaryForeground,

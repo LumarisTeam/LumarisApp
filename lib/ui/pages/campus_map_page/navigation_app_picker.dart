@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:flutter/widget_previews.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
@@ -43,7 +44,7 @@ class NavigationAppPicker extends StatelessWidget {
         ),
         for (final ExternalMap map in maps)
           McListTile(
-            leading: Icon(Icons.map_outlined, size: 20, color: m.primary),
+            leading: Icon(CupertinoIcons.map, size: 20, color: m.primary),
             title: Text(_label(context, map)),
             onTap: () => Navigator.of(context).pop(map),
           ),

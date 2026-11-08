@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:curriculum/warehouse.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,8 @@ import 'package:ios_club_app/state/schedule_store.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import '../../components/page_app_bar.dart';
 
 /// 打开适配器 WebView 所需的参数。
 class WarehouseImportArgs {
@@ -297,7 +300,7 @@ class _WarehouseImportWebViewPageState
     final colors = context.mc.colors;
 
     return Scaffold(
-      appBar: McAppBar(title: widget.args.schoolName),
+      appBar: PageAppBar(title: widget.args.schoolName),
       body: Column(
         children: [
           Container(
@@ -325,7 +328,7 @@ class _WarehouseImportWebViewPageState
                         height: 18,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : const Icon(Icons.download),
+                    : const Icon(CupertinoIcons.arrow_down_to_line),
                 label: Text(
                   _isImporting
                       ? l10n.warehouseImportInProgress
@@ -365,7 +368,7 @@ class _WarehouseImportWebViewPageState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, size: 40),
+              const Icon(CupertinoIcons.exclamationmark_circle, size: 40),
               const SizedBox(height: 12),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -544,7 +547,7 @@ class _WebViewImportHost implements WarehouseImportHost {
               ListTile(
                 selected: index == defaultIndex,
                 leading: index == defaultIndex
-                    ? const Icon(Icons.check_circle)
+                    ? const Icon(CupertinoIcons.checkmark_circle_fill)
                     : null,
                 title: Text(items[index]),
                 onTap: () => Navigator.of(context).pop(index),

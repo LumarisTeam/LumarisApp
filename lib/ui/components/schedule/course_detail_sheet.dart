@@ -317,7 +317,7 @@ class _CourseColorSwatch extends ConsumerWidget {
         ),
       ),
       child: Icon(
-        Icons.palette_outlined,
+        CupertinoIcons.paintbrush,
         size: 16,
         color: ScheduleColorResolver.autoContrast(color),
       ),

@@ -73,7 +73,7 @@ void main() {
     expect(find.text('明日课表'), findsOneWidget);
     expect(find.text('明日测试课程'), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.settings));
+    await tester.tap(find.byIcon(CupertinoIcons.gear_solid));
     await tester.pumpAndSettle();
     await tester.tap(find.byType(CupertinoSwitch).first);
     await tester.pumpAndSettle();

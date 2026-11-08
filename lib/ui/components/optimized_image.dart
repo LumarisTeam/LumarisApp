@@ -1,6 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 /// 优化的图片加载组件
@@ -135,7 +134,7 @@ class OptimizedImage extends StatelessWidget {
       height: height,
       color: colors.surfaceRaised,
       child: Icon(
-        Icons.error_outline,
+        CupertinoIcons.exclamationmark_circle,
         color: colors.secondaryLabel,
         size: width != null ? width! * 0.5 : 24,
       ),

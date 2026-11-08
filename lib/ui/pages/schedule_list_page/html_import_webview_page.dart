@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,8 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/features/education/services/warehouse_import_store.dart';
 import 'package:ios_club_app/state/course_store.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
+
+import '../../components/page_app_bar.dart';
 
 class HtmlImportWebViewPage extends ConsumerStatefulWidget {
   final String url;
@@ -116,7 +119,7 @@ class _HtmlImportWebViewPageState extends ConsumerState<HtmlImportWebViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: McAppBar(title: context.l10n.htmlImport),
+      appBar: PageAppBar(title: context.l10n.htmlImport),
       body: Column(
         children: [
           Container(
@@ -143,7 +146,7 @@ class _HtmlImportWebViewPageState extends ConsumerState<HtmlImportWebViewPage> {
                 height: 20,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : const Icon(Icons.download),
+            : const Icon(CupertinoIcons.arrow_down_to_line),
         label: Text(context.l10n.importCourses),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

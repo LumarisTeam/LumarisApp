@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/state/school_store.dart';
 
+import '../../components/page_app_bar.dart';
+
 /// 匿名反馈表单页：描述 + 联系方式 + 图片（≤6）+ 字数统计 + 提交。
 class FeedbackPage extends ConsumerStatefulWidget {
   const FeedbackPage({super.key});
@@ -179,7 +181,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     final l10n = context.l10n;
 
     return Scaffold(
-      appBar: McAppBar(title: l10n.feedback),
+      appBar: PageAppBar(title: l10n.feedback),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -315,7 +317,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.add_photo_alternate_outlined,
+              CupertinoIcons.photo_on_rectangle,
               color: colors.secondaryLabel,
             ),
             const SizedBox(height: 4),
@@ -352,7 +354,11 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
                 color: Colors.black54,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close, size: 14, color: Colors.white),
+              child: const Icon(
+                CupertinoIcons.xmark,
+                size: 14,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

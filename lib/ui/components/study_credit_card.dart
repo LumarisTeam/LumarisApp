@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
@@ -64,7 +65,7 @@ class StudyCreditCard extends StatelessWidget {
             shape: McSmoothCorners.shape(McRadii.navigationBorder),
           ),
           child: Icon(
-            Icons.school_rounded,
+            CupertinoIcons.book_fill,
             color: theme.colorScheme.primary,
             size: 28,
           ),

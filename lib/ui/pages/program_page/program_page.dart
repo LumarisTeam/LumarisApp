@@ -88,7 +88,7 @@ class _ProgramPageState extends ConsumerState<ProgramPage>
             onPressed: programState.isLoading
                 ? null
                 : () => controller.refreshPrograms(),
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(CupertinoIcons.arrow_clockwise),
           ),
         ],
         bottom: PreferredSize(

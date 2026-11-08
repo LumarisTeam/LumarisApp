@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/ui/components/empty_widget.dart';
@@ -9,7 +10,7 @@ void main() {
     ) async {
       const title = '暂无数据';
       const subtitle = '这里什么都没有';
-      const icon = Icons.inbox;
+      const icon = CupertinoIcons.tray;
 
       await tester.pumpWidget(
         const MaterialApp(
@@ -30,7 +31,11 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: EmptyWidget(title: '测试', subtitle: '测试副标题', icon: Icons.home),
+            body: EmptyWidget(
+              title: '测试',
+              subtitle: '测试副标题',
+              icon: CupertinoIcons.house_fill,
+            ),
           ),
         ),
       );
@@ -57,7 +62,7 @@ void main() {
             body: EmptyWidget(
               title: '测试标题',
               subtitle: emptySubtitle,
-              icon: Icons.home,
+              icon: CupertinoIcons.house_fill,
             ),
           ),
         ),

@@ -1,6 +1,5 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/state/settings_store.dart';
@@ -25,7 +24,11 @@ class RemindSetting extends ConsumerWidget {
             horizontal: 16,
             vertical: 12,
           ),
-          leading: Icon(Icons.schedule, size: 20, color: colors.success),
+          leading: Icon(
+            CupertinoIcons.clock_fill,
+            size: 20,
+            color: colors.success,
+          ),
           title: Text(l10n.courseReminder),
           subtitle: Text(l10n.courseReminderSubtitle),
           trailing: CupertinoSwitch(

@@ -11,6 +11,8 @@ import 'package:ios_club_app/features/mcp/services/mcp_config_generator.dart';
 import 'package:ios_club_app/features/mcp/services/mcp_probe_service.dart';
 import 'package:ios_club_app/features/mcp/services/mcp_token_store.dart';
 
+import '../../components/page_app_bar.dart';
+
 /// 单列内容的最大宽度，与设置页保持一致。
 const double _kPageMaxWidth = 600;
 
@@ -199,7 +201,7 @@ class _McpPageState extends State<McpPage> {
         : l10n.mcpCopyCli;
 
     return Scaffold(
-      appBar: McAppBar(title: l10n.mcpTitle),
+      appBar: PageAppBar(title: l10n.mcpTitle),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final horizontalPadding = constraints.maxWidth > _kPageMaxWidth

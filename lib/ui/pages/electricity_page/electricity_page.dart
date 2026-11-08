@@ -15,6 +15,8 @@ import 'package:ios_club_app/ui/components/loading_state_view.dart';
 import 'package:ios_club_app/state/electricity_store.dart';
 import 'package:ios_club_app/state/user_store.dart';
 
+import '../../components/page_app_bar.dart';
+
 enum _ElectricityAction { refresh, changeRoom }
 
 class ElectricityPage extends ConsumerStatefulWidget {
@@ -70,18 +72,18 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
 
     if (school != null && !canElectricity) {
       return Scaffold(
-        appBar: McAppBar(title: l10n.electricityManagement),
+        appBar: PageAppBar(title: l10n.electricityManagement),
         body: Center(child: Text(l10n.schoolNotSupported)),
       );
     }
 
     if (!isLogin) {
       return Scaffold(
-        appBar: McAppBar(title: l10n.electricityManagement),
+        appBar: PageAppBar(title: l10n.electricityManagement),
         body: EmptyWidget(
           title: l10n.guestMode,
           subtitle: l10n.guestModeSubtitle,
-          icon: Icons.lock_outline,
+          icon: CupertinoIcons.lock,
         ),
       );
     }
@@ -93,16 +95,16 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
     }
     if (kIsWeb) {
       return Scaffold(
-        appBar: McAppBar(title: l10n.electricityManagement),
+        appBar: PageAppBar(title: l10n.electricityManagement),
         body: EmptyWidget(
           title: l10n.webNotSupported,
           subtitle: l10n.webNotSupportedSubtitle,
-          icon: Icons.error,
+          icon: CupertinoIcons.exclamationmark_circle_fill,
         ),
       );
     }
     return Scaffold(
-      appBar: McAppBar(
+      appBar: PageAppBar(
         title: l10n.electricityManagement,
         actions: [
           CupertinoButton(
@@ -715,7 +717,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
                           ? null
                           : () => _loadSubscriptions(force: true),
                       child: Icon(
-                        Icons.refresh,
+                        CupertinoIcons.arrow_clockwise,
                         size: 20,
                         color: _isSubscriptionLoading
                             ? colorScheme.onSurfaceVariant

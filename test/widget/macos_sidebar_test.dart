@@ -21,18 +21,18 @@ const Color _expectedLabelDark = Color.fromRGBO(255, 255, 255, 0.85);
 
 const List<SidebarDestination> _items = [
   SidebarDestination(
-    icon: Icons.home_outlined,
-    selectedIcon: Icons.home,
+    icon: CupertinoIcons.house,
+    selectedIcon: CupertinoIcons.house_fill,
     label: '首页',
   ),
   SidebarDestination(
-    icon: Icons.schedule_outlined,
-    selectedIcon: Icons.schedule,
+    icon: CupertinoIcons.clock,
+    selectedIcon: CupertinoIcons.clock_fill,
     label: '课表',
   ),
   SidebarDestination(
-    icon: Icons.map_outlined,
-    selectedIcon: Icons.map,
+    icon: CupertinoIcons.map,
+    selectedIcon: CupertinoIcons.map_fill,
     label: '地图',
   ),
 ];

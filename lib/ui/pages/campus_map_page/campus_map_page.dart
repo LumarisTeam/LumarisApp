@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter/services.dart';
@@ -184,7 +185,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
         body: EmptyWidget(
           title: context.l10n.guestMode,
           subtitle: context.l10n.guestModeSubtitle,
-          icon: Icons.lock_outline,
+          icon: CupertinoIcons.lock,
         ),
       );
     }
@@ -376,7 +377,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
   Widget _buildBackButton(McColors colors) {
     return _buildFloatingIconButton(
       colors: colors,
-      icon: Icons.arrow_back_rounded,
+      icon: CupertinoIcons.arrow_left,
       tooltip: context.l10n.back,
       onPressed: _handleBack,
     );
@@ -386,8 +387,8 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
     return _buildFloatingIconButton(
       colors: colors,
       icon: _isSidebarOpen
-          ? Icons.chevron_left_rounded
-          : Icons.menu_open_rounded,
+          ? CupertinoIcons.chevron_left
+          : CupertinoIcons.sidebar_left,
       tooltip: _isSidebarOpen
           ? context.l10n.collapseSidebar
           : context.l10n.expandSidebar,
@@ -468,7 +469,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
           ),
           const SizedBox(height: 4),
           Icon(
-            Icons.location_on_rounded,
+            CupertinoIcons.placemark_fill,
             color: isSelected
                 ? colors.primary
                 : colors.primary.withValues(alpha: 0.7),
@@ -546,7 +547,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                       tooltip: l10n.back,
                       onPressed: _handleBack,
                       icon: Icon(
-                        Icons.arrow_back_rounded,
+                        CupertinoIcons.arrow_left,
                         color: colors.label,
                         size: 22,
                       ),
@@ -564,7 +565,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                       color: colors.separator.withValues(alpha: 0.2),
                     ),
                   ],
-                  Icon(Icons.search_rounded, color: colors.secondaryLabel),
+                  Icon(CupertinoIcons.search, color: colors.secondaryLabel),
                   const SizedBox(width: 12),
                   Expanded(
                     child: TextField(
@@ -595,7 +596,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                                       .updateSearchQuery('');
                                 },
                                 child: Icon(
-                                  Icons.clear_rounded,
+                                  CupertinoIcons.xmark,
                                   color: colors.secondaryLabel,
                                   size: 18,
                                 ),
@@ -615,7 +616,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      Icons.map_rounded,
+                      CupertinoIcons.map_fill,
                       color: colors.primary,
                       size: 20,
                     ),
@@ -702,7 +703,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildControlItem(
-                    icon: Icons.add_rounded,
+                    icon: CupertinoIcons.add,
                     onTap: () => _zoomBy(1),
                     colors: colors,
                   ),
@@ -711,7 +712,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                     color: colors.separator.withValues(alpha: 0.1),
                   ),
                   _buildControlItem(
-                    icon: Icons.remove_rounded,
+                    icon: CupertinoIcons.minus,
                     onTap: () => _zoomBy(-1),
                     colors: colors,
                   ),
@@ -741,8 +742,8 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
               ),
               child: _buildControlItem(
                 icon: mapState.isLoadingLocation
-                    ? Icons.hourglass_empty_rounded
-                    : Icons.my_location_rounded,
+                    ? CupertinoIcons.hourglass
+                    : CupertinoIcons.scope,
                 onTap: () {
                   if (mapState.currentLocation != null) {
                     _moveToLocation(mapState.currentLocation!);
@@ -829,7 +830,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                       child: Row(
                         children: [
                           Icon(
-                            Icons.search_rounded,
+                            CupertinoIcons.search,
                             color: colors.secondaryLabel,
                             size: 20,
                           ),
@@ -868,7 +869,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                                               .updateSearchQuery('');
                                         },
                                         child: Icon(
-                                          Icons.clear_rounded,
+                                          CupertinoIcons.xmark,
                                           color: colors.secondaryLabel,
                                           size: 18,
                                         ),
@@ -922,7 +923,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.location_on_rounded,
+                          CupertinoIcons.placemark_fill,
                           color: isSelected ? colors.onAccent : colors.primary,
                           size: 20,
                         ),
@@ -958,7 +959,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                                   onPressed: _isOpeningNavigation
                                       ? null
                                       : () => _openNavigation(destination: poi),
-                                  icon: const Icon(Icons.directions_walk),
+                                  icon: const Icon(CupertinoIcons.location),
                                 ),
                                 IconButton(
                                   tooltip: l10n.otherNavigationMaps,
@@ -968,7 +969,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                                           destination: poi,
                                           chooseApp: true,
                                         ),
-                                  icon: const Icon(Icons.more_horiz),
+                                  icon: const Icon(CupertinoIcons.ellipsis),
                                 ),
                               ],
                             )
@@ -1106,7 +1107,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                         ? null
                         : () => _openNavigation(chooseApp: true),
                     tooltip: l10n.otherNavigationMaps,
-                    icon: const Icon(Icons.more),
+                    icon: const Icon(CupertinoIcons.ellipsis),
                     style: IconButton.styleFrom(
                       backgroundColor: colors.onAccent,
                       foregroundColor: colors.primary,
@@ -1117,7 +1118,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                         ? null
                         : () => _openNavigation(),
                     tooltip: l10n.startWalkingNavigation,
-                    icon: const Icon(Icons.directions_rounded),
+                    icon: const Icon(CupertinoIcons.location_fill),
                     style: IconButton.styleFrom(
                       backgroundColor: colors.primary,
                       foregroundColor: colors.onAccent,
@@ -1130,7 +1131,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                 _buildInfoSection(
                   title: l10n.buildingIntro,
                   content: _selectedPOI!.description,
-                  icon: Icons.info_outline_rounded,
+                  icon: CupertinoIcons.info_circle,
                   colors: colors,
                 ),
                 const SizedBox(height: 16),
@@ -1139,7 +1140,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                 title: l10n.specificLocation,
                 content:
                     '${_selectedPOI!.position.latitude.toStringAsFixed(6)}, ${_selectedPOI!.position.longitude.toStringAsFixed(6)}',
-                icon: Icons.map_outlined,
+                icon: CupertinoIcons.map,
                 colors: colors,
               ),
             ],

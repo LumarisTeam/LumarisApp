@@ -276,7 +276,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     return Row(
       children: [
         IconButton(
-          icon: const Icon(Icons.chevron_left),
+          icon: const Icon(CupertinoIcons.chevron_left),
           onPressed: () => _jumpToPage((scheduleState.currentPage - 1).ceil()),
           tooltip: l10n.previousWeek,
         ),
@@ -294,7 +294,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
         ),
         const SizedBox(width: 8),
         IconButton(
-          icon: const Icon(Icons.chevron_right),
+          icon: const Icon(CupertinoIcons.chevron_right),
           onPressed: () => _jumpToPage((_pageController.page! + 1).ceil()),
           tooltip: l10n.nextWeek,
         ),
@@ -310,26 +310,26 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
       children: [
         // 个性化配置
         IconButton(
-          icon: const Icon(Icons.palette_outlined),
+          icon: const Icon(CupertinoIcons.paintbrush),
           onPressed: () => AppRouter.push(AppRoutes.schedulePersonalization),
           tooltip: l10n.schedulePersonalization,
         ),
         // 游客模式：HTML 导入
         if (!isLogin)
           IconButton(
-            icon: const Icon(Icons.file_upload_outlined),
+            icon: const Icon(CupertinoIcons.arrow_up_to_line),
             onPressed: _handleHtmlImport,
             tooltip: l10n.htmlImport,
           ),
         // 刷新
         IconButton(
-          icon: const Icon(Icons.refresh),
+          icon: const Icon(CupertinoIcons.arrow_clockwise),
           onPressed: _handleRefresh,
           tooltip: l10n.refreshSchedule,
         ),
         // 设置
         IconButton(
-          icon: const Icon(Icons.settings_outlined),
+          icon: const Icon(CupertinoIcons.gear),
           onPressed: () => AppRouter.push(AppRoutes.scheduleSetting),
           tooltip: l10n.scheduleSettingsTitle,
         ),

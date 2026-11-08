@@ -7,6 +7,7 @@ import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../../components/page_app_bar.dart';
 import '../../../core/extensions/localization_extensions.dart';
 import '../../../features/system/screen_capture_protection.dart';
 import '../../../l10n/app_localizations.dart';
@@ -167,11 +168,11 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
     final colors = context.mc.colors;
 
     return Scaffold(
-      appBar: McAppBar(
+      appBar: PageAppBar(
         title: l10n.paymentQrCode,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const Icon(CupertinoIcons.arrow_clockwise),
             onPressed: _isFetching ? null : _loadQrCode,
             tooltip: l10n.refreshData,
           ),
@@ -283,11 +284,7 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        EmptyWidget(
-          title: message,
-          subtitle: '',
-          icon: Icons.qr_code_2_rounded,
-        ),
+        EmptyWidget(title: message, subtitle: '', icon: CupertinoIcons.qrcode),
         CupertinoButton.filled(
           onPressed: _isFetching ? null : _loadQrCode,
           child: Text(l10n.retry),
@@ -310,7 +307,11 @@ class _PaymentQrPageState extends ConsumerState<PaymentQrPage>
             ),
           )
         else
-          Icon(Icons.autorenew_rounded, size: 16, color: colors.secondaryLabel),
+          Icon(
+            CupertinoIcons.arrow_2_circlepath,
+            size: 16,
+            color: colors.secondaryLabel,
+          ),
         const SizedBox(width: 8),
         Text(
           _isLoading
