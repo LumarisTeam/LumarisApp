@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show defaultTargetPlatform;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:luamris_ui/luamris_ui.dart';
@@ -8,6 +10,7 @@ import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
+import 'package:ios_club_app/platform/mobile/bottom_navigation.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/app_states.dart';
 import 'package:ios_club_app/state/schedule_store.dart';
@@ -74,11 +77,14 @@ Future<void> _showPage(
 }) async {
   tester.view.devicePixelRatio = 1;
   tester.view.physicalSize = Size(width, 852);
-  tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
+  const safeArea = FakeViewPadding(top: 59, bottom: 34);
+  tester.view.padding = safeArea;
+  tester.view.viewPadding = safeArea;
   addTearDown(() {
     tester.view.resetDevicePixelRatio();
     tester.view.resetPhysicalSize();
     tester.view.resetPadding();
+    tester.view.resetViewPadding();
   });
 
   AppRouter.go(location);
@@ -162,4 +168,62 @@ void main() {
     expect(tester.getRect(find.text('课表')).bottom, lessThanOrEqualTo(818));
     expect(tester.takeException(), isNull);
   }, variant: mobile);
+
+  testWidgets('should keep the tab bar flush with the bottom safe area', (
+    tester,
+  ) async {
+    await _showPage(
+      tester,
+      AppRoutes.home,
+      _GuestScheduleStore(hasTimetable: true),
+    );
+
+    final bar = tester.getRect(find.byType(BottomNavigation));
+    expect(bar.left, 0);
+    expect(bar.right, 393);
+    expect(bar.bottom, 852);
+    expect(bar.height, inInclusiveRange(83, 85));
+    expect(tester.getRect(find.text('课表')).bottom, lessThanOrEqualTo(818));
+
+    await tester.tap(find.text('课表'));
+    await tester.pumpAndSettle();
+    expect(AppRouter.currentLocation, AppRoutes.schedule);
+    expect(tester.getRect(find.byType(BottomNavigation)), bar);
+  }, variant: mobile);
+
+  testWidgets(
+    'should choose a week by tapping the picker and still swipe',
+    (tester) async {
+      final isDesktop = defaultTargetPlatform == TargetPlatform.windows;
+      final currentWeekLabel = isDesktop ? '1周 (本周)' : '1周';
+      await _showPage(
+        tester,
+        AppRoutes.schedule,
+        _GuestScheduleStore(hasTimetable: true),
+        width: isDesktop ? 1200 : 320,
+        scale: 1.5,
+      );
+
+      await tester.tap(find.text(currentWeekLabel));
+      await tester.pumpAndSettle();
+      expect(find.text('本周 · 1周'), findsOneWidget);
+      await tester.tap(find.text('全部课表'));
+      await tester.pumpAndSettle();
+      expect(find.text('全部课表'), findsOneWidget);
+      expect(find.text('本周 · 1周'), findsNothing);
+
+      final pageView = find.byType(PageView);
+      await tester.drag(
+        pageView,
+        Offset(-tester.getSize(pageView).width * 0.8, 0),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text(currentWeekLabel), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+    variant: const TargetPlatformVariant({
+      TargetPlatform.iOS,
+      TargetPlatform.windows,
+    }),
+  );
 }

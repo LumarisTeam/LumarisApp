@@ -97,7 +97,23 @@ void main() {
     expect(find.byType(CampusMapPage), findsOneWidget);
     expect(find.byIcon(CupertinoIcons.arrow_left), findsOneWidget);
 
-    await tester.tap(find.byIcon(CupertinoIcons.arrow_left));
+    final back = find.byIcon(CupertinoIcons.arrow_left);
+    final backPosition = tester.getCenter(back);
+    final search = find.byType(TextField);
+    final sidebarPosition = tester.getTopLeft(search);
+    final l10n = AppLocalizations.of(tester.element(back));
+    await tester.tap(find.byTooltip(l10n.collapseSidebar));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 120));
+    expect(tester.getTopLeft(search).dx, lessThan(sidebarPosition.dx));
+    expect(tester.getCenter(back), backPosition);
+    await tester.tap(find.byTooltip(l10n.expandSidebar));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 250));
+    expect(tester.getTopLeft(search), sidebarPosition);
+    expect(tester.getCenter(back), backPosition);
+
+    await tester.tap(back);
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
 

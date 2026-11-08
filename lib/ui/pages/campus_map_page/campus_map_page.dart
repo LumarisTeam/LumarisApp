@@ -228,7 +228,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
         body: LayoutBuilder(
           builder: (context, constraints) {
             final isWide = constraints.maxWidth > 700;
-            final effectiveSidebarOpen = isWide && _isSidebarOpen;
+            final reduceMotion = McMotion.reduceMotionOf(context);
             // 平板窗口没有底部导航栏兜底，无论侧边栏展开还是收起都要有返回键。
             final showBackButton =
                 isWide ||
@@ -327,26 +327,43 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                     ),
                   ),
 
-                // 3. Wide Screen Sidebar (Animated Floating)
-                if (isWide)
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOutCubic,
-                    top: padding.top + 20,
-                    left: effectiveSidebarOpen ? 20 : -320,
+                // Keep the sidebar's layout fixed and translate it offscreen.
+                if (isWide) ...[
+                  Positioned(
+                    top: padding.top + 76,
+                    left: 0,
                     bottom: 20,
-                    width: 320,
-                    child: _buildSidebar(mapState, colors, filteredPOIs),
+                    width: 340,
+                    child: AnimatedSlide(
+                      offset: _isSidebarOpen
+                          ? Offset.zero
+                          : const Offset(-1, 0),
+                      duration: reduceMotion
+                          ? Duration.zero
+                          : McMotion.standard,
+                      curve: McMotion.defaultCurve,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: ExcludeFocus(
+                          excluding: !_isSidebarOpen,
+                          child: ExcludeSemantics(
+                            excluding: !_isSidebarOpen,
+                            child: IgnorePointer(
+                              ignoring: !_isSidebarOpen,
+                              child: _buildSidebar(
+                                mapState,
+                                colors,
+                                filteredPOIs,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-
-                // 4. Top-left Floating Controls (Wide Screen Only)
-                //    返回键跟随侧边栏折叠按钮一起移动，保证始终可见。
-                if (isWide)
-                  AnimatedPositioned(
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOutCubic,
+                  Positioned(
                     top: padding.top + 20,
-                    left: effectiveSidebarOpen ? 350 : 20,
+                    left: 20,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -356,6 +373,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
                       ],
                     ),
                   ),
+                ],
 
                 // 5. Map Controls (Right)
                 Positioned(

@@ -108,12 +108,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
           final content = Column(
             children: [
               // 顶部工具栏
-              _buildTopBar(
-                context,
-                isDesktop,
-                isDark,
-                styleState.pageTextColor,
-              ),
+              _buildTopBar(context, isDesktop, styleState.pageTextColor),
               // 课表内容
               Expanded(
                 child: Builder(
@@ -188,7 +183,6 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
   Widget _buildTopBar(
     BuildContext context,
     bool isDesktop,
-    bool isDark,
     Color? pageTextColor,
   ) {
     return Container(
@@ -205,11 +199,11 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
                 Expanded(
                   child: Align(
                     alignment: AlignmentDirectional.centerStart,
-                    child: _buildWeekInfo(context, isDark, pageTextColor),
+                    child: _buildWeekPicker(context, pageTextColor),
                   ),
                 ),
               // 右侧：操作按钮
-              _buildActionButtons(context, isDark),
+              _buildActionButtons(context),
             ],
           ),
         ],
@@ -217,75 +211,87 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     );
   }
 
-  Widget _buildWeekInfo(
+  Widget _buildWeekPicker(
     BuildContext context,
-    bool isDark,
-    Color? pageTextColor,
-  ) {
+    Color? pageTextColor, {
+    bool compact = false,
+  }) {
     final scheduleState = ref.watch(scheduleStoreProvider);
     final colors = context.mc.colors;
     final l10n = context.l10n;
-    return Builder(
-      builder: (context) {
-        final weekText = scheduleState.currentWeek <= 0
-            ? l10n.weeksUntilStart(-scheduleState.currentWeek + 1)
-            : l10n.currentWeek(scheduleState.currentWeek);
+    final currentWeek = scheduleState.currentWeek;
+    final hasCurrentWeek =
+        currentWeek > 0 && currentWeek <= scheduleState.maxWeek;
+    final currentPage = scheduleState.currentPage;
+    final displayedWeek = currentPage <= 0
+        ? l10n.allSchedules
+        : l10n.weekUnit(currentPage);
+    final displayedLabel =
+        compact && hasCurrentWeek && currentPage == currentWeek
+        ? '$displayedWeek (${l10n.currentWeekLabel})'
+        : displayedWeek;
+    final weekText = currentWeek <= 0
+        ? l10n.weeksUntilStart(1 - currentWeek)
+        : l10n.currentWeek(currentWeek);
 
-        return McPopoverMenu<int>(
-          openOnTap: false,
-          openOnLongPress: true,
-          width: 240,
-          offset: const Offset(0, 8),
-          selectedValue: scheduleState.currentPage,
-          items: List<McPopoverMenuItem<int>>.generate(
-            scheduleState.maxWeek + 1,
-            (index) {
-              final isCurrentWeek = index == scheduleState.currentWeek;
-              final label = index == 0
-                  ? l10n.allSchedules
-                  : '${l10n.weekUnit(index)}'
-                        '${isCurrentWeek ? " (${l10n.currentWeekLabel})" : ""}';
-              return McPopoverMenuItem<int>(value: index, label: label);
-            },
+    return McPopoverMenu<int>(
+      width: 240,
+      selectedValue: currentPage,
+      items: [
+        if (hasCurrentWeek)
+          McPopoverMenuItem(
+            value: currentWeek,
+            label: '${l10n.currentWeekLabel} · ${l10n.weekUnit(currentWeek)}',
           ),
-          onSelected: _jumpToPage,
-          child: InkWell(
-            onDoubleTap: () => _jumpToPage(0),
-            onTap: () => _jumpToPage(scheduleState.currentWeek),
-            borderRadius: McRadii.controlBorder,
-            customBorder: McSmoothCorners.shape(McRadii.controlBorder),
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    scheduleState.currentPage <= 0
-                        ? l10n.allSchedules
-                        : l10n.weekUnit(scheduleState.currentPage),
+        McPopoverMenuItem(value: 0, label: l10n.allSchedules),
+        for (int week = 1; week <= scheduleState.maxWeek; week++)
+          if (week != currentWeek)
+            McPopoverMenuItem(value: week, label: l10n.weekUnit(week)),
+      ],
+      onSelected: _jumpToPage,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(
+                  child: Text(
+                    displayedLabel,
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
+                      fontSize: compact ? 18 : 20,
+                      fontWeight: compact ? FontWeight.w600 : FontWeight.w700,
                       color: pageTextColor ?? colors.label,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    weekText,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color:
-                          pageTextColor?.withValues(alpha: 0.8) ??
-                          Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  CupertinoIcons.chevron_down,
+                  size: 12,
+                  color: pageTextColor ?? colors.label,
+                ),
+              ],
             ),
-          ),
-        );
-      },
+            if (!compact) ...[
+              const SizedBox(height: 2),
+              Text(
+                weekText,
+                style: TextStyle(
+                  fontSize: 13,
+                  color:
+                      pageTextColor?.withValues(alpha: 0.8) ??
+                      Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 
@@ -299,19 +305,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
           onPressed: () => _jumpToPage((scheduleState.currentPage - 1).ceil()),
           tooltip: l10n.previousWeek,
         ),
-        const SizedBox(width: 8),
-        Text(
-          scheduleState.currentPage <= 0
-              ? l10n.allSchedules
-              : '${l10n.weekUnit(scheduleState.currentPage)}'
-                    '${scheduleState.currentPage == scheduleState.currentWeek ? " (${l10n.currentWeekLabel})" : ""}',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: pageTextColor,
-          ),
-        ),
-        const SizedBox(width: 8),
+        _buildWeekPicker(context, pageTextColor, compact: true),
         IconButton(
           icon: const Icon(CupertinoIcons.chevron_right),
           onPressed: () => _jumpToPage(scheduleState.currentPage + 1),
@@ -321,7 +315,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, bool isDark) {
+  Widget _buildActionButtons(BuildContext context) {
     final l10n = context.l10n;
     final isLogin = ref.watch(userStoreProvider).isLogin;
     return Row(

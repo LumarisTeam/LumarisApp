@@ -25,7 +25,7 @@ class EditableTileWrapper extends ConsumerStatefulWidget {
 }
 
 class _EditableTileWrapperState extends ConsumerState<EditableTileWrapper>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   late AnimationController _jiggleController;
   late Animation<double> _jiggleAnimation;
   Timer? _jiggleDelayTimer;
@@ -58,8 +58,10 @@ class _EditableTileWrapperState extends ConsumerState<EditableTileWrapper>
     final tileEditState = ref.watch(tileEditControllerProvider);
     final controller = ref.read(tileEditControllerProvider.notifier);
     final isEditMode = tileEditState.isEditMode;
+    final reduceMotion = McMotion.reduceMotionOf(context);
+    final shouldJiggle = isEditMode && !reduceMotion;
 
-    if (isEditMode) {
+    if (shouldJiggle) {
       if (!_jiggleController.isAnimating &&
           !(_jiggleDelayTimer?.isActive ?? false)) {
         // Create a slightly random offset so they don't all jiggle exactly identical
@@ -83,51 +85,54 @@ class _EditableTileWrapperState extends ConsumerState<EditableTileWrapper>
       _jiggleController.reset();
     }
 
-    Widget content = RepaintBoundary(
-      child: AnimatedBuilder(
-        animation: _jiggleAnimation,
-        builder: (context, child) {
-          return Transform.rotate(
-            angle: isEditMode ? _jiggleAnimation.value : 0.0,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              decoration: ShapeDecoration(
-                shape: McSmoothCorners.shape(McRadii.tileBorder),
-              ),
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // Original tile content
-                  McSmoothCorners.clip(
-                    borderRadius: McRadii.tileBorder,
-                    child: widget.child,
-                  ),
-
-                  // Make the whole card act as a drag handle in edit mode
-                  if (isEditMode)
-                    Positioned.fill(
-                      child: ReorderableDragStartListener(
-                        index: widget.index,
-                        child: Container(color: Colors.transparent),
-                      ),
-                    ),
-
-                  // iOS style minus button on top left
-                  if (isEditMode)
-                    Positioned(
-                      top: 8,
-                      left: 8,
-                      child: _buildHideButton(controller),
-                    ),
-                ],
+    final colors = context.mc.colors;
+    final content = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        McSmoothCorners.clip(
+          borderRadius: McRadii.tileBorder,
+          child: widget.child,
+        ),
+        if (isEditMode) ...[
+          Positioned.fill(
+            child: ReorderableDragStartListener(
+              index: widget.index,
+              child: Container(
+                color: Colors.transparent,
+                alignment: Alignment.topRight,
+                padding: const EdgeInsets.all(8),
+                child: reduceMotion
+                    ? Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: colors.secondaryLabel.withValues(alpha: 0.9),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          CupertinoIcons.line_horizontal_3,
+                          color: colors.onAccent,
+                          size: 16,
+                        ),
+                      )
+                    : null,
               ),
             ),
-          );
-        },
-      ),
+          ),
+          Positioned(top: 8, left: 8, child: _buildHideButton(controller)),
+        ],
+      ],
     );
 
-    return content;
+    return RepaintBoundary(
+      child: AnimatedBuilder(
+        animation: _jiggleAnimation,
+        child: content,
+        builder: (context, child) => Transform.rotate(
+          angle: shouldJiggle ? _jiggleAnimation.value : 0,
+          child: child,
+        ),
+      ),
+    );
   }
 
   Widget _buildHideButton(TileEditNotifier controller) {

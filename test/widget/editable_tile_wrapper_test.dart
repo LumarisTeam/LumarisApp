@@ -28,44 +28,62 @@ void main() {
     await PrefsService.init();
   });
 
-  testWidgets('should_show_hide_button_in_edit_mode', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: _tileOverrides(),
-        child: const MaterialApp(
-          localizationsDelegates: [
-            AppLocalizations.delegate,
-            ...GlobalMaterialLocalizations.delegates,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: Locale('zh'),
-          home: Scaffold(
-            body: Column(
-              children: [
-                TileEditControls(),
-                EditableTileWrapper(
-                  tileId: '电费',
-                  index: 0,
-                  child: SizedBox(width: 80, height: 80, child: Text('电费')),
-                ),
-              ],
+  for (final reduceMotion in [false, true]) {
+    testWidgets('should show edit controls with reduced motion $reduceMotion', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: _tileOverrides(),
+          child: MaterialApp(
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              ...GlobalMaterialLocalizations.delegates,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('zh'),
+            builder: (context, child) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(disableAnimations: reduceMotion),
+              child: child!,
+            ),
+            home: const Scaffold(
+              body: Column(
+                children: [
+                  TileEditControls(),
+                  EditableTileWrapper(
+                    tileId: '电费',
+                    index: 0,
+                    child: SizedBox(width: 80, height: 80, child: Text('电费')),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-    await tester.pump();
-    expect(
-      find.descendant(
-        of: find.byType(EditableTileWrapper),
-        matching: find.byType(RepaintBoundary),
-      ),
-      findsOneWidget,
-    );
-    expect(find.byIcon(CupertinoIcons.minus), findsNothing);
+      );
+      await tester.pump();
+      final wrapper = find.byType(EditableTileWrapper);
+      expect(
+        find.descendant(of: wrapper, matching: find.byType(RepaintBoundary)),
+        findsOneWidget,
+      );
+      expect(find.byIcon(CupertinoIcons.minus), findsNothing);
 
-    await tester.tap(find.text('编辑'));
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.byIcon(CupertinoIcons.minus), findsOneWidget);
-  });
+      await tester.tap(find.text('编辑'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 60));
+
+      expect(find.byIcon(CupertinoIcons.minus), findsOneWidget);
+      expect(
+        find.byIcon(CupertinoIcons.line_horizontal_3),
+        reduceMotion ? findsOneWidget : findsNothing,
+      );
+      final rotation = tester.widget<Transform>(
+        find.descendant(of: wrapper, matching: find.byType(Transform)).first,
+      );
+      expect(rotation.transform.isIdentity(), reduceMotion);
+    });
+  }
 }
