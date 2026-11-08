@@ -1731,21 +1731,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpNotesTab => 'Remarques';
 
   @override
-  String get helpAboutTab => 'À propos';
-
-  @override
   String get helpFeatureHome => 'Accueil';
 
   @override
   String get helpFeatureHomeDesc =>
-      'Centre d\'information avec données personnelles, cours, tâches et examens';
+      'Consulter les cours, tâches, examens et autres informations';
 
   @override
   String get helpFeatureSchedule => 'Emploi du temps';
 
   @override
   String get helpFeatureScheduleDesc =>
-      'Gérer l\'emploi du temps hebdomadaire avec changement de campus et rappels';
+      'Gérer plusieurs emplois du temps et les exporter vers un calendrier';
 
   @override
   String get helpFeatureScore => 'Notes';
@@ -1780,14 +1777,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpFeatureElectricityDesc =>
-      'Voir la consommation et l\'historique électrique du dortoir';
+      'Associer la page électrique du logement pour consulter le solde et configurer des alertes par e-mail';
 
   @override
   String get helpFeaturePayment => 'Carte de campus';
 
   @override
   String get helpFeaturePaymentDesc =>
-      'Voir le solde et l\'historique des transactions';
+      'Consulter le solde, les transactions et le code de paiement de la carte campus';
+
+  @override
+  String get helpFeatureMapDesc => 'Afficher le plan du campus';
 
   @override
   String get helpFeatureLinks => 'Liens utiles';
@@ -1801,35 +1801,47 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpInstructionLoginDesc =>
-      'Connectez-vous avec votre compte académique lors de la première utilisation';
+      'Dans le profil, choisissez la connexion et saisissez votre compte universitaire et votre mot de passe. Le mode invité est aussi disponible ; les fonctions et données dépendent de votre établissement et de votre compte.';
 
   @override
   String get helpInstructionCourse => 'Gestion des cours';
 
   @override
   String get helpInstructionCourseDesc =>
-      'Voir les cours dans l\'emploi du temps, glisser pour changer de semaine, appuyer pour les détails';
+      'Balayez l’emploi du temps pour changer de semaine et touchez un cours pour ses détails. En mode invité, choisissez le dépôt d’adaptateurs ou saisissez une URL universitaire, connectez-vous, ouvrez l’emploi du temps puis lancez l’import.';
 
   @override
   String get helpInstructionReminder => 'Rappels de cours';
 
   @override
   String get helpInstructionReminderDesc =>
-      'Activez les rappels dans les paramètres pour être notifié avant le cours';
+      'Activez les rappels de cours et choisissez le délai dans les paramètres, puis autorisez les notifications. Sur Android, vérifiez aussi les autorisations et le fonctionnement en arrière-plan.';
 
   @override
   String get helpInstructionSync => 'Synchronisation';
 
   @override
   String get helpInstructionSyncDesc =>
-      'L\'application se synchronise automatiquement. Tirez vers le bas pour actualiser manuellement';
+      'Les données universitaires et services du campus nécessitent Internet et une connexion au service concerné. Actualisez la page des cours ou des notes ; en cas d’échec, vérifiez le réseau et la connexion.';
 
   @override
   String get helpInstructionWidget => 'Widgets';
 
   @override
   String get helpInstructionWidgetDesc =>
-      'Appuyez longuement sur l\'écran d\'accueil pour ajouter un widget';
+      'Appuyez longuement sur l’écran d’accueil, ajoutez un widget, recherchez Guangxu et choisissez un emploi du temps. Sur iOS, l’ajout est manuel ; les widgets et autorisations varient selon la plateforme.';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      'Dans les paramètres de l’emploi du temps, si l’abonnement au calendrier est proposé, copiez le lien ou ouvrez votre application de calendrier. La disponibilité dépend de l’établissement et de la plateforme.';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      'Dans la page Électricité, touchez Ajouter et collez l’URL de la page de détails du logement. Consultez ensuite le solde et configurez éventuellement une adresse e-mail et un seuil d’alerte.';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      'Dans Paramètres → Guangxu MCP, configurez l’adresse du service et le jeton d’accès, puis copiez la configuration dans un client IA compatible MCP. Protégez votre jeton.';
 
   @override
   String get helpNoteUpdate =>
@@ -1837,32 +1849,15 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get helpNoteData =>
-      'Si les données sont inexactes, vérifiez votre connexion académique';
+      'Si les données sont incorrectes ou ne chargent pas, vérifiez le réseau, l’établissement et la connexion, puis actualisez la page concernée. Certains services peuvent être indisponibles ou varier selon l’établissement.';
 
   @override
   String get helpNoteFeedback =>
-      'Signalez les problèmes via la page des paramètres';
+      'Dans Paramètres → Commentaires, indiquez le problème et vos coordonnées ; vous pouvez joindre des captures. Décrivez les étapes et les erreurs pour faciliter le diagnostic.';
 
   @override
   String get helpNotePrivacy =>
-      'Cette application ne collecte pas vos informations personnelles';
-
-  @override
-  String get helpAboutPlatform => 'Plateformes';
-
-  @override
-  String get helpAboutPlatformDesc =>
-      'Application multiplateforme, prenant en charge :';
-
-  @override
-  String get helpAboutOpenSource => 'Open Source';
-
-  @override
-  String get helpAboutOpenSourceDesc =>
-      'Cette application est open source sous licence MIT';
-
-  @override
-  String get helpAboutRepoLabel => 'Dépôt :';
+      'Consultez la politique de confidentialité dans les paramètres pour connaître le traitement des données personnelles';
 
   @override
   String get underMaintenanceTitle => 'Maintenance en cours !';

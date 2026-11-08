@@ -1,8 +1,8 @@
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+
+import '../../../core/extensions/localization_extensions.dart';
 
 class HelperPage extends StatefulWidget {
   const HelperPage({super.key});
@@ -19,25 +19,16 @@ class _HelperPageState extends State<HelperPage> with TickerProviderStateMixin {
     context.l10n.helpFeaturesTab,
     context.l10n.helpInstructionsTab,
     context.l10n.helpNotesTab,
-    context.l10n.helpAboutTab,
   ];
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _pageController = PageController();
 
     // 监听 TabController 变化
     _tabController.addListener(_handleTabChange);
-
-    // 获取版本信息
-    _loadVersionInfo();
-  }
-
-  Future<void> _loadVersionInfo() async {
-    // 加载版本信息，以便在需要时使用
-    await PackageInfo.fromPlatform();
   }
 
   void _handleTabChange() {
@@ -86,7 +77,6 @@ class _HelperPageState extends State<HelperPage> with TickerProviderStateMixin {
           _buildFeaturesPage(),
           _buildInstructionsPage(),
           _buildNotesPage(),
-          _buildAboutPage(),
         ],
       ),
     );
@@ -186,6 +176,14 @@ class _HelperPageState extends State<HelperPage> with TickerProviderStateMixin {
                 ),
                 _buildDivider(),
                 _buildFeatureItem(
+                  icon: CupertinoIcons.map,
+                  title: context.l10n.campusMap,
+                  description: context.l10n.helpFeatureMapDesc,
+                  color: colors.success,
+                  isTablet: isTablet,
+                ),
+                _buildDivider(),
+                _buildFeatureItem(
                   icon: CupertinoIcons.link,
                   title: context.l10n.helpFeatureLinks,
                   description: context.l10n.helpFeatureLinksDesc,
@@ -254,6 +252,30 @@ class _HelperPageState extends State<HelperPage> with TickerProviderStateMixin {
                   color: colors.purple,
                   isTablet: isTablet,
                 ),
+                _buildDivider(),
+                _buildInstructionItem(
+                  icon: CupertinoIcons.calendar,
+                  title: context.l10n.calendarSubscription,
+                  description: context.l10n.helpInstructionCalendarDesc,
+                  color: colors.success,
+                  isTablet: isTablet,
+                ),
+                _buildDivider(),
+                _buildInstructionItem(
+                  icon: CupertinoIcons.bolt,
+                  title: context.l10n.electricityManagement,
+                  description: context.l10n.helpInstructionElectricityDesc,
+                  color: colors.warning,
+                  isTablet: isTablet,
+                ),
+                _buildDivider(),
+                _buildInstructionItem(
+                  icon: CupertinoIcons.link,
+                  title: context.l10n.mcpTitle,
+                  description: context.l10n.helpInstructionMcpDesc,
+                  color: colors.primary,
+                  isTablet: isTablet,
+                ),
               ],
             ),
           ),
@@ -297,145 +319,6 @@ class _HelperPageState extends State<HelperPage> with TickerProviderStateMixin {
                   icon: CupertinoIcons.lock_shield,
                   text: context.l10n.helpNotePrivacy,
                   color: colors.indigo,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAboutPage() {
-    final colors = context.mc.colors;
-
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 20),
-          // 应用信息卡片
-          const SizedBox(height: 16),
-          // 平台支持卡片
-          McCard.elevated(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: ShapeDecoration(
-                        color: colors.successSoft,
-                        shape: McSmoothCorners.shape(McRadii.controlBorder),
-                      ),
-                      child: Icon(
-                        CupertinoIcons.device_phone_portrait,
-                        size: 20,
-                        color: colors.success,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      context.l10n.helpAboutPlatform,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: colors.label,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  context.l10n.helpAboutPlatformDesc,
-                  style: TextStyle(fontSize: 14, color: colors.secondaryLabel),
-                ),
-                const SizedBox(height: 12),
-                ...[
-                  'iOS（iPhone、iPad）',
-                  'Android',
-                  'Windows',
-                  'macOS',
-                  'Linux',
-                  'Web',
-                  '微信小程序',
-                ].map(
-                  (platform) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Row(
-                      children: [
-                        Icon(
-                          CupertinoIcons.checkmark_circle_fill,
-                          size: 18,
-                          color: colors.success,
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          platform,
-                          style: TextStyle(fontSize: 15, color: colors.label),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          // 开源信息卡片
-          McCard.elevated(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 36,
-                      height: 36,
-                      decoration: ShapeDecoration(
-                        color: colors.warningSoft,
-                        shape: McSmoothCorners.shape(McRadii.controlBorder),
-                      ),
-                      child: Icon(
-                        CupertinoIcons.heart,
-                        size: 20,
-                        color: colors.warning,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      context.l10n.helpAboutOpenSource,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: colors.label,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  context.l10n.helpAboutOpenSourceDesc,
-                  style: TextStyle(fontSize: 14, color: colors.secondaryLabel),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  context.l10n.helpAboutRepoLabel,
-                  style: TextStyle(fontSize: 14, color: colors.secondaryLabel),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'gitee.com/luckyfishisdashen/iOSClub.AppMobile',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colors.primary,
-                    fontWeight: FontWeight.w500,
-                  ),
                 ),
               ],
             ),

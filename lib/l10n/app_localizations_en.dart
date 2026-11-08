@@ -1705,21 +1705,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpNotesTab => 'Notes';
 
   @override
-  String get helpAboutTab => 'About';
-
-  @override
   String get helpFeatureHome => 'Home';
 
   @override
-  String get helpFeatureHomeDesc =>
-      'Information center with personal info, courses, todos and exams';
+  String get helpFeatureHomeDesc => 'View courses, tasks, exams and more';
 
   @override
   String get helpFeatureSchedule => 'Schedule';
 
   @override
   String get helpFeatureScheduleDesc =>
-      'Manage weekly course schedule with campus switching and reminders';
+      'View and manage schedules, including multiple schedules and calendar export';
 
   @override
   String get helpFeatureScore => 'Scores';
@@ -1754,14 +1750,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpFeatureElectricityDesc =>
-      'View dormitory electricity usage and history';
+      'Link a dorm electricity page to view the balance and set email alerts';
 
   @override
   String get helpFeaturePayment => 'Campus Card';
 
   @override
   String get helpFeaturePaymentDesc =>
-      'View card balance and transaction history';
+      'View campus card balance, transactions and payment code';
+
+  @override
+  String get helpFeatureMapDesc => 'View the campus map';
 
   @override
   String get helpFeatureLinks => 'Quick Links';
@@ -1775,35 +1774,47 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpInstructionLoginDesc =>
-      'Login with your academic system account on first use';
+      'Open your profile and choose sign in, then enter your academic account and password. Guest mode is also available; features and data depend on your school and account type.';
 
   @override
   String get helpInstructionCourse => 'Course Management';
 
   @override
   String get helpInstructionCourseDesc =>
-      'View weekly courses in the schedule, swipe to change weeks, tap a course for details';
+      'Swipe between weeks on the schedule and tap a course for details. Guests can tap import, choose the adapter repository or enter an academic-system URL, sign in, open the timetable page and import.';
 
   @override
   String get helpInstructionReminder => 'Schedule Reminders';
 
   @override
   String get helpInstructionReminderDesc =>
-      'Enable course reminders in settings to get notified before class';
+      'Turn on course reminders in Settings and choose the advance time. Allow notifications when prompted; Android users can also check reminder permissions and background settings.';
 
   @override
   String get helpInstructionSync => 'Data Sync';
 
   @override
   String get helpInstructionSyncDesc =>
-      'App auto-syncs with academic system. Pull down to refresh manually';
+      'Academic data and campus services require a network connection and the relevant sign-in. Use refresh on the schedule or scores page; check your connection and login if it fails.';
 
   @override
   String get helpInstructionWidget => 'Home Widgets';
 
   @override
   String get helpInstructionWidgetDesc =>
-      'Long press home screen to add app widget for quick course access';
+      'Long-press your phone’s home screen, add a widget, search for Guangxu and choose a schedule. On iOS, add it manually; available widgets and permissions vary by platform.';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      'Open schedule settings. If calendar subscription is available, copy the subscription link or open your calendar app to add it. Availability depends on school and platform.';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      'Open Electricity, tap add and paste your dorm electricity details URL. Once linked, view the balance and optionally set an email address and threshold for low-balance alerts.';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      'Open Settings → Guangxu MCP to view the service address, configure an access token and copy the configuration into an MCP-compatible AI client. Keep your token secure.';
 
   @override
   String get helpNoteUpdate =>
@@ -1811,31 +1822,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helpNoteData =>
-      'If data is inaccurate, check your academic system login';
+      'If data is wrong or fails to load, check your connection, school and sign-in, then refresh the relevant page. Some services may be unavailable or vary by school.';
 
   @override
-  String get helpNoteFeedback => 'Report issues through the settings page';
+  String get helpNoteFeedback =>
+      'Open Settings → Feedback, describe the issue and enter your contact information; you can attach screenshots. Include steps and error details to help diagnose the problem.';
 
   @override
   String get helpNotePrivacy =>
-      'This app does not collect or upload your personal information';
-
-  @override
-  String get helpAboutPlatform => 'Platform Support';
-
-  @override
-  String get helpAboutPlatformDesc =>
-      'Cross-platform app, supporting the following platforms:';
-
-  @override
-  String get helpAboutOpenSource => 'Open Source';
-
-  @override
-  String get helpAboutOpenSourceDesc =>
-      'This app is open source under the MIT License';
-
-  @override
-  String get helpAboutRepoLabel => 'Repository:';
+      'See the privacy policy in Settings for information on how personal data is handled';
 
   @override
   String get underMaintenanceTitle => 'Under Maintenance!';

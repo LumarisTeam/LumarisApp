@@ -1663,19 +1663,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get helpNotesTab => '주의사항';
 
   @override
-  String get helpAboutTab => '앱 정보';
-
-  @override
   String get helpFeatureHome => '홈';
 
   @override
-  String get helpFeatureHomeDesc => '정보 센터, 개인정보·수업·할 일 및 시험 일정 표시';
+  String get helpFeatureHomeDesc => '수업, 할 일, 시험 등 확인';
 
   @override
   String get helpFeatureSchedule => '시간표';
 
   @override
-  String get helpFeatureScheduleDesc => '주간 수업 일정 관리, 캠퍼스 전환 및 알림 설정 지원';
+  String get helpFeatureScheduleDesc => '여러 시간표 관리 및 캘린더 내보내기 지원';
 
   @override
   String get helpFeatureScore => '성적 조회';
@@ -1705,13 +1702,17 @@ class AppLocalizationsKo extends AppLocalizations {
   String get helpFeatureElectricity => '전기요금 조회';
 
   @override
-  String get helpFeatureElectricityDesc => '기숙사 전력량 및 전기 사용 기록 확인';
+  String get helpFeatureElectricityDesc =>
+      '기숙사 전기요금 페이지를 연결해 잔액을 확인하고 이메일 알림 설정';
 
   @override
   String get helpFeaturePayment => '식권 소비';
 
   @override
-  String get helpFeaturePaymentDesc => '식권 잔액 및 소비 내역 확인';
+  String get helpFeaturePaymentDesc => '학생증 잔액, 거래 내역 및 결제 코드 확인';
+
+  @override
+  String get helpFeatureMapDesc => '캠퍼스 지도 보기';
 
   @override
   String get helpFeatureLinks => '바로가기 링크';
@@ -1723,61 +1724,62 @@ class AppLocalizationsKo extends AppLocalizations {
   String get helpInstructionLogin => '로그인 및 계정';
 
   @override
-  String get helpInstructionLoginDesc => '처음 사용 시 학사 시스템 계정으로 로그인 필요';
+  String get helpInstructionLoginDesc =>
+      '프로필에서 로그인을 선택하고 학사 계정과 비밀번호를 입력하세요. 게스트 모드도 이용할 수 있으며 기능과 데이터는 학교와 계정 유형에 따라 다릅니다.';
 
   @override
   String get helpInstructionCourse => '수업 관리';
 
   @override
   String get helpInstructionCourseDesc =>
-      '시간표에서 이번 주 수업을 확인하세요. 좌우로 스와이프하여 주차 전환, 수업을 눌러 상세 정보 확인';
+      '시간표를 좌우로 밀어 주차를 바꾸고 수업을 눌러 상세 정보를 확인하세요. 게스트는 가져오기 버튼에서 어댑터 저장소를 선택하거나 학사 URL을 입력한 뒤 로그인하여 시간표를 열고 가져올 수 있습니다.';
 
   @override
   String get helpInstructionReminder => '일정 알림';
 
   @override
-  String get helpInstructionReminderDesc => '설정에서 수업 알림을 켜면 앱이 수업 전에 알림을 보냅니다';
+  String get helpInstructionReminderDesc =>
+      '설정에서 수업 알림과 사전 알림 시간을 선택하고 시스템 알림을 허용하세요. Android에서는 알림 권한과 백그라운드 설정도 확인하세요.';
 
   @override
   String get helpInstructionSync => '데이터 동기화';
 
   @override
   String get helpInstructionSyncDesc =>
-      '앱이 자동으로 학사 시스템 데이터를 동기화하며, 네트워크 연결이 필요합니다. 아래로 당겨 새로고침하면 수동으로 업데이트할 수 있습니다';
+      '학사 데이터와 캠퍼스 서비스에는 인터넷 연결과 해당 서비스 로그인이 필요합니다. 시간표나 성적 페이지에서 새로고침하고 실패하면 연결과 로그인 상태를 확인하세요.';
 
   @override
   String get helpInstructionWidget => '바탕화면 위젯';
 
   @override
   String get helpInstructionWidgetDesc =>
-      '바탕화면을 길게 눌러 앱 위젯을 추가하면 수업 정보를 빠르게 확인할 수 있습니다';
+      '휴대폰 홈 화면을 길게 눌러 위젯 추가를 선택하고 광서를 검색해 시간표를 선택하세요. iOS에서는 직접 추가해야 하며 위젯과 권한은 플랫폼마다 다릅니다.';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      '시간표 설정에서 캘린더 구독이 표시되면 링크를 복사하거나 캘린더 앱을 열어 추가하세요. 지원 여부는 학교와 플랫폼에 따라 다릅니다.';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      '전기요금 페이지에서 추가를 누르고 기숙사 전기요금 상세 페이지 URL을 붙여 넣으세요. 연결 후 잔액을 확인하고 이메일과 기준 금액으로 알림을 설정할 수 있습니다.';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      '설정 → 광서 MCP에서 서비스 주소와 액세스 토큰을 설정하고 MCP 지원 AI 클라이언트에 구성을 복사하세요. 토큰을 안전하게 보관하세요.';
 
   @override
   String get helpNoteUpdate => '최신 기능과 수정 사항을 위해 앱을 최신 버전으로 유지하세요';
 
   @override
-  String get helpNoteData => '데이터가 정확하지 않을 때는 학사 시스템에 올바르게 로그인했는지 확인하세요';
+  String get helpNoteData =>
+      '데이터가 부정확하거나 로드되지 않으면 네트워크, 학교 및 로그인 상태를 확인하고 해당 페이지를 새로고침하세요. 서비스는 학교마다 다르거나 일시 중단될 수 있습니다.';
 
   @override
-  String get helpNoteFeedback => '문제가 발생하면 설정 페이지를 통해 피드백을 보내실 수 있습니다';
+  String get helpNoteFeedback =>
+      '설정 → 의견 보내기에서 문제와 연락처를 입력하고 스크린샷을 첨부할 수 있습니다. 재현 단계와 오류 내용을 적어 주세요.';
 
   @override
-  String get helpNotePrivacy => '앱은 귀하의 개인정보를 수집하거나 업로드하지 않습니다';
-
-  @override
-  String get helpAboutPlatform => '플랫폼 지원';
-
-  @override
-  String get helpAboutPlatformDesc => '크로스 플랫폼 앱, 다음 플랫폼을 지원합니다:';
-
-  @override
-  String get helpAboutOpenSource => '오픈소스 프로젝트';
-
-  @override
-  String get helpAboutOpenSourceDesc => '본 앱은 MIT 라이선스 기반의 오픈소스입니다';
-
-  @override
-  String get helpAboutRepoLabel => '저장소 주소:';
+  String get helpNotePrivacy => '개인정보 처리 방법은 설정의 개인정보 처리방침을 확인하세요';
 
   @override
   String get underMaintenanceTitle => '점검 중!';

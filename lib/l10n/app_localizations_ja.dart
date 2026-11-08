@@ -1653,19 +1653,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get helpNotesTab => '注意事項';
 
   @override
-  String get helpAboutTab => 'アプリについて';
-
-  @override
   String get helpFeatureHome => 'ホーム';
 
   @override
-  String get helpFeatureHomeDesc => '個人情報、授業、予定、試験を表示する情報センター';
+  String get helpFeatureHomeDesc => '授業、予定、試験などを確認';
 
   @override
   String get helpFeatureSchedule => '時間割';
 
   @override
-  String get helpFeatureScheduleDesc => '週間授業を管理、キャンパス切替と通知設定';
+  String get helpFeatureScheduleDesc => '複数の時間割の管理やカレンダーへの書き出しに対応';
 
   @override
   String get helpFeatureScore => '成績';
@@ -1695,13 +1692,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get helpFeatureElectricity => '電気料金';
 
   @override
-  String get helpFeatureElectricityDesc => '寮の電力使用量と履歴を表示';
+  String get helpFeatureElectricityDesc => '寮の電気料金ページを登録し、残高確認やメール通知を設定';
 
   @override
   String get helpFeaturePayment => '学生証';
 
   @override
-  String get helpFeaturePaymentDesc => '残高と取引履歴を表示';
+  String get helpFeaturePaymentDesc => '学生証の残高、取引履歴、支払いコードを確認';
+
+  @override
+  String get helpFeatureMapDesc => 'キャンパスマップを表示';
 
   @override
   String get helpFeatureLinks => '便利リンク';
@@ -1713,58 +1713,62 @@ class AppLocalizationsJa extends AppLocalizations {
   String get helpInstructionLogin => 'ログインとアカウント';
 
   @override
-  String get helpInstructionLoginDesc => '初回利用時に教務システムアカウントでログイン';
+  String get helpInstructionLoginDesc =>
+      'プロフィールからログインを選び、教務システムのアカウントとパスワードを入力します。ゲストでも利用できます。機能やデータは学校とアカウントの種類によって異なります。';
 
   @override
   String get helpInstructionCourse => '授業管理';
 
   @override
-  String get helpInstructionCourseDesc => '時間割で週間授業を確認、スワイプで週切替、授業をタップで詳細';
+  String get helpInstructionCourseDesc =>
+      '時間割を左右にスワイプして週を切り替え、授業をタップすると詳細を確認できます。ゲストは取り込みボタンから適配リポジトリまたは教務URLを選び、ログインして時間割を開いてから取り込みます。';
 
   @override
   String get helpInstructionReminder => '授業リマインダー';
 
   @override
-  String get helpInstructionReminderDesc => '設定で授業通知を有効にすると、授業前に通知';
+  String get helpInstructionReminderDesc =>
+      '設定で授業リマインダーを有効にし、通知するタイミングを選びます。通知を許可してください。Androidでは権限とバックグラウンド設定も確認できます。';
 
   @override
   String get helpInstructionSync => 'データ同期';
 
   @override
-  String get helpInstructionSyncDesc => 'アプリが自動で教務データを同期。プルダウンで手動更新';
+  String get helpInstructionSyncDesc =>
+      '教務データやキャンパスサービスにはネット接続と各サービスへのログインが必要です。時間割や成績ページで更新し、失敗時は接続とログイン状態を確認してください。';
 
   @override
   String get helpInstructionWidget => 'ウィジェット';
 
   @override
-  String get helpInstructionWidgetDesc => 'ホーム画面を長押ししてウィジェットを追加';
+  String get helpInstructionWidgetDesc =>
+      'スマートフォンのホーム画面を長押しし、ウィジェット追加から光序を検索して時間割を選びます。iOSでは手動追加が必要です。種類や権限はプラットフォームによって異なります。';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      '時間割の設定を開き、カレンダー購読が表示される場合はリンクをコピーするかカレンダーアプリで追加します。利用可否は学校とプラットフォームによります。';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      '電気料金ページで追加を押し、寮の電気料金詳細ページのURLを貼り付けます。登録後は残高を確認し、メールアドレスと閾値で残高通知を設定できます。';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      '「設定」→「光序 MCP」でサービスアドレスとアクセストークンを設定し、対応AIクライアントに設定をコピーします。トークンは安全に管理してください。';
 
   @override
   String get helpNoteUpdate => '最新機能と修正のためアプリを更新してください';
 
   @override
-  String get helpNoteData => 'データが不正確な場合は教務システムログインを確認';
+  String get helpNoteData =>
+      'データが不正確または読み込めない場合は、接続、学校、ログイン状態を確認して該当ページを更新してください。サービスは学校により異なり、一時的に使えない場合があります。';
 
   @override
-  String get helpNoteFeedback => '問題は設定ページから報告してください';
+  String get helpNoteFeedback =>
+      '「設定」→「フィードバック」で問題と連絡先を入力し、必要に応じてスクリーンショットを添付します。操作手順とエラーの詳細も記載してください。';
 
   @override
-  String get helpNotePrivacy => 'このアプリは個人情報を収集・アップロードしません';
-
-  @override
-  String get helpAboutPlatform => '対応プラットフォーム';
-
-  @override
-  String get helpAboutPlatformDesc => 'クロスプラットフォーム対応：';
-
-  @override
-  String get helpAboutOpenSource => 'オープンソース';
-
-  @override
-  String get helpAboutOpenSourceDesc => 'このアプリはMITライセンスでオープンソース';
-
-  @override
-  String get helpAboutRepoLabel => 'リポジトリ：';
+  String get helpNotePrivacy => '個人情報の取り扱いは設定のプライバシーポリシーをご確認ください';
 
   @override
   String get underMaintenanceTitle => 'メンテナンス中！';

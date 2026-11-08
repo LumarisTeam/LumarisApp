@@ -3261,19 +3261,13 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'关于应用'**
-  String get helpAboutTab;
-
-  ///
-  ///
-  /// In zh, this message translates to:
   /// **'首页'**
   String get helpFeatureHome;
 
   ///
   ///
   /// In zh, this message translates to:
-  /// **'信息中心，展示个人信息、课程、待办事项和考试安排'**
+  /// **'查看课程、待办和考试等信息'**
   String get helpFeatureHomeDesc;
 
   ///
@@ -3285,7 +3279,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'管理周课程安排，支持切换校区和设置提醒'**
+  /// **'查看和管理课表，支持多课表及导出到日历'**
   String get helpFeatureScheduleDesc;
 
   ///
@@ -3345,7 +3339,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'查看宿舍电量和用电历史记录'**
+  /// **'绑定宿舍电费页面，查看余额并设置邮件提醒'**
   String get helpFeatureElectricityDesc;
 
   ///
@@ -3357,8 +3351,14 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'查看饭卡余额和消费明细'**
+  /// **'查看饭卡余额、交易记录和支付码'**
   String get helpFeaturePaymentDesc;
+
+  /// 校园地图功能说明
+  ///
+  /// In zh, this message translates to:
+  /// **'查看校园地图'**
+  String get helpFeatureMapDesc;
 
   ///
   ///
@@ -3381,7 +3381,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'首次使用需登录教务系统账户'**
+  /// **'进入「我的」选择登录，填写教务系统账号和密码。也可先以游客身份使用；部分功能和数据取决于学校及账号类型。'**
   String get helpInstructionLoginDesc;
 
   ///
@@ -3393,7 +3393,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'进入课程表查看当周课程，左右滑动切换周次，点击课程查看详情'**
+  /// **'在课表页左右滑动切换周次，点击课程查看详情。游客可点击导入按钮，选择适配仓库或输入教务网址，登录后进入课表页面，再执行导入。'**
   String get helpInstructionCourseDesc;
 
   ///
@@ -3405,7 +3405,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'在设置中开启课程提醒，应用会在上课前发送通知提醒'**
+  /// **'在设置中开启课程提醒并选择提前时间；按系统提示允许通知。Android 用户还可检查课程提醒相关权限和后台运行设置。'**
   String get helpInstructionReminderDesc;
 
   ///
@@ -3417,7 +3417,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'应用自动同步教务系统数据，需要网络连接。下拉刷新可手动更新'**
+  /// **'教务数据及校园服务需要网络和相应登录状态。在课表、成绩等页面使用刷新按钮；若更新失败，可检查网络和登录状态后重试。'**
   String get helpInstructionSyncDesc;
 
   ///
@@ -3429,8 +3429,26 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'在桌面长按添加应用小组件，快速查看课程信息'**
+  /// **'在手机桌面长按，选择添加小组件，搜索「光序」并选择课表样式。iOS 需手动添加；可用样式和权限要求因平台而异。'**
   String get helpInstructionWidgetDesc;
+
+  /// 帮助页操作说明
+  ///
+  /// In zh, this message translates to:
+  /// **'在课表页打开设置，若显示日历订阅，可复制订阅链接或打开日历应用完成添加。该功能依学校和平台提供。'**
+  String get helpInstructionCalendarDesc;
+
+  /// 帮助页操作说明
+  ///
+  /// In zh, this message translates to:
+  /// **'进入电费页面，点击添加并粘贴宿舍电费详情页网址。绑定后可查看余额，并填写邮箱和阈值设置低余额提醒。'**
+  String get helpInstructionElectricityDesc;
+
+  /// 帮助页操作说明
+  ///
+  /// In zh, this message translates to:
+  /// **'在「设置」→「光序 MCP」查看服务地址、配置访问令牌，并复制配置到支持 MCP 的 AI 客户端。请妥善保管令牌。'**
+  String get helpInstructionMcpDesc;
 
   ///
   ///
@@ -3441,50 +3459,20 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'数据不准确时，请检查是否正确登录教务系统'**
+  /// **'数据不准确或加载失败时，先检查网络、学校和登录状态，再在对应页面刷新。部分服务可能暂不可用或因学校而异。'**
   String get helpNoteData;
 
   ///
   ///
   /// In zh, this message translates to:
-  /// **'遇到问题可通过设置页面进行反馈'**
+  /// **'在「设置」→「意见反馈」填写问题和联系方式，可附上截图后提交；描述操作步骤和错误现象有助于排查。'**
   String get helpNoteFeedback;
 
   ///
   ///
   /// In zh, this message translates to:
-  /// **'应用不会收集或上传您的个人隐私信息'**
+  /// **'了解个人信息的处理方式，请查看设置中的隐私协议'**
   String get helpNotePrivacy;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'平台支持'**
-  String get helpAboutPlatform;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'跨平台应用，支持以下平台：'**
-  String get helpAboutPlatformDesc;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'开源项目'**
-  String get helpAboutOpenSource;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'本应用基于 MIT 许可证开源'**
-  String get helpAboutOpenSourceDesc;
-
-  ///
-  ///
-  /// In zh, this message translates to:
-  /// **'仓库地址：'**
-  String get helpAboutRepoLabel;
 
   ///
   ///

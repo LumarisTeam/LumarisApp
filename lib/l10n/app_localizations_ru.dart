@@ -1709,21 +1709,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get helpNotesTab => 'Примечания';
 
   @override
-  String get helpAboutTab => 'О приложении';
-
-  @override
   String get helpFeatureHome => 'Главная';
 
   @override
   String get helpFeatureHomeDesc =>
-      'Информационный центр с личными данными, курсами, задачами и экзаменами';
+      'Просмотр занятий, задач, экзаменов и другой информации';
 
   @override
   String get helpFeatureSchedule => 'Расписание';
 
   @override
   String get helpFeatureScheduleDesc =>
-      'Управление недельным расписанием с переключением кампуса и напоминаниями';
+      'Управление несколькими расписаниями и экспорт в календарь';
 
   @override
   String get helpFeatureScore => 'Оценки';
@@ -1758,14 +1755,17 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get helpFeatureElectricityDesc =>
-      'Просмотр расхода и истории электричества в общежитии';
+      'Привяжите страницу электричества общежития для просмотра баланса и уведомлений по почте';
 
   @override
   String get helpFeaturePayment => 'Карта кампуса';
 
   @override
   String get helpFeaturePaymentDesc =>
-      'Просмотр баланса карты и истории транзакций';
+      'Просмотр баланса, операций и платёжного кода кампусной карты';
+
+  @override
+  String get helpFeatureMapDesc => 'Открыть карту кампуса';
 
   @override
   String get helpFeatureLinks => 'Полезные ссылки';
@@ -1779,35 +1779,47 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get helpInstructionLoginDesc =>
-      'Войдите с учётной записью академической системы при первом использовании';
+      'В профиле выберите вход и укажите учётные данные учебной системы. Доступен и гостевой режим; функции и данные зависят от вуза и типа аккаунта.';
 
   @override
   String get helpInstructionCourse => 'Управление курсами';
 
   @override
   String get helpInstructionCourseDesc =>
-      'Просмотр недельных курсов в расписании, смахивание для смены недели, нажмите для деталей';
+      'Листайте расписание по неделям и нажмите на занятие для подробностей. В гостевом режиме выберите импорт из репозитория адаптеров или введите адрес учебной системы, войдите, откройте расписание и запустите импорт.';
 
   @override
   String get helpInstructionReminder => 'Напоминания о курсах';
 
   @override
   String get helpInstructionReminderDesc =>
-      'Включите напоминания в настройках для уведомлений перед занятиями';
+      'В настройках включите напоминания и выберите время до занятия. Разрешите уведомления; на Android также проверьте разрешения и работу в фоне.';
 
   @override
   String get helpInstructionSync => 'Синхронизация данных';
 
   @override
   String get helpInstructionSyncDesc =>
-      'Приложение автоматически синхронизируется. Потяните вниз для обновления вручную';
+      'Для учебных данных и сервисов кампуса нужны интернет и вход в соответствующую службу. Обновите страницу расписания или оценок; при ошибке проверьте сеть и вход.';
 
   @override
   String get helpInstructionWidget => 'Виджеты';
 
   @override
   String get helpInstructionWidgetDesc =>
-      'Долгое нажатие на главном экране для добавления виджета';
+      'Удерживайте главный экран телефона, выберите добавление виджета, найдите Guangxu и выберите расписание. На iOS виджет добавляется вручную; доступные виджеты и разрешения зависят от платформы.';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      'Откройте настройки расписания. Если подписка на календарь доступна, скопируйте ссылку или откройте приложение календаря. Доступность зависит от вуза и платформы.';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      'На странице электричества нажмите добавление и вставьте адрес страницы сведений об электричестве общежития. После привязки можно проверить баланс и настроить почту и порог уведомления.';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      'В разделе «Настройки» → Guangxu MCP настройте адрес сервиса и токен, затем скопируйте конфигурацию в ИИ-клиент с поддержкой MCP. Храните токен в безопасности.';
 
   @override
   String get helpNoteUpdate =>
@@ -1815,32 +1827,15 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get helpNoteData =>
-      'Если данные неточные, проверьте вход в академическую систему';
+      'Если данные неверны или не загружаются, проверьте сеть, вуз и вход, затем обновите нужную страницу. Некоторые службы могут быть временно недоступны или различаться по вузам.';
 
   @override
   String get helpNoteFeedback =>
-      'Сообщайте о проблемах через страницу настроек';
+      'В разделе «Настройки» → «Обратная связь» опишите проблему и укажите контакты; можно приложить скриншоты. Укажите шаги и текст ошибки для диагностики.';
 
   @override
   String get helpNotePrivacy =>
-      'Это приложение не собирает вашу личную информацию';
-
-  @override
-  String get helpAboutPlatform => 'Поддержка платформ';
-
-  @override
-  String get helpAboutPlatformDesc =>
-      'Кроссплатформенное приложение, поддерживает:';
-
-  @override
-  String get helpAboutOpenSource => 'Открытый исходный код';
-
-  @override
-  String get helpAboutOpenSourceDesc =>
-      'Приложение с открытым исходным кодом по лицензии MIT';
-
-  @override
-  String get helpAboutRepoLabel => 'Репозиторий:';
+      'О порядке обработки личных данных см. политику конфиденциальности в настройках';
 
   @override
   String get underMaintenanceTitle => 'Техническое обслуживание!';

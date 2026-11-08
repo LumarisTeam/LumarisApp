@@ -1743,21 +1743,18 @@ class AppLocalizationsDe extends AppLocalizations {
   String get helpNotesTab => 'Hinweise';
 
   @override
-  String get helpAboutTab => 'Über';
-
-  @override
   String get helpFeatureHome => 'Startseite';
 
   @override
   String get helpFeatureHomeDesc =>
-      'Informationszentrum mit persönlichen Daten, Kursen, Aufgaben und Prüfungen';
+      'Kurse, Aufgaben, Prüfungen und mehr anzeigen';
 
   @override
   String get helpFeatureSchedule => 'Stundenplan';
 
   @override
   String get helpFeatureScheduleDesc =>
-      'Wochenplan verwalten, Campus wechseln und Erinnerungen einstellen';
+      'Stundenpläne verwalten und in den Kalender exportieren';
 
   @override
   String get helpFeatureScore => 'Noten';
@@ -1792,14 +1789,17 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get helpFeatureElectricityDesc =>
-      'Stromverbrauch und Verlauf des Wohnheims anzeigen';
+      'Stromseite des Wohnheims verknüpfen, Guthaben anzeigen und E-Mail-Warnungen einrichten';
 
   @override
   String get helpFeaturePayment => 'Campus-Karte';
 
   @override
   String get helpFeaturePaymentDesc =>
-      'Kartenguthaben und Transaktionsverlauf anzeigen';
+      'Guthaben, Transaktionen und Zahlungscode der Campuskarte anzeigen';
+
+  @override
+  String get helpFeatureMapDesc => 'Campuskarte anzeigen';
 
   @override
   String get helpFeatureLinks => 'Nützliche Links';
@@ -1813,35 +1813,47 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get helpInstructionLoginDesc =>
-      'Bei erstmaliger Nutzung mit dem Hochschulkonto anmelden';
+      'Im Profil anmelden und Hochschulkonto und Passwort eingeben. Der Gastmodus ist ebenfalls verfügbar; Funktionen und Daten hängen von Hochschule und Kontotyp ab.';
 
   @override
   String get helpInstructionCourse => 'Kursverwaltung';
 
   @override
   String get helpInstructionCourseDesc =>
-      'Wochenkurse im Plan anzeigen, wischen zum Wechseln der Woche, antippen für Details';
+      'Im Stundenplan zwischen Wochen wischen und einen Kurs für Details antippen. Gäste wählen beim Import das Adapter-Repository oder geben eine Hochschul-URL ein, melden sich an, öffnen den Stundenplan und starten den Import.';
 
   @override
   String get helpInstructionReminder => 'Kurserinnerungen';
 
   @override
   String get helpInstructionReminderDesc =>
-      'Erinnerungen in den Einstellungen aktivieren, um vor Kursen benachrichtigt zu werden';
+      'In den Einstellungen Kurserinnerungen und Vorlaufzeit wählen und Benachrichtigungen erlauben. Unter Android auch Berechtigungen und Hintergrundbetrieb prüfen.';
 
   @override
   String get helpInstructionSync => 'Datensynchronisation';
 
   @override
   String get helpInstructionSyncDesc =>
-      'Die App synchronisiert automatisch. Zum Aktualisieren nach unten ziehen';
+      'Hochschul- und Campusdaten benötigen Internet und die jeweilige Anmeldung. Auf der Stundenplan- oder Notenseite aktualisieren; bei Fehlern Verbindung und Anmeldung prüfen.';
 
   @override
   String get helpInstructionWidget => 'Widgets';
 
   @override
   String get helpInstructionWidgetDesc =>
-      'Startbildschirm lange drücken, um App-Widget hinzuzufügen';
+      'Den Startbildschirm lange drücken, Widget hinzufügen wählen, nach Guangxu suchen und einen Stundenplan auswählen. Unter iOS manuell hinzufügen; Widgets und Berechtigungen variieren je nach Plattform.';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      'In den Stundenplaneinstellungen den Kalender abonnieren, sofern verfügbar: Link kopieren oder Kalender-App öffnen. Die Verfügbarkeit hängt von Hochschule und Plattform ab.';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      'Auf der Stromseite auf Hinzufügen tippen und die URL der Stromdetailseite des Wohnheims einfügen. Danach Guthaben prüfen und optional E-Mail und Schwellenwert für Warnungen festlegen.';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      'Unter Einstellungen → Guangxu MCP Serveradresse und Zugriffstoken konfigurieren und die Konfiguration in einen MCP-fähigen KI-Client kopieren. Das Token sicher aufbewahren.';
 
   @override
   String get helpNoteUpdate =>
@@ -1849,31 +1861,15 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get helpNoteData =>
-      'Bei ungenauen Daten die Hochschulanmeldung überprüfen';
+      'Bei falschen Daten oder Ladefehlern Verbindung, Hochschule und Anmeldung prüfen und die betreffende Seite aktualisieren. Dienste können vorübergehend ausfallen oder je nach Hochschule abweichen.';
 
   @override
-  String get helpNoteFeedback => 'Probleme über die Einstellungsseite melden';
+  String get helpNoteFeedback =>
+      'Unter Einstellungen → Feedback Problem und Kontaktangaben eingeben und gegebenenfalls Screenshots anhängen. Schritte und Fehlerbeschreibung erleichtern die Fehlersuche.';
 
   @override
   String get helpNotePrivacy =>
-      'Diese App sammelt keine persönlichen Informationen';
-
-  @override
-  String get helpAboutPlatform => 'Plattform-Unterstützung';
-
-  @override
-  String get helpAboutPlatformDesc =>
-      'Plattformübergreifende App, unterstützt:';
-
-  @override
-  String get helpAboutOpenSource => 'Open Source';
-
-  @override
-  String get helpAboutOpenSourceDesc =>
-      'Diese App ist Open Source unter der MIT-Lizenz';
-
-  @override
-  String get helpAboutRepoLabel => 'Repository:';
+      'Informationen zur Verarbeitung persönlicher Daten stehen in der Datenschutzerklärung in den Einstellungen';
 
   @override
   String get underMaintenanceTitle => 'Wartungsarbeiten!';

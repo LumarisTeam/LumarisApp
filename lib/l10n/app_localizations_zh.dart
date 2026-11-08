@@ -1646,19 +1646,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get helpNotesTab => '注意事项';
 
   @override
-  String get helpAboutTab => '关于应用';
-
-  @override
   String get helpFeatureHome => '首页';
 
   @override
-  String get helpFeatureHomeDesc => '信息中心，展示个人信息、课程、待办事项和考试安排';
+  String get helpFeatureHomeDesc => '查看课程、待办和考试等信息';
 
   @override
   String get helpFeatureSchedule => '课程表';
 
   @override
-  String get helpFeatureScheduleDesc => '管理周课程安排，支持切换校区和设置提醒';
+  String get helpFeatureScheduleDesc => '查看和管理课表，支持多课表及导出到日历';
 
   @override
   String get helpFeatureScore => '成绩查询';
@@ -1688,13 +1685,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get helpFeatureElectricity => '电费查询';
 
   @override
-  String get helpFeatureElectricityDesc => '查看宿舍电量和用电历史记录';
+  String get helpFeatureElectricityDesc => '绑定宿舍电费页面，查看余额并设置邮件提醒';
 
   @override
   String get helpFeaturePayment => '饭卡消费';
 
   @override
-  String get helpFeaturePaymentDesc => '查看饭卡余额和消费明细';
+  String get helpFeaturePaymentDesc => '查看饭卡余额、交易记录和支付码';
+
+  @override
+  String get helpFeatureMapDesc => '查看校园地图';
 
   @override
   String get helpFeatureLinks => '常用链接';
@@ -1706,58 +1706,62 @@ class AppLocalizationsZh extends AppLocalizations {
   String get helpInstructionLogin => '登录与账户';
 
   @override
-  String get helpInstructionLoginDesc => '首次使用需登录教务系统账户';
+  String get helpInstructionLoginDesc =>
+      '进入「我的」选择登录，填写教务系统账号和密码。也可先以游客身份使用；部分功能和数据取决于学校及账号类型。';
 
   @override
   String get helpInstructionCourse => '课程管理';
 
   @override
-  String get helpInstructionCourseDesc => '进入课程表查看当周课程，左右滑动切换周次，点击课程查看详情';
+  String get helpInstructionCourseDesc =>
+      '在课表页左右滑动切换周次，点击课程查看详情。游客可点击导入按钮，选择适配仓库或输入教务网址，登录后进入课表页面，再执行导入。';
 
   @override
   String get helpInstructionReminder => '日程提醒';
 
   @override
-  String get helpInstructionReminderDesc => '在设置中开启课程提醒，应用会在上课前发送通知提醒';
+  String get helpInstructionReminderDesc =>
+      '在设置中开启课程提醒并选择提前时间；按系统提示允许通知。Android 用户还可检查课程提醒相关权限和后台运行设置。';
 
   @override
   String get helpInstructionSync => '数据同步';
 
   @override
-  String get helpInstructionSyncDesc => '应用自动同步教务系统数据，需要网络连接。下拉刷新可手动更新';
+  String get helpInstructionSyncDesc =>
+      '教务数据及校园服务需要网络和相应登录状态。在课表、成绩等页面使用刷新按钮；若更新失败，可检查网络和登录状态后重试。';
 
   @override
   String get helpInstructionWidget => '桌面小组件';
 
   @override
-  String get helpInstructionWidgetDesc => '在桌面长按添加应用小组件，快速查看课程信息';
+  String get helpInstructionWidgetDesc =>
+      '在手机桌面长按，选择添加小组件，搜索「光序」并选择课表样式。iOS 需手动添加；可用样式和权限要求因平台而异。';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      '在课表页打开设置，若显示日历订阅，可复制订阅链接或打开日历应用完成添加。该功能依学校和平台提供。';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      '进入电费页面，点击添加并粘贴宿舍电费详情页网址。绑定后可查看余额，并填写邮箱和阈值设置低余额提醒。';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      '在「设置」→「光序 MCP」查看服务地址、配置访问令牌，并复制配置到支持 MCP 的 AI 客户端。请妥善保管令牌。';
 
   @override
   String get helpNoteUpdate => '请保持应用更新以获得最新功能和修复';
 
   @override
-  String get helpNoteData => '数据不准确时，请检查是否正确登录教务系统';
+  String get helpNoteData =>
+      '数据不准确或加载失败时，先检查网络、学校和登录状态，再在对应页面刷新。部分服务可能暂不可用或因学校而异。';
 
   @override
-  String get helpNoteFeedback => '遇到问题可通过设置页面进行反馈';
+  String get helpNoteFeedback =>
+      '在「设置」→「意见反馈」填写问题和联系方式，可附上截图后提交；描述操作步骤和错误现象有助于排查。';
 
   @override
-  String get helpNotePrivacy => '应用不会收集或上传您的个人隐私信息';
-
-  @override
-  String get helpAboutPlatform => '平台支持';
-
-  @override
-  String get helpAboutPlatformDesc => '跨平台应用，支持以下平台：';
-
-  @override
-  String get helpAboutOpenSource => '开源项目';
-
-  @override
-  String get helpAboutOpenSourceDesc => '本应用基于 MIT 许可证开源';
-
-  @override
-  String get helpAboutRepoLabel => '仓库地址：';
+  String get helpNotePrivacy => '了解个人信息的处理方式，请查看设置中的隐私协议';
 
   @override
   String get underMaintenanceTitle => '正在维护！';
@@ -4008,19 +4012,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get helpNotesTab => '注意事項';
 
   @override
-  String get helpAboutTab => '關於應用程式';
-
-  @override
   String get helpFeatureHome => '首頁';
 
   @override
-  String get helpFeatureHomeDesc => '資訊中心，展示個人資訊、課程、待辦事項和考試安排';
+  String get helpFeatureHomeDesc => '查看課程、待辦和考試等資訊';
 
   @override
   String get helpFeatureSchedule => '課程表';
 
   @override
-  String get helpFeatureScheduleDesc => '管理週課程安排，支援切換校區和設定提醒';
+  String get helpFeatureScheduleDesc => '查看及管理課表，支援多個課表及匯出到日曆';
 
   @override
   String get helpFeatureScore => '成績查詢';
@@ -4050,13 +4051,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get helpFeatureElectricity => '電費查詢';
 
   @override
-  String get helpFeatureElectricityDesc => '檢視宿舍電量和用電歷史記錄';
+  String get helpFeatureElectricityDesc => '綁定宿舍電費頁面，查看餘額並設定電郵提醒';
 
   @override
   String get helpFeaturePayment => '飯卡消費';
 
   @override
-  String get helpFeaturePaymentDesc => '檢視飯卡餘額和消費明細';
+  String get helpFeaturePaymentDesc => '查看飯卡餘額、交易紀錄和付款碼';
+
+  @override
+  String get helpFeatureMapDesc => '查看校園地圖';
 
   @override
   String get helpFeatureLinks => '常用連結';
@@ -4068,58 +4072,62 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get helpInstructionLogin => '登入與帳戶';
 
   @override
-  String get helpInstructionLoginDesc => '首次使用需登入教務系統帳戶';
+  String get helpInstructionLoginDesc =>
+      '進入「我的」選擇登入，填寫教務系統帳號和密碼。也可先以訪客身分使用；部分功能和資料取決於學校及帳號類型。';
 
   @override
   String get helpInstructionCourse => '課程管理';
 
   @override
-  String get helpInstructionCourseDesc => '進入課程表檢視當週課程，左右滑動切換週次，點選課程檢視詳情';
+  String get helpInstructionCourseDesc =>
+      '在課表頁左右滑動切換週次，點選課程查看詳情。訪客可點選匯入按鈕，選擇適配倉庫或輸入教務網址，登入並進入課表頁面後執行匯入。';
 
   @override
   String get helpInstructionReminder => '行程提醒';
 
   @override
-  String get helpInstructionReminderDesc => '在設定中開啟課程提醒，應用程式會在上課前寄送通知提醒';
+  String get helpInstructionReminderDesc =>
+      '在設定中開啟課程提醒並選擇提前時間；依系統提示允許通知。Android 使用者也可檢查課程提醒權限與背景執行設定。';
 
   @override
   String get helpInstructionSync => '資料同步';
 
   @override
-  String get helpInstructionSyncDesc => '應用程式自動同步教務系統資料，需要網路連線。下拉重新整理可手動更新';
+  String get helpInstructionSyncDesc =>
+      '教務資料及校園服務需要網路和相應登入狀態。在課表、成績等頁面使用重新整理按鈕；失敗時檢查網路與登入狀態後重試。';
 
   @override
   String get helpInstructionWidget => '桌面小元件';
 
   @override
-  String get helpInstructionWidgetDesc => '在桌面長按新增應用程式小元件，快速檢視課程資訊';
+  String get helpInstructionWidgetDesc =>
+      '長按手機主畫面，選擇加入小工具，搜尋「光序」並選擇課表樣式。iOS 需手動加入；可用樣式與權限依平台而異。';
+
+  @override
+  String get helpInstructionCalendarDesc =>
+      '在課表頁開啟設定，若顯示日曆訂閱，可複製訂閱連結或開啟日曆應用程式完成加入。此功能依學校和平台提供。';
+
+  @override
+  String get helpInstructionElectricityDesc =>
+      '進入電費頁面，點選新增並貼上宿舍電費詳情頁網址。綁定後可查看餘額，並填寫信箱和門檻以設定低餘額提醒。';
+
+  @override
+  String get helpInstructionMcpDesc =>
+      '在「設定」→「光序 MCP」查看服務位址、設定存取權杖，並複製設定至支援 MCP 的 AI 用戶端。請妥善保管權杖。';
 
   @override
   String get helpNoteUpdate => '請保持應用程式更新以獲得最新功能和修復';
 
   @override
-  String get helpNoteData => '資料不準確時，請檢查是否正確登入教務系統';
+  String get helpNoteData =>
+      '資料不準確或載入失敗時，先檢查網路、學校和登入狀態，再於相應頁面重新整理。部分服務可能暫時無法使用或因學校而異。';
 
   @override
-  String get helpNoteFeedback => '遇到問題可透過設定頁面進行回饋';
+  String get helpNoteFeedback =>
+      '在「設定」→「意見回饋」填寫問題與聯絡方式，可附上截圖後送出；描述操作步驟和錯誤現象有助於排查。';
 
   @override
-  String get helpNotePrivacy => '應用程式不會收集或上傳您的個人隱私資訊';
-
-  @override
-  String get helpAboutPlatform => '平台支援';
-
-  @override
-  String get helpAboutPlatformDesc => '跨平台應用程式，支援以下平台：';
-
-  @override
-  String get helpAboutOpenSource => '開放原始碼專案';
-
-  @override
-  String get helpAboutOpenSourceDesc => '本應用程式基於 MIT 授權條款開放原始碼';
-
-  @override
-  String get helpAboutRepoLabel => '儲存庫位址：';
+  String get helpNotePrivacy => '請查看設定中的隱私協議，了解個人資訊的處理方式';
 
   @override
   String get underMaintenanceTitle => '正在維護！';
