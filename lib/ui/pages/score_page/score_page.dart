@@ -252,42 +252,43 @@ class _ScorePageState extends ConsumerState<ScorePage>
         children: [
           _buildAppBar(),
           _buildStatsCard(),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(0),
-                  decoration: BoxDecoration(
-                    color: colors.cardBackground,
-                    borderRadius: BorderRadius.circular(25.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: colors.shadowColor.withValues(alpha: 0.1),
-                        blurRadius: 12,
+          if (_scoreList.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(0),
+                    decoration: BoxDecoration(
+                      color: colors.cardBackground,
+                      borderRadius: BorderRadius.circular(25.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: colors.shadowColor.withValues(alpha: 0.1),
+                          blurRadius: 12,
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      onPressed: _changeScoreList,
+                      icon: Icon(
+                        _isYear
+                            ? Icons.calendar_today_rounded
+                            : Icons.calendar_view_day_rounded,
                       ),
-                    ],
-                  ),
-                  child: IconButton(
-                    onPressed: _changeScoreList,
-                    icon: Icon(
-                      _isYear
-                          ? Icons.calendar_today_rounded
-                          : Icons.calendar_view_day_rounded,
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: _buildSelector(),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: _buildSelector(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
           Expanded(child: _buildScoreList()),
         ],
       ),
