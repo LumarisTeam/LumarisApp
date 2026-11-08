@@ -2,11 +2,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/school_store.dart';
-import 'package:ios_club_app/state/settings_store.dart';
 
 class HtmlImportPage extends ConsumerStatefulWidget {
   const HtmlImportPage({super.key});
@@ -40,14 +38,6 @@ class _HtmlImportPageState extends ConsumerState<HtmlImportPage> {
   void dispose() {
     _urlController.dispose();
     super.dispose();
-  }
-
-  void _selectSchool(School school) {
-    setState(() {
-      _selectedCode = school.code;
-      _selectedUrl = school.htmlImportUrl;
-    });
-    _urlController.clear();
   }
 
   void _openWebView() {

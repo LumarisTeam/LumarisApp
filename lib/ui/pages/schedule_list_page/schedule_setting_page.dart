@@ -1,4 +1,3 @@
-import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 
 import 'package:android_intent_plus/android_intent.dart';
@@ -17,7 +16,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
-import 'package:ios_club_app/ui/components/schedule/schedule_background_picker.dart';
 
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
@@ -330,102 +328,6 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
     );
   }
 
-  Widget _buildBackgroundSection(BuildContext context, McColors colors) {
-    final l10n = context.l10n;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final activePath = settingsStore.backgroundImageFor(isDark: isDark);
-    return McCard.elevated(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          _buildBackgroundOption(
-            context,
-            l10n.noBackground,
-            '',
-            onTap: () async {
-              await clearScheduleBackgroundImage(ref, isDark: isDark);
-              if (mounted) setState(() {});
-            },
-          ),
-          _buildBackgroundOption(context, l10n.customImage, 'custom'),
-          if (settingsStore.scheduleBackground == 'custom') ...[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(56, 12, 16, 12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      activePath.isEmpty ? l10n.noImageSelected : activePath,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: colors.secondaryLabel,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.folder_outlined, size: 20),
-                    onPressed: _pickCustomBackgroundImage,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBackgroundOption(
-    BuildContext context,
-    String title,
-    String value, {
-    VoidCallback? onTap,
-  }) {
-    final colors = context.mc.colors;
-    final isSelected = settingsStore.scheduleBackground == value;
-    return Material(
-      shape: McSmoothCorners.shape(McRadii.cardBorder),
-      clipBehavior: Clip.antiAlias,
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: McRadii.cardBorder,
-        customBorder: McSmoothCorners.shape(McRadii.cardBorder),
-        onTap:
-            onTap ??
-            () {
-              setState(() {
-                settingsStore.setScheduleBackground(value);
-              });
-            },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          decoration: ShapeDecoration(
-            shape: McSmoothCorners.shape(McRadii.navigationBorder),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                isSelected ? Icons.check_circle : Icons.circle_outlined,
-                color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : colors.tertiaryLabel,
-              ),
-              const SizedBox(width: 16),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildIgnoreCourseSection(BuildContext context, McColors colors) {
     return McCard.elevated(
       padding: EdgeInsets.zero,
@@ -480,16 +382,6 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
         );
       }
     }
-  }
-
-  Future<void> _pickCustomBackgroundImage() async {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final picked = await pickScheduleBackgroundImage(
-      context,
-      ref,
-      isDark: isDark,
-    );
-    if (picked && mounted) setState(() {});
   }
 
   Future<void> _handleIgnoreChange(CourseIgnore ignore, bool value) async {
