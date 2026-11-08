@@ -1034,6 +1034,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get tomorrowSchedule => '내일 시간표';
 
   @override
+  String get scheduleNotImported => '가져온 시간표가 없습니다';
+
+  @override
+  String get scheduleNotImportedHint =>
+      '시간표를 가져오면 매일의 수업, 시간, 강의실을 확인할 수 있습니다.';
+
+  @override
+  String get importSchedule => '시간표 가져오기';
+
+  @override
   String get noCourseToday => '오늘 수업이 없습니다';
 
   @override

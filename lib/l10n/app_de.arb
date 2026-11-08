@@ -357,6 +357,9 @@
   "classTime": "Zeit",
   "classCampus": "Campus",
 
+  "scheduleNotImported": "Kein Stundenplan importiert",
+  "scheduleNotImportedHint": "Importieren Sie Ihren Stundenplan, um Ihre täglichen Kurse, Zeiten und Räume zu sehen.",
+  "importSchedule": "Stundenplan importieren",
   "noCourseToday": "Keine Kurse heute",
   "noCourseTodaySubtitle": "Machen Sie eine Pause, Sie haben sie verdient",
   "showTomorrowSchedule": "Morgige Kurse anzeigen",

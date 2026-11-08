@@ -1075,6 +1075,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tomorrowSchedule => 'Emploi du temps de demain';
 
   @override
+  String get scheduleNotImported => 'Aucun emploi du temps importé';
+
+  @override
+  String get scheduleNotImportedHint =>
+      'Importez votre emploi du temps pour consulter vos cours, horaires et salles.';
+
+  @override
+  String get importSchedule => 'Importer un emploi du temps';
+
+  @override
   String get noCourseToday => 'Pas de cours aujourd\'hui';
 
   @override

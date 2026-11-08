@@ -368,6 +368,9 @@
 
   "todayScheduleLabel": "今日課表",
   "tomorrowSchedule": "明日課表",
+  "scheduleNotImported": "尚未匯入課表",
+  "scheduleNotImportedHint": "匯入後，即可查看每天的課程、時間和教室。",
+  "importSchedule": "匯入課表",
   "noCourseToday": "今天沒有課了",
   "noCourseTodaySubtitle": "好好休息一會兒吧，學一天累死個人",
   "showTomorrowSchedule": "顯示明天的課表",

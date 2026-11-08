@@ -357,6 +357,9 @@
   "classTime": "Horaire",
   "classCampus": "Campus",
 
+  "scheduleNotImported": "Aucun emploi du temps importé",
+  "scheduleNotImportedHint": "Importez votre emploi du temps pour consulter vos cours, horaires et salles.",
+  "importSchedule": "Importer un emploi du temps",
   "noCourseToday": "Pas de cours aujourd'hui",
   "noCourseTodaySubtitle": "Reposez-vous, vous le méritez",
   "showTomorrowSchedule": "Afficher les cours de demain",

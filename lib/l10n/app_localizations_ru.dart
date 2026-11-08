@@ -1061,6 +1061,16 @@ class AppLocalizationsRu extends AppLocalizations {
   String get tomorrowSchedule => 'Завтрашнее расписание';
 
   @override
+  String get scheduleNotImported => 'Расписание не импортировано';
+
+  @override
+  String get scheduleNotImportedHint =>
+      'Импортируйте расписание, чтобы видеть занятия, их время и аудитории.';
+
+  @override
+  String get importSchedule => 'Импортировать расписание';
+
+  @override
   String get noCourseToday => 'Сегодня занятий нет';
 
   @override

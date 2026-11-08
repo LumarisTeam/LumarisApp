@@ -1061,6 +1061,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tomorrowSchedule => 'Tomorrow\'s Schedule';
 
   @override
+  String get scheduleNotImported => 'No timetable imported';
+
+  @override
+  String get scheduleNotImportedHint =>
+      'Import your timetable to see your daily classes, times, and classrooms.';
+
+  @override
+  String get importSchedule => 'Import timetable';
+
+  @override
   String get noCourseToday => 'No courses today';
 
   @override

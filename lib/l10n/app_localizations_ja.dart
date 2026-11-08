@@ -1027,6 +1027,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tomorrowSchedule => '明日の時間割';
 
   @override
+  String get scheduleNotImported => '時間割が未インポートです';
+
+  @override
+  String get scheduleNotImportedHint => '時間割をインポートすると、毎日の授業、時間、教室を確認できます。';
+
+  @override
+  String get importSchedule => '時間割をインポート';
+
+  @override
   String get noCourseToday => '今日の授業はありません';
 
   @override

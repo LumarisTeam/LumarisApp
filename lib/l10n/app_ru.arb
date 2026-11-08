@@ -357,6 +357,9 @@
   "classTime": "Время",
   "classCampus": "Кампус",
 
+  "scheduleNotImported": "Расписание не импортировано",
+  "scheduleNotImportedHint": "Импортируйте расписание, чтобы видеть занятия, их время и аудитории.",
+  "importSchedule": "Импортировать расписание",
   "noCourseToday": "Сегодня занятий нет",
   "noCourseTodaySubtitle": "Отдохните, вы это заслужили",
   "showTomorrowSchedule": "Показать расписание на завтра",

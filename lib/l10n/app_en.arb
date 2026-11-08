@@ -379,6 +379,9 @@
 
   "todayScheduleLabel": "Today's Schedule",
   "tomorrowSchedule": "Tomorrow's Schedule",
+  "scheduleNotImported": "No timetable imported",
+  "scheduleNotImportedHint": "Import your timetable to see your daily classes, times, and classrooms.",
+  "importSchedule": "Import timetable",
   "noCourseToday": "No courses today",
   "noCourseTodaySubtitle": "Take a break, you deserve it",
   "showTomorrowSchedule": "Show tomorrow's courses",

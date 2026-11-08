@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
 import 'package:ios_club_app/core/models/schedule_item.dart';
 import 'package:ios_club_app/core/services/time_service.dart';
@@ -15,6 +16,11 @@ import 'package:ios_club_app/state/schedule_style_store.dart';
 import 'package:ios_club_app/features/system/notifications/notification_service.dart';
 import 'package:ios_club_app/ui/components/schedule/course_detail_sheet.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
+
+import '../../../routes/router.dart';
+import '../../../state/user_store.dart';
+import '../../components/loading_state_view.dart';
+import '../../components/schedule/schedule_import_empty_state.dart';
 
 class ScheduleWidget extends ConsumerStatefulWidget {
   const ScheduleWidget({super.key});
@@ -32,7 +38,8 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    ref.watch(scheduleStoreProvider);
+    final scheduleState = ref.watch(scheduleStoreProvider);
+    final isLogin = ref.watch(userStoreProvider.select((user) => user.isLogin));
     final showTomorrow = ref.watch(
       settingsStoreProvider.select((settings) => settings.isShowTomorrow),
     );
@@ -56,13 +63,15 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                homeCourses.showTomorrow
-                    ? l10n.tomorrowSchedule
-                    : l10n.todayScheduleLabel,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+              Flexible(
+                child: Text(
+                  homeCourses.showTomorrow
+                      ? l10n.tomorrowSchedule
+                      : l10n.todayScheduleLabel,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               IconButton(
@@ -122,6 +131,21 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
               child: Builder(
                 builder: (context) {
                   final todayCourses = homeCourses.courses;
+
+                  if (!isLogin &&
+                      scheduleState.allCourses.isEmpty &&
+                      todayCourses.isEmpty) {
+                    return scheduleState.isLoading
+                        ? LoadingStateView(
+                            title: l10n.loadingSchedule,
+                            subtitle: l10n.loadingScheduleSubtitle,
+                            compact: true,
+                          )
+                        : ScheduleImportEmptyState(
+                            onImport: () =>
+                                context.push<bool>(AppRoutes.htmlImport),
+                          );
+                  }
 
                   return todayCourses.isEmpty
                       ? Padding(
@@ -238,15 +262,15 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                           color: colors.secondaryLabel,
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          item.time,
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: colors.secondaryLabel,
+                        Expanded(
+                          child: Text(
+                            item.time,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              color: colors.secondaryLabel,
+                            ),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
                         ),
                       ],
                     ),
@@ -258,12 +282,14 @@ class _ScheduleWidgetState extends ConsumerState<ScheduleWidget> {
                           color: colors.secondaryLabel,
                         ),
                         const SizedBox(width: 6),
-                        Text(
-                          item.location,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: colors.secondaryLabel,
-                            fontWeight: FontWeight.w400,
+                        Expanded(
+                          child: Text(
+                            item.location,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: colors.secondaryLabel,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
                         ),
                       ],

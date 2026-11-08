@@ -1078,6 +1078,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get tomorrowSchedule => 'Stundenplan morgen';
 
   @override
+  String get scheduleNotImported => 'Kein Stundenplan importiert';
+
+  @override
+  String get scheduleNotImportedHint =>
+      'Importieren Sie Ihren Stundenplan, um Ihre täglichen Kurse, Zeiten und Räume zu sehen.';
+
+  @override
+  String get importSchedule => 'Stundenplan importieren';
+
+  @override
   String get noCourseToday => 'Keine Kurse heute';
 
   @override

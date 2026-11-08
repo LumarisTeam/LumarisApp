@@ -357,6 +357,9 @@
   "classTime": "時間",
   "classCampus": "キャンパス",
 
+  "scheduleNotImported": "時間割が未インポートです",
+  "scheduleNotImportedHint": "時間割をインポートすると、毎日の授業、時間、教室を確認できます。",
+  "importSchedule": "時間割をインポート",
   "noCourseToday": "今日の授業はありません",
   "noCourseTodaySubtitle": "ゆっくり休んでください",
   "showTomorrowSchedule": "明日の授業を表示",

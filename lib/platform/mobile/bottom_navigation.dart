@@ -30,11 +30,9 @@ class BottomNavigation extends StatelessWidget {
     final selectedColor = selectedItemColor ?? colorScheme.primary;
     final unselectedColor = unselectedItemColor ?? colors.secondaryLabel;
 
-    final bottom = MediaQuery.of(context).padding.bottom + 60;
-
     return Container(
       decoration: BoxDecoration(color: bgColor),
-      height: bottom,
+      constraints: const BoxConstraints(minHeight: 60),
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,

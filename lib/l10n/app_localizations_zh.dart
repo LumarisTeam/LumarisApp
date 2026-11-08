@@ -1023,6 +1023,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tomorrowSchedule => '明日课表';
 
   @override
+  String get scheduleNotImported => '尚未导入课表';
+
+  @override
+  String get scheduleNotImportedHint => '导入后，即可查看每天的课程、时间和教室。';
+
+  @override
+  String get importSchedule => '导入课表';
+
+  @override
   String get noCourseToday => '今天没有课了';
 
   @override
@@ -3387,6 +3396,15 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get tomorrowSchedule => '明日課表';
+
+  @override
+  String get scheduleNotImported => '尚未匯入課表';
+
+  @override
+  String get scheduleNotImportedHint => '匯入後，即可查看每天的課程、時間和教室。';
+
+  @override
+  String get importSchedule => '匯入課表';
 
   @override
   String get noCourseToday => '今天沒有課了';

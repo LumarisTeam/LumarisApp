@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/week_start_utils.dart';
 
@@ -27,6 +28,8 @@ import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/ui/pages/schedule_list_page/custom_course_manage_page.dart';
 
+import '../../components/schedule/schedule_import_empty_state.dart';
+
 enum _CustomCourseAction { edit, delete }
 
 // 条件导入 dart:io，仅在非 Web 环境中使用
@@ -43,26 +46,21 @@ class ScheduleListPage extends ConsumerStatefulWidget {
 }
 
 class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
-  late PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(
-      initialPage: ref.read(scheduleStoreProvider).currentPage,
-    );
-  }
+  PageController? _pageController;
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController?.dispose();
     super.dispose();
   }
 
   void _jumpToPage(int page) {
     final scheduleStore = ref.read(scheduleStoreProvider.notifier);
     scheduleStore.jumpToPage(page);
-    _pageController.jumpToPage(ref.read(scheduleStoreProvider).currentPage);
+    final controller = _pageController;
+    if (controller != null && controller.hasClients) {
+      controller.jumpToPage(ref.read(scheduleStoreProvider).currentPage);
+    }
   }
 
   @override
@@ -81,6 +79,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
     final systemIsDark = Theme.of(context).brightness == Brightness.dark;
     final settings = ref.watch(settingsStoreProvider);
     final scheduleState = ref.watch(scheduleStoreProvider);
+    final isLogin = ref.watch(userStoreProvider.select((user) => user.isLogin));
     final styleState = ref.watch(scheduleStyleStoreProvider);
     final weekStartDay = ref.watch(
       schoolStoreProvider.select(
@@ -128,8 +127,21 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
                       );
                     }
 
+                    if (!isLogin && scheduleState.allCourses.isEmpty) {
+                      return Center(
+                        child: SingleChildScrollView(
+                          child: ScheduleImportEmptyState(
+                            onImport: () =>
+                                context.push<bool>(AppRoutes.htmlImport),
+                          ),
+                        ),
+                      );
+                    }
+
                     return PageView.builder(
-                      controller: _pageController,
+                      controller: _pageController ??= PageController(
+                        initialPage: scheduleState.currentPage,
+                      ),
                       onPageChanged: (index) {
                         ref
                             .read(scheduleStoreProvider.notifier)
@@ -186,9 +198,16 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
           Row(
             children: [
               // 左侧：周次导航
-              if (!isDesktop) _buildWeekInfo(context, isDark, pageTextColor),
-              if (isDesktop) _buildDesktopWeekNav(context, pageTextColor),
-              const Spacer(),
+              if (isDesktop) ...[
+                _buildDesktopWeekNav(context, pageTextColor),
+                const Spacer(),
+              ] else
+                Expanded(
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: _buildWeekInfo(context, isDark, pageTextColor),
+                  ),
+                ),
               // 右侧：操作按钮
               _buildActionButtons(context, isDark),
             ],
@@ -295,7 +314,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
         const SizedBox(width: 8),
         IconButton(
           icon: const Icon(CupertinoIcons.chevron_right),
-          onPressed: () => _jumpToPage((_pageController.page! + 1).ceil()),
+          onPressed: () => _jumpToPage(scheduleState.currentPage + 1),
           tooltip: l10n.nextWeek,
         ),
       ],
@@ -318,7 +337,7 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
         if (!isLogin)
           IconButton(
             icon: const Icon(CupertinoIcons.arrow_up_to_line),
-            onPressed: _handleHtmlImport,
+            onPressed: () => context.push<bool>(AppRoutes.htmlImport),
             tooltip: l10n.htmlImport,
           ),
         // 刷新
@@ -340,13 +359,6 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
   /// 构建背景图片
   Widget _buildBackgroundImage(String imagePath) {
     return ScheduleBackgroundImage(imagePath: imagePath);
-  }
-
-  Future<void> _handleHtmlImport() async {
-    final result = await AppRouter.push<bool>(AppRoutes.htmlImport);
-    if (result == true) {
-      ref.read(scheduleStoreProvider.notifier).loadGuestCourseData();
-    }
   }
 
   Future<void> _handleRefresh() async {

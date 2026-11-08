@@ -8,11 +8,13 @@ class EmptyWidget extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.icon,
+    this.action,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +37,14 @@ class EmptyWidget extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               title,
+              textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
             if (subtitle.isNotEmpty)
               Text(
                 subtitle,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
                   color: Theme.of(
@@ -48,6 +52,7 @@ class EmptyWidget extends StatelessWidget {
                   ).colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
+            if (action != null) ...[const SizedBox(height: 20), action!],
           ],
         ),
       ),

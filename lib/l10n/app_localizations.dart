@@ -2046,6 +2046,24 @@ abstract class AppLocalizations {
   /// **'明日课表'**
   String get tomorrowSchedule;
 
+  /// 游客尚未导入课表时显示
+  ///
+  /// In zh, this message translates to:
+  /// **'尚未导入课表'**
+  String get scheduleNotImported;
+
+  /// 游客尚未导入课表时显示
+  ///
+  /// In zh, this message translates to:
+  /// **'导入后，即可查看每天的课程、时间和教室。'**
+  String get scheduleNotImportedHint;
+
+  /// 游客尚未导入课表时显示
+  ///
+  /// In zh, this message translates to:
+  /// **'导入课表'**
+  String get importSchedule;
+
   ///
   ///
   /// In zh, this message translates to:

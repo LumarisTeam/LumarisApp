@@ -408,6 +408,12 @@
 
   "todayScheduleLabel": "今日课表",
   "tomorrowSchedule": "明日课表",
+  "scheduleNotImported": "尚未导入课表",
+  "@scheduleNotImported": {"description": "游客尚未导入课表时显示"},
+  "scheduleNotImportedHint": "导入后，即可查看每天的课程、时间和教室。",
+  "@scheduleNotImportedHint": {"description": "游客尚未导入课表时显示"},
+  "importSchedule": "导入课表",
+  "@importSchedule": {"description": "游客尚未导入课表时显示"},
   "noCourseToday": "今天没有课了",
   "noCourseTodaySubtitle": "好好休息会儿吧，学一天累死个人",
   "showTomorrowSchedule": "显示明天的课表",
