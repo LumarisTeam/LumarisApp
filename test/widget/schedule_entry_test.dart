@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/foundation.dart' show defaultTargetPlatform;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -190,6 +191,47 @@ void main() {
     expect(AppRouter.currentLocation, AppRoutes.schedule);
     expect(tester.getRect(find.byType(BottomNavigation)), bar);
   }, variant: mobile);
+
+  testWidgets(
+    'should update the tab selection on the first frame when tapped',
+    (tester) async {
+      await _showPage(
+        tester,
+        AppRoutes.home,
+        _GuestScheduleStore(hasTimetable: true),
+      );
+
+      final Finder bottomBar = find.byType(BottomNavigation);
+      final BuildContext barContext = tester.element(bottomBar);
+      final Color selectedColor = Theme.of(barContext).colorScheme.primary;
+      final Color unselectedColor = barContext.mc.colors.secondaryLabel;
+      final Finder homeLabel = find.descendant(
+        of: bottomBar,
+        matching: find.text('首页'),
+      );
+      final Finder scheduleLabel = find.descendant(
+        of: bottomBar,
+        matching: find.text('课表'),
+      );
+
+      await tester.tap(scheduleLabel);
+      await tester.pump();
+
+      expect(AppRouter.currentLocation, AppRoutes.schedule);
+      expect(find.byIcon(CupertinoIcons.house_fill), findsNothing);
+      expect(find.byIcon(CupertinoIcons.clock_fill), findsOneWidget);
+      expect(
+        DefaultTextStyle.of(tester.element(homeLabel)).style.color,
+        unselectedColor,
+      );
+      expect(
+        DefaultTextStyle.of(tester.element(scheduleLabel)).style.color,
+        selectedColor,
+      );
+      await tester.pumpAndSettle();
+    },
+    variant: mobile,
+  );
 
   testWidgets(
     'should choose a week by tapping the picker and still swipe',

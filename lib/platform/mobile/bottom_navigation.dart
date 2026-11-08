@@ -77,44 +77,48 @@ class _NavigationItem extends StatefulWidget {
 
 class _NavigationItemState extends State<_NavigationItem>
     with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
+  late final AnimationController _pressController;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+    _pressController = AnimationController(
+      duration: const Duration(milliseconds: 100),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
+  }
+
+  void _releasePress() {
+    _pressController.animateBack(0, curve: const Cubic(0.23, 1, 0.32, 1));
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _pressController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final itemColor = widget.isSelected
+    final Color itemColor = widget.isSelected
         ? widget.selectedColor
         : widget.unselectedColor;
+    final bool reduceMotion = MediaQuery.disableAnimationsOf(context);
 
     return Expanded(
       child: GestureDetector(
-        onTapDown: (_) => _animationController.forward(),
-        onTapUp: (_) => _animationController.reverse(),
-        onTapCancel: () => _animationController.reverse(),
+        onTapDown: (_) => _pressController.value = 1,
+        onTapUp: (_) => _releasePress(),
+        onTapCancel: _releasePress,
         onTap: widget.onTap,
         behavior: HitTestBehavior.opaque,
         child: AnimatedBuilder(
-          animation: _scaleAnimation,
+          animation: _pressController,
           builder: (context, child) {
-            return Transform.scale(scale: _scaleAnimation.value, child: child);
+            final double press = _pressController.value;
+            return reduceMotion
+                ? Opacity(opacity: 1 - 0.12 * press, child: child)
+                : Transform.scale(scale: 1 - 0.03 * press, child: child);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 8),
@@ -122,27 +126,15 @@ class _NavigationItemState extends State<_NavigationItem>
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 图标容器
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOutCubic,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: IconTheme(
-                      key: ValueKey(widget.isSelected),
-                      data: IconThemeData(color: itemColor, size: 24),
-                      child: widget.isSelected
-                          ? (widget.destination.selectedIcon ??
-                                widget.destination.icon)
-                          : widget.destination.icon,
-                    ),
-                  ),
+                IconTheme(
+                  data: IconThemeData(color: itemColor, size: 24),
+                  child: widget.isSelected
+                      ? widget.destination.selectedIcon ??
+                            widget.destination.icon
+                      : widget.destination.icon,
                 ),
                 const SizedBox(height: 4),
-                // 文字标签
-                AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOutCubic,
+                DefaultTextStyle(
                   style: TextStyle(
                     fontSize: 11,
                     color: itemColor,
