@@ -118,7 +118,13 @@ class _UserTile extends ConsumerWidget {
         subtitle: userState.isLogin
             ? context.l10n.eduSystem
             : context.l10n.clickToLogin,
-        onTap: () => AppRouter.go(AppRoutes.profile),
+        onTap: () {
+          if (userState.isLogin) {
+            AppRouter.go(AppRoutes.profile);
+          } else {
+            AppRouter.push(AppRoutes.login);
+          }
+        },
         leading: Container(
           width: 24,
           height: 24,

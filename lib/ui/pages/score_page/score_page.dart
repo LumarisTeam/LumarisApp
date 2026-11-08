@@ -230,7 +230,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
               SizedBox(height: 24),
               CupertinoButton.filled(
                 onPressed: () {
-                  AppRouter.go(AppRoutes.profile);
+                  AppRouter.push(AppRoutes.login);
                 },
                 child: Text(context.l10n.goToLogin),
               ),
