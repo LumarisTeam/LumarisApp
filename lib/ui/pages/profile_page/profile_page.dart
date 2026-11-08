@@ -263,11 +263,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   itemBuilder: (context, index) {
                     return McAnimatedCard(
                       delay: Duration(milliseconds: 50 * index),
-                      child: Center(
-                        child: getProfileButtonItems(
-                          context,
-                        )[index].build(context),
-                      ),
+                      child: getProfileButtonItems(
+                        context,
+                      )[index].build(context, isTablet: isTablet),
                     );
                   },
                   itemCount: getProfileButtonItems(context).length,
@@ -348,7 +346,7 @@ class ProfileButtonItem {
     this.onPressed,
   });
 
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, {bool isTablet = false}) {
     final colors = context.mc.colors;
     final shape = McSmoothCorners.shape(McRadii.panelBorder);
     return Material(
@@ -365,19 +363,20 @@ class ProfileButtonItem {
             children: [
               Icon(
                 icon,
-                size: 32,
+                size: isTablet ? 32 : 40,
                 color: CourseColorManager.generateSoftColor(
                   title,
                   isDark: true,
                 ),
               ),
+              if (!isTablet) const SizedBox(height: 6),
               Text(
                 title,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 9,
+                  fontSize: isTablet ? 9 : 12,
                   fontWeight: FontWeight.bold,
                   color: colors.secondaryLabel,
                 ),
