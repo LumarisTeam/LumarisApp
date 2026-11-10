@@ -1,15 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:curriculum/warehouse.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
+import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
 import 'package:path_provider/path_provider.dart';
 
-/// 拾光适配仓库的下载、缓存与脚本读取。
+/// 拾光适配仓库的下载、缓存与脚本读取。iOS 使用随应用打包的固定快照。
 ///
-/// 索引来自 `index-pb-release` 分支的 `school_index.pb`，脚本来自 `main`
+/// 非 iOS 平台的索引来自 `index-pb-release` 分支，脚本来自 `main`
 /// 分支的源码压缩包。两份资源都先落到临时目录，校验通过后再替换正式缓存，
 /// 避免半截下载把已可用的仓库弄坏。
 ///
@@ -45,6 +47,7 @@ class WarehouseRepoService {
 
   WarehouseRegistry? _registry;
   Directory? _repoDir;
+  Map<String, String>? _bundledScripts;
   Future<WarehouseRegistry>? _inFlight;
 
   /// 已加载的仓库索引；尚未加载时为 null。
@@ -52,7 +55,7 @@ class WarehouseRepoService {
 
   /// 加载仓库索引，必要时下载。
   ///
-  /// [forceRefresh] 为 true 时忽略内存缓存并重新检查远端版本。
+  /// [forceRefresh] 为 true 时重新加载；iOS 始终使用应用内的快照。
   Future<WarehouseRegistry> load({bool forceRefresh = false}) async {
     final cached = _registry;
     if (!forceRefresh && cached != null) return cached;
@@ -60,7 +63,9 @@ class WarehouseRepoService {
     final existing = _inFlight;
     if (existing != null) return existing;
 
-    final future = _load(forceRefresh: forceRefresh);
+    final future = PlatformUtils.isIOS
+        ? _loadBundled()
+        : _load(forceRefresh: forceRefresh);
     _inFlight = future;
     try {
       return await future;
@@ -69,7 +74,7 @@ class WarehouseRepoService {
     }
   }
 
-  /// 强制重新拉取索引和脚本。
+  /// 重新加载索引和脚本；iOS 不访问远程仓库。
   Future<WarehouseRegistry> refresh() => load(forceRefresh: true);
 
   /// 读取某个适配器的 JS 源码。
@@ -77,6 +82,17 @@ class WarehouseRepoService {
   /// 路径是 `resources/<resource_folder>/<asset_js_path>`；`resource_folder`
   /// 可能和学校 id 不同，所以优先从索引里的学校条目取。
   Future<String> loadScript(WarehouseAdapter adapter) async {
+    if (PlatformUtils.isIOS) {
+      await load();
+      final school = _registry?.schoolById(adapter.schoolId);
+      final path =
+          '${school?.resourceFolder ?? adapter.schoolId}/${adapter.assetJsPath}';
+      final source = _bundledScripts?[path];
+      if (source == null || source.trim().isEmpty) {
+        throw StateError('内置适配器脚本不存在：${adapter.adapterId}');
+      }
+      return source;
+    }
     if (_registry == null || _repoDir == null) {
       await load();
     }
@@ -101,6 +117,28 @@ class WarehouseRepoService {
     return source;
   }
 
+  Future<WarehouseRegistry> _loadBundled() async {
+    final index = await rootBundle.load('assets/warehouse/school_index.pb');
+    final catalog = WarehouseCatalog.fromPbBytes(
+      index.buffer.asUint8List(index.offsetInBytes, index.lengthInBytes),
+    );
+    if (catalog.isEmpty) throw StateError('内置适配仓库索引为空。');
+    final bytes = await rootBundle.load('assets/warehouse/repository.zip');
+    final archive = ZipDecoder().decodeBytes(
+      bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes),
+    );
+    final scripts = <String, String>{};
+    for (final file in archive.files) {
+      if (!file.isFile) continue;
+      final path = _resourceRelativePath(file.name.replaceAll('\\', '/'));
+      if (path == null || !path.endsWith('.js')) continue;
+      final data = file.readBytes();
+      if (data != null) scripts[path] = utf8.decode(data);
+    }
+    _bundledScripts = scripts;
+    return _registry = WarehouseRegistry(catalog);
+  }
+
   Future<WarehouseRegistry> _load({required bool forceRefresh}) async {
     final support = await getApplicationSupportDirectory();
     final root = Directory('${support.path}/warehouse');
@@ -110,9 +148,7 @@ class WarehouseRepoService {
     final repoDir = Directory('${root.path}/repo');
 
     final cachedCatalog = await _readCachedIndex(indexFile);
-    if (!forceRefresh &&
-        cachedCatalog != null &&
-        await _hasScripts(repoDir)) {
+    if (!forceRefresh && cachedCatalog != null && await _hasScripts(repoDir)) {
       return _install(cachedCatalog, repoDir);
     }
 
@@ -127,7 +163,8 @@ class WarehouseRepoService {
 
     final (remoteCatalog, indexBytes) = downloaded;
     final versionChanged =
-        cachedCatalog == null || cachedCatalog.versionId != remoteCatalog.versionId;
+        cachedCatalog == null ||
+        cachedCatalog.versionId != remoteCatalog.versionId;
 
     if (!forceRefresh && !versionChanged && await _hasScripts(repoDir)) {
       await _writeIndex(indexFile, indexBytes);
@@ -231,7 +268,8 @@ class WarehouseRepoService {
       url,
       options: Options(
         responseType: ResponseType.bytes,
-        validateStatus: (status) => status != null && status >= 200 && status < 300,
+        validateStatus: (status) =>
+            status != null && status >= 200 && status < 300,
       ),
     );
     final data = response.data;
@@ -268,7 +306,10 @@ class WarehouseRepoService {
     return false;
   }
 
-  Future<void> _extractResources(Uint8List zipBytes, Directory targetDir) async {
+  Future<void> _extractResources(
+    Uint8List zipBytes,
+    Directory targetDir,
+  ) async {
     final archive = ZipDecoder().decodeBytes(zipBytes);
     var extracted = 0;
 

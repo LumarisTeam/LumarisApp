@@ -8,7 +8,6 @@ import '../core/utils/platform_utils.dart';
 import '../ui/pages/under_maintenance_screen/under_maintenance_screen.dart';
 import '../ui/pages/agreement_page/agreement_page.dart';
 import '../ui/pages/author_page/author_page.dart';
-import '../ui/pages/easter_egg_page/easter_egg_page.dart';
 import '../ui/pages/electricity_page/electricity_page.dart';
 import '../ui/pages/feedback_page/feedback_page.dart';
 import '../ui/pages/helper_page/helper_page.dart';
@@ -55,7 +54,6 @@ class AppRoutes {
   static const payment = '/Payment';
   static const paymentQrCode = '/Payment/QrCode';
   static const helper = '/Profile/Helper';
-  static const egg = '/Profile/About/Egg';
   static const license = '/Profile/About/License';
   static const agreement = '/Profile/About/Agreement';
   static const privacyPolicy = '/Profile/About/PrivacyPolicy';
@@ -184,10 +182,6 @@ class AppRouter {
                     parentNavigatorKey: _detailNavigatorKey,
                     builder: (context, state) => const SettingPage(),
                     routes: [
-                      _detailRoute(
-                        'Egg',
-                        (context, state) => const EasterEggPage(),
-                      ),
                       _detailRoute(
                         'License',
                         (context, state) => const LicensePage(),

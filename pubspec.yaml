@@ -111,6 +111,9 @@ flutter:
     - assets/icon.ico
     - assets/icon.webp
     - LICENSE
+    - assets/warehouse/repository.zip
+    - assets/warehouse/school_index.pb
+    - assets/warehouse/LICENSE
 
 flutter_launcher_icons:
   android: "ic_launcher"

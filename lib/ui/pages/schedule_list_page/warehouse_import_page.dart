@@ -3,6 +3,7 @@ import 'package:curriculum/warehouse.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
+import 'package:ios_club_app/core/utils/platform_utils.dart';
 import 'package:ios_club_app/features/education/services/warehouse_repo_service.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:ios_club_app/routes/router.dart';
@@ -53,11 +54,12 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
       appBar: PageAppBar(
         title: l10n.warehouseImport,
         actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.arrow_clockwise),
-            tooltip: l10n.refreshRepository,
-            onPressed: () => _reload(forceRefresh: true),
-          ),
+          if (!PlatformUtils.isIOS)
+            IconButton(
+              icon: const Icon(CupertinoIcons.arrow_clockwise),
+              tooltip: l10n.refreshRepository,
+              onPressed: () => _reload(forceRefresh: true),
+            ),
         ],
       ),
       body: FutureBuilder<WarehouseRegistry>(

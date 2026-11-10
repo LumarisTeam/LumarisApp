@@ -4,7 +4,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ios_club_app/core/services/app_service.dart';
 import 'package:ios_club_app/core/utils/platform_utils.dart';
-import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/settings_store.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -23,8 +22,6 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
   late String version = '';
   late String buildNumber = '';
   ReleaseModel? latestRelease;
-  int tapCount = 0;
-  DateTime? lastTapTime;
 
   @override
   void initState() {
@@ -44,27 +41,6 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
         }
       });
     });
-  }
-
-  void _handleTap() {
-    final now = DateTime.now();
-    if (lastTapTime == null ||
-        now.difference(lastTapTime!) > const Duration(seconds: 1)) {
-      // 重置计数器
-      tapCount = 0;
-    }
-
-    tapCount++;
-    lastTapTime = now;
-
-    if (tapCount >= 5) {
-      // 显示彩蛋页面
-      AppRouter.push(AppRoutes.egg);
-
-      // 重置计数器
-      tapCount = 0;
-      lastTapTime = null;
-    }
   }
 
   @override
@@ -100,8 +76,6 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
             color: colors.secondaryLabel,
           ),
           onTap: () async {
-            _handleTap(); // 处理点击事件
-
             if (isNeedUpdate) {
               final result = await showMcConfirmDialog(
                 context: context,
