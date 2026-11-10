@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -115,6 +117,41 @@ void main() {
 
     expect(find.byType(RefreshIndicator), findsOneWidget);
   });
+
+  testWidgets(
+    'ElectricityPage should show progress when retrying without data',
+    (tester) async {
+      final balance = Completer<double?>();
+      final container = await _createLoggedInContainer([
+        tileStoreAutoLoadProvider.overrideWithValue(false),
+        electricitySourceConfigurationReaderProvider.overrideWithValue(
+          () async => true,
+        ),
+        electricityReaderProvider.overrideWithValue(() => balance.future),
+        electricityWeeklyReaderProvider.overrideWithValue(() async => []),
+        electricityTileVisibilityReaderProvider.overrideWithValue(
+          (_) async => false,
+        ),
+      ]);
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: _wrapWithApp(const ElectricityPage()),
+        ),
+      );
+
+      final refresh = tester
+          .widget<RefreshIndicator>(find.byType(RefreshIndicator))
+          .onRefresh();
+      await tester.pump();
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      balance.complete(null);
+      await refresh;
+      await tester.pump();
+      expect(find.text('获取数据失败'), findsOneWidget);
+    },
+  );
 
   testWidgets('ElectricityPage should render subscription section', (
     tester,

@@ -182,6 +182,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
           electricityStoreProvider.select(
             (state) => (
               hasData: state.hasData,
+              isLoading: state.isLoading,
               hasConfiguredSource: state.hasConfiguredSource,
               electricity: state.electricity,
             ),
@@ -236,6 +237,12 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
                     ),
                   ],
                 )
+              else if (electricityState.isLoading)
+                const SizedBox(
+                  width: 36,
+                  height: 36,
+                  child: CircularProgressIndicator(),
+                )
               else
                 Text(
                   l10n.electricityNoData,
@@ -259,7 +266,9 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
                   shape: McSmoothCorners.shape(BorderRadius.circular(20)),
                 ),
                 child: Text(
-                  electricityState.hasData
+                  electricityState.isLoading && !electricityState.hasData
+                      ? l10n.electricityLoading
+                      : electricityState.hasData
                       ? (electricityState.electricity <= 10
                             ? l10n.electricityLowBalance
                             : l10n.electricitySufficient)

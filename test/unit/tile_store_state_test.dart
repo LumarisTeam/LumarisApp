@@ -195,6 +195,35 @@ void main() {
   });
 
   group('ElectricityStore', () {
+    test('should recover balance on refresh when weekly data fails', () async {
+      var attempts = 0;
+      final container = _container([
+        electricitySourceConfigurationReaderProvider.overrideWithValue(
+          () async => true,
+        ),
+        electricityReaderProvider.overrideWithValue(() async {
+          attempts++;
+          return attempts == 1 ? null : 23.5;
+        }),
+        electricityWeeklyReaderProvider.overrideWithValue(
+          () async => throw Exception('weekly unavailable'),
+        ),
+        electricityTileVisibilityReaderProvider.overrideWithValue(
+          (_) async => false,
+        ),
+      ]);
+      final store = container.read(electricityStoreProvider.notifier);
+
+      await store.loadElectricityData();
+      expect(container.read(electricityStoreProvider).hasData, isFalse);
+
+      await store.refreshElectricityData();
+      final state = container.read(electricityStoreProvider);
+      expect(attempts, 2);
+      expect(state.hasData, isTrue);
+      expect(state.electricity, 23.5);
+      expect(state.isLoading, isFalse);
+    });
     test(
       'should_load_electricity_value_weekly_data_and_visible_tile',
       () async {

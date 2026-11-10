@@ -75,6 +75,12 @@ class ElectricityStore extends Notifier<ElectricityState> {
         electricitySourceConfigurationReaderProvider,
       )();
       final value = await ref.read(electricityReaderProvider)();
+      if (!_loadGuard.isCurrent(requestId)) return;
+      state = state.copyWith(
+        electricity: value ?? state.electricity,
+        hasData: value != null || state.hasData,
+        hasConfiguredSource: hasConfiguredSource,
+      );
       final isVisible = await ref.read(electricityTileVisibilityReaderProvider)(
         '电费',
       );
@@ -120,6 +126,12 @@ class ElectricityStore extends Notifier<ElectricityState> {
         electricitySourceConfigurationReaderProvider,
       )();
       final value = await ref.read(electricityReaderProvider)();
+      if (!_loadGuard.isCurrent(requestId)) return;
+      state = state.copyWith(
+        electricity: value ?? state.electricity,
+        hasData: value != null || state.hasData,
+        hasConfiguredSource: hasConfiguredSource,
+      );
       final weekly = await ref.read(electricityWeeklyReaderProvider)();
 
       if (!_loadGuard.isCurrent(requestId)) return;
