@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:material_ui/material_ui.dart';
@@ -42,6 +43,7 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
   late final MapController _mapController;
   late final TextEditingController _searchController;
   late final AnimationController _northResetAnimation;
+  Timer? _locationRefreshTimer;
   final ValueNotifier<double> _mapRotation = ValueNotifier<double>(0);
   double _northResetFrom = 0;
   double _northResetDelta = 0;
@@ -62,13 +64,25 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
       duration: _northResetMinDuration,
     )..addListener(_onNorthResetAnimationTick);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(mapNotifierProvider.notifier).checkLocationPermission();
+      if (!mounted) return;
+      ref.read(mapNotifierProvider.notifier).checkLocationPermission().then((
+        _,
+      ) {
+        if (!mounted) return;
+        final location = ref.read(mapNotifierProvider).currentLocation;
+        if (location != null) _moveToLocation(location);
+      });
       ref.read(mapNotifierProvider.notifier).fetchCampusPOIs();
+      _locationRefreshTimer = Timer.periodic(
+        const Duration(milliseconds: 1500),
+        (_) => ref.read(mapNotifierProvider.notifier).refreshLocation(),
+      );
     });
   }
 
   @override
   void dispose() {
+    _locationRefreshTimer?.cancel();
     _northResetAnimation.dispose();
     _mapRotation.dispose();
     _mapController.dispose();
@@ -189,16 +203,6 @@ class _CampusMapPageState extends ConsumerState<CampusMapPage>
         ),
       );
     }
-
-    // Listen for location changes to auto-center once
-    ref.listen(mapNotifierProvider.select((s) => s.currentLocation), (
-      previous,
-      next,
-    ) {
-      if (previous == null && next != null) {
-        _moveToLocation(next);
-      }
-    });
 
     final filteredPOIs = mapState.searchQuery.isEmpty
         ? mapState.campusPOIs

@@ -49,7 +49,17 @@ class MapNotifier extends Notifier<MapState> {
     }
   }
 
-  Future<void> checkLocationPermission({
+  Future<void> checkLocationPermission({bool openSettingsOnFailure = false}) =>
+      _updateLocation(
+        requestPermission: true,
+        openSettingsOnFailure: openSettingsOnFailure,
+      );
+
+  /// Refreshes the position without repeatedly prompting for permission.
+  Future<void> refreshLocation() => _updateLocation(requestPermission: false);
+
+  Future<void> _updateLocation({
+    required bool requestPermission,
     bool openSettingsOnFailure = false,
   }) async {
     if (state.isLoadingLocation) return; // Prevent concurrent requests
@@ -74,7 +84,7 @@ class MapNotifier extends Notifier<MapState> {
         return;
       }
 
-      if (permission == LocationPermission.denied) {
+      if (permission == LocationPermission.denied && requestPermission) {
         permission = await Geolocator.requestPermission();
         AppLogger.debug(
           'MapNotifier: Location permission after request: $permission',

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:hive/hive.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
@@ -13,6 +14,7 @@ import 'package:ios_club_app/state/user_store.dart';
 import 'package:ios_club_app/ui/pages/campus_map_page/campus_map_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 已登录用户，避免地图页落到游客占位分支。
@@ -32,7 +34,20 @@ class _FakeMapNotifier extends MapNotifier {
   }) async {}
 
   @override
+  Future<void> refreshLocation() async {}
+
+  @override
   Future<void> fetchCampusPOIs() async {}
+}
+
+class _PollingMapNotifier extends _FakeMapNotifier {
+  static int refreshCount = 0;
+
+  @override
+  Future<void> refreshLocation() async {
+    refreshCount++;
+    state = state.copyWith(currentLocation: LatLng(34.25, 108.98));
+  }
 }
 
 Future<void> _pumpApp(WidgetTester tester, Size size) async {
@@ -68,6 +83,52 @@ Future<void> _openCampusMap(WidgetTester tester) async {
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('should_update_location_without_moving_map_when_polling', (
+    tester,
+  ) async {
+    _PollingMapNotifier.refreshCount = 0;
+    tester.view.physicalSize = const Size(430, 900);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+    final container = ProviderContainer(
+      overrides: [
+        userStoreProvider.overrideWith(_LoggedInUserStore.new),
+        mapNotifierProvider.overrideWith(_PollingMapNotifier.new),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            ...GlobalMaterialLocalizations.delegates,
+          ],
+          home: const CampusMapPage(),
+        ),
+      ),
+    );
+    await tester.pump();
+    final controller = tester
+        .widget<FlutterMap>(find.byType(FlutterMap))
+        .mapController!;
+    final center = controller.camera.center;
+    await tester.pump(const Duration(milliseconds: 1499));
+    expect(_PollingMapNotifier.refreshCount, 0);
+    await tester.pump(const Duration(milliseconds: 1));
+    expect(_PollingMapNotifier.refreshCount, 1);
+    expect(
+      container.read(mapNotifierProvider).currentLocation,
+      const LatLng(34.25, 108.98),
+    );
+    expect(controller.camera.center, center);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 3));
+    expect(_PollingMapNotifier.refreshCount, 1);
+  });
 
   late Directory hiveDir;
 
