@@ -963,11 +963,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v0.5.3"
-      resolved-ref: "67c9369e88251531a231339e556219f10b72329e"
+      ref: "v0.5.4"
+      resolved-ref: "9680aff9b326156861d60519ed87e1b90cef0995"
       url: "https://github.com/LumarisTeam/luamris_ui.git"
     source: git
-    version: "0.5.3"
+    version: "0.5.4"
   markdown:
     dependency: transitive
     description:

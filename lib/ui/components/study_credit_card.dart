@@ -14,14 +14,14 @@ class StudyCreditCard extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
     final McTheme tokens = context.mc;
 
-    return McCard.flat(
+    return McCard.elevated(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 10),
       child: Column(
         children: [
           Row(
             children: [
-              Icon(CupertinoIcons.book_fill, size: 17, color: tokens.primary),
+              Icon(CupertinoIcons.book_fill, size: 19, color: tokens.primary),
               const SizedBox(width: 8),
               Expanded(
                 child: Semantics(
@@ -29,6 +29,7 @@ class StudyCreditCard extends StatelessWidget {
                   child: Text(
                     data.type,
                     style: theme.textTheme.titleMedium?.copyWith(
+                      fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -36,7 +37,7 @@ class StudyCreditCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 3),
+          const SizedBox(height: 6),
           _CreditRow(credit: data.total, isTotal: true),
           for (final TotalData credit in data.other) _CreditRow(credit: credit),
         ],
@@ -69,14 +70,14 @@ class _CreditRow extends StatelessWidget {
     final double progress = credit.full > 0
         ? (credit.actual / credit.full).clamp(0.0, 1.0)
         : 0;
-    final TextStyle? rowStyle = theme.textTheme.bodySmall?.copyWith(
-      fontSize: 13,
+    final TextStyle? rowStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontSize: isTotal ? 16 : 15,
       letterSpacing: 0,
     );
 
     return MergeSemantics(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 7),
+        padding: const EdgeInsets.symmetric(vertical: 11),
         child: Column(
           children: [
             Row(
@@ -110,7 +111,7 @@ class _CreditRow extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 7),
             LinearProgressIndicator(
               value: progress,
               minHeight: isTotal ? 4 : 3,

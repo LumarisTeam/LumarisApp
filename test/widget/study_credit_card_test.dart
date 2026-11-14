@@ -54,7 +54,9 @@ void main() {
             width: 320,
             child: MediaQuery(
               data: const MediaQueryData(textScaler: TextScaler.linear(2)),
-              child: StudyCreditCard(data: credits),
+              child: SingleChildScrollView(
+                child: StudyCreditCard(data: credits),
+              ),
             ),
           ),
         ),
@@ -64,5 +66,9 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.text('创新创业与课外素质'), findsOneWidget);
     expect(find.text('46.5 / 69.5'), findsOneWidget);
+    final Finder lastCredit = find.text('校本选修模块');
+    await tester.ensureVisible(lastCredit);
+    await tester.pumpAndSettle();
+    expect(lastCredit.hitTestable(), findsOneWidget);
   });
 }
