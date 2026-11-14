@@ -1,8 +1,8 @@
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
-import 'package:material_ui/material_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/features/education/models/info_model.dart';
+import 'package:material_ui/material_ui.dart';
+
+import '../../features/education/models/info_model.dart';
 
 class StudyCreditCard extends StatelessWidget {
   final InfoModel data;
@@ -11,312 +11,118 @@ class StudyCreditCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(12),
-      decoration: ShapeDecoration(
-        shape: McSmoothCorners.shape(McRadii.cardBorder),
-      ),
-      child: McCard.elevated(
-        padding: EdgeInsets.zero,
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 标题部分
-              _buildHeader(context),
-              const SizedBox(height: 12),
+    final ThemeData theme = Theme.of(context);
+    final McTheme tokens = context.mc;
 
-              // 总学分部分
-              _buildMainCreditCard(context),
-
-              const SizedBox(height: 16),
-
-              // 分项标题
-              _buildSubtitle(context),
-              const SizedBox(height: 8),
-
-              // 分项学分列表
-              ...data.other.asMap().entries.map((entry) {
-                return _buildCreditItem(
-                  context: context,
-                  title: entry.value.name,
-                  actual: entry.value.actual,
-                  full: entry.value.full,
-                  delay: entry.key * 100,
-                );
-              }),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    final theme = Theme.of(context);
-    final l10n = context.l10n;
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: ShapeDecoration(
-            color: theme.colorScheme.primary.withValues(alpha: 0.1),
-            shape: McSmoothCorners.shape(McRadii.navigationBorder),
-          ),
-          child: Icon(
-            CupertinoIcons.book_fill,
-            color: theme.colorScheme.primary,
-            size: 28,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                data.type,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                l10n.creditOverview,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMainCreditCard(BuildContext context) {
-    final theme = Theme.of(context);
-    final progress = data.total.full > 0
-        ? data.total.actual / data.total.full
-        : 0.0;
-
-    return Container(
-      padding: const EdgeInsets.only(left: 0, right: 20, top: 20, bottom: 20),
+    return McCard.flat(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 6),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 4,
-                    height: 20,
-                    decoration: ShapeDecoration(
-                      color: theme.colorScheme.error,
-                      shape: McSmoothCorners.shape(McRadii.indicatorBorder),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    data.total.name,
+              Icon(CupertinoIcons.book_fill, size: 17, color: tokens.primary),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Semantics(
+                  header: true,
+                  child: Text(
+                    data.type,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: theme.colorScheme.onSurface,
                     ),
                   ),
-                ],
-              ),
-              Text(
-                "${data.total.actual.toStringAsFixed(1)} / ${data.total.full.toStringAsFixed(1)}",
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: _getProgressColor(progress, theme),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-
-          // 进度条
-          Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: _buildProgressBar(context, progress),
-          ),
-
-          const SizedBox(height: 8),
-
-          // 进度文字
-          Padding(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(
-              '${context.l10n.completionRate}: ${(progress * 100).toStringAsFixed(1)}%',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
+          const SizedBox(height: 3),
+          _CreditRow(credit: data.total, isTotal: true),
+          for (final TotalData credit in data.other) _CreditRow(credit: credit),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSubtitle(BuildContext context) {
-    final l10n = context.l10n;
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        Container(
-          width: 4,
-          height: 20,
-          decoration: ShapeDecoration(
-            color: theme.colorScheme.primary,
-            shape: McSmoothCorners.shape(McRadii.indicatorBorder),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Text(
-          l10n.itemizedCredits,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-      ],
+class _CreditRow extends StatelessWidget {
+  const _CreditRow({required this.credit, this.isTotal = false});
+
+  final TotalData credit;
+  final bool isTotal;
+
+  String _displayName(String name) => switch (name) {
+    '通识教育教学模块' => '通识教育',
+    '专业教育教学模块' => '专业教育',
+    '创新创业教育及课外素质教育模块' => '创新创业与课外素质',
+    '集中实践教育教学模块' => '集中实践',
+    _ => name,
+  };
+
+  String _formatCredits(double credits) =>
+      credits.toStringAsFixed(1).replaceFirst(RegExp(r'\.0$'), '');
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final McTheme tokens = context.mc;
+    final double progress = credit.full > 0
+        ? (credit.actual / credit.full).clamp(0.0, 1.0)
+        : 0;
+    final TextStyle? rowStyle = theme.textTheme.bodySmall?.copyWith(
+      fontSize: 13,
+      letterSpacing: 0,
     );
-  }
 
-  Widget _buildCreditItem({
-    required BuildContext context,
-    required String title,
-    required double actual,
-    required double full,
-    required int delay,
-  }) {
-    final theme = Theme.of(context);
-    final progress = full > 0 ? actual / full : 0.0;
-
-    return TweenAnimationBuilder<double>(
-      duration: Duration(milliseconds: 800 + delay),
-      tween: Tween<double>(begin: 0.0, end: 1.0),
-      curve: Curves.easeOutCubic,
-      builder: (context, value, child) {
-        return Transform.translate(
-          offset: Offset(0, 20 * (1 - value)),
-          child: Opacity(
-            opacity: value,
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          title,
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: theme.colorScheme.onSurface,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Text(
-                        "${actual.toStringAsFixed(1)} / ${full.toStringAsFixed(1)}",
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: _getProgressColor(progress, theme),
-                        ),
-                      ),
-                    ],
+    return MergeSemantics(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 7),
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    _displayName(credit.name),
+                    semanticsLabel: credit.name,
+                    style: isTotal
+                        ? rowStyle?.copyWith(fontWeight: FontWeight.w600)
+                        : rowStyle,
                   ),
-                  const SizedBox(height: 12),
-                  _buildProgressBar(context, progress * value),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildProgressBar(BuildContext context, double progress) {
-    final theme = Theme.of(context);
-    final clampedProgress = progress.clamp(0.0, 1.0);
-
-    return Container(
-      height: 6,
-      decoration: ShapeDecoration(
-        color: theme.colorScheme.outline.withValues(alpha: 0.2),
-        shape: McSmoothCorners.shape(McRadii.xsBorder),
-      ),
-      child: Stack(
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 1500),
-            curve: Curves.easeOutCubic,
-            width: double.infinity,
-            decoration: ShapeDecoration(
-              color: theme.colorScheme.outline.withValues(alpha: 0.1),
-              shape: McSmoothCorners.shape(McRadii.xsBorder),
-            ),
-          ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 1500),
-            curve: Curves.easeOutCubic,
-            child: FractionallySizedBox(
-              widthFactor: clampedProgress,
-              child: Container(
-                decoration: ShapeDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      _getProgressColor(clampedProgress, theme),
-                      _getProgressColor(
-                        clampedProgress,
-                        theme,
-                      ).withValues(alpha: 0.8),
-                    ],
-                  ),
-                  shape: McSmoothCorners.shape(McRadii.xsBorder),
-                  shadows: clampedProgress > 0
-                      ? [
-                          BoxShadow(
-                            color: _getProgressColor(
-                              clampedProgress,
-                              theme,
-                            ).withValues(alpha: 0.3),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
                 ),
-              ),
+                const SizedBox(width: 8),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    '${_formatCredits(credit.actual)} / ${_formatCredits(credit.full)}',
+                    textAlign: TextAlign.end,
+                    style: rowStyle?.copyWith(
+                      color: isTotal
+                          ? tokens.foreground
+                          : tokens.foreground.withValues(alpha: 0.72),
+                      fontWeight: isTotal ? FontWeight.w600 : FontWeight.w500,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 5),
+            LinearProgressIndicator(
+              value: progress,
+              minHeight: isTotal ? 4 : 3,
+              borderRadius: const BorderRadius.all(Radius.circular(2)),
+              backgroundColor: tokens.surfaceSunken,
+              color: tokens.primary,
+              trackGap: 0,
+              stopIndicatorRadius: 0,
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  Color _getProgressColor(double progress, ThemeData theme) {
-    final colors =
-        theme.extension<McColors>() ??
-        (theme.brightness == Brightness.dark ? McColors.dark : McColors.light);
-    if (progress >= 1.0) {
-      return colors.success;
-    } else if (progress >= 0.8) {
-      return colors.primary;
-    } else if (progress >= 0.5) {
-      return colors.warning;
-    } else {
-      return colors.danger;
-    }
   }
 }
