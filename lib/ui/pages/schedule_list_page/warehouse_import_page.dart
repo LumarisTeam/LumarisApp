@@ -1,4 +1,5 @@
-import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show CupertinoIcons, CupertinoSlidingSegmentedControl;
 import 'package:curriculum/warehouse.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
@@ -92,7 +93,7 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
             children: [
               _buildHint(context, colors, l10n),
               _buildSearch(context, colors, l10n),
-              _buildCategoryChips(context, l10n),
+              _buildCategorySelector(l10n),
               Expanded(
                 child: schools.isEmpty
                     ? Center(
@@ -116,12 +117,18 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
                   children: [
                     Text(
                       l10n.warehouseSchoolCount(schools.length),
-                      style: TextStyle(fontSize: 12, color: colors.secondaryLabel),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colors.secondaryLabel,
+                      ),
                     ),
                     const Spacer(),
                     Text(
                       l10n.warehouseVersion(registry.catalog.versionId),
-                      style: TextStyle(fontSize: 12, color: colors.secondaryLabel),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: colors.secondaryLabel,
+                      ),
                     ),
                   ],
                 ),
@@ -133,7 +140,11 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
     );
   }
 
-  Widget _buildHint(BuildContext context, McColors colors, AppLocalizations l10n) {
+  Widget _buildHint(
+    BuildContext context,
+    McColors colors,
+    AppLocalizations l10n,
+  ) {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
@@ -149,7 +160,11 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
     );
   }
 
-  Widget _buildSearch(BuildContext context, McColors colors, AppLocalizations l10n) {
+  Widget _buildSearch(
+    BuildContext context,
+    McColors colors,
+    AppLocalizations l10n,
+  ) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: TextField(
@@ -170,7 +185,7 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
     );
   }
 
-  Widget _buildCategoryChips(BuildContext context, AppLocalizations l10n) {
+  Widget _buildCategorySelector(AppLocalizations l10n) {
     final options = <(WarehouseCategory?, String)>[
       (null, l10n.warehouseCategoryAll),
       (WarehouseCategory.bachelorAndAssociate, l10n.warehouseCategoryUndergrad),
@@ -178,21 +193,29 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
       (WarehouseCategory.generalTool, l10n.warehouseCategoryTools),
     ];
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: Row(
-        children: [
-          for (final option in options)
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: ChoiceChip(
-                label: Text(option.$2),
-                selected: _category == option.$1,
-                onSelected: (_) => setState(() => _category = option.$1),
+      child: LayoutBuilder(
+        builder: (context, constraints) => SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+            child: CupertinoSlidingSegmentedControl<int>(
+              groupValue: options.indexWhere(
+                (option) => option.$1 == _category,
               ),
+              onValueChanged: (index) {
+                if (index != null) {
+                  setState(() => _category = options[index].$1);
+                }
+              },
+              children: {
+                for (var index = 0; index < options.length; index++)
+                  index: Text(options[index].$2),
+              },
             ),
-        ],
+          ),
+        ),
       ),
     );
   }
@@ -204,7 +227,8 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
     if (category == null) return searched;
     return searched
         .where(
-          (school) => school.adapters.any((adapter) => adapter.category == category),
+          (school) =>
+              school.adapters.any((adapter) => adapter.category == category),
         )
         .toList(growable: false);
   }
@@ -227,7 +251,10 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
               padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
               child: Text(
                 context.l10n.selectAdapter,
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             for (final adapter in school.adapters)
@@ -253,7 +280,10 @@ class _WarehouseImportPageState extends State<WarehouseImportPage> {
     }
   }
 
-  Future<void> _openAdapter(WarehouseSchool school, WarehouseAdapter adapter) async {
+  Future<void> _openAdapter(
+    WarehouseSchool school,
+    WarehouseAdapter adapter,
+  ) async {
     var url = adapter.importUrl?.trim() ?? '';
     if (url.isEmpty) {
       final input = await _askForUrl();

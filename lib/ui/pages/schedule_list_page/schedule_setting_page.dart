@@ -160,7 +160,7 @@ class _ScheduleSettingPageState extends ConsumerState<ScheduleSettingPage>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!isDesktop && canSyncCalendar) ...[
+            if (!isDesktop && canSyncCalendar && _webcalCalendarSubscriptionUrl != null && _webcalCalendarSubscriptionUrl!.isEmpty) ...[
               _buildSectionTitle(l10n.calendarSubscription),
               const SizedBox(height: 12),
               _buildCalendarSection(context, colors),
