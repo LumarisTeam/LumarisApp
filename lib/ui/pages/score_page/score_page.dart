@@ -4,7 +4,8 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/core/services/course_color_manager.dart';
+import 'package:ios_club_app/core/services/prefs_service.dart';
+import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/features/education/models/edu_fetch_models.dart';
 import 'package:ios_club_app/features/education/services/score_service.dart';
 import 'package:ios_club_app/routes/router.dart';
@@ -32,6 +33,8 @@ class _ScorePageState extends ConsumerState<ScorePage>
   bool _isFool = false;
   final List<ScoreList> _yearList = [];
   bool _isYear = false;
+  int _scope = 0;
+  bool _calendarLabels = false;
   bool _isRefreshing = false;
 
   late PageController pageController = PageController();
@@ -42,7 +45,27 @@ class _ScorePageState extends ConsumerState<ScorePage>
   @override
   void initState() {
     super.initState();
+    _loadLabelPreference();
     refresh();
+  }
+
+  Future<void> _loadLabelPreference() async {
+    final prefs = await PrefsService.getInstanceAsync();
+    if (mounted) {
+      setState(() {
+        _calendarLabels = prefs.getBool(PrefsKeys.scoreCalendarLabels) ?? false;
+        _updateSelectors();
+      });
+    }
+  }
+
+  Future<void> _setLabelPreference(bool value) async {
+    setState(() {
+      _calendarLabels = value;
+      _updateSelectors();
+    });
+    final prefs = await PrefsService.getInstanceAsync();
+    await prefs.setBool(PrefsKeys.scoreCalendarLabels, value);
   }
 
   @override
@@ -133,15 +156,25 @@ class _ScorePageState extends ConsumerState<ScorePage>
         ..clear()
         ..addAll(scores);
       _yearList.clear();
-      _isYear = false;
-      _isLoading = isLoading;
-      _selectorList
-        ..clear()
-        ..addAll(_buildSelectorList(scores.length));
-      if (_currentIndex >= _selectorList.length) {
-        _currentIndex = _selectorList.isNotEmpty ? _selectorList.length - 1 : 0;
+      final groups = <String, ScoreList>{};
+      for (final score in scores) {
+        final text = '${score.semester.semester} ${score.semester.name}';
+        final match = RegExp(r'(\d{4})\s*[-–—]\s*(\d{2,4})').firstMatch(text);
+        final key = match == null ? score.semester.semester : match.group(1)!;
+        final group = groups[key];
+        if (group == null) {
+          groups[key] = ScoreList(
+            semester: score.semester,
+            list: score.list.toList(),
+          );
+        } else {
+          group.list.addAll(score.list);
+        }
       }
-      if (_selectorList.isNotEmpty && pageController.hasClients) {
+      _yearList.addAll(groups.values);
+      _isLoading = isLoading;
+      _updateSelectors();
+      if (pageController.hasClients && _scope != 0) {
         pageController.jumpToPage(_currentIndex);
       }
     });
@@ -164,15 +197,114 @@ class _ScorePageState extends ConsumerState<ScorePage>
     };
   }
 
-  List<String> _buildSelectorList(int count) {
-    final selectorList = <String>[];
-    for (var i = 0; i < count; i++) {
-      final y = count - i + 1;
-      selectorList.add(
-        '${_yearLabel(y ~/ 2 - 1)}${y % 2 == 1 ? context.l10n.semesterSpringShort : context.l10n.semesterAutumnShort}',
-      );
+  String _semesterLabel(int index) {
+    final score = _scoreList[index];
+    if (_calendarLabels) {
+      return score.semester.name.isNotEmpty
+          ? score.semester.name
+          : score.semester.semester;
     }
-    return selectorList;
+    final years = _yearList.reversed.toList();
+    final yearIndex = years.indexWhere(
+      (year) => year.list.any(score.list.contains),
+    );
+    final text = '${score.semester.semester} ${score.semester.name}';
+    final isSpring = RegExp(r'(?:[-_]2\b|第二学期|春)').hasMatch(text);
+    return '${_yearLabel(yearIndex < 0 ? 0 : yearIndex)}${isSpring ? context.l10n.semesterSpringShort : context.l10n.semesterAutumnShort}';
+  }
+
+  void _updateSelectors() {
+    _selectorList.clear();
+    if (_scope == 1) {
+      for (var i = 0; i < _scoreList.length; i++) {
+        _selectorList.add(_semesterLabel(i));
+      }
+    } else if (_scope == 2) {
+      for (var i = 0; i < _yearList.length; i++) {
+        final semester = _yearList[i].semester;
+        final match = RegExp(
+          r'\d{4}\s*[-–—]\s*\d{2,4}',
+        ).firstMatch('${semester.semester} ${semester.name}');
+        _selectorList.add(
+          _calendarLabels && match != null
+              ? '${match.group(0)} ${context.l10n.scoreAcademicYear}'
+              : _yearLabel(_yearList.length - i - 1),
+        );
+      }
+    }
+    if (_currentIndex >= _selectorList.length) _currentIndex = 0;
+  }
+
+  void _setScope(int? value) {
+    if (value == null) return;
+    setState(() {
+      _scope = value;
+      _isYear = value == 2;
+      _currentIndex = 0;
+      _updateSelectors();
+    });
+    if (pageController.hasClients && value != 0) pageController.jumpToPage(0);
+  }
+
+  Future<void> _showLabelSettings() async {
+    final brightness = context.mc.colors.brightness;
+    await showCupertinoModalPopup<void>(
+      context: context,
+      builder: (popupContext) => MediaQuery(
+        data: MediaQuery.of(
+          popupContext,
+        ).copyWith(platformBrightness: brightness),
+        child: CupertinoActionSheet(
+          title: Text(context.l10n.scoreSemesterFormat),
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () {
+                _setLabelPreference(false);
+                Navigator.of(popupContext).pop();
+              },
+              child: _labelFormatOption(
+                context.l10n.scoreFormatGrade,
+                isSelected: !_calendarLabels,
+              ),
+            ),
+            CupertinoActionSheetAction(
+              onPressed: () {
+                _setLabelPreference(true);
+                Navigator.of(popupContext).pop();
+              },
+              child: _labelFormatOption(
+                context.l10n.scoreFormatCalendar,
+                isSelected: _calendarLabels,
+              ),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () => Navigator.of(popupContext).pop(),
+            child: Text(context.l10n.cancel),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _labelFormatOption(String label, {required bool isSelected}) {
+    final colors = context.mc.colors;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? colors.primary : colors.label,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+          ),
+        ),
+        if (isSelected) ...[
+          const SizedBox(width: 8),
+          Icon(CupertinoIcons.check_mark, size: 18, color: colors.primary),
+        ],
+      ],
+    );
   }
 
   void _handleFoolishMode() {
@@ -185,8 +317,6 @@ class _ScorePageState extends ConsumerState<ScorePage>
           item2.gradeDetail = '666';
         }
       }
-      _yearList.clear();
-      _isYear = false;
     });
 
     McFeedback.showMessage(context, message: context.l10n.foolishModeMessage);
@@ -256,43 +386,28 @@ class _ScorePageState extends ConsumerState<ScorePage>
         children: [
           _buildAppBar(),
           _buildStatsCard(),
-          if (_scoreList.isNotEmpty)
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(0),
-                    decoration: BoxDecoration(
-                      color: colors.cardBackground,
-                      borderRadius: BorderRadius.circular(25.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: colors.shadowColor.withValues(alpha: 0.1),
-                          blurRadius: 12,
-                        ),
-                      ],
-                    ),
-                    child: IconButton(
-                      onPressed: _changeScoreList,
-                      icon: Icon(
-                        _isYear
-                            ? CupertinoIcons.calendar_today
-                            : CupertinoIcons.list_bullet_below_rectangle,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: _buildSelector(),
-                    ),
-                  ),
-                ],
+          if (_scoreList.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: SizedBox(
+                width: double.infinity,
+                child: CupertinoSlidingSegmentedControl<int>(
+                  groupValue: _scope,
+                  onValueChanged: _setScope,
+                  children: {
+                    0: Text(context.l10n.scoreCumulative),
+                    1: Text(context.l10n.scoreBySemester),
+                    2: Text(context.l10n.scoreByYear),
+                  },
+                ),
               ),
             ),
+            if (_scope != 0)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _buildDropdownSelector(),
+              ),
+          ],
           Expanded(child: _buildScoreList()),
         ],
       ),
@@ -311,6 +426,12 @@ class _ScorePageState extends ConsumerState<ScorePage>
           ),
           Row(
             children: [
+              if (_scoreList.isNotEmpty)
+                IconButton(
+                  onPressed: _showLabelSettings,
+                  tooltip: context.l10n.scoreSemesterFormat,
+                  icon: const Icon(CupertinoIcons.gear),
+                ),
               if (!_isFool)
                 IconButton(
                   onPressed: _handleFoolishMode,
@@ -327,55 +448,6 @@ class _ScorePageState extends ConsumerState<ScorePage>
     );
   }
 
-  void _changeScoreList() {
-    setState(() {
-      _isYear = !_isYear;
-      if (_isYear && _scoreList.isNotEmpty && _yearList.isEmpty) {
-        for (var i = _scoreList.length - 1; i >= 0; i--) {
-          var j = _scoreList.length - 1 - i;
-          if (j % 2 == 0) {
-            _yearList.add(
-              ScoreList(
-                semester: _scoreList[i].semester,
-                list: _scoreList[i].list.toList(),
-              ),
-            );
-          } else {
-            var a = _yearList.lastOrNull;
-            if (a != null) {
-              a.list.addAll(_scoreList[i].list.toList());
-            }
-          }
-        }
-      }
-
-      if (_scoreList.isNotEmpty) {
-        _selectorList.clear();
-        if (_isYear) {
-          for (var i = 0; i < _yearList.length; i++) {
-            _selectorList.add(_yearLabel(i));
-          }
-        } else {
-          for (var i = 0; i < _scoreList.length; i++) {
-            var y = _scoreList.length - i + 1;
-            _selectorList.add(
-              '${_yearLabel(y ~/ 2 - 1)}${y % 2 == 1 ? context.l10n.semesterSpringShort : context.l10n.semesterAutumnShort}',
-            );
-          }
-        }
-
-        if (_currentIndex >= _selectorList.length) {
-          _currentIndex = _selectorList.isNotEmpty
-              ? _selectorList.length - 1
-              : 0;
-        }
-        if (_selectorList.isNotEmpty && pageController.hasClients) {
-          pageController.jumpToPage(_currentIndex);
-        }
-      }
-    });
-  }
-
   Widget _buildStatsCard() {
     if (_scoreList.isEmpty) {
       return Container();
@@ -385,7 +457,25 @@ class _ScorePageState extends ConsumerState<ScorePage>
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: McCard.elevated(
         padding: EdgeInsets.zero,
-        child: _buildStatsPadding(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+              child: Text(
+                _scope == 0
+                    ? context.l10n.scoreCumulative
+                    : _selectorList[_currentIndex],
+                style: TextStyle(color: context.mc.colors.secondaryLabel),
+              ),
+            ),
+            _buildStatsPadding(
+              scoreList: _scope == 0
+                  ? null
+                  : (_isYear ? _yearList : _scoreList)[_currentIndex],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -485,26 +575,6 @@ class _ScorePageState extends ConsumerState<ScorePage>
     );
   }
 
-  Widget _buildSelector() {
-    if (_selectorList.length < 2) {
-      return Container();
-    }
-
-    if (_selectorList.length > 4) {
-      return _buildDropdownSelector();
-    }
-
-    return SizedBox(
-      width: double.infinity,
-      child: CupertinoSlidingSegmentedControl<int>(
-        proportionalWidth: true,
-        groupValue: _currentIndex,
-        onValueChanged: _handleSelectorChanged,
-        children: _selectorList.map((x) => Text(x)).toList().asMap(),
-      ),
-    );
-  }
-
   Widget _buildDropdownSelector() {
     final colors = context.mc.colors;
     return McPopoverMenu<int>(
@@ -573,9 +643,51 @@ class _ScorePageState extends ConsumerState<ScorePage>
   Widget _buildScoreList() {
     return _scoreList.isEmpty
         ? _buildEmptyState()
+        : _scope == 0
+        ? _buildCumulativeList()
         : _isYear
         ? _buildYearList()
         : _buildSemesterList();
+  }
+
+  Widget _buildCumulativeList() {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      children: [
+        for (var i = 0; i < _scoreList.length; i++) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
+            child: Text(
+              _semesterLabel(i),
+              style: TextStyle(color: context.mc.colors.secondaryLabel),
+            ),
+          ),
+          _buildScoreGroup(_scoreList[i].list),
+          const SizedBox(height: 12),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildScoreGroup(List<ScoreModel> scores) {
+    final colors = context.mc.colors;
+    return McCard.grouped(
+      child: Column(
+        children: [
+          for (var i = 0; i < scores.length; i++) ...[
+            if (i > 0)
+              Divider(
+                height: 1,
+                thickness: 0.5,
+                indent: 16,
+                endIndent: 16,
+                color: colors.separator,
+              ),
+            _buildScoreItem(scores[i]),
+          ],
+        ],
+      ),
+    );
   }
 
   Widget _buildSemesterList() {
@@ -604,23 +716,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
     );
   }
 
-  Widget _buildYearCard(ScoreList score) {
-    return CustomScrollView(
-      slivers: [
-        SliverPadding(
-          padding: const EdgeInsets.all(16),
-          sliver: SliverToBoxAdapter(
-            child: McCard.elevated(
-              radius: McRadii.navigation,
-              padding: EdgeInsets.zero,
-              child: _buildStatsPadding(scoreList: score),
-            ),
-          ),
-        ),
-        _buildScoreSliverList(score.list),
-      ],
-    );
-  }
+  Widget _buildYearCard(ScoreList score) => _buildSemesterCard(score);
 
   Widget _buildEmptyState() {
     return Padding(
@@ -656,77 +752,11 @@ class _ScorePageState extends ConsumerState<ScorePage>
   Widget _buildScoreSliverList(List<ScoreModel> scores) {
     return SliverPadding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      sliver: SliverFixedExtentList.builder(
-        itemExtent: 72,
-        itemCount: scores.length,
-        itemBuilder: (context, index) => McAnimatedListItem(
-          index: index,
-          child: McCard.elevated(
-            margin: const EdgeInsets.only(bottom: 8),
-            radius: McRadii.navigation,
-            padding: EdgeInsets.zero,
-            child: _buildScoreItem(scores[index]),
-          ),
-        ),
-      ),
+      sliver: SliverToBoxAdapter(child: _buildScoreGroup(scores)),
     );
   }
 
   Widget _buildScoreItem(ScoreModel item) {
-    return Material(
-      shape: McSmoothCorners.shape(McRadii.navigationBorder),
-      clipBehavior: Clip.antiAlias,
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: McRadii.navigationBorder,
-        customBorder: McSmoothCorners.shape(McRadii.navigationBorder),
-        onTap: () => _showScoreDetails(item),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: Row(
-            children: [
-              Container(
-                width: 4,
-                height: 40,
-                decoration: ShapeDecoration(
-                  color: CourseColorManager.generateSoftColor(item.name),
-                  shape: McSmoothCorners.shape(McRadii.indicatorBorder),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${item.name}${item.isMinor ? ' (${context.l10n.minorCourse})' : ''}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
-                          const SizedBox(height: 4),
-                          _buildScoreMeta(item),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildScoreMeta(ScoreModel item) {
     final colors = context.mc.colors;
     final canGpa =
         ref
@@ -734,48 +764,51 @@ class _ScorePageState extends ConsumerState<ScorePage>
             .school
             ?.supports(Feature.gpaCalculation) ??
         true;
-    return Wrap(
-      spacing: 16,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
+    return InkWell(
+      onTap: () => _showScoreDetails(item),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
           children: [
-            Icon(CupertinoIcons.time, size: 16, color: colors.secondaryLabel),
-            const SizedBox(width: 4),
-            Text(
-              context.l10n.creditUnit(item.credit),
-              style: TextStyle(color: colors.secondaryLabel),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${item.name}${item.isMinor ? ' (${context.l10n.minorCourse})' : ''}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    [
+                      context.l10n.creditUnit(item.credit),
+                      if (canGpa) context.l10n.gpaLabel(item.gpa),
+                    ].join(' · '),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: colors.secondaryLabel,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+            const SizedBox(width: 12),
+            Text(
+              item.grade,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(width: 8),
             Icon(
-              CupertinoIcons.location,
-              size: 16,
+              CupertinoIcons.chevron_right,
+              size: 15,
               color: colors.secondaryLabel,
             ),
-            const SizedBox(width: 4),
-            Text(
-              context.l10n.gradeLabel(item.grade),
-              style: TextStyle(color: colors.secondaryLabel),
-            ),
           ],
         ),
-        if (canGpa)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(CupertinoIcons.star, size: 16, color: colors.secondaryLabel),
-              const SizedBox(width: 4),
-              Text(
-                context.l10n.gpaLabel(item.gpa),
-                style: TextStyle(color: colors.secondaryLabel),
-              ),
-            ],
-          ),
-      ],
+      ),
     );
   }
 

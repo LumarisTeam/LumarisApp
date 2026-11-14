@@ -2376,6 +2376,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appThemeColorOrange => '橙色';
+
+  @override
+  String get scoreCumulative => '累计';
+
+  @override
+  String get scoreBySemester => '按学期';
+
+  @override
+  String get scoreByYear => '按学年';
+
+  @override
+  String get scoreSemesterFormat => '学期显示方式';
+
+  @override
+  String get scoreFormatGrade => '年级 · 学期';
+
+  @override
+  String get scoreFormatCalendar => '学年 · 学期';
+
+  @override
+  String get scoreAcademicYear => '学年';
 }
 
 /// The translations for Chinese, using the Han script (`zh_Hant`).
@@ -4751,4 +4772,25 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get appThemeColorOrange => '橙色';
+
+  @override
+  String get scoreCumulative => '累計';
+
+  @override
+  String get scoreBySemester => '按學期';
+
+  @override
+  String get scoreByYear => '按學年';
+
+  @override
+  String get scoreSemesterFormat => '學期顯示方式';
+
+  @override
+  String get scoreFormatGrade => '年級 · 學期';
+
+  @override
+  String get scoreFormatCalendar => '學年 · 學期';
+
+  @override
+  String get scoreAcademicYear => '學年';
 }

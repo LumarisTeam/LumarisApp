@@ -2482,4 +2482,25 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get appThemeColorOrange => 'Оранжевый';
+
+  @override
+  String get scoreCumulative => 'Всего';
+
+  @override
+  String get scoreBySemester => 'Семестр';
+
+  @override
+  String get scoreByYear => 'Год';
+
+  @override
+  String get scoreSemesterFormat => 'Отображение семестра';
+
+  @override
+  String get scoreFormatGrade => 'Курс · Семестр';
+
+  @override
+  String get scoreFormatCalendar => 'Учебный год · Семестр';
+
+  @override
+  String get scoreAcademicYear => 'Учебный год';
 }

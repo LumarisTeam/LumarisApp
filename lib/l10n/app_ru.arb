@@ -841,5 +841,12 @@
   "appThemeColor": "Цвет темы",
   "appThemeColorBlue": "Синий",
   "appThemeColorGreen": "Зелёный",
-  "appThemeColorOrange": "Оранжевый"
+  "appThemeColorOrange": "Оранжевый",
+  "scoreCumulative": "Всего",
+  "scoreBySemester": "Семестр",
+  "scoreByYear": "Год",
+  "scoreSemesterFormat": "Отображение семестра",
+  "scoreFormatGrade": "Курс · Семестр",
+  "scoreFormatCalendar": "Учебный год · Семестр",
+  "scoreAcademicYear": "Учебный год"
 }

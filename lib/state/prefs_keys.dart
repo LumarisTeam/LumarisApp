@@ -1,5 +1,7 @@
 /// SharedPreferences 键统一管理
 class PrefsKeys {
+  static const String scoreCalendarLabels = 'score_calendar_labels';
+
   /// 用户相关
   static const String USERNAME = 'username';
   static const String PASSWORD = 'password';

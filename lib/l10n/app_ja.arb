@@ -845,5 +845,12 @@
   "appThemeColor": "テーマカラー",
   "appThemeColorBlue": "青",
   "appThemeColorGreen": "緑",
-  "appThemeColorOrange": "オレンジ"
+  "appThemeColorOrange": "オレンジ",
+  "scoreCumulative": "累計",
+  "scoreBySemester": "学期別",
+  "scoreByYear": "年度別",
+  "scoreSemesterFormat": "学期の表示",
+  "scoreFormatGrade": "年次・学期",
+  "scoreFormatCalendar": "年度・学期",
+  "scoreAcademicYear": "年度"
 }

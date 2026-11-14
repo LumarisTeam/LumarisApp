@@ -1621,5 +1621,19 @@
   "appThemeColorGreen": "绿色",
   "@appThemeColorGreen": {"description": "App accent color setting"},
   "appThemeColorOrange": "橙色",
-  "@appThemeColorOrange": {"description": "App accent color setting"}
+  "@appThemeColorOrange": {"description": "App accent color setting"},
+  "scoreCumulative": "累计",
+  "@scoreCumulative": {"description": "scoreCumulative"},
+  "scoreBySemester": "按学期",
+  "@scoreBySemester": {"description": "scoreBySemester"},
+  "scoreByYear": "按学年",
+  "@scoreByYear": {"description": "scoreByYear"},
+  "scoreSemesterFormat": "学期显示方式",
+  "@scoreSemesterFormat": {"description": "scoreSemesterFormat"},
+  "scoreFormatGrade": "年级 · 学期",
+  "@scoreFormatGrade": {"description": "scoreFormatGrade"},
+  "scoreFormatCalendar": "学年 · 学期",
+  "@scoreFormatCalendar": {"description": "scoreFormatCalendar"},
+  "scoreAcademicYear": "学年",
+  "@scoreAcademicYear": {"description": "scoreAcademicYear"}
 }

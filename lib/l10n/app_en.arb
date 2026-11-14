@@ -845,5 +845,12 @@
   "appThemeColor": "Theme color",
   "appThemeColorBlue": "Blue",
   "appThemeColorGreen": "Green",
-  "appThemeColorOrange": "Orange"
+  "appThemeColorOrange": "Orange",
+  "scoreCumulative": "Cumulative",
+  "scoreBySemester": "Semester",
+  "scoreByYear": "Year",
+  "scoreSemesterFormat": "Semester display",
+  "scoreFormatGrade": "Year · Term",
+  "scoreFormatCalendar": "Academic year · Term",
+  "scoreAcademicYear": "Academic year"
 }

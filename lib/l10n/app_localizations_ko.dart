@@ -2407,4 +2407,25 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get appThemeColorOrange => '주황색';
+
+  @override
+  String get scoreCumulative => '누적';
+
+  @override
+  String get scoreBySemester => '학기별';
+
+  @override
+  String get scoreByYear => '학년별';
+
+  @override
+  String get scoreSemesterFormat => '학기 표시 방식';
+
+  @override
+  String get scoreFormatGrade => '학년 · 학기';
+
+  @override
+  String get scoreFormatCalendar => '학년도 · 학기';
+
+  @override
+  String get scoreAcademicYear => '학년도';
 }

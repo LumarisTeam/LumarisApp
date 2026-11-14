@@ -2391,4 +2391,25 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appThemeColorOrange => 'オレンジ';
+
+  @override
+  String get scoreCumulative => '累計';
+
+  @override
+  String get scoreBySemester => '学期別';
+
+  @override
+  String get scoreByYear => '年度別';
+
+  @override
+  String get scoreSemesterFormat => '学期の表示';
+
+  @override
+  String get scoreFormatGrade => '年次・学期';
+
+  @override
+  String get scoreFormatCalendar => '年度・学期';
+
+  @override
+  String get scoreAcademicYear => '年度';
 }

@@ -2472,4 +2472,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appThemeColorOrange => 'Orange';
+
+  @override
+  String get scoreCumulative => 'Cumulative';
+
+  @override
+  String get scoreBySemester => 'Semester';
+
+  @override
+  String get scoreByYear => 'Year';
+
+  @override
+  String get scoreSemesterFormat => 'Semester display';
+
+  @override
+  String get scoreFormatGrade => 'Year · Term';
+
+  @override
+  String get scoreFormatCalendar => 'Academic year · Term';
+
+  @override
+  String get scoreAcademicYear => 'Academic year';
 }

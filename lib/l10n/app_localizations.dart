@@ -4655,6 +4655,48 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'橙色'**
   String get appThemeColorOrange;
+
+  /// scoreCumulative
+  ///
+  /// In zh, this message translates to:
+  /// **'累计'**
+  String get scoreCumulative;
+
+  /// scoreBySemester
+  ///
+  /// In zh, this message translates to:
+  /// **'按学期'**
+  String get scoreBySemester;
+
+  /// scoreByYear
+  ///
+  /// In zh, this message translates to:
+  /// **'按学年'**
+  String get scoreByYear;
+
+  /// scoreSemesterFormat
+  ///
+  /// In zh, this message translates to:
+  /// **'学期显示方式'**
+  String get scoreSemesterFormat;
+
+  /// scoreFormatGrade
+  ///
+  /// In zh, this message translates to:
+  /// **'年级 · 学期'**
+  String get scoreFormatGrade;
+
+  /// scoreFormatCalendar
+  ///
+  /// In zh, this message translates to:
+  /// **'学年 · 学期'**
+  String get scoreFormatCalendar;
+
+  /// scoreAcademicYear
+  ///
+  /// In zh, this message translates to:
+  /// **'学年'**
+  String get scoreAcademicYear;
 }
 
 class _AppLocalizationsDelegate

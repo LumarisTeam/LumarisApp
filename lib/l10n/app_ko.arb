@@ -842,5 +842,12 @@
   "appThemeColor": "테마 색상",
   "appThemeColorBlue": "파란색",
   "appThemeColorGreen": "초록색",
-  "appThemeColorOrange": "주황색"
+  "appThemeColorOrange": "주황색",
+  "scoreCumulative": "누적",
+  "scoreBySemester": "학기별",
+  "scoreByYear": "학년별",
+  "scoreSemesterFormat": "학기 표시 방식",
+  "scoreFormatGrade": "학년 · 학기",
+  "scoreFormatCalendar": "학년도 · 학기",
+  "scoreAcademicYear": "학년도"
 }

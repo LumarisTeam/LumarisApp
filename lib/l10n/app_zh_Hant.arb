@@ -844,5 +844,12 @@
   "appThemeColor": "主題色",
   "appThemeColorBlue": "藍色",
   "appThemeColorGreen": "綠色",
-  "appThemeColorOrange": "橙色"
+  "appThemeColorOrange": "橙色",
+  "scoreCumulative": "累計",
+  "scoreBySemester": "按學期",
+  "scoreByYear": "按學年",
+  "scoreSemesterFormat": "學期顯示方式",
+  "scoreFormatGrade": "年級 · 學期",
+  "scoreFormatCalendar": "學年 · 學期",
+  "scoreAcademicYear": "學年"
 }

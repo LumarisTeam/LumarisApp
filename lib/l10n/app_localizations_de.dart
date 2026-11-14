@@ -2518,4 +2518,25 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get appThemeColorOrange => 'Orange';
+
+  @override
+  String get scoreCumulative => 'Gesamt';
+
+  @override
+  String get scoreBySemester => 'Semester';
+
+  @override
+  String get scoreByYear => 'Studienjahr';
+
+  @override
+  String get scoreSemesterFormat => 'Semesteranzeige';
+
+  @override
+  String get scoreFormatGrade => 'Jahr · Semester';
+
+  @override
+  String get scoreFormatCalendar => 'Studienjahr · Semester';
+
+  @override
+  String get scoreAcademicYear => 'Studienjahr';
 }
