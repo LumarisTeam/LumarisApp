@@ -306,9 +306,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Загрузка завершена, начинается установка...';
 
   @override
-  String downloadFailed(Object error) {
-    return 'Не удалось загрузить: $error';
-  }
+  String get downloadFailed => 'Не удалось загрузить';
 
   @override
   String get confirm => 'Подтвердить';
@@ -1004,6 +1002,42 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loginFailed => 'Ошибка входа. Проверьте учётные данные';
 
   @override
+  String get loginPasswordExpired =>
+      'Срок действия пароля истёк. Смените пароль единой системы входа и повторите попытку.';
+
+  @override
+  String get tooManyRequests =>
+      'Слишком много попыток. Повторите попытку позже.';
+
+  @override
+  String get apiInvalidParameters =>
+      'Недопустимые параметры запроса. Проверьте введённые данные и повторите попытку.';
+
+  @override
+  String get apiResourceNotFound => 'Запрошенный ресурс не найден.';
+
+  @override
+  String get apiForbidden => 'У вас нет разрешения на это действие.';
+
+  @override
+  String get apiMfaRequired => 'Требуется повторная аутентификация.';
+
+  @override
+  String get apiMfaSessionExpired => 'Сеанс MFA истёк. Войдите снова.';
+
+  @override
+  String get apiMfaInvalidCode =>
+      'Неверный или просроченный код подтверждения.';
+
+  @override
+  String get apiMfaMethodUnsupported =>
+      'Выбранный метод аутентификации не поддерживается для этого приложения.';
+
+  @override
+  String get apiMfaUnavailable =>
+      'Повторная аутентификация временно недоступна. Повторите попытку позже.';
+
+  @override
   String get loginTimeout => 'Время входа истекло. Проверьте сеть и повторите.';
 
   @override
@@ -1284,9 +1318,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get updateTimeout => 'Тайм-аут обновления. Проверьте сеть.';
 
   @override
-  String updateFailed(String error) {
-    return 'Ошибка обновления: $error';
-  }
+  String get updateFailed => 'Ошибка обновления';
 
   @override
   String get linkCopiedToClipboard => 'Ссылка скопирована';

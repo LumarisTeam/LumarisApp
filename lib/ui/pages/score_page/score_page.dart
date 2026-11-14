@@ -19,6 +19,8 @@ import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/state/school_store.dart';
 
+import '../../../core/utils/error_message_resolver.dart';
+
 class ScorePage extends ConsumerStatefulWidget {
   const ScorePage({super.key});
 
@@ -134,7 +136,7 @@ class _ScorePageState extends ConsumerState<ScorePage>
       if (mounted) {
         McFeedback.showMessage(
           context,
-          message: '${l10n.fetchFailed}: ${e.toString()}',
+          message: resolveEduErrorMessage(e, l10n, fallback: l10n.fetchFailed),
         );
       }
       AppLogger.error('[ScorePage] 获取数据失败', error: e, stackTrace: stackTrace);

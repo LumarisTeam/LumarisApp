@@ -306,10 +306,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 }
 
                 if (snapshot.hasError) {
+                  AppLogger.error(
+                    '获取学生信息列表失败',
+                    error: snapshot.error,
+                    stackTrace: snapshot.stackTrace,
+                  );
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Text('${l10n.loadFailed}: ${snapshot.error}'),
+                      child: Text(l10n.loadFailed),
                     ),
                   );
                 }

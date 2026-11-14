@@ -15,6 +15,8 @@ import 'package:ios_club_app/ui/components/loading_state_view.dart';
 import 'package:ios_club_app/state/electricity_store.dart';
 import 'package:ios_club_app/state/user_store.dart';
 
+import '../../../core/utils/app_logger.dart';
+import '../../../core/utils/error_message_resolver.dart';
 import '../../components/page_app_bar.dart';
 
 enum _ElectricityAction { refresh, changeRoom }
@@ -1009,14 +1011,19 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
         _subscriptionThreshold = subscriptionThreshold;
         _hasLoadedSubscriptions = true;
       });
-    } catch (e) {
+    } catch (error, stackTrace) {
+      AppLogger.error('加载电费订阅失败', error: error, stackTrace: stackTrace);
       if (!mounted) {
         return;
       }
       final l10n = context.l10n;
       McFeedback.showMessage(
         context,
-        message: '${l10n.electricitySubLoadFailed}: $e',
+        message: resolveEduErrorMessage(
+          error,
+          l10n,
+          fallback: l10n.electricitySubLoadFailed,
+        ),
       );
       setState(() {
         _hasLoadedSubscriptions = true;
@@ -1121,11 +1128,19 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
         return;
       }
       McFeedback.showMessage(context, message: l10nSB.lowBalanceAlertCreated);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      AppLogger.error('创建电费订阅失败', error: error, stackTrace: stackTrace);
       if (!mounted) {
         return;
       }
-      McFeedback.showMessage(context, message: '${l10nSB.createSubFailed}: $e');
+      McFeedback.showMessage(
+        context,
+        message: resolveEduErrorMessage(
+          error,
+          l10nSB,
+          fallback: l10nSB.createSubFailed,
+        ),
+      );
       setState(() {
         _isSubscriptionLoading = false;
       });
@@ -1253,11 +1268,19 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
         return;
       }
       McFeedback.showMessage(context, message: l10n.lowBalanceAlertDeleted);
-    } catch (e) {
+    } catch (error, stackTrace) {
+      AppLogger.error('删除电费订阅失败', error: error, stackTrace: stackTrace);
       if (!mounted) {
         return;
       }
-      McFeedback.showMessage(context, message: '${l10n.deleteSubFailed}: $e');
+      McFeedback.showMessage(
+        context,
+        message: resolveEduErrorMessage(
+          error,
+          l10n,
+          fallback: l10n.deleteSubFailed,
+        ),
+      );
       setState(() {
         _isSubscriptionLoading = false;
       });

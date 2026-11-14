@@ -309,9 +309,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Download abgeschlossen, Installation wird gestartet...';
 
   @override
-  String downloadFailed(Object error) {
-    return 'Download fehlgeschlagen: $error';
-  }
+  String get downloadFailed => 'Download fehlgeschlagen';
 
   @override
   String get confirm => 'Bestätigen';
@@ -1020,6 +1018,44 @@ class AppLocalizationsDe extends AppLocalizations {
       'Anmeldung fehlgeschlagen, bitte überprüfen Sie Ihre Anmeldedaten';
 
   @override
+  String get loginPasswordExpired =>
+      'Ihr Passwort ist abgelaufen. Ändern Sie zuerst Ihr Passwort für die zentrale Anmeldung.';
+
+  @override
+  String get tooManyRequests =>
+      'Zu viele Anfragen. Bitte versuchen Sie es später erneut.';
+
+  @override
+  String get apiInvalidParameters =>
+      'Die Anfrage enthält ungültige Parameter. Prüfen Sie Ihre Eingaben und versuchen Sie es erneut.';
+
+  @override
+  String get apiResourceNotFound =>
+      'Die angeforderte Ressource wurde nicht gefunden.';
+
+  @override
+  String get apiForbidden => 'Sie haben keine Berechtigung für diese Aktion.';
+
+  @override
+  String get apiMfaRequired => 'Sekundäre Authentifizierung erforderlich.';
+
+  @override
+  String get apiMfaSessionExpired =>
+      'Die MFA-Sitzung ist abgelaufen. Bitte erneut anmelden.';
+
+  @override
+  String get apiMfaInvalidCode =>
+      'Ungültiger oder abgelaufener Bestätigungscode.';
+
+  @override
+  String get apiMfaMethodUnsupported =>
+      'Die ausgewählte Authentifizierungsmethode wird für diese Anwendung nicht unterstützt.';
+
+  @override
+  String get apiMfaUnavailable =>
+      'Die sekundäre Authentifizierung ist vorübergehend nicht verfügbar. Bitte später erneut versuchen.';
+
+  @override
   String get loginTimeout =>
       'Anmeldung abgelaufen. Bitte überprüfen Sie Ihr Netzwerk.';
 
@@ -1308,9 +1344,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Aktualisierung abgelaufen. Bitte überprüfen Sie Ihr Netzwerk.';
 
   @override
-  String updateFailed(String error) {
-    return 'Aktualisierung fehlgeschlagen: $error';
-  }
+  String get updateFailed => 'Aktualisierung fehlgeschlagen';
 
   @override
   String get linkCopiedToClipboard => 'Link kopiert';

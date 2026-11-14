@@ -302,9 +302,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get downloadCompletedInstalling => 'Download complete, installing...';
 
   @override
-  String downloadFailed(Object error) {
-    return 'Download failed: $error';
-  }
+  String get downloadFailed => 'Download failed';
 
   @override
   String get confirm => 'Confirm';
@@ -1003,6 +1001,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginFailed => 'Login failed, please check your credentials';
 
   @override
+  String get loginPasswordExpired =>
+      'Your password has expired. Change your single sign-on password before trying again.';
+
+  @override
+  String get tooManyRequests => 'Too many attempts. Please try again later.';
+
+  @override
+  String get apiInvalidParameters =>
+      'The request contains invalid parameters. Check your input and try again.';
+
+  @override
+  String get apiResourceNotFound =>
+      'The requested resource could not be found.';
+
+  @override
+  String get apiForbidden =>
+      'You do not have permission to perform this action.';
+
+  @override
+  String get apiMfaRequired => 'Secondary authentication is required.';
+
+  @override
+  String get apiMfaSessionExpired =>
+      'The MFA session has expired. Please sign in again.';
+
+  @override
+  String get apiMfaInvalidCode => 'Invalid or expired verification code.';
+
+  @override
+  String get apiMfaMethodUnsupported =>
+      'The selected authentication method is not supported for this application.';
+
+  @override
+  String get apiMfaUnavailable =>
+      'Secondary authentication is temporarily unavailable. Please try again later.';
+
+  @override
   String get loginTimeout =>
       'Login timed out, please check your network and try again';
 
@@ -1284,9 +1319,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Update timed out, please check your network and try again';
 
   @override
-  String updateFailed(String error) {
-    return 'Update failed: $error';
-  }
+  String get updateFailed => 'Update failed';
 
   @override
   String get linkCopiedToClipboard => 'Link copied to clipboard';

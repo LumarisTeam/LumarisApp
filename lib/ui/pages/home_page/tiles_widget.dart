@@ -124,11 +124,11 @@ class _TilesWidgetState extends ConsumerState<TilesWidget>
                     oldIndex,
                     newIndex,
                   );
-                } catch (e) {
+                } catch (_) {
                   if (mounted) {
                     messenger.showSnackBar(
                       SnackBar(
-                        content: Text('${l10n.reorderFailed}: $e'),
+                        content: Text(l10n.reorderFailed),
                         duration: const Duration(seconds: 2),
                       ),
                     );

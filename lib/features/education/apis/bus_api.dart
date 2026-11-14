@@ -21,9 +21,6 @@ class BusApi {
             .map((e) => BusItem.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '校巴请求失败', -1);
-      }
       return BusModel(
         records: apiResponse.data ?? [],
         total: apiResponse.total ?? (apiResponse.data?.length ?? 0),
@@ -52,9 +49,6 @@ class BusApi {
             .map((e) => BusItem.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '新校巴请求失败', -1);
-      }
       return BusModel(
         records: apiResponse.data ?? [],
         total: apiResponse.total ?? (apiResponse.data?.length ?? 0),
@@ -83,9 +77,6 @@ class BusApi {
             .map((e) => BusItem.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '旧校巴请求失败', -1);
-      }
       return BusModel(
         records: apiResponse.data ?? [],
         total: apiResponse.total ?? (apiResponse.data?.length ?? 0),

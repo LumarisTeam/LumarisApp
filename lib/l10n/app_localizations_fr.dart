@@ -311,9 +311,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Téléchargement terminé, installation en cours...';
 
   @override
-  String downloadFailed(Object error) {
-    return 'Échec du téléchargement : $error';
-  }
+  String get downloadFailed => 'Échec du téléchargement';
 
   @override
   String get confirm => 'Confirmer';
@@ -1017,6 +1015,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loginFailed => 'Échec de connexion, vérifiez vos identifiants';
 
   @override
+  String get loginPasswordExpired =>
+      'Votre mot de passe a expiré. Modifiez le mot de passe de votre compte d’authentification unique, puis réessayez.';
+
+  @override
+  String get tooManyRequests =>
+      'Trop de tentatives. Veuillez réessayer plus tard.';
+
+  @override
+  String get apiInvalidParameters =>
+      'La requête contient des paramètres invalides. Vérifiez votre saisie et réessayez.';
+
+  @override
+  String get apiResourceNotFound => 'La ressource demandée est introuvable.';
+
+  @override
+  String get apiForbidden =>
+      'Vous n’avez pas l’autorisation d’effectuer cette action.';
+
+  @override
+  String get apiMfaRequired => 'Authentification secondaire requise.';
+
+  @override
+  String get apiMfaSessionExpired =>
+      'La session MFA a expiré. Veuillez vous reconnecter.';
+
+  @override
+  String get apiMfaInvalidCode => 'Code de vérification invalide ou expiré.';
+
+  @override
+  String get apiMfaMethodUnsupported =>
+      'La méthode d\'authentification sélectionnée n\'est pas prise en charge pour cette application.';
+
+  @override
+  String get apiMfaUnavailable =>
+      'L\'authentification secondaire est temporairement indisponible. Veuillez réessayer plus tard.';
+
+  @override
   String get loginTimeout =>
       'Connexion expirée. Vérifiez votre réseau et réessayez.';
 
@@ -1302,9 +1337,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get updateTimeout => 'Mise à jour expirée. Vérifiez votre réseau.';
 
   @override
-  String updateFailed(String error) {
-    return 'Échec de la mise à jour : $error';
-  }
+  String get updateFailed => 'Échec de la mise à jour';
 
   @override
   String get linkCopiedToClipboard => 'Lien copié';

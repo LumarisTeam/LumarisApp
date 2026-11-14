@@ -30,9 +30,6 @@ class PaymentApi {
         rawResponse,
         (data) => data?.toString() ?? '',
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '缴费信息请求失败', -1);
-      }
       return RawStringResponse(apiResponse.data ?? '');
     } catch (e) {
       _handleError(e);
@@ -55,8 +52,8 @@ class PaymentApi {
         rawResponse,
         (data) => Map<String, dynamic>.from(data as Map),
       );
-      if (!apiResponse.isSuccess || apiResponse.data == null) {
-        throw NetworkException(apiResponse.message ?? '缴费流水请求失败', -1);
+      if (apiResponse.data == null) {
+        throw NetworkException('缴费流水数据为空');
       }
 
       final turnoverData = apiResponse.data!;
@@ -99,8 +96,8 @@ class PaymentApi {
       );
       final data = apiResponse.data;
 
-      if (!apiResponse.isSuccess || data is! Map) {
-        throw NetworkException(apiResponse.message ?? '支付码获取失败', -1);
+      if (data is! Map) {
+        throw NetworkException('支付码格式错误');
       }
 
       try {

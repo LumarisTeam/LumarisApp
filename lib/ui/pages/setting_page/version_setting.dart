@@ -10,6 +10,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:ios_club_app/features/system/update/check_update_manager.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 
+import '../../../core/utils/app_logger.dart';
+
 class VersionSetting extends ConsumerStatefulWidget {
   const VersionSetting({super.key});
 
@@ -95,11 +97,16 @@ class _VersionSettingState extends ConsumerState<VersionSetting> {
                   if (context.mounted) {
                     McFeedback.showMessage(context, message: l10n.updateOpened);
                   }
-                } catch (e) {
+                } catch (error, stackTrace) {
+                  AppLogger.error(
+                    '打开更新链接失败',
+                    error: error,
+                    stackTrace: stackTrace,
+                  );
                   if (context.mounted) {
                     McFeedback.showMessage(
                       context,
-                      message: '${l10n.openUpdateFailed}: $e',
+                      message: l10n.openUpdateFailed,
                     );
                   }
                 }

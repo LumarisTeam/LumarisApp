@@ -13,9 +13,6 @@ class MapApi {
             .map((item) => MapModel.fromJson(Map<String, dynamic>.from(item)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw Exception('地图数据请求失败: ${apiResponse.message}');
-      }
       return apiResponse.data ?? [];
     } catch (e) {
       AppLogger.error('获取地图数据失败: $e');

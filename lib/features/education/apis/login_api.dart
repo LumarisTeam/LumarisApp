@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import '../../../core/services/network_exception.dart';
+import '../../../core/utils/app_logger.dart';
 import '../models/api_response.dart';
 import '../models/login_mode.dart';
 import '../models/login_response.dart';
@@ -45,36 +46,30 @@ class LoginApi {
       } else if (response is Map<String, dynamic>) {
         responseData = response;
       } else {
-        throw NetworkException('登录返回格式错误', -1);
+        throw NetworkException('登录返回格式错误');
       }
 
-      final apiResponse = ApiResponse<LoginResponse>.parsed(
-        responseData,
-        (data) =>
-            LoginResponse.fromJson(Map<String, dynamic>.from(data as Map)),
-      );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '登录失败', -1);
-      }
-      final loginResponse = apiResponse.data;
+      final ApiResponse<LoginResponse> apiResponse =
+          ApiResponse<LoginResponse>.parsed(
+            responseData,
+            (data) =>
+                LoginResponse.fromJson(Map<String, dynamic>.from(data as Map)),
+          );
+      final LoginResponse? loginResponse = apiResponse.data;
       if (loginResponse == null) {
-        throw NetworkException('登录返回数据为空', -1);
+        throw NetworkException('登录返回数据格式错误');
       }
       if (loginResponse.success == true &&
           ((loginResponse.studentId?.isEmpty ?? true) ||
               (loginResponse.cookie?.isEmpty ?? true))) {
-        throw NetworkException('登录返回数据不完整', -1);
+        throw NetworkException('登录返回数据不完整');
       }
       return loginResponse;
-    } catch (e) {
-      _handleError(e);
+    } on NetworkException {
       rethrow;
-    }
-  }
-
-  static void _handleError(dynamic e) {
-    if (e is! NetworkException) {
-      throw NetworkException('未知错误', -1);
+    } catch (error, stackTrace) {
+      AppLogger.error('处理登录请求失败', error: error, stackTrace: stackTrace);
+      throw NetworkException('登录失败');
     }
   }
 

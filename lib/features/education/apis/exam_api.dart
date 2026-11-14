@@ -23,9 +23,6 @@ class ExamApi {
             .map((e) => ExamItem.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '考试请求失败', -1);
-      }
       return ExamResponse(exams: apiResponse.data ?? [], canClick: true);
     } catch (e) {
       _handleError(e);

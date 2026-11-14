@@ -294,9 +294,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get downloadCompletedInstalling => 'ダウンロードが完了しました。インストールを開始します...';
 
   @override
-  String downloadFailed(Object error) {
-    return 'ダウンロードに失敗しました: $error';
-  }
+  String get downloadFailed => 'ダウンロードに失敗しました';
 
   @override
   String get confirm => '確認';
@@ -972,6 +970,37 @@ class AppLocalizationsJa extends AppLocalizations {
   String get loginFailed => 'ログインに失敗しました。認証情報を確認してください';
 
   @override
+  String get loginPasswordExpired =>
+      'パスワードの有効期限が切れています。統合認証のパスワードを変更してから、再度お試しください。';
+
+  @override
+  String get tooManyRequests => '操作の回数が多すぎます。しばらくしてから再度お試しください。';
+
+  @override
+  String get apiInvalidParameters => 'リクエストのパラメータが無効です。入力内容を確認してから再試行してください。';
+
+  @override
+  String get apiResourceNotFound => '指定されたリソースが見つかりません。';
+
+  @override
+  String get apiForbidden => 'この操作を行う権限がありません。';
+
+  @override
+  String get apiMfaRequired => '二段階認証が必要です。';
+
+  @override
+  String get apiMfaSessionExpired => 'MFA セッションが期限切れです。もう一度ログインしてください。';
+
+  @override
+  String get apiMfaInvalidCode => '確認コードが無効または期限切れです。';
+
+  @override
+  String get apiMfaMethodUnsupported => '選択した認証方式はこのアプリケーションではサポートされていません。';
+
+  @override
+  String get apiMfaUnavailable => '二段階認証は一時的に利用できません。しばらくしてから再試行してください。';
+
+  @override
   String get loginTimeout => 'ログインがタイムアウトしました。ネットワークを確認して再試行してください';
 
   @override
@@ -1244,9 +1273,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get updateTimeout => '更新がタイムアウトしました。ネットワークを確認して再試行してください';
 
   @override
-  String updateFailed(String error) {
-    return '更新失敗: $error';
-  }
+  String get updateFailed => '更新失敗';
 
   @override
   String get linkCopiedToClipboard => 'リンクをクリップボードにコピーしました';

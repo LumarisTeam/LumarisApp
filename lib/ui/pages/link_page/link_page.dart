@@ -65,10 +65,7 @@ class _LinkPageState extends ConsumerState<LinkPage> {
                   );
                 }
                 if (snapshot.hasError) {
-                  return _LinkMessage(
-                    title: l10n.loadFailed,
-                    subtitle: '${snapshot.error}',
-                  );
+                  return _LinkMessage(title: l10n.loadFailed);
                 }
                 final categories = snapshot.data ?? [];
                 if (categories.isEmpty) {
@@ -97,7 +94,7 @@ class _LinkPageState extends ConsumerState<LinkPage> {
 }
 
 class _LinkMessage extends StatelessWidget {
-  const _LinkMessage({required this.title, required this.subtitle});
+  const _LinkMessage({required this.title, this.subtitle = ''});
 
   final String title;
   final String subtitle;

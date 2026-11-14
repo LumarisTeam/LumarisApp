@@ -28,6 +28,8 @@ import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/state/school_store.dart';
 import 'package:ios_club_app/ui/pages/schedule_list_page/custom_course_manage_page.dart';
 
+import '../../../core/utils/app_logger.dart';
+import '../../../core/utils/error_message_resolver.dart';
 import '../../components/schedule/schedule_import_empty_state.dart';
 
 enum _CustomCourseAction { edit, delete }
@@ -367,11 +369,16 @@ class _ScheduleListPageState extends ConsumerState<ScheduleListPage> {
       if (mounted) {
         McFeedback.showMessage(context, message: l10n.updateTimeout);
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      AppLogger.error('更新课表失败', error: error, stackTrace: stackTrace);
       if (mounted) {
         McFeedback.showMessage(
           context,
-          message: l10n.updateFailed(e.toString()),
+          message: resolveEduErrorMessage(
+            error,
+            l10n,
+            fallback: l10n.updateFailed,
+          ),
         );
       }
     }

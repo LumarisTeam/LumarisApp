@@ -27,6 +27,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:ios_club_app/core/services/secure_storage_service.dart';
 
+import '../../../core/utils/error_message_resolver.dart';
+
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
@@ -130,9 +132,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     } catch (e, stackTrace) {
       AppLogger.error('[LoginPage] 登录失败', error: e, stackTrace: stackTrace);
       if (mounted) {
+        final AppLocalizations l10n = context.l10n;
         McFeedback.showMessage(
           context,
-          message: '${context.l10n.loginFailed}: ${e.toString()}',
+          message: resolveEduErrorMessage(
+            e,
+            l10n,
+            fallback: l10n.unknownError,
+            isLogin: true,
+          ),
         );
       }
     } finally {

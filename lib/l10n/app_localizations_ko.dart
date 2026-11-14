@@ -295,9 +295,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get downloadCompletedInstalling => '다운로드가 완료되었습니다. 설치를 시작합니다...';
 
   @override
-  String downloadFailed(Object error) {
-    return '다운로드 실패: $error';
-  }
+  String get downloadFailed => '다운로드 실패';
 
   @override
   String get confirm => '확인';
@@ -978,6 +976,37 @@ class AppLocalizationsKo extends AppLocalizations {
   String get loginFailed => '로그인 실패, 사용자 이름과 비밀번호를 확인해 주세요';
 
   @override
+  String get loginPasswordExpired =>
+      '비밀번호가 만료되었습니다. 통합 인증 비밀번호를 변경한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get tooManyRequests => '요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get apiInvalidParameters => '요청 값이 잘못되었습니다. 입력 내용을 확인한 뒤 다시 시도해 주세요.';
+
+  @override
+  String get apiResourceNotFound => '요청한 리소스를 찾을 수 없습니다.';
+
+  @override
+  String get apiForbidden => '이 작업을 수행할 권한이 없습니다.';
+
+  @override
+  String get apiMfaRequired => '2차 인증이 필요합니다.';
+
+  @override
+  String get apiMfaSessionExpired => 'MFA 세션이 만료되었습니다. 다시 로그인하세요.';
+
+  @override
+  String get apiMfaInvalidCode => '인증 코드가 잘못되었거나 만료되었습니다.';
+
+  @override
+  String get apiMfaMethodUnsupported => '선택한 인증 방식은 이 애플리케이션에서 지원되지 않습니다.';
+
+  @override
+  String get apiMfaUnavailable => '2차 인증을 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요.';
+
+  @override
   String get loginTimeout => '로그인 시간 초과, 네트워크 연결을 확인한 후 다시 시도해 주세요';
 
   @override
@@ -1252,9 +1281,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get updateTimeout => '업데이트 시간 초과, 네트워크 연결을 확인한 후 다시 시도해 주세요';
 
   @override
-  String updateFailed(String error) {
-    return '업데이트 실패: $error';
-  }
+  String get updateFailed => '업데이트 실패';
 
   @override
   String get linkCopiedToClipboard => '링크가 클립보드에 복사되었습니다';

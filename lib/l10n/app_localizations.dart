@@ -670,8 +670,8 @@ abstract class AppLocalizations {
   /// 更新下载失败提示
   ///
   /// In zh, this message translates to:
-  /// **'下载失败: {error}'**
-  String downloadFailed(Object error);
+  /// **'下载失败'**
+  String get downloadFailed;
 
   ///
   ///
@@ -1938,6 +1938,66 @@ abstract class AppLocalizations {
   /// **'登录失败，请检查用户名和密码'**
   String get loginFailed;
 
+  /// 统一身份认证密码过期时的登录提示
+  ///
+  /// In zh, this message translates to:
+  /// **'当前密码已过期，请先修改统一身份认证密码。'**
+  String get loginPasswordExpired;
+
+  /// 操作过于频繁时的提示
+  ///
+  /// In zh, this message translates to:
+  /// **'操作过于频繁，请稍后重试。'**
+  String get tooManyRequests;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'请求参数有误，请检查后重试。'**
+  String get apiInvalidParameters;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'请求的资源不存在。'**
+  String get apiResourceNotFound;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'没有权限执行此操作。'**
+  String get apiForbidden;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'需要二次认证'**
+  String get apiMfaRequired;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'二次认证会话已过期，请重新登录'**
+  String get apiMfaSessionExpired;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'验证码错误或已过期'**
+  String get apiMfaInvalidCode;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'当前应用不支持所选的二次认证方式'**
+  String get apiMfaMethodUnsupported;
+
+  /// 教务接口错误提示
+  ///
+  /// In zh, this message translates to:
+  /// **'二次认证暂不可用，请稍后重试'**
+  String get apiMfaUnavailable;
+
   ///
   ///
   /// In zh, this message translates to:
@@ -2466,11 +2526,11 @@ abstract class AppLocalizations {
   /// **'更新超时，请检查网络连接后重试'**
   String get updateTimeout;
 
-  ///
+  /// 课表更新失败提示
   ///
   /// In zh, this message translates to:
-  /// **'更新失败: {error}'**
-  String updateFailed(String error);
+  /// **'更新失败'**
+  String get updateFailed;
 
   ///
   ///

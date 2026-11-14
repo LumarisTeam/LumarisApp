@@ -12,6 +12,7 @@ import 'package:ios_club_app/features/basic/models/school.dart';
 import 'package:ios_club_app/features/education/services/edu_http_client.dart';
 import 'package:ios_club_app/features/education/services/edu_http_client_manager.dart';
 import 'package:ios_club_app/features/education/apis/course_api.dart';
+import 'package:ios_club_app/features/education/apis/electricity_api.dart';
 import 'package:ios_club_app/features/education/apis/exam_api.dart';
 import 'package:ios_club_app/features/education/apis/info_api.dart';
 import 'package:ios_club_app/features/education/apis/login_api.dart';
@@ -19,7 +20,9 @@ import 'package:ios_club_app/features/education/apis/payment_api.dart';
 import 'package:ios_club_app/features/education/models/login_mode.dart';
 import 'package:ios_club_app/features/education/models/payment_qr_code.dart';
 import 'package:ios_club_app/features/education/apis/program_api.dart';
+import 'package:ios_club_app/core/utils/error_message_resolver.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
+import 'package:ios_club_app/l10n/app_localizations_zh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -526,6 +529,106 @@ void main() {
       expect(result.studentId, '2026003');
       expect(result.cookie, 'session-cookie');
     });
+
+    test(
+      'LoginApi should show the password change hint when the password expires',
+      () async {
+        final client = EduHttpClient(baseUrl: 'http://api.test');
+        const body = <String, Object?>{
+          'code': '20004',
+          'message': '当前密码已过期，请先修改统一身份认证密码',
+          'data': {
+            'success': false,
+            'passwordExpired': true,
+            'cookie': 'test-cookie',
+          },
+        };
+        var statusCode = 428;
+        client.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) {
+              final response = Response<Object?>(
+                requestOptions: options,
+                statusCode: statusCode,
+                data: statusCode == 428 ? jsonEncode(body) : body,
+              );
+              if (statusCode == 200) {
+                handler.resolve(response);
+                return;
+              }
+              handler.reject(
+                DioException.badResponse(
+                  statusCode: statusCode,
+                  requestOptions: options,
+                  response: response,
+                ),
+              );
+            },
+          ),
+        );
+        LoginApi.setClientForTest(client);
+        final l10n = AppLocalizationsZh();
+        final passwordExpired = isA<NetworkException>()
+            .having((e) => e.apiCode, 'API code', 20004)
+            .having(
+              (e) => e.toString(),
+              'exception',
+              isNot(contains('test-cookie')),
+            )
+            .having(
+              (e) => resolveEduErrorMessage(
+                e,
+                l10n,
+                fallback: l10n.unknownError,
+                isLogin: true,
+              ),
+              'user message',
+              '当前密码已过期，请先修改统一身份认证密码。',
+            );
+
+        await expectLater(LoginApi.login('u', 'p'), throwsA(passwordExpired));
+        statusCode = 200;
+        await expectLater(LoginApi.login('u', 'p'), throwsA(passwordExpired));
+      },
+    );
+
+    test(
+      'ElectricityApi should read errorCode before parsing the data',
+      () async {
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) => handler.resolve(
+              Response<Object?>(
+                requestOptions: options,
+                statusCode: 200,
+                data: {
+                  'errorCode': '10001',
+                  'data': 'invalid subscription data',
+                },
+              ),
+            ),
+          ),
+        );
+
+        final AppLocalizationsZh l10n = AppLocalizationsZh();
+        await expectLater(
+          ElectricityApi.getSubscription('test@example.com'),
+          throwsA(
+            isA<NetworkException>()
+                .having((e) => e.apiCode, 'API code', 10001)
+                .having(
+                  (e) => resolveEduErrorMessage(
+                    e,
+                    l10n,
+                    fallback: l10n.electricitySubLoadFailed,
+                  ),
+                  'user message',
+                  l10n.apiInvalidParameters,
+                ),
+          ),
+        );
+      },
+    );
 
     test('LoginApi should wrap invalid response as NetworkException', () async {
       final client = EduHttpClient(baseUrl: 'http://api.test');

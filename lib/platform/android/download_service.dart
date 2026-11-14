@@ -226,13 +226,11 @@ class UpdateManager {
           message: context.l10n.downloadCompletedInstalling,
         );
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      AppLogger.error('下载更新失败', error: error, stackTrace: stackTrace);
       if (context.mounted) {
         Navigator.of(context).pop();
-        McFeedback.showMessage(
-          context,
-          message: context.l10n.downloadFailed(e.toString()),
-        );
+        McFeedback.showMessage(context, message: context.l10n.downloadFailed);
       }
     } finally {
       progressNotifier.dispose();

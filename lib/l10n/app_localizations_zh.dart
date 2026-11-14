@@ -291,9 +291,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get downloadCompletedInstalling => '下载完成，正在安装...';
 
   @override
-  String downloadFailed(Object error) {
-    return '下载失败: $error';
-  }
+  String get downloadFailed => '下载失败';
 
   @override
   String get confirm => '确认';
@@ -968,6 +966,36 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loginFailed => '登录失败，请检查用户名和密码';
 
   @override
+  String get loginPasswordExpired => '当前密码已过期，请先修改统一身份认证密码。';
+
+  @override
+  String get tooManyRequests => '操作过于频繁，请稍后重试。';
+
+  @override
+  String get apiInvalidParameters => '请求参数有误，请检查后重试。';
+
+  @override
+  String get apiResourceNotFound => '请求的资源不存在。';
+
+  @override
+  String get apiForbidden => '没有权限执行此操作。';
+
+  @override
+  String get apiMfaRequired => '需要二次认证';
+
+  @override
+  String get apiMfaSessionExpired => '二次认证会话已过期，请重新登录';
+
+  @override
+  String get apiMfaInvalidCode => '验证码错误或已过期';
+
+  @override
+  String get apiMfaMethodUnsupported => '当前应用不支持所选的二次认证方式';
+
+  @override
+  String get apiMfaUnavailable => '二次认证暂不可用，请稍后重试';
+
+  @override
   String get loginTimeout => '登录超时，请检查网络连接后重试';
 
   @override
@@ -1239,9 +1267,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get updateTimeout => '更新超时，请检查网络连接后重试';
 
   @override
-  String updateFailed(String error) {
-    return '更新失败: $error';
-  }
+  String get updateFailed => '更新失败';
 
   @override
   String get linkCopiedToClipboard => '链接已复制到剪贴板';
@@ -2686,9 +2712,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get downloadCompletedInstalling => '下載完成，正在安裝...';
 
   @override
-  String downloadFailed(Object error) {
-    return '下載失敗: $error';
-  }
+  String get downloadFailed => '下載失敗';
 
   @override
   String get confirm => '確認';
@@ -3364,6 +3388,36 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get loginFailed => '登入失敗，請檢查使用者名稱和密碼';
 
   @override
+  String get loginPasswordExpired => '目前密碼已過期，請先修改統一身分驗證密碼。';
+
+  @override
+  String get tooManyRequests => '操作過於頻繁，請稍後再試。';
+
+  @override
+  String get apiInvalidParameters => '請求參數有誤，請檢查後重試。';
+
+  @override
+  String get apiResourceNotFound => '請求的資源不存在。';
+
+  @override
+  String get apiForbidden => '沒有權限執行此操作。';
+
+  @override
+  String get apiMfaRequired => '需要二次認證';
+
+  @override
+  String get apiMfaSessionExpired => '二次認證工作階段已過期，請重新登入';
+
+  @override
+  String get apiMfaInvalidCode => '驗證碼錯誤或已過期';
+
+  @override
+  String get apiMfaMethodUnsupported => '目前應用程式不支援所選的二次認證方式';
+
+  @override
+  String get apiMfaUnavailable => '二次認證暫時不可用，請稍後重試';
+
+  @override
   String get loginTimeout => '登入逾時，請檢查網路連線後重試';
 
   @override
@@ -3635,9 +3689,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get updateTimeout => '更新逾時，請檢查網路連線後重試';
 
   @override
-  String updateFailed(String error) {
-    return '更新失敗: $error';
-  }
+  String get updateFailed => '更新失敗';
 
   @override
   String get linkCopiedToClipboard => '連結已複製到剪貼簿';

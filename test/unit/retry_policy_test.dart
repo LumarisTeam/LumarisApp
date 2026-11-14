@@ -68,6 +68,50 @@ void main() {
   });
 
   group('DioErrorHandler', () {
+    test('should retain errorCode when HTTP uses a specialized exception', () {
+      expect(
+        () => DioErrorHandler.handleErrorResponse(401, {'errorCode': '20006'}),
+        throwsA(
+          isA<AuthenticationException>()
+              .having((e) => e.apiCode, 'API code', 20006),
+        ),
+      );
+    });
+
+    test(
+      'should keep the API code and omit the response body when HTTP fails',
+      () {
+        expect(
+          () => DioErrorHandler.handleErrorResponse(428, {
+            'data': {'cookie': 'test-cookie'},
+            'code': 20004,
+            'message': '密码已过期',
+          }),
+          throwsA(
+            isA<NetworkException>()
+                .having((e) => e.statusCode, 'status code', 428)
+                .having((e) => e.apiCode, 'API code', 20004)
+                .having((e) => e.message, 'message', '请求失败'),
+          ),
+        );
+      },
+    );
+
+    test('should use a generic message when the error body is not JSON', () {
+      expect(
+        () => DioErrorHandler.handleErrorResponse(
+          502,
+          '<html>Bad Gateway</html>',
+        ),
+        throwsA(
+          isA<NetworkException>()
+              .having((e) => e.statusCode, 'status code', 502)
+              .having((e) => e.apiCode, 'API code', isNull)
+              .having((e) => e.message, 'message', '请求失败'),
+        ),
+      );
+    });
+
     test('handleErrorResponse should map status code to typed exceptions', () {
       expect(
         () => DioErrorHandler.handleErrorResponse(401, 'unauthorized'),

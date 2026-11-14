@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../../core/services/network_exception.dart';
+import 'edu_api_codes.dart';
 
 part 'api_response.g.dart';
 
@@ -25,21 +26,32 @@ class ApiResponse<T> {
   /// True when the response indicates success.
   ///
   /// Per v1.yaml convention: null code, 0, "0", 200, or "200" means success.
-  bool get isSuccess {
-    if (code == null) return true;
-    if (code == 0 || code == '0') return true;
-    if (code == 200 || code == '200') return true;
-    return false;
-  }
+  bool get isSuccess => _isSuccessCode(code);
+
+  static bool _isSuccessCode(Object? code) =>
+      code == null ||
+      code == EduApiCodes.success ||
+      code == '${EduApiCodes.success}' ||
+      code == 200 ||
+      code == '200';
 
   factory ApiResponse.fromJson(
     Map<String, dynamic> json,
     T Function(Object? json) fromJsonT,
   ) {
-    if (json.containsKey('data')) {
+    if (json.containsKey('data') ||
+        json.containsKey('errorCode') ||
+        (json.containsKey('code') &&
+            (json.containsKey('message') || json.length == 1))) {
+      final Object? code =
+          NetworkException.readApiCode(json) ??
+          json['errorCode'] ??
+          json['code'];
       return ApiResponse(
-        data: json['data'] != null ? fromJsonT(json['data']) : null,
-        code: json['code'],
+        data: _isSuccessCode(code) && json['data'] != null
+            ? fromJsonT(json['data'])
+            : null,
+        code: code,
         message: json['message']?.toString(),
         total: _parseTotal(json['total']),
       );
@@ -59,19 +71,26 @@ class ApiResponse<T> {
   /// Parse a raw dynamic response into [ApiResponse<T>].
   ///
   /// Handles bare arrays and objects for backward compatibility with
-  /// endpoints that don't use the envelope. If [rawResponse] is a [Map], it's
-  /// parsed via [ApiResponse.fromJson] which checks for the `data` key. If
-  /// [rawResponse] is a [List], it's treated as a bare `data` array.
+  /// endpoints that don't use the envelope. Failed envelopes throw a
+  /// [NetworkException] with the API code before decoding the payload.
   factory ApiResponse.parsed(
     dynamic rawResponse,
     T Function(Object? json) fromJsonT,
   ) {
     if (rawResponse == null) {
-      return ApiResponse<T>(data: null, code: 0, message: null, total: null);
+      return ApiResponse<T>(code: EduApiCodes.success);
     }
     if (rawResponse is Map) {
       final Map<String, dynamic> json = Map<String, dynamic>.from(rawResponse);
-      return ApiResponse<T>.fromJson(json, fromJsonT);
+      final ApiResponse<T> response = ApiResponse<T>.fromJson(json, fromJsonT);
+      if (!response.isSuccess) {
+        throw NetworkException(
+          '请求失败',
+          null,
+          NetworkException.readApiCode(json),
+        );
+      }
+      return response;
     }
     if (rawResponse is List) {
       return ApiResponse<T>(

@@ -23,9 +23,6 @@ class ProgramApi {
             .map((e) => PlanCourse.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '培养方案请求失败', -1);
-      }
       return apiResponse.data ?? <PlanCourse>[];
     } catch (e) {
       _handleError(e);
@@ -56,9 +53,6 @@ class ProgramApi {
           });
         },
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '培养方案字典请求失败', -1);
-      }
       return apiResponse.data ?? <String, List<PlanCourse>>{};
     } catch (e) {
       _handleError(e);

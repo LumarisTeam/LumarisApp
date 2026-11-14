@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:ios_club_app/core/services/network_exception.dart';
-import 'package:ios_club_app/core/utils/app_logger.dart';
+
+import '../utils/app_logger.dart';
+import 'network_exception.dart';
 
 /// 重试策略配置
 class RetryPolicy {
@@ -124,35 +125,34 @@ class DioErrorHandler {
   static Never handleError(DioException e) {
     AppLogger.error('HTTP Error: ${e.message}');
 
-    if (e.response != null) {
-      handleErrorResponse(
-        e.response!.statusCode ?? -1,
-        e.response!.data?.toString() ?? '',
-      );
+    final response = e.response;
+    if (response != null) {
+      handleErrorResponse(response.statusCode ?? -1, response.data);
     } else if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.sendTimeout ||
         e.type == DioExceptionType.receiveTimeout) {
       throw TimeoutException();
     } else {
-      throw NetworkException('网络连接失败: ${e.message}', -1);
+      throw ConnectionException();
     }
   }
 
   /// 根据 HTTP 状态码抛出对应的异常
-  static Never handleErrorResponse(int statusCode, String body) {
+  static Never handleErrorResponse(int statusCode, Object? body) {
+    final int? apiCode = NetworkException.readApiCode(body);
     switch (statusCode) {
       case 401:
-        throw AuthenticationException('认证失败');
+        throw AuthenticationException('认证失败', apiCode);
       case 403:
-        throw AuthorizationException('权限不足');
+        throw AuthorizationException('权限不足', apiCode);
       case 404:
-        throw NotFoundException('资源未找到');
+        throw NotFoundException('资源未找到', apiCode);
       case 429:
-        throw NetworkException('已被限流，请稍后再试', 429);
+        throw NetworkException('已被限流，请稍后再试', 429, apiCode);
       case 500:
-        throw ServerException('服务器内部错误');
+        throw ServerException('服务器内部错误', apiCode);
       default:
-        throw NetworkException('请求失败: $body', statusCode);
+        throw NetworkException('请求失败', statusCode, apiCode);
     }
   }
 }

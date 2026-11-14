@@ -24,9 +24,6 @@ class ScoreApi {
             .map((e) => SemesterModel.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '学期请求失败', -1);
-      }
       return SemesterResult(data: apiResponse.data ?? []);
     } catch (e) {
       _handleError(e);
@@ -52,9 +49,6 @@ class ScoreApi {
             .map((e) => ScoreModel.fromJson(Map<String, dynamic>.from(e)))
             .toList(),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '成绩请求失败', -1);
-      }
       return apiResponse.data ?? <ScoreModel>[];
     } catch (e) {
       _handleError(e);
@@ -76,9 +70,6 @@ class ScoreApi {
         (data) =>
             SemesterModel.fromJson(Map<String, dynamic>.from(data as Map)),
       );
-      if (!apiResponse.isSuccess) {
-        throw NetworkException(apiResponse.message ?? '当前学期请求失败', -1);
-      }
       return apiResponse.data ?? SemesterModel(semester: '', name: '');
     } catch (e) {
       _handleError(e);

@@ -14,6 +14,7 @@ import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/state/prefs_keys.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 
+import 'core/utils/app_logger.dart';
 import 'platform/mobile/bottom_navigation.dart';
 import 'platform/tablet/tablet_navigation.dart';
 import 'platform/macos/macos_shell.dart';
@@ -181,7 +182,8 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
                 currentNavigatorContext,
                 message: currentNavigatorContext.l10n.updateOpened,
               );
-            } catch (e) {
+            } catch (error, stackTrace) {
+              AppLogger.error('打开更新链接失败', error: error, stackTrace: stackTrace);
               final currentNavigatorContext = _currentNavigatorContext();
               if (!mounted ||
                   currentNavigatorContext == null ||
@@ -190,7 +192,7 @@ class _MainAppState extends ConsumerState<MainApp> with WidgetsBindingObserver {
               }
               McFeedback.showMessage(
                 currentNavigatorContext,
-                message: '${currentNavigatorContext.l10n.openUpdateFailed}: $e',
+                message: currentNavigatorContext.l10n.openUpdateFailed,
               );
             }
           },

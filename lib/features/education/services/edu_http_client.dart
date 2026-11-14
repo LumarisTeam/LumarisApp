@@ -575,7 +575,6 @@ class EduHttpClient extends BaseHttpClient {
   Never _handleDioException(DioException e) {
     if (e.response?.statusCode == 429) {
       _recordRateLimit(e.requestOptions);
-      DioErrorHandler.handleError(_buildRateLimitException(e.requestOptions));
     }
     DioErrorHandler.handleError(e);
   }

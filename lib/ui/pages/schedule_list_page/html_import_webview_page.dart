@@ -105,12 +105,13 @@ class _HtmlImportWebViewPageState extends ConsumerState<HtmlImportWebViewPage> {
         );
         context.pop(true);
       }
-    } catch (e) {
+    } catch (error, stackTrace) {
+      AppLogger.error('导入课表失败', error: error, stackTrace: stackTrace);
       if (mounted) {
         setState(() => _isImporting = false);
         McFeedback.showMessage(
           context,
-          message: '${context.l10n.noCoursesParsed}: $e',
+          message: context.l10n.warehouseImportFailed,
         );
       }
     }

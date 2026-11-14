@@ -61,7 +61,7 @@ class _WarehouseImportWebViewPageState
   bool _isPreparing = true;
   bool _pageReady = false;
   bool _isImporting = false;
-  String? _error;
+  bool _hasPreparationError = false;
 
   @override
   void initState() {
@@ -99,7 +99,7 @@ class _WarehouseImportWebViewPageState
   Future<void> _prepare() async {
     setState(() {
       _isPreparing = true;
-      _error = null;
+      _hasPreparationError = false;
     });
 
     try {
@@ -141,7 +141,7 @@ class _WarehouseImportWebViewPageState
       if (!mounted) return;
       setState(() {
         _isPreparing = false;
-        _error = '$error';
+        _hasPreparationError = true;
       });
     }
   }
@@ -221,7 +221,8 @@ class _WarehouseImportWebViewPageState
     final mapResult = WarehouseCourseMapper.toCourseModels(
       result.courses,
       fallbackWeeks:
-          result.config?.semesterTotalWeeks ?? WarehouseCourseMapper.defaultWeeks,
+          result.config?.semesterTotalWeeks ??
+          WarehouseCourseMapper.defaultWeeks,
       table: TimeService.tables.first,
     );
     AppLogger.info(
@@ -319,7 +320,7 @@ class _WarehouseImportWebViewPageState
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: _pageReady && !_isImporting && _error == null
+                onPressed: _pageReady && !_isImporting && !_hasPreparationError
                     ? _startImport
                     : null,
                 icon: _isImporting
@@ -361,7 +362,7 @@ class _WarehouseImportWebViewPageState
       );
     }
 
-    if (_error != null) {
+    if (_hasPreparationError) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -370,12 +371,9 @@ class _WarehouseImportWebViewPageState
             children: [
               const Icon(CupertinoIcons.exclamationmark_circle, size: 40),
               const SizedBox(height: 12),
-              Text(_error!, textAlign: TextAlign.center),
+              Text(l10n.warehouseImportFailed, textAlign: TextAlign.center),
               const SizedBox(height: 16),
-              FilledButton(
-                onPressed: _prepare,
-                child: Text(l10n.retry),
-              ),
+              FilledButton(onPressed: _prepare, child: Text(l10n.retry)),
             ],
           ),
         ),
