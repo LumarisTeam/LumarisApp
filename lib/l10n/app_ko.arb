@@ -150,6 +150,7 @@
   "syncingDataSubtitle": "네트워크가 느린 경우 몇 초 정도 걸릴 수 있습니다. 잠시만 기다려 주세요",
 
   "creditOverview": "학점 개요",
+  "studyCreditTitle": "{module} 학점",
   "completionRate": "이수율",
   "itemizedCredits": "항목별 학점",
   "courseConflict": "현재 시간에 여러 수업이 충돌합니다",

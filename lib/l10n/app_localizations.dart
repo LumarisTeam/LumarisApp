@@ -901,6 +901,12 @@ abstract class AppLocalizations {
   /// **'学分概览'**
   String get creditOverview;
 
+  /// Title above the total credits for a study module
+  ///
+  /// In zh, this message translates to:
+  /// **'{module}学分'**
+  String studyCreditTitle(String module);
+
   ///
   ///
   /// In zh, this message translates to:

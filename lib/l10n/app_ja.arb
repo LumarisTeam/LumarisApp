@@ -150,6 +150,7 @@
   "syncingDataSubtitle": "低速ネットワークでは数秒かかる場合があります",
 
   "creditOverview": "単位概要",
+  "studyCreditTitle": "{module}の単位",
   "completionRate": "完了率",
   "itemizedCredits": "単位内訳",
   "courseConflict": "この時間帯に複数の授業が重複しています",

@@ -150,6 +150,7 @@
   "syncingDataSubtitle": "Может занять несколько секунд при медленной сети",
 
   "creditOverview": "Обзор кредитов",
+  "studyCreditTitle": "Кредиты · {module}",
   "completionRate": "Выполнение",
   "itemizedCredits": "По предметам",
   "courseConflict": "Несколько курсов пересекаются в это время",

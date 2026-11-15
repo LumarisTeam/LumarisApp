@@ -427,6 +427,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get creditOverview => 'Credit Overview';
 
   @override
+  String studyCreditTitle(String module) {
+    return '$module Credits';
+  }
+
+  @override
   String get completionRate => 'Completion';
 
   @override

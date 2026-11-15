@@ -1,9 +1,25 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/features/education/models/info_model.dart';
+import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:ios_club_app/ui/components/study_credit_card.dart';
+import 'package:ios_club_app/ui/theme/app_theme_color.dart';
 import 'package:material_ui/material_ui.dart';
 
-import 'theme_test_helpers.dart';
+Widget _creditTestApp({
+  required Widget child,
+  Brightness brightness = Brightness.light,
+}) {
+  return MaterialApp(
+    theme: AppThemeColor.blue.materialTheme(brightness),
+    locale: const Locale('zh'),
+    supportedLocales: AppLocalizations.supportedLocales,
+    localizationsDelegates: const [
+      AppLocalizations.delegate,
+      ...GlobalMaterialLocalizations.delegates,
+    ],
+    home: Scaffold(body: child),
+  );
+}
 
 void main() {
   final InfoModel credits = InfoModel(
@@ -16,39 +32,33 @@ void main() {
     ],
   );
 
-  testWidgets('should_show_compact_names_and_totals_when_credit_data_loads', (
+  testWidgets('should_show_one_progress_ring_when_credit_data_loads', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      themedTestApp(child: StudyCreditCard(data: credits)),
+      _creditTestApp(child: StudyCreditCard(data: credits)),
     );
 
-    expect(find.text('主修'), findsOneWidget);
-    expect(find.text('总学分'), findsOneWidget);
+    expect(find.text('主修学分'), findsOneWidget);
     expect(find.text('56 / 179'), findsOneWidget);
     expect(find.text('通识教育'), findsOneWidget);
     expect(find.text('46.5 / 69.5'), findsOneWidget);
     expect(find.text('创新创业与课外素质'), findsOneWidget);
     expect(find.text('校本选修模块'), findsOneWidget);
 
-    final Iterable<LinearProgressIndicator> bars = tester
-        .widgetList<LinearProgressIndicator>(
-          find.byType(LinearProgressIndicator),
-        );
-    expect(bars.map((LinearProgressIndicator bar) => bar.value), [
-      56 / 179,
-      46.5 / 69.5,
-      1 / 14,
-      0,
-    ]);
+    final Finder ring = find.byType(CircularProgressIndicator);
+    expect(ring, findsOneWidget);
+    expect(tester.widget<CircularProgressIndicator>(ring).value, 56 / 179);
+    expect(find.byType(LinearProgressIndicator), findsNothing);
+    expect(find.byType(Divider), findsNothing);
   });
 
   testWidgets('should_fit_long_labels_when_narrow_screen_uses_large_text', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      themedTestApp(
-        themeMode: ThemeMode.dark,
+      _creditTestApp(
+        brightness: Brightness.dark,
         child: Center(
           child: SizedBox(
             width: 320,

@@ -430,6 +430,11 @@ class AppLocalizationsRu extends AppLocalizations {
   String get creditOverview => 'Обзор кредитов';
 
   @override
+  String studyCreditTitle(String module) {
+    return 'Кредиты · $module';
+  }
+
+  @override
   String get completionRate => 'Выполнение';
 
   @override

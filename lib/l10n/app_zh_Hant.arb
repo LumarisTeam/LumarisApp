@@ -149,6 +149,7 @@
   "syncingDataSubtitle": "網路較慢時可能需要幾秒，請稍等一下",
 
   "creditOverview": "學分概覽",
+  "studyCreditTitle": "{module}學分",
   "completionRate": "完成度",
   "itemizedCredits": "分項學分",
   "courseConflict": "目前時間存在多個衝突課程",

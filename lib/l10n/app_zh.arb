@@ -157,6 +157,7 @@
   "syncingDataSubtitle": "网络较慢时可能需要几秒，请稍等一下",
 
   "creditOverview": "学分概览",
+  "studyCreditTitle": "{module}学分",
   "completionRate": "完成度",
   "itemizedCredits": "分项学分",
   "courseConflict": "当前时间存在多个冲突课程",
@@ -901,6 +902,7 @@
   "@syncingData": {"description": ""},
   "@syncingDataSubtitle": {"description": ""},
   "@creditOverview": {"description": ""},
+  "@studyCreditTitle": {"description": "Title above the total credits for a study module", "placeholders": {"module": {"type": "String"}}},
   "@completionRate": {"description": ""},
   "@itemizedCredits": {"description": ""},
   "@courseConflict": {"description": ""},

@@ -150,6 +150,7 @@
   "syncingDataSubtitle": "Kann bei langsamem Netzwerk einige Sekunden dauern",
 
   "creditOverview": "Leistungspunkte-Übersicht",
+  "studyCreditTitle": "Leistungspunkte · {module}",
   "completionRate": "Abschluss",
   "itemizedCredits": "Aufschlüsselung",
   "courseConflict": "Mehrere Kurse überschneiden sich zu dieser Zeit",

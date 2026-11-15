@@ -413,6 +413,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get creditOverview => '単位概要';
 
   @override
+  String studyCreditTitle(String module) {
+    return '$moduleの単位';
+  }
+
+  @override
   String get completionRate => '完了率';
 
   @override

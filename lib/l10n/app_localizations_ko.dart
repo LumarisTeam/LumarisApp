@@ -415,6 +415,11 @@ class AppLocalizationsKo extends AppLocalizations {
   String get creditOverview => '학점 개요';
 
   @override
+  String studyCreditTitle(String module) {
+    return '$module 학점';
+  }
+
+  @override
   String get completionRate => '이수율';
 
   @override

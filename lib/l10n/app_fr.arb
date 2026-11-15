@@ -150,6 +150,7 @@
   "syncingDataSubtitle": "Peut prendre quelques secondes sur un réseau lent",
 
   "creditOverview": "Aperçu des crédits",
+  "studyCreditTitle": "Crédits · {module}",
   "completionRate": "Complétion",
   "itemizedCredits": "Crédits par matière",
   "courseConflict": "Plusieurs cours se chevauchent à cette heure",

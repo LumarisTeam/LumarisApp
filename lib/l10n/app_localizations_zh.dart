@@ -410,6 +410,11 @@ class AppLocalizationsZh extends AppLocalizations {
   String get creditOverview => '学分概览';
 
   @override
+  String studyCreditTitle(String module) {
+    return '$module学分';
+  }
+
+  @override
   String get completionRate => '完成度';
 
   @override
@@ -2829,6 +2834,11 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get creditOverview => '學分概覽';
+
+  @override
+  String studyCreditTitle(String module) {
+    return '$module學分';
+  }
 
   @override
   String get completionRate => '完成度';
