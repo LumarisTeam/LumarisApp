@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/models/tile_configuration.dart';
@@ -187,6 +189,89 @@ void main() {
         expect(state.busData.single.departureStation, '草堂');
       },
     );
+
+    test('should_keep_departure_station_when_other_stations_run', () async {
+      BusItem trip(String station) => BusItem(
+        lineName: '班车',
+        description: '',
+        departureStation: station,
+        arrivalStation: '临潼',
+        runTime: '08:00',
+        arrivalStationTime: '+00:45',
+      );
+
+      final container = createContainer([
+        busPageAutoLoadProvider.overrideWithValue(false),
+        busPageFetcherProvider.overrideWithValue(
+          ({String? dayDate, bool forceRefresh = false}) async =>
+              BusModel(total: 1, records: [trip(forceRefresh ? '草堂' : '雁塔')]),
+        ),
+      ]);
+      final notifier = container.read(busControllerProvider.notifier);
+
+      await notifier.selectDateByIndex(0);
+      await notifier.refreshData();
+
+      final state = container.read(busControllerProvider);
+      expect(state.selectedCampus, '雁塔');
+      expect(state.campusOptions, ['雁塔', '草堂']);
+      expect(state.busData, isEmpty);
+      notifier.selectCampus('草堂');
+      expect(
+        container.read(busControllerProvider).busData.single.departureStation,
+        '草堂',
+      );
+    });
+
+    test('should_drop_previous_date_data_when_new_date_fails', () async {
+      final BusModel schedule = BusModel(
+        total: 1,
+        records: [
+          BusItem(
+            lineName: '班车',
+            description: '',
+            departureStation: '雁塔',
+            arrivalStation: '草堂',
+            runTime: '08:00',
+            arrivalStationTime: '+00:45',
+          ),
+        ],
+      );
+      final List<Completer<BusModel>> requests = [];
+      final container = createContainer([
+        busPageAutoLoadProvider.overrideWithValue(false),
+        busPageFetcherProvider.overrideWithValue(({
+          String? dayDate,
+          bool forceRefresh = false,
+        }) {
+          final Completer<BusModel> request = Completer<BusModel>();
+          requests.add(request);
+          return request.future;
+        }),
+      ]);
+      final notifier = container.read(busControllerProvider.notifier);
+      final Future<void> initial = notifier.selectDateByIndex(0);
+      requests[0].complete(schedule);
+      await initial;
+
+      final Future<void> olderRequest = notifier.selectDateByIndex(1);
+      final Future<void> intermediateRequest = notifier.selectDateByIndex(0);
+      final Future<void> latestRequest = notifier.selectDateByIndex(1);
+      requests[1].complete(schedule);
+      requests[2].complete(schedule);
+      await Future.wait([olderRequest, intermediateRequest]);
+
+      final pending = container.read(busControllerProvider);
+      expect(pending.isLoading, isTrue);
+      expect(pending.busData, isEmpty);
+
+      requests[3].completeError(StateError('Unable to load new date'));
+      await latestRequest;
+      final failed = container.read(busControllerProvider);
+      expect(failed.isLoading, isFalse);
+      expect(failed.errorMessage, 'load_failed');
+      expect(failed.busData, isEmpty);
+    });
 
     test('should_use_tile_configuration_for_show_bus_setting', () async {
       await PrefsService.instance.setStringList(PrefsKeys.TILES, [

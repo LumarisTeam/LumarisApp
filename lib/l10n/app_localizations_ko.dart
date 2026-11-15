@@ -1462,6 +1462,35 @@ class AppLocalizationsKo extends AppLocalizations {
   String get noCardDataSubtitle => '잔액 및 거래 내역을 보려면 학사 시스템 계정으로 로그인해 주세요';
 
   @override
+  String get busDepartureStation => '출발 정류장';
+
+  @override
+  String get busTimetable => '출발 시간표';
+
+  @override
+  String busTripCount(int count) {
+    return '$count편';
+  }
+
+  @override
+  String get busDateToday => '오늘';
+
+  @override
+  String get busDateTomorrow => '내일';
+
+  @override
+  String get busNoTripsOnDate => '선택한 날짜에 운행하는 버스가 없습니다';
+
+  @override
+  String get busNoTripsFromStation => '이 정류장에서 출발하는 버스가 없습니다';
+
+  @override
+  String get busSwitchDateHint => '다른 날짜를 선택해 주세요';
+
+  @override
+  String get busSwitchStationOrDateHint => '다른 정류장이나 날짜를 선택해 주세요';
+
+  @override
   String get busLoading => '스쿨버스 시간표 로딩 중';
 
   @override
@@ -1861,7 +1890,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get campusYanTa => '옌타';
 
   @override
-  String get busRefreshStale => '새로고침 완료, 마지막 스쿨버스 데이터가 유지됨';
+  String get busRefreshStale => '새로 고치지 못해 이전 결과를 표시합니다.';
 
   @override
   String arrivalStationTime(String h, String m) {

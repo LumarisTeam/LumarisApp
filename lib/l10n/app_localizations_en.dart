@@ -1505,6 +1505,41 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please log in to view balance and transactions';
 
   @override
+  String get busDepartureStation => 'Departure stop';
+
+  @override
+  String get busTimetable => 'Departures';
+
+  @override
+  String busTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trips',
+      one: '1 trip',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get busDateToday => 'Today';
+
+  @override
+  String get busDateTomorrow => 'Tomorrow';
+
+  @override
+  String get busNoTripsOnDate => 'No buses on this date';
+
+  @override
+  String get busNoTripsFromStation => 'No buses from this stop on this date';
+
+  @override
+  String get busSwitchDateHint => 'Choose another date to see more trips';
+
+  @override
+  String get busSwitchStationOrDateHint => 'Choose another stop or date';
+
+  @override
   String get busLoading => 'Fetching bus schedule';
 
   @override
@@ -1918,7 +1953,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get campusYanTa => 'Yanta';
 
   @override
-  String get busRefreshStale => 'Refresh completed, last data preserved';
+  String get busRefreshStale => 'Refresh failed. Showing the last results.';
 
   @override
   String arrivalStationTime(String h, String m) {

@@ -1,13 +1,14 @@
 import 'package:intl/intl.dart';
-import 'package:ios_club_app/core/utils/app_logger.dart';
-import 'package:ios_club_app/features/education/models/bus_model.dart';
 
+import '../../../core/utils/app_logger.dart';
 import '../apis/bus_api.dart';
+import '../models/bus_model.dart';
 
 class BusService {
   static Future<BusModel> getBus({
     String? dayDate,
     bool forceRefresh = false,
+    bool throwOnError = false,
   }) async {
     try {
       final response = await BusApi.getBus(
@@ -37,6 +38,7 @@ class BusService {
       }
       return result;
     } catch (e, stackTrace) {
+      if (throwOnError) rethrow;
       AppLogger.error('获取校巴信息失败', error: e, stackTrace: stackTrace);
     }
 

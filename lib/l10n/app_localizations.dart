@@ -2868,6 +2868,60 @@ abstract class AppLocalizations {
   /// **'请登录教务处账号以查看余额和交易流水'**
   String get noCardDataSubtitle;
 
+  /// 出发站
+  ///
+  /// In zh, this message translates to:
+  /// **'出发站'**
+  String get busDepartureStation;
+
+  /// 发车时刻
+  ///
+  /// In zh, this message translates to:
+  /// **'发车时刻'**
+  String get busTimetable;
+
+  /// 所选出发站的班次数量
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 班'**
+  String busTripCount(int count);
+
+  /// 今天
+  ///
+  /// In zh, this message translates to:
+  /// **'今天'**
+  String get busDateToday;
+
+  /// 明天
+  ///
+  /// In zh, this message translates to:
+  /// **'明天'**
+  String get busDateTomorrow;
+
+  /// 所选日期暂无校车班次
+  ///
+  /// In zh, this message translates to:
+  /// **'所选日期暂无校车班次'**
+  String get busNoTripsOnDate;
+
+  /// 该出发站当天无班次
+  ///
+  /// In zh, this message translates to:
+  /// **'该出发站当天无班次'**
+  String get busNoTripsFromStation;
+
+  /// 可切换日期查看其他班次
+  ///
+  /// In zh, this message translates to:
+  /// **'可切换日期查看其他班次'**
+  String get busSwitchDateHint;
+
+  /// 可切换出发站或日期
+  ///
+  /// In zh, this message translates to:
+  /// **'可切换出发站或日期'**
+  String get busSwitchStationOrDateHint;
+
   ///
   ///
   /// In zh, this message translates to:
@@ -3633,7 +3687,7 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
-  /// **'刷新完成，已保留上次校车数据'**
+  /// **'刷新失败，当前显示上次结果'**
   String get busRefreshStale;
 
   ///

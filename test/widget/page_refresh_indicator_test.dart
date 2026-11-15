@@ -5,6 +5,7 @@ import 'package:luamris_ui/luamris_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
+import 'package:ios_club_app/features/education/models/bus_model.dart';
 import 'package:ios_club_app/features/education/models/electric_data.dart';
 import 'package:ios_club_app/features/education/models/edu_api_models.dart';
 import 'package:ios_club_app/features/education/models/plan_course.dart';
@@ -16,6 +17,7 @@ import 'package:ios_club_app/state/program_page_notifier.dart';
 import 'package:ios_club_app/state/tile_store_providers.dart';
 import 'package:ios_club_app/state/bus_page_notifier.dart';
 import 'package:ios_club_app/state/user_store.dart';
+import 'package:ios_club_app/ui/components/page_app_bar.dart';
 import 'package:ios_club_app/ui/pages/electricity_page/electricity_page.dart';
 import 'package:ios_club_app/ui/pages/payment_page/payment_page.dart';
 import 'package:ios_club_app/ui/pages/program_page/program_page.dart';
@@ -367,5 +369,62 @@ void main() {
     );
 
     expect(find.byType(RefreshIndicator), findsOneWidget);
+  });
+
+  testWidgets('should open the bus detail sheet on a narrow scaled display', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(320, 640);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    final BusItem trip = BusItem(
+      lineName: '校际班车',
+      description: '请在西门候车',
+      departureStation: '雁塔校区',
+      arrivalStation: '草堂校区',
+      runTime: '08:00',
+      arrivalStationTime: '+00:45',
+    );
+    final ProviderContainer container = await _createLoggedInContainer([
+      busPageAutoLoadProvider.overrideWithValue(false),
+      busPageFetcherProvider.overrideWithValue(
+        ({String? dayDate, bool forceRefresh = false}) async =>
+            BusModel(total: 1, records: [trip]),
+      ),
+    ]);
+    await container.read(busControllerProvider.notifier).selectDateByIndex(0);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: _wrapWithApp(
+          Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(textScaler: TextScaler.linear(2)),
+              child: const SchoolBusPage(),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    expect(find.byType(PageAppBar), findsOneWidget);
+    final Finder destination = find.text('草堂校区');
+    await tester.ensureVisible(destination);
+    await tester.tap(destination);
+    await tester.pumpAndSettle();
+    expect(find.text('校际班车'), findsOneWidget);
+    expect(find.text('请在西门候车'), findsOneWidget);
+    final Finder arrival = find.text('8:45');
+    expect(arrival, findsOneWidget);
+    expect(
+      find.ancestor(of: arrival, matching: find.byType(McCard)),
+      findsNothing,
+    );
+    expect(tester.takeException(), isNull);
   });
 }

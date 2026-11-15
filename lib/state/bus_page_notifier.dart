@@ -1,10 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:ios_club_app/features/education/models/bus_model.dart';
-import 'package:ios_club_app/features/education/services/bus_service.dart';
-import 'package:ios_club_app/features/system/tile_service.dart';
-import 'package:ios_club_app/state/app_states.dart';
-import 'package:ios_club_app/state/tile_edit_notifier.dart';
+
+import '../core/utils/app_logger.dart';
+import '../core/utils/stale_request_guard.dart';
+import '../features/education/models/bus_model.dart';
+import '../features/education/services/bus_service.dart';
+import '../features/system/tile_service.dart';
+import 'app_states.dart';
+import 'tile_edit_notifier.dart';
 
 typedef BusPageFetcher =
     Future<BusModel> Function({String? dayDate, bool forceRefresh});
@@ -12,7 +15,11 @@ typedef BusPageFetcher =
 final busPageAutoLoadProvider = Provider<bool>((ref) => true);
 final busPageFetcherProvider = Provider<BusPageFetcher>((ref) {
   return ({String? dayDate, bool forceRefresh = false}) {
-    return BusService.getBus(dayDate: dayDate, forceRefresh: forceRefresh);
+    return BusService.getBus(
+      dayDate: dayDate,
+      forceRefresh: forceRefresh,
+      throwOnError: true,
+    );
   };
 });
 
@@ -22,20 +29,27 @@ final busControllerProvider = NotifierProvider<BusPageNotifier, BusPageState>(
 
 class BusPageNotifier extends Notifier<BusPageState> {
   final Map<String, String> availableDates = {};
+  final StaleRequestGuard _requests = StaleRequestGuard();
+  bool _disposed = false;
 
   @override
   BusPageState build() {
+    _disposed = false;
+    ref.onDispose(() {
+      _disposed = true;
+      _requests.beginRequest();
+    });
     _generateWeeklyDates();
     final selectedDate = availableDates.isNotEmpty
         ? availableDates.keys.first
         : '';
     if (ref.read(busPageAutoLoadProvider)) {
       Future<void>.microtask(() async {
-        state = state.copyWith(selectedDate: selectedDate);
-        if (selectedDate.isNotEmpty) {
-          await _fetchBusData(isInit: true);
+        if (_disposed) return;
+        if (state.selectedDate == selectedDate && !state.isLoading) {
+          await _fetchBusData();
         }
-        await _loadTiles();
+        if (!_disposed) await _loadTiles();
       });
     }
     return BusPageState(selectedDate: selectedDate);
@@ -45,7 +59,7 @@ class BusPageNotifier extends Notifier<BusPageState> {
     availableDates.clear();
     final now = DateTime.now();
     for (var i = 0; i < 7; i++) {
-      final date = now.add(Duration(days: i));
+      final date = DateTime(now.year, now.month, now.day + i);
       availableDates[DateFormat('yyyy-MM-dd').format(date)] = DateFormat(
         'M月d日',
       ).format(date);
@@ -56,69 +70,69 @@ class BusPageNotifier extends Notifier<BusPageState> {
     if (index < 0 || index >= availableDates.length) {
       return;
     }
-    state = state.copyWith(selectedDate: availableDates.keys.elementAt(index));
+    final String date = availableDates.keys.elementAt(index);
+    if (date != state.selectedDate) {
+      state = state.copyWith(
+        selectedDate: date,
+        todayBusData: const [],
+        busData: const [],
+      );
+    }
     await _fetchBusData();
   }
 
   Future<void> _loadTiles() async {
     final config = await TileService.getTileConfigurations();
     final tiles = config.getVisibleTiles().map((tile) => tile.id).toList();
-    state = state.copyWith(tiles: tiles, isShowBus: tiles.contains('校车'));
+    if (!_disposed) {
+      state = state.copyWith(tiles: tiles, isShowBus: tiles.contains('校车'));
+    }
   }
 
-  Future<void> _fetchBusData({
-    bool isInit = false,
-    bool forceRefresh = false,
-  }) async {
-    final currentSelectedDate = state.selectedDate;
-    final previousTodayBusData = state.todayBusData;
-    final previousBusData = state.busData;
+  Future<void> _fetchBusData({bool forceRefresh = false}) async {
+    final int requestId = _requests.beginRequest();
+    final String date = state.selectedDate;
     state = state.copyWith(isLoading: true, errorMessage: '');
 
     try {
       final BusModel data = await ref.read(busPageFetcherProvider)(
-        dayDate: state.selectedDate,
+        dayDate: date,
         forceRefresh: forceRefresh,
       );
+      if (_disposed || !_requests.isCurrent(requestId)) return;
 
-      // 检查在异步请求期间用户是否切换了日期
-      if (state.selectedDate != currentSelectedDate) {
-        return;
+      final List<String> campusOptions = _extractCampusOptions(data.records);
+      final String selectedCampus = state.selectedCampus.isNotEmpty
+          ? state.selectedCampus
+          : campusOptions.firstOrNull ?? '';
+      if (campusOptions.isNotEmpty && !campusOptions.contains(selectedCampus)) {
+        campusOptions.insert(0, selectedCampus);
       }
 
-      final todayBusData = data.records;
-      final campusOptions = _extractCampusOptions(todayBusData);
-      final selectedCampus =
-          campusOptions.contains(state.selectedCampus) &&
-              state.selectedCampus.isNotEmpty
-          ? state.selectedCampus
-          : (campusOptions.isNotEmpty ? campusOptions.first : '');
-      final busData = _filterBusData(todayBusData, selectedCampus);
-
       state = state.copyWith(
-        todayBusData: todayBusData,
+        isLoading: false,
+        todayBusData: data.records,
         campusOptions: campusOptions,
         selectedCampus: selectedCampus,
-        busData: busData,
+        busData: _filterBusData(data.records, selectedCampus),
       );
-    } catch (e) {
-      if (state.selectedDate != currentSelectedDate) {
-        return;
-      }
+    } catch (error, stackTrace) {
+      if (_disposed || !_requests.isCurrent(requestId)) return;
+      AppLogger.warning(
+        'Could not load school bus schedule for $date',
+        error: error,
+        stackTrace: stackTrace,
+      );
       state = state.copyWith(
-        errorMessage: 'stale_data',
-        todayBusData: previousTodayBusData,
-        busData: previousBusData,
+        isLoading: false,
+        errorMessage: state.todayBusData.isEmpty ? 'load_failed' : 'stale_data',
       );
-    } finally {
-      if (state.selectedDate == currentSelectedDate) {
-        state = state.copyWith(isLoading: false);
-      }
     }
   }
 
   void selectCampus(String campus) {
-    if (campus.isEmpty || campus == state.selectedCampus) {
+    if (campus == state.selectedCampus ||
+        !state.campusOptions.contains(campus)) {
       return;
     }
 

@@ -1,497 +1,580 @@
+import 'package:flutter/widget_previews.dart';
+
 import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
-import 'package:ios_club_app/features/basic/models/school.dart';
-import 'package:ios_club_app/state/school_store.dart';
-import 'package:ios_club_app/core/utils/error_message_resolver.dart';
-import 'package:ios_club_app/features/education/models/bus_model.dart'
-    show BusItem;
-import 'package:ios_club_app/state/app_states.dart';
-import 'package:ios_club_app/state/user_store.dart';
-import 'package:ios_club_app/ui/components/empty_widget.dart';
-import 'package:ios_club_app/ui/components/loading_state_view.dart';
-import 'package:ios_club_app/ui/components/modal_components.dart';
-import 'package:ios_club_app/state/bus_page_notifier.dart';
+
+import '../../../core/extensions/localization_extensions.dart';
+import '../../../core/utils/error_message_resolver.dart';
+import '../../../features/basic/models/school.dart';
+import '../../../features/education/models/bus_model.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../../state/app_states.dart';
+import '../../../state/bus_page_notifier.dart';
+import '../../../state/school_store.dart';
+import '../../../state/user_store.dart';
+import '../../components/modal_components.dart';
+import '../../components/page_app_bar.dart';
 
 class SchoolBusPage extends ConsumerWidget {
   const SchoolBusPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final busState = ref.watch(busControllerProvider);
-    final busController = ref.read(busControllerProvider.notifier);
-    final colors = context.mc.colors;
-    final isLogin = ref.watch(userStoreProvider).isLogin;
-    final school = ref.watch(schoolStoreProvider).school;
-    final canBusSchedule = school?.supports(Feature.busSchedule) ?? true;
+    final School? school = ref.watch(schoolStoreProvider).school;
+    final bool isLogin = ref.watch(userStoreProvider).isLogin;
+    final AppLocalizations l10n = context.l10n;
 
-    if (school != null && !canBusSchedule) {
+    if (school != null && !school.supports(Feature.busSchedule)) {
       return Scaffold(
-        appBar: AppBar(title: Text(context.l10n.schoolBus)),
-        body: Center(child: Text(context.l10n.schoolNotSupported)),
+        appBar: PageAppBar(title: l10n.schoolBus),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(l10n.schoolNotSupported),
+          ),
+        ),
       );
     }
-
     if (!isLogin) {
       return Scaffold(
-        appBar: AppBar(title: Text(context.l10n.schoolBus)),
-        body: EmptyWidget(
-          title: context.l10n.guestMode,
-          subtitle: context.l10n.guestModeSubtitle,
-          icon: CupertinoIcons.lock,
-        ),
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: _buildCampusSwitcher(context, busState, busController, colors),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.arrow_clockwise),
-            onPressed: busController.refreshData,
-            tooltip: context.l10n.refreshData,
-          ),
-          IconButton(
-            icon: const Icon(CupertinoIcons.gear),
-            onPressed: () => _showSettingsModalBottomSheet(context),
-            tooltip: context.l10n.settings,
-          ),
-          const SizedBox(width: 4),
-        ],
-      ),
-      body: Column(
-        children: [
-          _buildDateSelector(busState, busController, colors),
-          Expanded(child: _buildContent(context, ref, busState, colors)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCampusSwitcher(
-    BuildContext context,
-    BusPageState busState,
-    BusPageNotifier busController,
-    McColors colors,
-  ) {
-    final campusOptions = busState.campusOptions;
-    if (campusOptions.isEmpty) {
-      return Text(context.l10n.schoolBus);
-    }
-
-    if (campusOptions.length == 1) {
-      return Text(
-        _displayCampusName(campusOptions.first),
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      );
-    }
-
-    if (campusOptions.length >= 3) {
-      return _buildDropdownSelector(
-        context,
-        busState,
-        busController,
-        campusOptions,
-      );
-    }
-
-    return CupertinoSlidingSegmentedControl<String>(
-      groupValue: busState.selectedCampus,
-      children: {
-        for (final campus in campusOptions)
-          campus: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              _displayCampusName(campus),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: busState.selectedCampus == campus
-                    ? FontWeight.w600
-                    : null,
-              ),
+        appBar: PageAppBar(title: l10n.schoolBus),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            McEmpty.placeholder(
+              icon: CupertinoIcons.lock,
+              title: l10n.guestMode,
+              description: l10n.guestModeSubtitle,
             ),
-          ),
-      },
-      onValueChanged: (val) {
-        if (val != null) {
-          busController.selectCampus(val);
-        }
-      },
-    );
-  }
-
-  Widget _buildDropdownSelector(
-    BuildContext context,
-    BusPageState busState,
-    BusPageNotifier busController,
-    List<String> campusOptions,
-  ) {
-    final colors = context.mc.colors;
-    final selectedCampus = busState.selectedCampus;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      child: McPopoverMenu<String>(
-        items: List.generate(campusOptions.length, (index) {
-          return McPopoverMenuItem<String>(
-            value: campusOptions[index],
-            label: _displayCampusName(campusOptions[index]),
-          );
-        }),
-        selectedValue: selectedCampus,
-        matchTriggerWidth: true,
-        onSelected: (val) {
-          busController.selectCampus(val);
-        },
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          decoration: ShapeDecoration(
-            color: colors.cardBackground,
-            shape: McSmoothCorners.shape(McRadii.navigationBorder),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  _displayCampusName(selectedCampus),
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Icon(
-                CupertinoIcons.chevron_down,
-                size: 16,
-                color: colors.secondaryLabel,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  String _displayCampusName(String campus) {
-    return campus.endsWith('校区')
-        ? campus.substring(0, campus.length - 2)
-        : campus;
-  }
-
-  Widget _buildDateSelector(
-    BusPageState busState,
-    BusPageNotifier busController,
-    McColors colors,
-  ) {
-    final dates = busController.availableDates.entries.toList();
-    final selectedIndex = dates.indexWhere(
-      (e) => e.key == busState.selectedDate,
-    );
-
-    return Container(
-      height: 48,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        itemCount: dates.length,
-        itemBuilder: (context, index) {
-          final entry = dates[index];
-          final isSelected = index == selectedIndex;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: GestureDetector(
-              onTap: () => busController.selectDateByIndex(index),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: ShapeDecoration(
-                  color: isSelected
-                      ? colors.primary
-                      : colors.primary.withValues(alpha: 0.05),
-                  shape: McSmoothCorners.shape(BorderRadius.circular(24)),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  entry.value,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                    color: isSelected ? colors.onAccent : colors.secondaryLabel,
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildContent(
-    BuildContext context,
-    WidgetRef ref,
-    BusPageState busState,
-    McColors colors,
-  ) {
-    final busController = ref.read(busControllerProvider.notifier);
-
-    if (busState.isLoading) {
-      return _buildRefreshPlaceholder(
-        onRefresh: busController.refreshData,
-        child: LoadingStateView(
-          title: context.l10n.busLoading,
-          subtitle: context.l10n.busLoadingSubtitle,
-          showCard: false,
+          ],
         ),
       );
     }
 
-    final hasBusData = busState.busData.isNotEmpty;
-    if (busState.errorMessage.isNotEmpty && !hasBusData) {
-      return _buildRefreshPlaceholder(
-        onRefresh: busController.refreshData,
-        child: McCard.elevated(
-          margin: const EdgeInsets.all(24),
-          padding: const EdgeInsets.all(24),
-          child: Column(
+    final BusPageState state = ref.watch(busControllerProvider);
+    final BusPageNotifier controller = ref.read(busControllerProvider.notifier);
+    return _BusScheduleView(
+      state: state,
+      dates: controller.availableDates.keys.map(DateTime.parse).toList(),
+      onDateSelected: controller.selectDateByIndex,
+      onStationSelected: controller.selectCampus,
+      onRefresh: controller.refreshData,
+      onSettings: () => _showSettings(context),
+    );
+  }
+
+  Future<void> _showSettings(BuildContext context) async {
+    await showMcBottomSheet<void>(
+      context: context,
+      contentPadding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+      builder: (context) => Consumer(
+        builder: (context, ref, child) {
+          final BusPageState state = ref.watch(busControllerProvider);
+          final BusPageNotifier controller = ref.read(
+            busControllerProvider.notifier,
+          );
+          return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                CupertinoIcons.exclamationmark_circle,
-                size: 48,
-                color: colors.danger,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                resolveErrorMessage(busState.errorMessage, context.l10n),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: colors.label, fontSize: 16),
-              ),
-              const SizedBox(height: 20),
-              CupertinoButton.filled(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                onPressed: busController.refreshData,
-                child: Text(context.l10n.retry),
+              ModalHeader(title: context.l10n.pageSettings),
+              McListTile(
+                title: Text(context.l10n.showBusTile),
+                subtitle: Text(context.l10n.showBusTileSubtitle),
+                trailing: CupertinoSwitch(
+                  value: state.isShowBus,
+                  onChanged: controller.toggleShowBus,
+                ),
               ),
             ],
-          ),
-        ),
-      );
-    }
-
-    if (!hasBusData) {
-      return _buildRefreshPlaceholder(
-        onRefresh: busController.refreshData,
-        child: EmptyWidget(
-          title: context.l10n.noBusToday,
-          subtitle: context.l10n.noBusTodaySubtitle,
-          icon: CupertinoIcons.bus,
-        ),
-      );
-    }
-
-    return RefreshIndicator(
-      onRefresh: busController.refreshData,
-      child: ListView.builder(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        physics: const AlwaysScrollableScrollPhysics(),
-        itemCount:
-            busState.busData.length +
-            (busState.errorMessage.isNotEmpty ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (busState.errorMessage.isNotEmpty && index == 0) {
-            return McCard.elevated(
-              margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Icon(CupertinoIcons.info_circle, color: colors.warning),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      resolveErrorMessage(busState.errorMessage, context.l10n),
-                      style: TextStyle(color: colors.secondaryLabel),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-          final busIndex = busState.errorMessage.isNotEmpty ? index - 1 : index;
-          final bus = busState.busData[busIndex];
-          return BusTimelineTile(
-            bus: bus,
-            onTap: () => _showBusDetails(context, bus),
           );
         },
       ),
     );
   }
+}
 
-  Widget _buildRefreshPlaceholder({
-    required Future<void> Function() onRefresh,
-    required Widget child,
-  }) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return RefreshIndicator(
-          onRefresh: onRefresh,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: SizedBox(
-              height: constraints.maxHeight,
-              child: Center(child: child),
+class _BusScheduleView extends StatelessWidget {
+  const _BusScheduleView({
+    required this.state,
+    required this.dates,
+    required this.onDateSelected,
+    required this.onStationSelected,
+    required this.onRefresh,
+    this.onSettings,
+  });
+
+  final BusPageState state;
+  final List<DateTime> dates;
+  final ValueChanged<int> onDateSelected;
+  final ValueChanged<String> onStationSelected;
+  final Future<void> Function() onRefresh;
+  final VoidCallback? onSettings;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
+    final DateTime? selectedDate = DateTime.tryParse(state.selectedDate);
+
+    return Scaffold(
+      backgroundColor: context.mc.groupedBackground,
+      appBar: PageAppBar(
+        title: l10n.schoolBus,
+        actions: [
+          Tooltip(
+            message: l10n.refreshData,
+            child: McButton.ghost(
+              padding: const EdgeInsets.all(12),
+              onPressed: state.isLoading ? null : onRefresh,
+              child: Icon(CupertinoIcons.arrow_clockwise, size: 24),
             ),
           ),
+          if (onSettings != null)
+            Tooltip(
+              message: l10n.settings,
+              child: McButton.ghost(
+                padding: const EdgeInsets.all(12),
+                onPressed: onSettings,
+                child: Icon(CupertinoIcons.gear, size: 24),
+              ),
+            ),
+        ],
+      ),
+      body: SafeArea(
+        top: false,
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 520),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (state.selectedCampus.isNotEmpty) ...[
+                        _buildStation(context),
+                        const SizedBox(height: 12),
+                      ],
+                      _BusDateStrip(
+                        dates: dates,
+                        selectedDate: selectedDate,
+                        onSelected: onDateSelected,
+                      ),
+                      const SizedBox(height: 20),
+                      _buildDepartures(context),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStation(BuildContext context) {
+    final bool canSelect = state.campusOptions.length > 1;
+    final Widget field = McCard.grouped(
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 12, 14, 12),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: 24),
+          child: OverflowBar(
+            alignment: MainAxisAlignment.spaceBetween,
+            spacing: 12,
+            overflowSpacing: 6,
+            overflowAlignment: OverflowBarAlignment.start,
+            children: [
+              Text(
+                context.l10n.busDepartureStation,
+                style: context.mc.textMuted,
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      state.selectedCampus,
+                      style: TextStyle(
+                        color: context.mc.foreground,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  if (canSelect) ...[
+                    const SizedBox(width: 6),
+                    Icon(
+                      CupertinoIcons.chevron_down,
+                      size: 14,
+                      color: context.mc.secondaryLabel,
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (!canSelect) return field;
+
+    return McPopoverMenu<String>(
+      items: [
+        for (final String station in state.campusOptions)
+          McPopoverMenuItem(value: station, label: station),
+      ],
+      selectedValue: state.selectedCampus,
+      onSelected: onStationSelected,
+      matchTriggerWidth: true,
+      child: field,
+    );
+  }
+
+  Widget _buildDepartures(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
+    final List<BusItem> trips = state.busData.toList()
+      ..sort(_compareDepartures);
+    final bool hasSchedule = state.todayBusData.isNotEmpty;
+    final bool hasError = state.errorMessage.isNotEmpty;
+    final String status = hasError
+        ? resolveErrorMessage(state.errorMessage, l10n)
+        : '';
+    final bool showCount = trips.isNotEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        OverflowBar(
+          alignment: MainAxisAlignment.spaceBetween,
+          overflowAlignment: OverflowBarAlignment.start,
+          spacing: 12,
+          overflowSpacing: 4,
+          children: [
+            Semantics(
+              header: true,
+              child: Text(l10n.busTimetable, style: context.mc.textSection),
+            ),
+            if (showCount)
+              Text(
+                l10n.busTripCount(trips.length),
+                style: context.mc.textMuted,
+              ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        if (state.isLoading && !hasSchedule)
+          McCard.grouped(
+            child: McListTile(
+              leading: const CupertinoActivityIndicator(),
+              title: Semantics(liveRegion: true, child: Text(l10n.busLoading)),
+            ),
+          )
+        else if (hasError && !hasSchedule)
+          McEmpty.retry(
+            title: status,
+            description: '',
+            retryLabel: l10n.retry,
+            onRetry: onRefresh,
+          )
+        else ...[
+          if (hasError || state.isLoading) ...[
+            McCard.grouped(
+              child: McListTile(
+                leading: hasError
+                    ? Icon(
+                        CupertinoIcons.info_circle,
+                        color: context.mc.colors.warning,
+                      )
+                    : const CupertinoActivityIndicator(),
+                title: Semantics(
+                  liveRegion: true,
+                  child: Text(hasError ? status : l10n.busLoading),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+          if (!showCount)
+            McEmpty.placeholder(
+              icon: CupertinoIcons.bus,
+              title: hasSchedule
+                  ? l10n.busNoTripsFromStation
+                  : l10n.busNoTripsOnDate,
+              description: hasSchedule
+                  ? l10n.busSwitchStationOrDateHint
+                  : l10n.busSwitchDateHint,
+            )
+          else
+            McCard.grouped(
+              child: Column(
+                children: [
+                  for (final (int index, BusItem bus) in trips.indexed) ...[
+                    if (index > 0)
+                      Divider(
+                        height: 1,
+                        thickness: 0.5,
+                        indent: 16,
+                        endIndent: 16,
+                        color: context.mc.colors.separator,
+                      ),
+                    _BusDepartureTile(bus: bus),
+                  ],
+                ],
+              ),
+            ),
+        ],
+      ],
+    );
+  }
+
+  static int _compareDepartures(BusItem a, BusItem b) =>
+      _timeInMinutes(a.runTime).compareTo(_timeInMinutes(b.runTime));
+
+  static int _timeInMinutes(String time) {
+    final List<String> parts = time.split(':');
+    if (parts.length < 2) return 1 << 30;
+    final int? hour = int.tryParse(parts[0]);
+    final int? minute = int.tryParse(parts[1]);
+    return hour == null || minute == null ? 1 << 30 : hour * 60 + minute;
+  }
+}
+
+class _BusDateStrip extends StatelessWidget {
+  const _BusDateStrip({
+    required this.dates,
+    required this.selectedDate,
+    required this.onSelected,
+  });
+
+  final List<DateTime> dates;
+  final DateTime? selectedDate;
+  final ValueChanged<int> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
+    final String locale = Localizations.localeOf(context).toString();
+    final DateFormat weekday = DateFormat.E(locale);
+    final DateFormat monthDay = DateFormat.Md(locale);
+    final DateFormat fullDate = DateFormat.yMMMMEEEEd(locale);
+    final m = context.mc;
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        spacing: 4,
+        children: [
+          for (final (int index, DateTime date) in dates.indexed)
+            Builder(
+              builder: (context) {
+                final bool selected = DateUtils.isSameDay(date, selectedDate);
+                final String title = switch (index) {
+                  0 => l10n.busDateToday,
+                  1 => l10n.busDateTomorrow,
+                  _ => weekday.format(date),
+                };
+                return Semantics(
+                  label: fullDate.format(date),
+                  selected: selected,
+                  child: McButton.ghost(
+                    onPressed: () => onSelected(index),
+                    padding: EdgeInsets.zero,
+                    child: DecoratedBox(
+                      decoration: ShapeDecoration(
+                        color: selected ? m.colors.primarySoft : null,
+                        shape: McSmoothCorners.shape(McRadii.navigationBorder),
+                      ),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: 62,
+                          minHeight: 56,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 8,
+                          ),
+                          child: ExcludeSemantics(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              spacing: 2,
+                              children: [
+                                Text(
+                                  title,
+                                  style: TextStyle(
+                                    color: selected
+                                        ? m.foreground
+                                        : m.secondaryLabel,
+                                    fontSize: 14,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                  ),
+                                ),
+                                Text(monthDay.format(date), style: m.textMuted),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BusDepartureTile extends StatelessWidget {
+  const _BusDepartureTile({required this.bus});
+
+  final BusItem bus;
+
+  @override
+  Widget build(BuildContext context) {
+    final AppLocalizations l10n = context.l10n;
+    final Widget time = Text(
+      bus.runTime.isEmpty ? '—' : bus.runTime,
+      semanticsLabel: bus.runTime.isEmpty
+          ? null
+          : '${l10n.departureTime} ${bus.runTime}',
+      style: TextStyle(
+        color: context.mc.foreground,
+        fontSize: 22,
+        fontWeight: FontWeight.w700,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      ),
+    );
+    final Widget destination = Text(
+      bus.arrivalStation.isEmpty ? bus.lineName : bus.arrivalStation,
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double timeWidth = MediaQuery.textScalerOf(context).scale(70);
+        final bool stackTime = constraints.maxWidth < timeWidth + 190;
+        return McListTile(
+          leading: stackTime ? null : SizedBox(width: timeWidth, child: time),
+          title: stackTime
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 4,
+                  children: [time, destination],
+                )
+              : destination,
+          titleTextStyle: const TextStyle(fontWeight: FontWeight.w600),
+          subtitle: bus.arrivalTime.isEmpty
+              ? null
+              : Text('${l10n.estimatedArrival} ${bus.arrivalTime}'),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
+          ),
+          showChevron: true,
+          onTap: () => _showDetails(context),
         );
       },
     );
   }
 
-  Future<void> _showSettingsModalBottomSheet(BuildContext context) async {
-    await showMcBottomSheet(
+  Future<void> _showDetails(BuildContext context) async {
+    final AppLocalizations l10n = context.l10n;
+    final List<String> duration = bus.arrivalStationTime.split(':');
+    await showMcBottomSheet<void>(
       context: context,
-      builder: (_) => Consumer(
-        builder: (context, ref, child) {
-          final busState = ref.watch(busControllerProvider);
-          final busController = ref.read(busControllerProvider.notifier);
+      scrollable: true,
+      contentPadding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ModalHeader(
+            title: bus.lineName.isEmpty ? l10n.busInfo : bus.lineName,
+          ),
+          _BusStopTime(
+            label: l10n.departureTime,
+            station: bus.departureStation,
+            time: bus.runTime,
+          ),
+          const SizedBox(height: 16),
+          _BusStopTime(
+            label: l10n.estimatedArrival,
+            station: bus.arrivalStation,
+            time: bus.arrivalTime,
+          ),
+          const SizedBox(height: 4),
+          if (bus.arrivalStationTime.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              duration.length < 2
+                  ? bus.arrivalStationTime
+                  : l10n.arrivalStationTime(duration[0], duration[1]),
+              style: context.mc.textMuted,
+            ),
+          ],
+          if (bus.description.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(bus.description, style: context.mc.textMuted),
+          ],
+        ],
+      ),
+    );
+  }
+}
 
-          return Column(
+class _BusStopTime extends StatelessWidget {
+  const _BusStopTime({
+    required this.label,
+    required this.station,
+    required this.time,
+  });
+
+  final String label;
+  final String station;
+  final String time;
+
+  @override
+  Widget build(BuildContext context) {
+    return MergeSemantics(
+      child: OverflowBar(
+        alignment: MainAxisAlignment.spaceBetween,
+        overflowAlignment: OverflowBarAlignment.start,
+        spacing: 16,
+        overflowSpacing: 4,
+        children: [
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
+            spacing: 3,
             children: [
-              Text(
-                context.l10n.pageSettings,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 20),
-              McListTile(
-                title: Text(context.l10n.showBusTile),
-                subtitle: Text(context.l10n.showBusTileSubtitle),
-                trailing: CupertinoSwitch(
-                  value: busState.isShowBus,
-                  onChanged: busController.toggleShowBus,
+              Text(label, style: context.mc.textMuted),
+              if (station.isNotEmpty)
+                Text(
+                  station,
+                  style: context.mc.textBody.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
             ],
-          );
-        },
-      ),
-      showHandle: true,
-      contentPadding: const EdgeInsets.all(24),
-      scrollable: true,
-      maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-    );
-  }
-
-  Future<void> _showBusDetails(BuildContext context, BusItem bus) {
-    final colors = context.mc.colors;
-    final content = Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ModalHeader(title: bus.lineName),
-        const SizedBox(height: 12),
-        _buildInfoRow(
-          context: context,
-          icon: CupertinoIcons.clock_fill,
-          label: context.l10n.departureTime,
-          content: bus.runTime,
-          color: colors.primary,
-        ),
-        _buildInfoRow(
-          context: context,
-          icon: CupertinoIcons.placemark_fill,
-          label: context.l10n.destination,
-          content: bus.arrivalStation,
-          color: colors.danger,
-        ),
-        _buildInfoRow(
-          context: context,
-          icon: CupertinoIcons.clock,
-          label: context.l10n.estimatedArrival,
-          content: bus.arrivalTime,
-          color: colors.success,
-        ),
-        _buildInfoRow(
-          context: context,
-          icon: CupertinoIcons.info_circle,
-          label: context.l10n.busInfo,
-          content: bus.description,
-          color: colors.warning,
-          maxLines: 5,
-        ),
-        const SizedBox(height: 16),
-      ],
-    );
-
-    return showMcBottomSheet(
-      context: context,
-      builder: (_) => content,
-      showHandle: true,
-      contentPadding: const EdgeInsets.all(24),
-      scrollable: true,
-      maxHeight: MediaQuery.sizeOf(context).height * 0.6,
-    );
-  }
-
-  Widget _buildInfoRow({
-    required BuildContext context,
-    required IconData icon,
-    required String label,
-    required String content,
-    required Color color,
-    int maxLines = 1,
-  }) {
-    final colors = context.mc.colors;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: ShapeDecoration(
-              color: color.withValues(alpha: 0.1),
-              shape: McSmoothCorners.shape(BorderRadius.circular(8)),
-            ),
-            child: Icon(icon, size: 20, color: color),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: colors.secondaryLabel,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  content,
-                  maxLines: maxLines,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+          Text(
+            time.isEmpty ? '—' : time,
+            style: TextStyle(
+              color: context.mc.foreground,
+              fontSize: 26,
+              fontWeight: FontWeight.w600,
+              fontFeatures: const [FontFeature.tabularFigures()],
             ),
           ),
         ],
@@ -500,145 +583,35 @@ class SchoolBusPage extends ConsumerWidget {
   }
 }
 
-class BusTimelineTile extends StatelessWidget {
-  const BusTimelineTile({super.key, required this.bus, required this.onTap});
-
-  final BusItem bus;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.mc.colors;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: GestureDetector(
-        onTap: onTap,
-        child: McCard.elevated(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  _buildTimeDisplay(
-                    bus.runTime,
-                    context.l10n.departure,
-                    colors,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Icon(
-                      CupertinoIcons.arrow_right,
-                      size: 20,
-                      color: colors.tertiaryLabel,
-                    ),
-                  ),
-                  _buildTimeDisplay(
-                    bus.arrivalTime,
-                    context.l10n.arrival,
-                    colors,
-                  ),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: ShapeDecoration(
-                      color: colors.primary.withValues(alpha: 0.1),
-                      shape: McSmoothCorners.shape(BorderRadius.circular(6)),
-                    ),
-                    child: Text(
-                      _arrivalStationTimeInL10n(
-                        bus.arrivalStationTime,
-                        context,
-                      ),
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: colors.primary,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${bus.departureStation} → ${bus.arrivalStation}',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        if (bus.description.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            bus.description,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: colors.secondaryLabel,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    CupertinoIcons.chevron_right,
-                    color: colors.quaternaryLabel,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+@Preview(name: 'School bus timetable', size: Size(375, 812))
+Widget schoolBusTimetablePreview() {
+  final List<BusItem> trips = [
+    for (final String time in ['08:00', '09:30', '12:10', '14:30', '17:20'])
+      BusItem(
+        lineName: '雁塔校区 → 长安校区',
+        departureStation: '雁塔校区',
+        arrivalStation: '长安校区',
+        runTime: time,
+        arrivalStationTime: '+00:45',
+        description: '',
       ),
-    );
-  }
-
-  Widget _buildTimeDisplay(String time, String label, McColors colors) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          time,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: colors.label,
-            letterSpacing: -0.5,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: colors.tertiaryLabel,
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _arrivalStationTimeInL10n(
-    String arrivalStationTime,
-    BuildContext context,
-  ) {
-    var s = arrivalStationTime.split(':');
-    if (s.length >= 2) {
-      return context.l10n.arrivalStationTime(s[0], s[1]);
-    }
-
-    return arrivalStationTime;
-  }
+  ];
+  return MaterialApp(
+    locale: const Locale('zh'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: _BusScheduleView(
+      state: BusPageState(
+        selectedDate: '2026-11-15',
+        selectedCampus: '雁塔校区',
+        campusOptions: const ['雁塔校区'],
+        busData: trips,
+        todayBusData: trips,
+      ),
+      dates: List.generate(7, (index) => DateTime(2026, 11, 15 + index)),
+      onDateSelected: (_) {},
+      onStationSelected: (_) {},
+      onRefresh: () async {},
+    ),
+  );
 }

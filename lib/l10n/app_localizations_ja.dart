@@ -1452,6 +1452,35 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noCardDataSubtitle => 'ログインして残高と取引を表示してください';
 
   @override
+  String get busDepartureStation => '出発停留所';
+
+  @override
+  String get busTimetable => '発車時刻';
+
+  @override
+  String busTripCount(int count) {
+    return '$count 便';
+  }
+
+  @override
+  String get busDateToday => '今日';
+
+  @override
+  String get busDateTomorrow => '明日';
+
+  @override
+  String get busNoTripsOnDate => '選択した日は運行がありません';
+
+  @override
+  String get busNoTripsFromStation => 'この停留所からの便はありません';
+
+  @override
+  String get busSwitchDateHint => '別の日付を選んでください';
+
+  @override
+  String get busSwitchStationOrDateHint => '別の停留所または日付を選んでください';
+
+  @override
   String get busLoading => 'バス時刻表を取得中';
 
   @override
@@ -1848,7 +1877,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get campusYanTa => '雁塔';
 
   @override
-  String get busRefreshStale => '更新完了、最後のデータを保持';
+  String get busRefreshStale => '更新できなかったため、前回の結果を表示しています。';
 
   @override
   String arrivalStationTime(String h, String m) {

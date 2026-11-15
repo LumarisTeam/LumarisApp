@@ -527,6 +527,15 @@
   "noCardData": "無飯卡資料",
   "noCardDataSubtitle": "請登入教務處帳號以檢視餘額和交易明細",
 
+  "busDepartureStation": "出發站",
+  "busTimetable": "發車時刻",
+  "busTripCount": "{count} 班",
+  "busDateToday": "今天",
+  "busDateTomorrow": "明天",
+  "busNoTripsOnDate": "所選日期暫無校車班次",
+  "busNoTripsFromStation": "該出發站當天無班次",
+  "busSwitchDateHint": "可切換日期查看其他班次",
+  "busSwitchStationOrDateHint": "可切換出發站或日期",
   "busLoading": "正在取得校車班次",
   "busLoadingSubtitle": "正在按日期整理兩校區往返班車資訊",
   "noBusToday": "今天沒有車了",
@@ -661,7 +670,7 @@
 
   "campusCaoTang": "草堂",
   "campusYanTa": "雁塔",
-  "busRefreshStale": "重新整理完成，已保留上次校車資料",
+  "busRefreshStale": "重新整理失敗，目前顯示上次結果",
   "arrivalStationTime": "{h}小時 {m}分钟",
 
   "poiMainLibrary": "主圖書館",

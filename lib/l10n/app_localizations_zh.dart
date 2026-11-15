@@ -1445,6 +1445,35 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noCardDataSubtitle => '请登录教务处账号以查看余额和交易流水';
 
   @override
+  String get busDepartureStation => '出发站';
+
+  @override
+  String get busTimetable => '发车时刻';
+
+  @override
+  String busTripCount(int count) {
+    return '$count 班';
+  }
+
+  @override
+  String get busDateToday => '今天';
+
+  @override
+  String get busDateTomorrow => '明天';
+
+  @override
+  String get busNoTripsOnDate => '所选日期暂无校车班次';
+
+  @override
+  String get busNoTripsFromStation => '该出发站当天无班次';
+
+  @override
+  String get busSwitchDateHint => '可切换日期查看其他班次';
+
+  @override
+  String get busSwitchStationOrDateHint => '可切换出发站或日期';
+
+  @override
   String get busLoading => '正在获取校车班次';
 
   @override
@@ -1840,7 +1869,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get campusYanTa => '雁塔';
 
   @override
-  String get busRefreshStale => '刷新完成，已保留上次校车数据';
+  String get busRefreshStale => '刷新失败，当前显示上次结果';
 
   @override
   String arrivalStationTime(String h, String m) {
@@ -3881,6 +3910,35 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get noCardDataSubtitle => '請登入教務處帳號以檢視餘額和交易明細';
 
   @override
+  String get busDepartureStation => '出發站';
+
+  @override
+  String get busTimetable => '發車時刻';
+
+  @override
+  String busTripCount(int count) {
+    return '$count 班';
+  }
+
+  @override
+  String get busDateToday => '今天';
+
+  @override
+  String get busDateTomorrow => '明天';
+
+  @override
+  String get busNoTripsOnDate => '所選日期暫無校車班次';
+
+  @override
+  String get busNoTripsFromStation => '該出發站當天無班次';
+
+  @override
+  String get busSwitchDateHint => '可切換日期查看其他班次';
+
+  @override
+  String get busSwitchStationOrDateHint => '可切換出發站或日期';
+
+  @override
   String get busLoading => '正在取得校車班次';
 
   @override
@@ -4276,7 +4334,7 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get campusYanTa => '雁塔';
 
   @override
-  String get busRefreshStale => '重新整理完成，已保留上次校車資料';
+  String get busRefreshStale => '重新整理失敗，目前顯示上次結果';
 
   @override
   String arrivalStationTime(String h, String m) {

@@ -1527,6 +1527,42 @@ class AppLocalizationsFr extends AppLocalizations {
       'Connectez-vous pour voir le solde et les transactions';
 
   @override
+  String get busDepartureStation => 'Arrêt de départ';
+
+  @override
+  String get busTimetable => 'Départs';
+
+  @override
+  String busTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count trajets',
+      one: '1 trajet',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get busDateToday => 'Aujourd’hui';
+
+  @override
+  String get busDateTomorrow => 'Demain';
+
+  @override
+  String get busNoTripsOnDate => 'Aucun bus à cette date';
+
+  @override
+  String get busNoTripsFromStation => 'Aucun départ de cet arrêt à cette date';
+
+  @override
+  String get busSwitchDateHint => 'Choisissez une autre date';
+
+  @override
+  String get busSwitchStationOrDateHint =>
+      'Choisissez un autre arrêt ou une autre date';
+
+  @override
   String get busLoading => 'Récupération des horaires de bus';
 
   @override
@@ -1945,7 +1981,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get campusYanTa => 'Yanta';
 
   @override
-  String get busRefreshStale => 'Actualisation terminée, données conservées';
+  String get busRefreshStale =>
+      'Échec de l’actualisation. Les derniers résultats sont affichés.';
 
   @override
   String arrivalStationTime(String h, String m) {

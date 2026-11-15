@@ -538,6 +538,15 @@
   "noCardData": "No card data",
   "noCardDataSubtitle": "Please log in to view balance and transactions",
 
+  "busDepartureStation": "Departure stop",
+  "busTimetable": "Departures",
+  "busTripCount": "{count, plural, one{1 trip} other{{count} trips}}",
+  "busDateToday": "Today",
+  "busDateTomorrow": "Tomorrow",
+  "busNoTripsOnDate": "No buses on this date",
+  "busNoTripsFromStation": "No buses from this stop on this date",
+  "busSwitchDateHint": "Choose another date to see more trips",
+  "busSwitchStationOrDateHint": "Choose another stop or date",
   "busLoading": "Fetching bus schedule",
   "busLoadingSubtitle": "Organizing bus info by campus and date",
   "noBusToday": "No buses today",
@@ -672,7 +681,7 @@
 
   "campusCaoTang": "Caotang",
   "campusYanTa": "Yanta",
-  "busRefreshStale": "Refresh completed, last data preserved",
+  "busRefreshStale": "Refresh failed. Showing the last results.",
   "arrivalStationTime": "{h}h {m}m",
 
   "poiMainLibrary": "Main Library",

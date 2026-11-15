@@ -1505,6 +1505,43 @@ class AppLocalizationsRu extends AppLocalizations {
       'Войдите в систему для просмотра баланса и транзакций';
 
   @override
+  String get busDepartureStation => 'Остановка отправления';
+
+  @override
+  String get busTimetable => 'Отправления';
+
+  @override
+  String busTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count рейса',
+      many: '$count рейсов',
+      few: '$count рейса',
+      one: '$count рейс',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get busDateToday => 'Сегодня';
+
+  @override
+  String get busDateTomorrow => 'Завтра';
+
+  @override
+  String get busNoTripsOnDate => 'На эту дату автобусов нет';
+
+  @override
+  String get busNoTripsFromStation => 'В этот день с этой остановки рейсов нет';
+
+  @override
+  String get busSwitchDateHint => 'Выберите другую дату';
+
+  @override
+  String get busSwitchStationOrDateHint => 'Выберите другую остановку или дату';
+
+  @override
   String get busLoading => 'Загрузка расписания автобусов';
 
   @override
@@ -1923,7 +1960,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get busRefreshStale =>
-      'Обновление завершено, сохранены последние данные';
+      'Не удалось обновить. Показаны последние результаты.';
 
   @override
   String arrivalStationTime(String h, String m) {

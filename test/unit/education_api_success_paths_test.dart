@@ -828,6 +828,11 @@ void main() {
 
       expect(model.records, isEmpty);
       expect(model.total, 0);
+
+      await expectLater(
+        BusService.getBus(forceRefresh: true, throwOnError: true),
+        throwsA(isA<NetworkException>()),
+      );
     });
   });
 }

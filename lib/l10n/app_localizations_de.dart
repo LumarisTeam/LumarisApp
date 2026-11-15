@@ -1533,6 +1533,42 @@ class AppLocalizationsDe extends AppLocalizations {
       'Bitte melden Sie sich an, um Guthaben und Transaktionen anzuzeigen';
 
   @override
+  String get busDepartureStation => 'Abfahrtshaltestelle';
+
+  @override
+  String get busTimetable => 'Abfahrten';
+
+  @override
+  String busTripCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Fahrten',
+      one: '1 Fahrt',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get busDateToday => 'Heute';
+
+  @override
+  String get busDateTomorrow => 'Morgen';
+
+  @override
+  String get busNoTripsOnDate => 'Keine Busse an diesem Datum';
+
+  @override
+  String get busNoTripsFromStation => 'Keine Abfahrten an dieser Haltestelle';
+
+  @override
+  String get busSwitchDateHint => 'Wähle ein anderes Datum';
+
+  @override
+  String get busSwitchStationOrDateHint =>
+      'Wähle eine andere Haltestelle oder ein anderes Datum';
+
+  @override
   String get busLoading => 'Busfahrplan wird abgerufen';
 
   @override
@@ -1959,7 +1995,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get busRefreshStale =>
-      'Aktualisierung abgeschlossen, letzte Daten beibehalten';
+      'Aktualisierung fehlgeschlagen. Die letzten Ergebnisse werden angezeigt.';
 
   @override
   String arrivalStationTime(String h, String m) {
