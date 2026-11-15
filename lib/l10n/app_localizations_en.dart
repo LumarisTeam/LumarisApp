@@ -1369,6 +1369,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get campusNavigation => 'Campus Toolbox';
 
   @override
+  String get profileCampusServices => 'Campus Services';
+
+  @override
+  String get profileAcademics => 'Academics';
+
+  @override
+  String get profileSettingsAndSupport => 'Settings & Support';
+
+  @override
   String get settingsAbout => 'Settings / About';
 
   @override

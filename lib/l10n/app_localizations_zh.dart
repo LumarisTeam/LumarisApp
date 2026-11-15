@@ -1314,7 +1314,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get campusNavigation => '校园工具箱';
 
   @override
-  String get settingsAbout => '设置/关于';
+  String get profileCampusServices => '校园服务';
+
+  @override
+  String get profileAcademics => '教务';
+
+  @override
+  String get profileSettingsAndSupport => '设置与支持';
+
+  @override
+  String get settingsAbout => '设置与关于';
 
   @override
   String get programLabel => '培养方案';
@@ -3741,7 +3750,16 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get campusNavigation => '校園工具箱';
 
   @override
-  String get settingsAbout => '設定／關於';
+  String get profileCampusServices => '校園服務';
+
+  @override
+  String get profileAcademics => '教務';
+
+  @override
+  String get profileSettingsAndSupport => '設定與支援';
+
+  @override
+  String get settingsAbout => '設定與關於';
 
   @override
   String get programLabel => '培養方案';

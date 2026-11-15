@@ -1321,6 +1321,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get campusNavigation => 'キャンパスツールボックス';
 
   @override
+  String get profileCampusServices => 'キャンパスサービス';
+
+  @override
+  String get profileAcademics => '教務';
+
+  @override
+  String get profileSettingsAndSupport => '設定とサポート';
+
+  @override
   String get settingsAbout => '設定 / について';
 
   @override

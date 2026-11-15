@@ -1387,6 +1387,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get campusNavigation => 'Boîte à outils du campus';
 
   @override
+  String get profileCampusServices => 'Services du campus';
+
+  @override
+  String get profileAcademics => 'Scolarité';
+
+  @override
+  String get profileSettingsAndSupport => 'Réglages et assistance';
+
+  @override
   String get settingsAbout => 'Paramètres / À propos';
 
   @override

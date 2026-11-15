@@ -1330,6 +1330,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get campusNavigation => '캠퍼스 툴박스';
 
   @override
+  String get profileCampusServices => '캠퍼스 서비스';
+
+  @override
+  String get profileAcademics => '학사';
+
+  @override
+  String get profileSettingsAndSupport => '설정 및 지원';
+
+  @override
   String get settingsAbout => '설정/정보';
 
   @override

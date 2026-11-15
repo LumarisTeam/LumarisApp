@@ -1368,6 +1368,15 @@ class AppLocalizationsRu extends AppLocalizations {
   String get campusNavigation => 'Навигация Ящик с инструментами';
 
   @override
+  String get profileCampusServices => 'Сервисы кампуса';
+
+  @override
+  String get profileAcademics => 'Учёба';
+
+  @override
+  String get profileSettingsAndSupport => 'Настройки и поддержка';
+
+  @override
   String get settingsAbout => 'Настройки / О приложении';
 
   @override

@@ -2610,10 +2610,28 @@ abstract class AppLocalizations {
   /// **'校园工具箱'**
   String get campusNavigation;
 
+  /// Section heading on the profile page
+  ///
+  /// In zh, this message translates to:
+  /// **'校园服务'**
+  String get profileCampusServices;
+
+  /// Section heading on the profile page
+  ///
+  /// In zh, this message translates to:
+  /// **'教务'**
+  String get profileAcademics;
+
+  /// Section heading on the profile page
+  ///
+  /// In zh, this message translates to:
+  /// **'设置与支持'**
+  String get profileSettingsAndSupport;
+
   ///
   ///
   /// In zh, this message translates to:
-  /// **'设置/关于'**
+  /// **'设置与关于'**
   String get settingsAbout;
 
   ///

@@ -1,3 +1,4 @@
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -22,10 +23,8 @@ class StudyCreditCard extends StatelessWidget {
         ? (total.actual / total.full).clamp(0.0, 1.0)
         : 0;
 
-    return McCard.flat(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      padding: const EdgeInsets.all(22),
-      radius: 24,
+    return McCard.elevated(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -37,7 +36,11 @@ class StudyCreditCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.school, size: 19, color: tokens.foreground),
+                        Icon(
+                          CupertinoIcons.book,
+                          size: 20,
+                          color: tokens.primary,
+                        ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Semantics(
@@ -47,6 +50,7 @@ class StudyCreditCard extends StatelessWidget {
                               style: textTheme.titleMedium?.copyWith(
                                 color: tokens.foreground,
                                 fontSize: 16,
+                                height: 21 / 16,
                                 letterSpacing: 0,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -78,7 +82,7 @@ class StudyCreditCard extends StatelessWidget {
               ),
             ],
           ),
-          if (data.other.isNotEmpty) const SizedBox(height: 20),
+          if (data.other.isNotEmpty) const SizedBox(height: 12),
           for (final TotalData credit in data.other) _CreditRow(credit: credit),
         ],
       ),
@@ -105,9 +109,9 @@ class _CreditRow extends StatelessWidget {
 
     return MergeSemantics(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 38),
+        constraints: const BoxConstraints(minHeight: 36),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           child: OverflowBar(
             alignment: MainAxisAlignment.spaceBetween,
             spacing: 12,
@@ -119,6 +123,7 @@ class _CreditRow extends StatelessWidget {
                 style: textTheme.bodyLarge?.copyWith(
                   color: context.mc.foreground,
                   fontSize: 15,
+                  height: 20 / 15,
                   letterSpacing: 0,
                 ),
               ),
@@ -163,7 +168,7 @@ class _CreditAmount extends StatelessWidget {
         color: foreground,
         fontSize: isTotal ? 34 : 15,
         fontWeight: FontWeight.w600,
-        height: isTotal ? 1.12 : null,
+        height: isTotal ? 41 / 34 : 20 / 15,
         letterSpacing: isTotal ? -0.5 : 0,
         fontFeatures: const [FontFeature.tabularFigures()],
       ),

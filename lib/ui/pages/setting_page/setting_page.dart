@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import '../../components/page_app_bar.dart';
+import '../../components/settings_group.dart';
 import '../../theme/app_theme_color.dart';
 
 import 'package:cupertino_ui/cupertino_ui.dart';
@@ -79,90 +80,98 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 const SizedBox(height: 24),
                 _buildAppHeader(context),
                 const SizedBox(height: 32),
-                _buildSectionTitle(context, context.l10n.basicSettings),
+                SettingsSectionTitle(title: context.l10n.basicSettings),
                 const SizedBox(height: 12),
-                _buildSettingsGroup([
-                  _buildRefreshTile(context),
-                  _buildThemeModeTile(context, settings, settingsStore),
-                  _buildThemeColorTile(context, settings, settingsStore),
-                  const LanguageSetting(),
-                  const ShowTomorrowSetting(),
-                  if (PlatformUtils.isMobile) const RemindSetting(),
-                  if (PlatformUtils.isAndroid)
-                    const CourseFeaturePermissionTile(
-                      feature: CourseFeaturePermission.reminder,
-                    ),
-                  const HomePageSetting(),
-                  if (PlatformUtils.isMobile) _buildPermissionTile(context),
-                  if (PlatformUtils.isDesktop && !PlatformUtils.isMacOS)
-                    const FontFamilySetting(),
-                ]),
-                const SizedBox(height: 24),
-                _buildSectionTitle(context, context.l10n.version),
-                const SizedBox(height: 12),
-                _buildSettingsGroup([const VersionSetting()]),
-                const SizedBox(height: 24),
-                if (PlatformUtils.isMobile)
-                  _buildSectionTitle(context, context.l10n.widgets),
-                if (PlatformUtils.isMobile) const SizedBox(height: 12),
-                if (PlatformUtils.isMobile)
-                  _buildSettingsGroup([
-                    _buildWidgetTile(context),
+                SettingsGroup(
+                  children: [
+                    _buildRefreshTile(context),
+                    _buildThemeModeTile(context, settings, settingsStore),
+                    _buildThemeColorTile(context, settings, settingsStore),
+                    const LanguageSetting(),
+                    const ShowTomorrowSetting(),
+                    if (PlatformUtils.isMobile) const RemindSetting(),
                     if (PlatformUtils.isAndroid)
                       const CourseFeaturePermissionTile(
-                        feature: CourseFeaturePermission.widget,
+                        feature: CourseFeaturePermission.reminder,
                       ),
-                  ]),
-                if (PlatformUtils.isMobile) const SizedBox(height: 24),
-                _buildSectionTitle(context, context.l10n.about),
-                const SizedBox(height: 12),
-                _buildSettingsGroup([
-                  _buildFeedbackTile(context),
-                  _buildTeamTile(context),
-                  _buildLicenseTile(context),
-                  _buildPrivacyPolicyTile(context),
-                  _buildUserAgreementTile(context),
-                  _buildICPTile(context),
-                ]),
+                    const HomePageSetting(),
+                    if (PlatformUtils.isMobile) _buildPermissionTile(context),
+                    if (PlatformUtils.isDesktop && !PlatformUtils.isMacOS)
+                      const FontFamilySetting(),
+                  ],
+                ),
                 const SizedBox(height: 24),
-                _buildSectionTitle(context, context.l10n.other),
+                SettingsSectionTitle(title: context.l10n.version),
                 const SizedBox(height: 12),
-                _buildSettingsGroup([
-                  _buildClearCacheTile(context),
-                  McListTile(
-                    leading: Icon(
-                      CupertinoIcons.link,
-                      size: 20,
-                      color: colors.primary,
-                    ),
-                    title: Text(context.l10n.mcpTitle),
-                    subtitle: Text(context.l10n.mcpSubtitle),
-                    showChevron: true,
-                    onTap: () => AppRouter.push(AppRoutes.mcp),
+                SettingsGroup(children: [const VersionSetting()]),
+                const SizedBox(height: 24),
+                if (PlatformUtils.isMobile)
+                  SettingsSectionTitle(title: context.l10n.widgets),
+                if (PlatformUtils.isMobile) const SizedBox(height: 12),
+                if (PlatformUtils.isMobile)
+                  SettingsGroup(
+                    children: [
+                      _buildWidgetTile(context),
+                      if (PlatformUtils.isAndroid)
+                        const CourseFeaturePermissionTile(
+                          feature: CourseFeaturePermission.widget,
+                        ),
+                    ],
                   ),
-                  if (userState.isLogin) _buildLogoutTile(context, userStore),
-                  if (kDebugMode)
+                if (PlatformUtils.isMobile) const SizedBox(height: 24),
+                SettingsSectionTitle(title: context.l10n.about),
+                const SizedBox(height: 12),
+                SettingsGroup(
+                  children: [
+                    _buildFeedbackTile(context),
+                    _buildTeamTile(context),
+                    _buildLicenseTile(context),
+                    _buildPrivacyPolicyTile(context),
+                    _buildUserAgreementTile(context),
+                    _buildICPTile(context),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                SettingsSectionTitle(title: context.l10n.other),
+                const SizedBox(height: 12),
+                SettingsGroup(
+                  children: [
+                    _buildClearCacheTile(context),
                     McListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
                       leading: Icon(
-                        CupertinoIcons.checkmark_shield,
+                        CupertinoIcons.link,
                         size: 20,
-                        color: colors.warning,
+                        color: colors.primary,
                       ),
-                      title: Text(context.l10n.agreementAuthDebug),
-                      subtitle: Text(context.l10n.agreementAuthDebugSubtitle),
-                      subtitleTextStyle: const TextStyle(fontSize: 12),
-                      trailing: CupertinoSwitch(
-                        value: settings.hasAcceptedAgreement,
-                        onChanged: (value) {
-                          settingsStore.setHasAcceptedAgreement(value);
-                        },
-                      ),
+                      title: Text(context.l10n.mcpTitle),
+                      subtitle: Text(context.l10n.mcpSubtitle),
+                      showChevron: true,
+                      onTap: () => AppRouter.push(AppRoutes.mcp),
                     ),
-                ]),
+                    if (userState.isLogin) _buildLogoutTile(context, userStore),
+                    if (kDebugMode)
+                      McListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        leading: Icon(
+                          CupertinoIcons.checkmark_shield,
+                          size: 20,
+                          color: colors.warning,
+                        ),
+                        title: Text(context.l10n.agreementAuthDebug),
+                        subtitle: Text(context.l10n.agreementAuthDebugSubtitle),
+                        subtitleTextStyle: const TextStyle(fontSize: 12),
+                        trailing: CupertinoSwitch(
+                          value: settings.hasAcceptedAgreement,
+                          onChanged: (value) {
+                            settingsStore.setHasAcceptedAgreement(value);
+                          },
+                        ),
+                      ),
+                  ],
+                ),
                 const SizedBox(height: 32),
               ],
             ),
@@ -213,33 +222,6 @@ class _SettingPageState extends ConsumerState<SettingPage> {
           style: TextStyle(fontSize: 14, color: colors.secondaryLabel),
         ),
       ],
-    );
-  }
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    final colors = context.mc.colors;
-
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          title.toUpperCase(),
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            letterSpacing: 0.5,
-            color: colors.secondaryLabel,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSettingsGroup(List<Widget> children) {
-    return McCard.elevated(
-      padding: EdgeInsets.zero,
-      child: Column(children: children),
     );
   }
 

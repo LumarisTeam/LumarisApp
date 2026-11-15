@@ -1,26 +1,42 @@
 import 'dart:async';
 
-import 'package:cupertino_ui/cupertino_ui.dart';
-import 'package:luamris_ui/luamris_ui.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:flutter/foundation.dart';
-import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ios_club_app/features/education/models/info_model.dart';
-import 'package:ios_club_app/core/services/prefs_service.dart';
-import 'package:ios_club_app/core/utils/app_logger.dart';
-import 'package:ios_club_app/features/education/services/info_service.dart';
-import 'package:ios_club_app/routes/router.dart';
-import 'package:ios_club_app/features/basic/models/school.dart';
-import 'package:ios_club_app/state/school_store.dart';
-import 'package:ios_club_app/ui/components/loading_state_view.dart';
-
-import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/services/course_color_manager.dart';
-import 'package:ios_club_app/state/prefs_keys.dart';
-import 'package:ios_club_app/state/user_store.dart';
-import 'package:ios_club_app/ui/components/study_credit_card.dart';
+import 'package:luamris_ui/luamris_ui.dart';
+import 'package:material_ui/material_ui.dart';
 
-import 'package:ios_club_app/core/services/secure_storage_service.dart';
+import '../../../core/extensions/localization_extensions.dart';
+import '../../../core/services/prefs_service.dart';
+import '../../../core/services/secure_storage_service.dart';
+import '../../../core/utils/app_logger.dart';
+import '../../../features/basic/models/school.dart';
+import '../../../features/education/models/info_model.dart';
+import '../../../features/education/services/info_service.dart';
+import '../../../routes/router.dart';
+import '../../../state/prefs_keys.dart';
+import '../../../state/school_store.dart';
+import '../../../state/user_store.dart';
+import '../../components/loading_state_view.dart';
+import '../../components/page_app_bar.dart';
+import '../../components/settings_group.dart';
+import '../../components/study_credit_card.dart';
+
+final _studyProgressProvider = FutureProvider.autoDispose
+    .family<List<InfoModel>, String?>((ref, schoolCode) async {
+      try {
+        return await InfoService.getInfoList().timeout(
+          const Duration(seconds: 10),
+        );
+      } on TimeoutException {
+        AppLogger.warning('[ProfilePage] 获取信息列表超时');
+        return <InfoModel>[];
+      } catch (error, stackTrace) {
+        AppLogger.error('获取学生信息列表失败', error: error, stackTrace: stackTrace);
+        rethrow;
+      }
+    });
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -32,75 +48,63 @@ class ProfilePage extends ConsumerStatefulWidget {
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   bool _isLoading = true;
   String _username = '';
-  int _dataRefreshKey = 0;
 
   @override
   void initState() {
     super.initState();
-    _checkLoginStatus();
+    unawaited(_readUsername());
   }
 
-  Future<void> _checkLoginStatus() async {
-    // 检查是否已有登录信息
-    final prefs = PrefsService.instance;
-    final secureStorage = SecureStorageService.instance;
-    final username =
-        await secureStorage.read(key: PrefsKeys.USERNAME) ??
-        prefs.getString(PrefsKeys.USERNAME);
+  Future<void> _readUsername() async {
+    final String username =
+        await SecureStorageService.instance.read(key: PrefsKeys.USERNAME) ??
+        PrefsService.instance.getString(PrefsKeys.USERNAME) ??
+        '';
+    if (!mounted) return;
 
-    // 重置 _username
-    _username = '';
-
-    if (username != null && username.isNotEmpty) {
+    setState(() {
       _username = username;
-    }
-
-    if (!ref.read(userStoreProvider).isLogin) {
-      // 没有登录信息，进入游客模式
-      // await _enterGuestMode(); // 其实这里不需要做什么，只是确认状态
-    }
-
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
+      _isLoading = false;
+    });
   }
 
-  Future<void> _enterLoginMode({bool isOnlyLoginMember = false}) async {
-    final result = await AppRouter.push<bool>(
+  Future<void> _login() async {
+    final bool? result = await AppRouter.push<bool>(
       AppRoutes.login,
-      extra: {'isOnlyLoginMember': isOnlyLoginMember},
+      extra: {'isOnlyLoginMember': false},
     );
-    // 如果登录成功返回 true
-    if (result == true) {
-      await _checkLoginStatus();
-      // 强制刷新数据
-      if (mounted) {
-        setState(() {
-          _dataRefreshKey++;
-        });
-      }
-    }
+    if (!mounted || result != true) return;
+
+    await _readUsername();
+    if (mounted) ref.invalidate(_studyProgressProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final bool isLogin = ref.watch(
+      userStoreProvider.select((state) => state.isLogin),
+    );
+    final School? school = ref.watch(
+      schoolStoreProvider.select((state) => state.school),
+    );
 
-    // 登录态变化时重新读取账号名：登出后清空，重新登录后刷新，
-    // 避免页面被 IndexedStack 保活时继续显示旧账号。
+    // IndexedStack 保留页面时，重新登录后也要读取最新的账号。
     ref.listen<bool>(userStoreProvider.select((state) => state.isLogin), (
       previous,
       next,
     ) {
-      if (previous != next) {
-        unawaited(_checkLoginStatus());
+      if (next) {
+        unawaited(_readUsername());
+      } else {
+        setState(() => _username = '');
       }
     });
 
+    final PageAppBar appBar = PageAppBar(title: l10n.profile);
     if (_isLoading) {
       return Scaffold(
+        appBar: appBar,
         body: Center(
           child: LoadingStateView(
             title: l10n.profileReading,
@@ -110,292 +114,226 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       );
     }
 
-    return Scaffold(body: _buildProfileContent());
-  }
+    final String accountDescription = [
+      if (school != null && school.name.isNotEmpty) school.name,
+      l10n.academicAccount,
+    ].join(' · ');
 
-  List<ProfileButtonItem> getProfileButtonItems(BuildContext context) {
-    final l10n = context.l10n;
-    final isLogin = ref.watch(userStoreProvider).isLogin;
-    return [
-      if (isLogin)
-        ProfileButtonItem(
-          icon: CupertinoIcons.link_circle,
-          title: l10n.campusNavigation,
-          route: AppRoutes.link,
-        ),
-      ProfileButtonItem(
-        icon: CupertinoIcons.gear_solid,
-        title: l10n.settingsAbout,
-        route: AppRoutes.about,
-      ),
-      if (isLogin)
-        ProfileButtonItem(
-          title: l10n.schoolBus,
-          icon: CupertinoIcons.bus,
-          route: AppRoutes.schoolBus,
-        ),
-      if (!kIsWeb && isLogin)
-        ProfileButtonItem(
-          icon: CupertinoIcons.bolt_fill,
-          title: l10n.electricity,
-          route: AppRoutes.electricity,
-        ),
-      if (isLogin)
-        ProfileButtonItem(
-          icon: CupertinoIcons.list_bullet,
-          title: l10n.programLabel,
-          route: AppRoutes.program,
-        ),
-      if (isLogin)
-        ProfileButtonItem(
-          icon: CupertinoIcons.money_yen_circle,
-          title: l10n.payment,
-          route: AppRoutes.payment,
-        ),
-      if (!isLogin)
-        ProfileButtonItem(
-          icon: CupertinoIcons.square_arrow_right,
-          title: l10n.loginEduSystem,
-          onPressed: () {
-            _enterLoginMode(isOnlyLoginMember: false);
-          },
-        ),
-      if (isLogin)
-        ProfileButtonItem(
-          icon: CupertinoIcons.map,
-          title: l10n.campusMap,
-          route: AppRoutes.campusMap,
-        ),
-      ProfileButtonItem(
-        icon: CupertinoIcons.question_circle,
-        title: l10n.help,
-        route: AppRoutes.helper,
-      ),
-    ];
-  }
+    final isMobile = MediaQuery.of(context).size.width <= 600;
 
-  Widget _buildProfileContent() {
-    final l10n = context.l10n;
-    final colors = context.mc.colors;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isLogin = ref.watch(userStoreProvider).isLogin;
-    final school = ref.watch(schoolStoreProvider).school;
-    // 未登录时不再展示缓存的账号名，避免登出后仍显示旧账号。
-    final displayName = isLogin ? _username : '';
-    // 判断是否为平板布局（宽度大于600）
-    final isTablet = screenWidth > 600;
-
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      appBar: isMobile ? appBar : null,
+      body: SafeArea(
+        top: false,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: ShapeDecoration(
-                        shape: McSmoothCorners.shape(McRadii.controlBorder),
-                        shadows: [
-                          BoxShadow(
-                            color: colors.shadowColor,
-                            blurRadius: McRadii.sm,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
+                _ProfileAccount(
+                  title: isLogin
+                      ? (_username.isEmpty ? l10n.academicAccount : _username)
+                      : l10n.loginEduSystem,
+                  subtitle: isLogin ? accountDescription : l10n.guest,
+                  onTap: isLogin ? null : _login,
+                ),
+                if (isLogin) ...[
+                  const SizedBox(height: 24),
+                  _ProfileSection(
+                    title: l10n.profileCampusServices,
+                    entries: [
+                      _ProfileLink(
+                        CupertinoIcons.bus,
+                        l10n.schoolBus,
+                        AppRoutes.schoolBus,
                       ),
-                      child: McSmoothCorners.clip(
-                        borderRadius: McRadii.controlBorder,
-                        child: const Image(
-                          image: AssetImage('assets/icon.webp'),
-                          fit: BoxFit.cover,
+                      _ProfileLink(
+                        CupertinoIcons.map,
+                        l10n.campusMap,
+                        AppRoutes.campusMap,
+                      ),
+                      _ProfileLink(
+                        CupertinoIcons.creditcard,
+                        l10n.payment,
+                        AppRoutes.payment,
+                      ),
+                      if (!kIsWeb)
+                        _ProfileLink(
+                          CupertinoIcons.bolt,
+                          l10n.electricity,
+                          AppRoutes.electricity,
                         ),
+                      _ProfileLink(
+                        CupertinoIcons.link,
+                        l10n.campusNavigation,
+                        AppRoutes.link,
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  _ProfileSection(
+                    title: l10n.profileAcademics,
+                    entries: [
+                      _ProfileLink(
+                        CupertinoIcons.list_bullet,
+                        l10n.programLabel,
+                        AppRoutes.program,
+                      ),
+                    ],
+                    footer: (school?.supports(Feature.studyProgress) ?? true)
+                        ? _StudyProgress(schoolCode: school?.code)
+                        : null,
+                  ),
+                ],
+                const SizedBox(height: 24),
+                _ProfileSection(
+                  title: l10n.profileSettingsAndSupport,
+                  entries: [
+                    _ProfileLink(
+                      CupertinoIcons.gear_solid,
+                      l10n.settingsAbout,
+                      AppRoutes.about,
                     ),
-                    const SizedBox(width: 8),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          displayName.isNotEmpty
-                              ? displayName
-                              : l10n.notLoggedIn,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                        ),
-                        Text(
-                          isLogin
-                              ? '${school?.name ?? ""} ${l10n.academicAccount}'
-                              : l10n.guest,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: colors.secondaryLabel,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                      ],
+                    _ProfileLink(
+                      CupertinoIcons.question_circle,
+                      l10n.help,
+                      AppRoutes.helper,
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          McAnimatedCard(
-            delay: const Duration(milliseconds: 100),
-            child: McCard.elevated(
-              margin: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-              padding: EdgeInsets.zero,
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: isTablet ? 6 : 3,
-                  ),
-                  itemBuilder: (context, index) {
-                    return McAnimatedCard(
-                      delay: Duration(milliseconds: 50 * index),
-                      child: getProfileButtonItems(
-                        context,
-                      )[index].build(context, isTablet: isTablet),
-                    );
-                  },
-                  itemCount: getProfileButtonItems(context).length,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                ),
-              ),
-            ),
-          ),
-          if (isLogin) const SizedBox(height: 16),
-          if (isLogin &&
-              (ref
-                      .watch(schoolStoreProvider)
-                      .school
-                      ?.supports(Feature.studyProgress) ??
-                  true))
-            FutureBuilder(
-              key: ValueKey('info_data_$_dataRefreshKey'),
-              // 添加超时保护：最多10秒
-              future: InfoService.getInfoList().timeout(
-                const Duration(seconds: 10),
-                onTimeout: () {
-                  AppLogger.warning('[ProfilePage] 获取信息列表超时');
-                  return <InfoModel>[];
-                },
-              ),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: LoadingStateView(
-                      title: l10n.syncingAcademic,
-                      subtitle: l10n.syncingAcademicSubtitle,
-                      compact: true,
-                      showCard: true,
-                    ),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  AppLogger.error(
-                    '获取学生信息列表失败',
-                    error: snapshot.error,
-                    stackTrace: snapshot.stackTrace,
-                  );
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Text(l10n.loadFailed),
-                    ),
-                  );
-                }
-
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const SizedBox.shrink();
-                }
-
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: snapshot.data?.length,
-                  itemBuilder: (context, index) =>
-                      StudyCreditCard(data: snapshot.data![index]),
-                );
-              },
-            ),
-        ],
+        ),
       ),
     );
   }
 }
 
-class ProfileButtonItem {
-  final String title;
-  final IconData icon;
-  String route = '';
-  Function? onPressed;
-
-  ProfileButtonItem({
+class _ProfileAccount extends StatelessWidget {
+  const _ProfileAccount({
     required this.title,
-    required this.icon,
-    this.route = '',
-    this.onPressed,
+    required this.subtitle,
+    this.onTap,
   });
 
-  Widget build(BuildContext context, {bool isTablet = false}) {
-    final colors = context.mc.colors;
-    final shape = McSmoothCorners.shape(McRadii.panelBorder);
-    return Material(
-      shape: shape,
-      clipBehavior: Clip.antiAlias,
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: McRadii.panelBorder,
-        customBorder: shape,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: isTablet ? 32 : 36,
-                color: CourseColorManager.generateSoftColor(
-                  title,
-                  isDark: true,
+  final String title;
+  final String subtitle;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SettingsGroup(
+      children: [
+        McListTile(
+          leading: ExcludeSemantics(
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: McSmoothCorners.clip(
+                borderRadius: McRadii.xsBorder,
+                child: const Image(
+                  image: AssetImage('assets/icon.webp'),
+                  fit: BoxFit.cover,
                 ),
               ),
-              if (!isTablet) const SizedBox(height: 6),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: isTablet ? 9 : 11,
-                  fontWeight: FontWeight.bold,
-                  color: colors.secondaryLabel,
-                ),
-              ),
-            ],
+            ),
           ),
+          title: Text(title),
+          subtitle: Text(subtitle),
+          showChevron: onTap != null,
+          onTap: onTap,
         ),
-        onTap: () {
-          if (route.isEmpty) {
-            onPressed?.call();
-          } else {
-            AppRouter.push(route);
-          }
-        },
+      ],
+    );
+  }
+}
+
+class _ProfileSection extends StatelessWidget {
+  const _ProfileSection({
+    required this.title,
+    required this.entries,
+    this.footer,
+  });
+
+  final String title;
+  final List<_ProfileLink> entries;
+  final Widget? footer;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SettingsSectionTitle(title: title),
+        const SizedBox(height: 12),
+        SettingsGroup(children: entries),
+        ?footer,
+      ],
+    );
+  }
+}
+
+class _ProfileLink extends StatelessWidget {
+  const _ProfileLink(this.icon, this.title, this.route);
+
+  final IconData icon;
+  final String title;
+  final String route;
+
+  @override
+  Widget build(BuildContext context) {
+    return McListTile(
+      leading: ExcludeSemantics(
+        child: Icon(
+          icon,
+          size: 20,
+          color: CourseColorManager.generateSoftColor(title, isDark: true),
+        ),
+      ),
+      title: Text(title),
+      showChevron: true,
+      onTap: () => AppRouter.push<void>(route),
+    );
+  }
+}
+
+class _StudyProgress extends ConsumerWidget {
+  const _StudyProgress({required this.schoolCode});
+
+  final String? schoolCode;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final AsyncValue<List<InfoModel>> progress = ref.watch(
+      _studyProgressProvider(schoolCode),
+    );
+
+    return progress.when(
+      data: (items) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final InfoModel item in items)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: StudyCreditCard(data: item),
+            ),
+        ],
+      ),
+      loading: () => Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: LoadingStateView(
+          title: l10n.syncingAcademic,
+          subtitle: l10n.syncingAcademicSubtitle,
+          compact: true,
+          showCard: true,
+        ),
+      ),
+      error: (_, _) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Text(l10n.loadFailed, textAlign: TextAlign.center),
       ),
     );
   }
