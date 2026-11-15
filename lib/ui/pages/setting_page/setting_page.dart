@@ -43,6 +43,7 @@ class SettingPage extends ConsumerStatefulWidget {
 
 class _SettingPageState extends ConsumerState<SettingPage> {
   StreamSubscription<WidgetPinOutcome>? _pinOutcomeSubscription;
+  bool _isRefreshingEducation = false;
 
   @override
   void initState() {
@@ -137,17 +138,6 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 SettingsGroup(
                   children: [
                     _buildClearCacheTile(context),
-                    McListTile(
-                      leading: Icon(
-                        CupertinoIcons.link,
-                        size: 20,
-                        color: colors.primary,
-                      ),
-                      title: Text(context.l10n.mcpTitle),
-                      subtitle: Text(context.l10n.mcpSubtitle),
-                      showChevron: true,
-                      onTap: () => AppRouter.push(AppRoutes.mcp),
-                    ),
                     if (userState.isLogin) _buildLogoutTile(context, userStore),
                     if (kDebugMode)
                       McListTile(
@@ -235,18 +225,24 @@ class _SettingPageState extends ConsumerState<SettingPage> {
       title: Text(context.l10n.refreshData),
       showChevron: true,
       onTap: () async {
-        McFeedback.showMessage(context, message: context.l10n.refreshingData);
-        final re = await EducationRefreshService.refresh();
-        if (re) {
-          await _syncHomeWidget();
-        }
-        if (context.mounted) {
-          McFeedback.showMessage(
-            context,
-            message: re
-                ? context.l10n.refreshDataSuccess
-                : context.l10n.refreshDataFailed,
-          );
+        if (_isRefreshingEducation) return;
+        _isRefreshingEducation = true;
+        try {
+          McFeedback.showMessage(context, message: context.l10n.refreshingData);
+          final bool refreshed = await EducationRefreshService.refresh();
+          if (refreshed) {
+            await _syncHomeWidget();
+          }
+          if (context.mounted) {
+            McFeedback.showMessage(
+              context,
+              message: refreshed
+                  ? context.l10n.refreshDataSuccess
+                  : context.l10n.refreshDataFailed,
+            );
+          }
+        } finally {
+          _isRefreshingEducation = false;
         }
       },
     );

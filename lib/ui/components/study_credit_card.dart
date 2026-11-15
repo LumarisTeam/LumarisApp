@@ -1,9 +1,17 @@
+import 'dart:math' as math;
+
+import 'package:flutter/widget_previews.dart';
+
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoIcons;
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../core/extensions/localization_extensions.dart';
 import '../../features/education/models/info_model.dart';
+
+const EdgeInsets _cardPadding = EdgeInsets.fromLTRB(16, 16, 16, 12);
+const double _progressSize = 53;
+const double _detailRowHeight = 36;
 
 class StudyCreditCard extends StatelessWidget {
   final InfoModel data;
@@ -24,7 +32,7 @@ class StudyCreditCard extends StatelessWidget {
         : 0;
 
     return McCard.elevated(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+      padding: _cardPadding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -67,7 +75,7 @@ class StudyCreditCard extends StatelessWidget {
               const SizedBox(width: 20),
               ExcludeSemantics(
                 child: SizedBox.square(
-                  dimension: 53,
+                  dimension: _progressSize,
                   child: CircularProgressIndicator(
                     value: progress,
                     color: tokens.primary,
@@ -90,6 +98,118 @@ class StudyCreditCard extends StatelessWidget {
   }
 }
 
+class StudyCreditCardSkeleton extends StatelessWidget {
+  const StudyCreditCardSkeleton({required this.loadingLabel, super.key});
+
+  final String loadingLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final McTheme tokens = context.mc;
+    final Color fill = MediaQuery.highContrastOf(context)
+        ? tokens.foreground.withValues(alpha: 0.25)
+        : tokens.skeletonBase;
+    final TextScaler scale = MediaQuery.textScalerOf(context);
+    final double titleHeight = scale.scale(16) * 21 / 16;
+    final double amountHeight = scale.scale(34) * 41 / 34;
+    final double detailHeight = math.max(
+      _detailRowHeight,
+      scale.scale(15) * 20 / 15 + 16,
+    );
+
+    Widget bar(double width, double height) => Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: fill,
+        borderRadius: BorderRadius.circular(5),
+      ),
+    );
+
+    return Semantics(
+      container: true,
+      liveRegion: true,
+      label: loadingLabel,
+      excludeSemantics: true,
+      child: McCard.elevated(
+        padding: _cardPadding,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        height: titleHeight,
+                        child: Row(
+                          children: [
+                            bar(20, 20),
+                            const SizedBox(width: 8),
+                            Flexible(child: bar(84, titleHeight * 0.6)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      SizedBox(
+                        height: amountHeight,
+                        child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: bar(96, amountHeight * 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Container(
+                  width: _progressSize,
+                  height: _progressSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: fill, width: 5),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            for (final double width in const [72.0, 64.0, 112.0, 64.0])
+              SizedBox(
+                height: detailHeight,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(child: bar(width, scale.scale(15) * 0.72)),
+                    const SizedBox(width: 12),
+                    Flexible(child: bar(46, scale.scale(15) * 0.72)),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+@Preview(
+  name: 'Credit card loading · Light',
+  brightness: Brightness.light,
+  size: Size(360, 280),
+)
+@Preview(
+  name: 'Credit card loading · Dark',
+  brightness: Brightness.dark,
+  size: Size(360, 280),
+)
+Widget studyCreditCardSkeletonPreview() {
+  return const Align(
+    alignment: Alignment.topCenter,
+    child: StudyCreditCardSkeleton(loadingLabel: '正在同步学业信息'),
+  );
+}
+
 class _CreditRow extends StatelessWidget {
   const _CreditRow({required this.credit});
 
@@ -109,7 +229,7 @@ class _CreditRow extends StatelessWidget {
 
     return MergeSemantics(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: 36),
+        constraints: const BoxConstraints(minHeight: _detailRowHeight),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: OverflowBar(

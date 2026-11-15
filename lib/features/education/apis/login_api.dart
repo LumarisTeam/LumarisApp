@@ -24,6 +24,7 @@ class LoginApi {
     String username,
     String password, {
     LoginMode? mode,
+    bool renewSession = false,
   }) async {
     if (_loginOverrideForTest != null) {
       return _loginOverrideForTest!(username, password);
@@ -35,6 +36,7 @@ class LoginApi {
         '/Login',
         data: {'username': username, 'password': password},
         options: Options(
+          extra: {if (renewSession) EduHttpClient.renewSessionKey: true},
           headers: <String, dynamic>{
             LoginModeService.headerName: effectiveMode.value.toString(),
           },

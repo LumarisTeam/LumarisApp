@@ -196,6 +196,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       AppRoutes.about,
                     ),
                     _ProfileLink(
+                      CupertinoIcons.link,
+                      l10n.mcpTitle,
+                      AppRoutes.mcp,
+                      l10n.mcpSubtitle,
+                    ),
+                    _ProfileLink(
                       CupertinoIcons.question_circle,
                       l10n.help,
                       AppRoutes.helper,
@@ -276,11 +282,12 @@ class _ProfileSection extends StatelessWidget {
 }
 
 class _ProfileLink extends StatelessWidget {
-  const _ProfileLink(this.icon, this.title, this.route);
+  const _ProfileLink(this.icon, this.title, this.route, [this.subtitle = '']);
 
   final IconData icon;
   final String title;
   final String route;
+  final String subtitle;
 
   @override
   Widget build(BuildContext context) {
@@ -293,6 +300,7 @@ class _ProfileLink extends StatelessWidget {
         ),
       ),
       title: Text(title),
+      subtitle: subtitle.isNotEmpty ? Text(subtitle) : null,
       showChevron: true,
       onTap: () => AppRouter.push<void>(route),
     );
@@ -324,12 +332,7 @@ class _StudyProgress extends ConsumerWidget {
       ),
       loading: () => Padding(
         padding: const EdgeInsets.only(top: 8),
-        child: LoadingStateView(
-          title: l10n.syncingAcademic,
-          subtitle: l10n.syncingAcademicSubtitle,
-          compact: true,
-          showCard: true,
-        ),
+        child: StudyCreditCardSkeleton(loadingLabel: l10n.syncingAcademic),
       ),
       error: (_, _) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),

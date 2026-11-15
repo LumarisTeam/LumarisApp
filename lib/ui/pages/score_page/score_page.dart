@@ -1,5 +1,3 @@
-import 'dart:async' show TimeoutException, unawaited;
-
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:material_ui/material_ui.dart';
@@ -77,61 +75,26 @@ class _ScorePageState extends ConsumerState<ScorePage>
   }
 
   Future<void> refresh({bool isRefresh = false}) async {
-    if (_isRefreshing) return;
-    if (isRefresh || _isFool) {
-      await _loadScores(policy: FetchPolicy.refresh);
-      return;
-    }
-
-    final localSnapshot = await ScoreService.getScores(
-      policy: FetchPolicy.localFirst,
-    );
-    if (localSnapshot.data.isNotEmpty) {
-      _applyScoreData(localSnapshot.data, isLoading: false);
-      unawaited(
-        _loadScores(
-          policy: FetchPolicy.refresh,
-          keepCurrentDataWhileLoading: true,
-          showStaleMessage: false,
-        ),
-      );
-      return;
-    }
-
-    await _loadScores(policy: FetchPolicy.refresh);
-  }
-
-  Future<void> _loadScores({
-    required FetchPolicy policy,
-    bool keepCurrentDataWhileLoading = false,
-    bool showStaleMessage = true,
-  }) async {
-    if (!mounted) return;
+    if (!mounted || _isRefreshing) return;
     _isRefreshing = true;
     final l10n = context.l10n;
 
     setState(() {
-      _isLoading = !keepCurrentDataWhileLoading;
+      _isLoading = _scoreList.isEmpty || _isFool;
     });
 
     try {
-      final snapshot = await ScoreService.getScores(policy: policy).timeout(
-        const Duration(seconds: 15),
-        onTimeout: () {
-          throw TimeoutException(l10n.fetchTimeout);
-        },
+      final snapshot = await ScoreService.getScores(
+        policy: isRefresh || _isFool
+            ? FetchPolicy.refresh
+            : FetchPolicy.localFirst,
       );
 
       _applyScoreData(snapshot.data, isLoading: false);
       if (!mounted) return;
-      if (snapshot.isStale && snapshot.data.isNotEmpty && showStaleMessage) {
+      if (snapshot.isStale && snapshot.data.isNotEmpty) {
         McFeedback.showMessage(context, message: l10n.refreshFailedFallback);
       }
-    } on TimeoutException catch (e) {
-      if (mounted) {
-        McFeedback.showMessage(context, message: l10n.fetchTimeout);
-      }
-      AppLogger.warning('[ScorePage] 获取数据超时: $e');
     } catch (e, stackTrace) {
       if (mounted) {
         McFeedback.showMessage(
@@ -310,16 +273,23 @@ class _ScorePageState extends ConsumerState<ScorePage>
   }
 
   void _handleFoolishMode() {
-    setState(() {
-      _isFool = true;
-      for (final item in _scoreList) {
-        for (final item2 in item.list) {
-          item2.grade = '100';
-          item2.gpa = '5';
-          item2.gradeDetail = '666';
-        }
-      }
-    });
+    final demoScores = <ScoreList>[
+      for (final item in _scoreList)
+        ScoreList(
+          semester: item.semester,
+          list: [
+            for (final score in item.list)
+              ScoreModel.fromJson({
+                ...score.toJson(),
+                'grade': '100',
+                'gpa': '5',
+                'gradeDetail': '666',
+              }),
+          ],
+        ),
+    ];
+    _isFool = true;
+    _applyScoreData(demoScores, isLoading: false);
 
     McFeedback.showMessage(context, message: context.l10n.foolishModeMessage);
   }

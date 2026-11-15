@@ -614,6 +614,97 @@ void main() {
     );
 
     test(
+      'should honor Retry-After across an account’s education requests',
+      () async {
+        await PrefsService.instance.setString(
+          PrefsKeys.USER_DATA,
+          '{"studentId":"2026001,2026002","cookie":"session-a"}',
+        );
+        int nowMs = 1000;
+        EduHttpClient.setNowProviderForTest(() => nowMs);
+        final client = EduHttpClient(baseUrl: 'http://api.test/v1');
+        addTearDown(client.dispose);
+        final responses = <ResponseBody Function(RequestOptions)>[
+          (_) => ResponseBody.fromString(
+            '{"code":40001}',
+            429,
+            headers: {
+              'retry-after': ['60'],
+              Headers.contentTypeHeader: ['application/json'],
+            },
+          ),
+          (options) {
+            expect(options.path, '/Login');
+            expect((options.data as Map)['username'], '2026003');
+            return ResponseBody.fromString('ok', 200);
+          },
+          (options) {
+            expect(options.path, '/Course');
+            return ResponseBody.fromString('ok', 200);
+          },
+        ];
+        client.dio.httpClientAdapter = _QueueAdapter(responses);
+        final rateLimited = isA<NetworkException>().having(
+          (error) => error.statusCode,
+          'HTTP status',
+          429,
+        );
+
+        await expectLater(
+          client.get('/Score', queryParameters: {'semester': '2026-1'}),
+          throwsA(rateLimited),
+        );
+        nowMs += 59000;
+        await expectLater(
+          client.get('/Score', queryParameters: {'semester': '2025-2'}),
+          throwsA(rateLimited),
+        );
+        await expectLater(client.get('/Course'), throwsA(rateLimited));
+        await expectLater(
+          client.post('/Login', data: {'username': '2026001'}),
+          throwsA(rateLimited),
+        );
+        await expectLater(
+          client.post(
+            '/Login',
+            data: {'username': 'login-alias'},
+            options: Options(extra: {EduHttpClient.renewSessionKey: true}),
+          ),
+          throwsA(rateLimited),
+        );
+        expect(
+          await client.post('/Login', data: {'username': '2026003'}),
+          'ok',
+        );
+
+        nowMs += 1000;
+        expect(await client.get('/Course'), 'ok');
+        expect(responses, isEmpty);
+      },
+    );
+
+    test('should not relogin when the login endpoint returns 401', () async {
+      secureStore[PrefsKeys.USERNAME] = 'test-user';
+      secureStore[PrefsKeys.PASSWORD] = 'test-password';
+      int loginCalls = 0;
+      EduHttpClient.setLoginHandlerForTest((_, _) async {
+        loginCalls++;
+        return {'success': false};
+      });
+      final client = EduHttpClient(baseUrl: 'http://api.test/v1');
+      addTearDown(client.dispose);
+      client.dio.httpClientAdapter = _QueueAdapter([
+        (_) => ResponseBody.fromString('unauthorized', 401),
+      ]);
+
+      await expectLater(
+        client.post('/Login'),
+        throwsA(isA<AuthenticationException>()),
+      );
+      expect(loginCalls, 0);
+    });
+
+    test(
       'should relogin and retry when adapter returns 401 then 200',
       () async {
         secureStore[PrefsKeys.USERNAME] = 'u1';

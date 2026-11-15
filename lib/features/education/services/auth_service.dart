@@ -11,6 +11,8 @@ import 'package:ios_club_app/features/education/services/login_mode_service.dart
 import 'package:ios_club_app/state/prefs_keys.dart';
 
 class AuthService {
+  static final Map<int, Future<bool>> _logins = {};
+
   static Future<void> migrateCredentials() async {
     final prefs = PrefsService.instance;
     final secureStorage = SecureStorageService.instance;
@@ -100,6 +102,19 @@ class AuthService {
 
   static Future<bool> login() async {
     final epoch = AuthSessionGuard.epoch;
+    final existing = _logins[epoch];
+    if (existing != null) return existing;
+
+    final login = _login(epoch);
+    _logins[epoch] = login;
+    try {
+      return await login;
+    } finally {
+      _logins.remove(epoch);
+    }
+  }
+
+  static Future<bool> _login(int epoch) async {
     try {
       final secureStorage = SecureStorageService.instance;
 
@@ -125,7 +140,11 @@ class AuthService {
         return false;
       }
 
-      final response = await LoginApi.login(username, password);
+      final response = await LoginApi.login(
+        username,
+        password,
+        renewSession: true,
+      );
       if (response.success != true) {
         return false;
       }

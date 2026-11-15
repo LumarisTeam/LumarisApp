@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -7,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:ios_club_app/core/repositories/course_repository.dart';
 import 'package:ios_club_app/core/repositories/score_repository.dart';
+import 'package:ios_club_app/core/services/network_exception.dart';
 import 'package:ios_club_app/core/services/prefs_service.dart';
 import 'package:ios_club_app/core/utils/request_cache.dart';
 import 'package:ios_club_app/features/education/models/course_model.dart';
@@ -223,7 +225,7 @@ void main() {
     );
 
     test(
-      'EducationRefreshService should only preload timetable in graduate mode',
+      'EducationRefreshService should share a graduate refresh and reuse the session',
       () async {
         await PrefsService.instance.setInt(
           PrefsKeys.LOGIN_MODE,
@@ -269,16 +271,50 @@ void main() {
           },
         );
 
-        final ok = await EducationRefreshService.refreshWithExistingSession(
-          isForced: true,
-        );
+        final results = await Future.wait([
+          EducationRefreshService.refresh(),
+          EducationRefreshService.refresh(),
+        ]);
 
-        expect(ok, isTrue);
-        expect(paths, contains('/Course'));
+        expect(results, [true, true]);
+        expect(paths, ['/Info/Time', '/course/ScheduleTime', '/Course']);
         // 研究生系统没有成绩/考试/学业进度，不能拿 gmis 的 cookie 去打本科生接口
         expect(paths, isNot(contains('/Score/Semester')));
         expect(paths, isNot(contains('/Exam')));
         expect(paths, isNot(contains('/Info/Completion')));
+      },
+    );
+
+    test(
+      'AuthService should only log in once when the session expires',
+      () async {
+        secureStore[PrefsKeys.USERNAME] = 'test-user';
+        secureStore[PrefsKeys.PASSWORD] = 'test-password';
+        final started = Completer<void>();
+        final login = Completer<LoginResponse>();
+        int loginCalls = 0;
+        LoginApi.setLoginOverrideForTest((_, _) {
+          loginCalls++;
+          if (!started.isCompleted) started.complete();
+          return login.future;
+        });
+
+        final results = Future.wait([
+          AuthService.getUserData(),
+          AuthService.getUserData(),
+          AuthService.getUserData(),
+        ]);
+        await started.future;
+        login.complete(
+          LoginResponse(success: true, studentId: '2026001', cookie: 'fresh'),
+        );
+
+        expect((await results).map((session) => session?.cookie), [
+          'fresh',
+          'fresh',
+          'fresh',
+        ]);
+        expect(loginCalls, 1);
       },
     );
 
@@ -601,6 +637,100 @@ void main() {
         '2024-1',
       ]);
     });
+
+    test(
+      'ScoreService should share a serial refresh and stop at the first 429',
+      () async {
+        final user = UserData(studentId: '2026001', cookie: 'session');
+        final firstSemesterStarted = Completer<void>();
+        final firstSemesterResponse = Completer<void>();
+        final requests = <String>[];
+        EduHttpClientManager.instance.dio.interceptors.add(
+          InterceptorsWrapper(
+            onRequest: (options, handler) async {
+              if (options.path == '/Score/Semester') {
+                requests.add('semester list');
+                handler.resolve(
+                  Response<dynamic>(
+                    requestOptions: options,
+                    data: {
+                      'data': [
+                        {'value': '2025-1', 'text': '2025-1'},
+                        {'value': '2025-2', 'text': '2025-2'},
+                        {'value': '2026-1', 'text': '2026-1'},
+                      ],
+                    },
+                  ),
+                );
+                return;
+              }
+
+              final String semester =
+                  options.queryParameters['semester'] as String;
+              requests.add(semester);
+              if (semester == '2026-1') {
+                if (!firstSemesterStarted.isCompleted) {
+                  firstSemesterStarted.complete();
+                }
+                await firstSemesterResponse.future;
+                handler.resolve(
+                  Response<dynamic>(
+                    requestOptions: options,
+                    data: {'data': <Object>[]},
+                  ),
+                );
+                return;
+              }
+
+              handler.reject(
+                DioException(
+                  requestOptions: options,
+                  response: Response<dynamic>(
+                    requestOptions: options,
+                    statusCode: 429,
+                  ),
+                  type: DioExceptionType.badResponse,
+                ),
+              );
+            },
+          ),
+        );
+
+        final rateLimited = throwsA(
+          isA<NetworkException>().having(
+            (e) => e.statusCode,
+            'HTTP status',
+            429,
+          ),
+        );
+        final results = Future.wait([
+          expectLater(
+            ScoreService.fetchScoresFromRemote(
+              userData: user,
+              forceRefresh: true,
+            ),
+            rateLimited,
+          ),
+          expectLater(
+            ScoreService.fetchScoresFromRemote(
+              userData: user,
+              forceRefresh: true,
+            ),
+            rateLimited,
+          ),
+        ]);
+        await firstSemesterStarted.future;
+        expect(requests, ['semester list', '2026-1']);
+        firstSemesterResponse.complete();
+        await results;
+
+        expect(requests, ['semester list', '2026-1', '2025-2']);
+        final local = await ScoreService.getScores();
+        expect(local.isFromLocal, isTrue);
+        expect(local.data.single.semester.semester, '2026-1');
+        expect(requests, ['semester list', '2026-1', '2025-2']);
+      },
+    );
 
     test(
       'ExamService.getExamResult should return filtered merged exams on refresh',
