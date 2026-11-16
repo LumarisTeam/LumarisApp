@@ -22,6 +22,7 @@ import '../../components/loading_state_view.dart';
 import '../../components/page_app_bar.dart';
 import '../../components/settings_group.dart';
 import '../../components/study_credit_card.dart';
+import '../lesson_search_page/lesson_search_page.dart';
 
 final _studyProgressProvider = FutureProvider.autoDispose
     .family<List<InfoModel>, String?>((ref, schoolCode) async {
@@ -180,6 +181,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         l10n.programLabel,
                         AppRoutes.program,
                       ),
+                      if (LessonSearchPage.supports(school))
+                        _ProfileLink(
+                          CupertinoIcons.search,
+                          l10n.lessonSearchTitle,
+                          AppRoutes.lessonSearch,
+                        ),
                     ],
                     footer: (school?.supports(Feature.studyProgress) ?? true)
                         ? _StudyProgress(schoolCode: school?.code)

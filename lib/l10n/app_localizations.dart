@@ -4835,6 +4835,132 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'学年'**
   String get scoreAcademicYear;
+
+  /// Course offerings: SearchTitle
+  ///
+  /// In zh, this message translates to:
+  /// **'全校开课查询'**
+  String get lessonSearchTitle;
+
+  /// Course offerings: Unsupported
+  ///
+  /// In zh, this message translates to:
+  /// **'此功能适用于西安建筑科技大学本科教务账号。'**
+  String get lessonUnsupported;
+
+  /// Course offerings: CurrentTerm
+  ///
+  /// In zh, this message translates to:
+  /// **'当前学期'**
+  String get lessonCurrentTerm;
+
+  /// Course offerings: SearchHint
+  ///
+  /// In zh, this message translates to:
+  /// **'课程名、课程号或教师'**
+  String get lessonSearchHint;
+
+  /// Course offerings: FilterTitle
+  ///
+  /// In zh, this message translates to:
+  /// **'筛选教学班'**
+  String get lessonFilterTitle;
+
+  /// Course offerings: OnlyAvailable
+  ///
+  /// In zh, this message translates to:
+  /// **'仅显示有余量的教学班'**
+  String get lessonOnlyAvailable;
+
+  /// Course offerings: Reset
+  ///
+  /// In zh, this message translates to:
+  /// **'重置'**
+  String get lessonReset;
+
+  /// Course offerings: ApplyFilter
+  ///
+  /// In zh, this message translates to:
+  /// **'应用筛选'**
+  String get lessonApplyFilter;
+
+  /// Course offerings: MissingValue
+  ///
+  /// In zh, this message translates to:
+  /// **'教务未提供'**
+  String get lessonMissingValue;
+
+  /// Course offerings: Capacity
+  ///
+  /// In zh, this message translates to:
+  /// **'容量'**
+  String get lessonCapacity;
+
+  /// Course offerings: Selected
+  ///
+  /// In zh, this message translates to:
+  /// **'已选'**
+  String get lessonSelected;
+
+  /// Course offerings: Remaining
+  ///
+  /// In zh, this message translates to:
+  /// **'余量'**
+  String get lessonRemaining;
+
+  /// Course offerings: People
+  ///
+  /// In zh, this message translates to:
+  /// **'{count} 人'**
+  String lessonPeople(int count);
+
+  /// Course offerings: Available
+  ///
+  /// In zh, this message translates to:
+  /// **'有余量'**
+  String get lessonAvailable;
+
+  /// Course offerings: Filter
+  ///
+  /// In zh, this message translates to:
+  /// **'筛选'**
+  String get lessonFilter;
+
+  /// Course offerings: ResultCount
+  ///
+  /// In zh, this message translates to:
+  /// **'共 {count} 个教学班'**
+  String lessonResultCount(int count);
+
+  /// Course offerings: NoMatches
+  ///
+  /// In zh, this message translates to:
+  /// **'没有符合条件的教学班'**
+  String get lessonNoMatches;
+
+  /// Course offerings: NoData
+  ///
+  /// In zh, this message translates to:
+  /// **'当前学期暂无教学班'**
+  String get lessonNoData;
+
+  /// Course offerings: ClearConditions
+  ///
+  /// In zh, this message translates to:
+  /// **'清除条件'**
+  String get lessonClearConditions;
+
+  /// Course offerings: SeatsLeft
+  ///
+  /// In zh, this message translates to:
+  /// **'余 {count}'**
+  String lessonSeatsLeft(int count);
+
+  /// Course offerings: Full
+  ///
+  /// In zh, this message translates to:
+  /// **'已满'**
+  String get lessonFull;
 }
 
 class _AppLocalizationsDelegate

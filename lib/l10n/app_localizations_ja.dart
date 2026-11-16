@@ -2482,4 +2482,73 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get scoreAcademicYear => '年度';
+
+  @override
+  String get lessonSearchTitle => '全学開講科目検索';
+
+  @override
+  String get lessonUnsupported => '西安建築科技大学の学部生アカウントで利用できます。';
+
+  @override
+  String get lessonCurrentTerm => '今学期';
+
+  @override
+  String get lessonSearchHint => '科目名・科目コード・教員';
+
+  @override
+  String get lessonFilterTitle => 'クラスを絞り込む';
+
+  @override
+  String get lessonOnlyAvailable => '空きのあるクラスのみ';
+
+  @override
+  String get lessonReset => 'リセット';
+
+  @override
+  String get lessonApplyFilter => '適用';
+
+  @override
+  String get lessonMissingValue => '情報なし';
+
+  @override
+  String get lessonCapacity => '定員';
+
+  @override
+  String get lessonSelected => '登録済み';
+
+  @override
+  String get lessonRemaining => '空き';
+
+  @override
+  String lessonPeople(int count) {
+    return '$count 人';
+  }
+
+  @override
+  String get lessonAvailable => '空きあり';
+
+  @override
+  String get lessonFilter => '絞り込み';
+
+  @override
+  String lessonResultCount(int count) {
+    return '全 $count クラス';
+  }
+
+  @override
+  String get lessonNoMatches => '一致するクラスがありません';
+
+  @override
+  String get lessonNoData => '今学期のクラスはありません';
+
+  @override
+  String get lessonClearConditions => '検索条件をクリア';
+
+  @override
+  String lessonSeatsLeft(int count) {
+    return '残り $count';
+  }
+
+  @override
+  String get lessonFull => '満員';
 }

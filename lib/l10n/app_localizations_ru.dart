@@ -2586,4 +2586,74 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get scoreAcademicYear => 'Учебный год';
+
+  @override
+  String get lessonSearchTitle => 'Поиск курсов';
+
+  @override
+  String get lessonUnsupported =>
+      'Доступно для учётных записей бакалавриата XAUAT.';
+
+  @override
+  String get lessonCurrentTerm => 'Текущий семестр';
+
+  @override
+  String get lessonSearchHint => 'Курс, код или преподаватель';
+
+  @override
+  String get lessonFilterTitle => 'Фильтр групп';
+
+  @override
+  String get lessonOnlyAvailable => 'Только группы со свободными местами';
+
+  @override
+  String get lessonReset => 'Сбросить';
+
+  @override
+  String get lessonApplyFilter => 'Применить';
+
+  @override
+  String get lessonMissingValue => 'Нет данных';
+
+  @override
+  String get lessonCapacity => 'Вместимость';
+
+  @override
+  String get lessonSelected => 'Записано';
+
+  @override
+  String get lessonRemaining => 'Свободные места';
+
+  @override
+  String lessonPeople(int count) {
+    return '$count';
+  }
+
+  @override
+  String get lessonAvailable => 'Есть места';
+
+  @override
+  String get lessonFilter => 'Фильтр';
+
+  @override
+  String lessonResultCount(int count) {
+    return 'Групп: $count';
+  }
+
+  @override
+  String get lessonNoMatches => 'Нет подходящих групп';
+
+  @override
+  String get lessonNoData => 'В текущем семестре нет групп';
+
+  @override
+  String get lessonClearConditions => 'Очистить поиск и фильтры';
+
+  @override
+  String lessonSeatsLeft(int count) {
+    return 'Свободно: $count';
+  }
+
+  @override
+  String get lessonFull => 'Мест нет';
 }
