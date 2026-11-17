@@ -191,7 +191,20 @@ void main() {
       expect(merged, hasLength(2));
       expect(merged.first.courseName, '数学');
       expect(merged.first.teachers, ['老师甲', '老师乙']);
+      expect(merged.first.room, 'A101');
       expect(merged.last.courseName, '英语');
+    });
+
+    test('should_join_distinct_nonempty_rooms_when_courses_merge', () {
+      final courses = [
+        for (final room in ['', 'A101', 'B202', ' A101 ', ' '])
+          CourseModel(courseName: '数学', room: room, startUnit: 1, endUnit: 2),
+      ];
+
+      expect(
+        CourseModel.mergeSameNameCourses(courses).single.room,
+        'A101, B202',
+      );
     });
 
     test('should_keep_courses_with_different_times_separate', () {

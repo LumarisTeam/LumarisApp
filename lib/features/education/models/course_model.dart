@@ -150,7 +150,7 @@ class CourseModel {
   /// @return JSON格式的课程数据
   Map<String, dynamic> toJson() => _$CourseModelToJson(this);
 
-  /// 合并课程名和节次相同的课程，并去重授课教师。
+  /// 合并课程名和节次相同的课程，并去重授课教师和教室。
   ///
   /// 课程表和首页都使用这条规则，其他课程字段沿用每组中的第一条课程。
   static List<CourseModel> mergeSameNameCourses(List<CourseModel> courses) {
@@ -162,6 +162,8 @@ class CourseModel {
 
       final current = courses[i];
       final teachersToMerge = <String>[...current.teachers];
+      final String currentRoom = current.room.trim();
+      final roomsToMerge = <String>{if (currentRoom.isNotEmpty) currentRoom};
       used[i] = true;
 
       for (int j = i + 1; j < courses.length; j++) {
@@ -176,6 +178,8 @@ class CourseModel {
               teachersToMerge.add(teacher);
             }
           }
+          final String otherRoom = other.room.trim();
+          if (otherRoom.isNotEmpty) roomsToMerge.add(otherRoom);
           used[j] = true;
         }
       }
@@ -184,7 +188,7 @@ class CourseModel {
         CourseModel(
           weekIndexes: current.weekIndexes,
           teachers: teachersToMerge,
-          room: current.room,
+          room: roomsToMerge.join(', '),
           courseName: current.courseName,
           courseCode: current.courseCode,
           weekday: current.weekday,

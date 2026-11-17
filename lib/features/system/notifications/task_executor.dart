@@ -494,7 +494,7 @@ class TaskExecutor {
     return items;
   }
 
-  /// 统一小组件课程展示规则：同名且节次相同的课程合并授课教师。
+  /// 统一小组件课程展示规则：同名且节次相同的课程合并授课教师和教室。
   static List<CourseModel> _mergeAndSortCourses(List<CourseModel> courses) {
     final mergedCourses = CourseModel.mergeSameNameCourses(courses);
     mergedCourses.sort((a, b) => a.startUnit.compareTo(b.startUnit));

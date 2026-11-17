@@ -266,7 +266,7 @@ class ScheduleGrid extends StatelessWidget {
     return groups;
   }
 
-  /// 合并同名且时间相同的课程（将不同老师合并到一个课程对象中）
+  /// 合并同名且时间相同的课程，保留不同的老师和教室。
   List<CourseModel> _mergeSameNameCourses(List<CourseModel> courses) {
     return CourseModel.mergeSameNameCourses(courses);
   }
