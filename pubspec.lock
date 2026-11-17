@@ -307,7 +307,7 @@ packages:
     source: hosted
     version: "0.7.14"
   device_info_plus:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: device_info_plus
       sha256: "98f28b42168cc509abc92f88518882fd58061ea372d7999aecc424345c7bff6a"
@@ -374,8 +374,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: main
-      resolved-ref: "3b3e0f48bf5ea1eaa491699d7d4cf57863c77a94"
+      ref: "v0.1.0"
+      resolved-ref: "46547065f193d38bf6b691e1119b8d635082c16f"
       url: "https://github.com/LumarisTeam/feedback_sdk.git"
     source: git
     version: "0.1.0"

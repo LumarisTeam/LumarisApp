@@ -46,7 +46,7 @@ dependencies:
   feedback_sdk:
     git:
       url: https://github.com/LumarisTeam/feedback_sdk.git
-      ref: main
+      ref: v0.1.0
   file_picker: ^11.0.2
   flutter_markdown: ^0.7.7+1
   logger: ^2.5.0
@@ -94,9 +94,6 @@ dependency_overrides:
   geolocator_android: 5.0.2
   path_provider_foundation: 2.5.1
   web: ^1.1.0
-  # feedback_sdk 仍约束 device_info_plus ^10.0.0，但 11.x 起才提供
-  # Swift Package Manager 支持；11.5.0 的 API 与当前用法兼容。
-  device_info_plus: ^11.5.0
 
 # The following section is specific to Flutter packages.
 flutter:

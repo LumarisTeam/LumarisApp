@@ -76,6 +76,8 @@ void main() async {
     FeedbackConfig(
       baseUrl: 'https://feedbackapi.luckyfishes.site',
       appName: 'lumaris',
+      centerId: 'fc_06gym00hmb3qrvbp5vtxdsd060',
+      sn: 'lumaris-prod',
       school: initialSchool?.code.toLowerCase() ?? '',
     ),
   );
