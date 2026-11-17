@@ -6,7 +6,6 @@ import 'package:ios_club_app/routes/router.dart';
 import 'package:ios_club_app/l10n/app_localizations.dart';
 import 'package:ios_club_app/ui/pages/agreement_page/agreement_page.dart';
 import 'package:ios_club_app/ui/pages/home_page/home_page.dart';
-import 'package:ios_club_app/ui/pages/lesson_search_page/lesson_search_page.dart';
 import 'package:ios_club_app/ui/pages/link_page/link_page.dart';
 import 'package:ios_club_app/ui/pages/login_page/login_page.dart';
 import 'package:ios_club_app/ui/pages/mcp_page/mcp_page.dart';
@@ -63,10 +62,6 @@ void main() {
     );
     expect(buildMatchedRoute(context, AppRoutes.score), isA<ScorePage>());
     expect(buildMatchedRoute(context, AppRoutes.profile), isA<ProfilePage>());
-    expect(
-      buildMatchedRoute(context, AppRoutes.lessonSearch),
-      isA<LessonSearchPage>(),
-    );
     expect(buildMatchedRoute(context, AppRoutes.login), isA<LoginPage>());
     expect(buildMatchedRoute(context, AppRoutes.link), isA<LinkPage>());
     expect(buildMatchedRoute(context, AppRoutes.mcp), isA<McpPage>());

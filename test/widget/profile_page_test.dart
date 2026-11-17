@@ -154,9 +154,6 @@ void main() {
     expect(find.text(accountNote), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    await tester.scrollUntilVisible(find.text('全校开课查询'), 250);
-    expect(find.text('全校开课查询'), findsOneWidget);
-
     await tester.scrollUntilVisible(find.text('创新创业与课外素质'), 300);
     expect(tester.takeException(), isNull);
     expect(find.text('创新创业与课外素质'), findsOneWidget);
@@ -166,7 +163,6 @@ void main() {
     expect(find.text(account), findsNothing);
     expect(find.byType(StudyCreditCard), findsNothing);
     expect(find.text('教务'), findsNothing);
-    expect(find.text('全校开课查询'), findsNothing);
     expect(find.text('校园服务'), findsNothing);
     expect(find.text('登录教务系统'), findsOneWidget);
     final Finder guestTile = find.ancestor(

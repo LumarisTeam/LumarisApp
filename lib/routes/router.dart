@@ -12,7 +12,6 @@ import '../ui/pages/electricity_page/electricity_page.dart';
 import '../ui/pages/feedback_page/feedback_page.dart';
 import '../ui/pages/helper_page/helper_page.dart';
 import '../ui/pages/home_page/home_page.dart';
-import '../ui/pages/lesson_search_page/lesson_search_page.dart';
 import '../ui/pages/license_page/license_page.dart';
 import '../ui/pages/link_page/link_page.dart';
 import '../ui/pages/login_page/login_page.dart';
@@ -50,7 +49,6 @@ class AppRoutes {
   static const customCourseManage =
       '/Schedule/ScheduleSetting/CustomCourseManage';
   static const schoolBus = '/SchoolBus';
-  static const lessonSearch = '/Profile/LessonSearch';
   static const program = '/Profile/Program';
   static const electricity = '/Electricity';
   static const payment = '/Payment';
@@ -171,10 +169,6 @@ class AppRouter {
                 path: AppRoutes.profile,
                 builder: (context, state) => const ProfilePage(),
                 routes: [
-                  _detailRoute(
-                    'LessonSearch',
-                    (context, state) => const LessonSearchPage(),
-                  ),
                   _detailRoute(
                     'Program',
                     (context, state) => const ProgramPage(),
