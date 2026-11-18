@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:luamris_ui/luamris_ui.dart';
 import 'package:ios_club_app/core/extensions/localization_extensions.dart';
 import 'package:ios_club_app/core/utils/app_logger.dart';
@@ -11,7 +11,7 @@ import 'package:ios_club_app/state/settings_store.dart';
 
 /// 选择课表背景图并写入 SettingsStore。
 ///
-/// 课表设置页和个性化页共用，避免两处重复处理 FilePicker 与亮暗计算。
+/// 课表设置页和个性化页共用，避免两处重复处理 图片选择与亮暗计算。
 Future<bool> pickScheduleBackgroundImage(
   BuildContext context,
   WidgetRef ref, {
@@ -20,13 +20,13 @@ Future<bool> pickScheduleBackgroundImage(
   final l10n = context.l10n;
 
   try {
-    final result = await FilePicker.pickFiles(
-      type: FileType.image,
-      withData: false,
+    final XFile? image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      requestFullMetadata: false,
     );
-    if (result == null) return false;
+    if (image == null || !context.mounted) return false;
 
-    final filePath = result.files.single.path ?? result.files.single.name;
+    final String filePath = image.path;
     final store = ref.read(settingsStoreProvider.notifier);
     await store.setBackgroundImageFor(isDark: isDark, path: filePath);
 

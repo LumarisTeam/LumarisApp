@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:feedback_sdk/feedback_sdk.dart';
 import 'package:luamris_ui/luamris_ui.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,13 +50,24 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       return;
     }
 
-    FilePickerResult? result;
+    final List<_PickedImage> picked = [];
     try {
-      result = await FilePicker.pickFiles(
-        type: FileType.image,
-        allowMultiple: true,
-        withData: true,
+      final List<XFile> files = await ImagePicker().pickMultiImage(
+        limit: remaining,
+        requestFullMetadata: false,
       );
+      if (files.isEmpty || !mounted) return;
+
+      for (final XFile file in files.take(remaining)) {
+        picked.add(
+          _PickedImage(
+            file.name.isNotEmpty
+                ? file.name
+                : 'feedback_${DateTime.now().millisecondsSinceEpoch}.jpg',
+            await file.readAsBytes(),
+          ),
+        );
+      }
     } catch (_) {
       if (!mounted) return;
       McFeedback.showMessage(
@@ -65,28 +76,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       );
       return;
     }
-    if (result == null || !mounted) return;
-
-    final picked = result.files
-        .where((f) => f.bytes != null)
-        .take(remaining)
-        .map(
-          (f) => _PickedImage(
-            f.name.isNotEmpty
-                ? f.name
-                : 'feedback_${DateTime.now().millisecondsSinceEpoch}.jpg',
-            f.bytes!,
-          ),
-        )
-        .toList();
-
-    if (picked.isEmpty) {
-      McFeedback.showMessage(
-        context,
-        message: context.l10n.feedbackPickImageFailed,
-      );
-      return;
-    }
+    if (!mounted) return;
 
     setState(() {
       _images.addAll(picked);
