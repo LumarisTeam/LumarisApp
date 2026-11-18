@@ -579,6 +579,8 @@
   "changeRoom": "更換房間",
   "getElectricity": "取得電費",
   "electricityUrlPrompt": "請開啟建大財務處電費詳情頁面，複製頁面URL並貼上到下方輸入框",
+  "electricityUrlInvalid": "請輸入完整的電費連結",
+  "electricityUrlExpired": "電費連結已過期，請從微信重新複製",
   "urlPlaceholder": "請輸入URL",
   "createLowBalanceAlert": "新增低餘額提醒",
   "lowBalanceAlertDesc": "系統會使用目前綁定的宿舍電費頁面，在餘額低於設定閾值時寄送郵件提醒。",

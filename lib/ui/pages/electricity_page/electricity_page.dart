@@ -17,6 +17,7 @@ import 'package:ios_club_app/state/user_store.dart';
 
 import '../../../core/utils/app_logger.dart';
 import '../../../core/utils/error_message_resolver.dart';
+import '../../../features/education/services/electricity_service.dart';
 import '../../components/page_app_bar.dart';
 
 enum _ElectricityAction { refresh, changeRoom }
@@ -34,6 +35,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
       TextEditingController();
   final TextEditingController _subscriptionThresholdController =
       TextEditingController(text: '10');
+  bool _isBindingSource = false;
   bool _isSubscriptionLoading = false;
   bool _hasLoadedSubscriptions = false;
   String _subscriptionEmail = '';
@@ -187,12 +189,16 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
               isLoading: state.isLoading,
               hasConfiguredSource: state.hasConfiguredSource,
               electricity: state.electricity,
+              sourceError: state.sourceError,
             ),
           ),
         );
         final colorScheme = Theme.of(context).colorScheme;
         final l10n = context.l10n;
-        final statusColor = electricityState.electricity <= 10
+        final ElectricitySourceError? sourceError =
+            electricityState.sourceError;
+        final statusColor =
+            sourceError != null || electricityState.electricity <= 10
             ? colorScheme.error
             : _successColor(context);
 
@@ -268,7 +274,9 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
                   shape: McSmoothCorners.shape(BorderRadius.circular(20)),
                 ),
                 child: Text(
-                  electricityState.isLoading && !electricityState.hasData
+                  sourceError != null
+                      ? _sourceErrorMessage(sourceError)
+                      : electricityState.isLoading && !electricityState.hasData
                       ? l10n.electricityLoading
                       : electricityState.hasData
                       ? (electricityState.electricity <= 10
@@ -279,7 +287,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
                       : l10n.electricityAddTip,
                   style: TextStyle(
                     fontSize: 13,
-                    color: electricityState.hasData
+                    color: sourceError != null || electricityState.hasData
                         ? statusColor
                         : colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w600,
@@ -905,6 +913,7 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
   }
 
   void _showInputDialog() {
+    if (_isBindingSource) return;
     final l10n = context.l10n;
     showMcDialog(
       context: context,
@@ -935,29 +944,47 @@ class _ElectricityPageState extends ConsumerState<ElectricityPage> {
         McDialogAction<void>(
           label: l10n.confirm,
           isDefaultAction: true,
-          onPressed: () async {
-            final sourceUrl = _urlController.text;
-            final value = await ref
-                .read(electricityServiceProvider)
-                .fetchCurrentBalance(url: sourceUrl);
-            if (!mounted) {
-              return;
-            }
-            final controller = ref.read(electricityStoreProvider.notifier);
-            controller.setSourceConfigured(sourceUrl.trim().isNotEmpty);
-            if (value != null) {
-              _urlController.clear();
-              await controller.setElectricityValue(value);
-              await controller.loadElectricityData();
-              await _loadSubscriptions(force: true);
-            } else {
-              _urlController.clear();
-            }
-          },
+          onPressed: _bindSource,
         ),
       ],
     );
   }
+
+  Future<void> _bindSource() async {
+    if (_isBindingSource) return;
+    _isBindingSource = true;
+    try {
+      final double? balance = await ref
+          .read(electricityServiceProvider)
+          .bindSource(_urlController.text);
+      if (!mounted) return;
+      if (balance == null) {
+        McFeedback.showMessage(context, message: context.l10n.fetchFailed);
+        return;
+      }
+
+      _urlController.clear();
+      final controller = ref.read(electricityStoreProvider.notifier);
+      controller.setBoundBalance(balance);
+      await controller.loadElectricityData();
+      if (mounted) await _loadSubscriptions(force: true);
+    } on ElectricitySourceError catch (error) {
+      if (mounted) {
+        McFeedback.showMessage(context, message: _sourceErrorMessage(error));
+      }
+    } catch (_) {
+      if (mounted) {
+        McFeedback.showMessage(context, message: context.l10n.fetchFailed);
+      }
+    } finally {
+      _isBindingSource = false;
+    }
+  }
+
+  String _sourceErrorMessage(ElectricitySourceError error) => switch (error) {
+    ElectricitySourceError.invalidUrl => context.l10n.electricityUrlInvalid,
+    ElectricitySourceError.expired => context.l10n.electricityUrlExpired,
+  };
 
   Future<void> _restoreSubscriptionPreferences() async {
     final email = await ref

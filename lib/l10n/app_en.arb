@@ -590,6 +590,8 @@
   "changeRoom": "Change Room",
   "getElectricity": "Get Electricity",
   "electricityUrlPrompt": "Open the university finance electricity page, copy the URL and paste below",
+  "electricityUrlInvalid": "Enter the full electricity link",
+  "electricityUrlExpired": "This electricity link has expired. Copy a new one from WeChat.",
   "urlPlaceholder": "Enter URL",
   "createLowBalanceAlert": "Create Low Balance Alert",
   "lowBalanceAlertDesc": "The system will use the bound dormitory electricity page to send email alerts when balance falls below the threshold.",

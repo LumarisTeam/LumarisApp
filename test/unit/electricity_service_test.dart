@@ -34,7 +34,7 @@ void main() {
       );
 
       final value = await service.fetchCurrentBalance(
-        url: 'https://example.com/e',
+        url: ' https://example.com/e\u00a0',
       );
 
       expect(value, 12.5);
@@ -89,9 +89,64 @@ void main() {
         },
       );
 
-      final value = await service.fetchCurrentBalance(url: 'bad-url');
+      final value = await service.fetchCurrentBalance(
+        url: 'https://example.com/wxAccount.aspx',
+      );
 
       expect(value, isNull);
+    });
+
+    test('should_keep_the_previous_binding_when_rebinding_fails', () async {
+      const String previous = 'https://example.com/wxAccount.aspx?id=1';
+      await PrefsService.instance.setString(
+        PrefsKeys.ELECTRICITY_URL,
+        previous,
+      );
+      final List<String?> requestedUrls = [];
+      final service = ElectricityService(
+        balanceReader: ({String? url}) async {
+          requestedUrls.add(url);
+          return null;
+        },
+      );
+
+      await expectLater(
+        service.bindSource('/wxAccount.aspx'),
+        throwsA(ElectricitySourceError.invalidUrl),
+      );
+      await expectLater(
+        service.bindSource('https://example.com/wxAccount.aspx?exp=1&sig=x'),
+        throwsA(ElectricitySourceError.expired),
+      );
+      const String unavailable = 'https://example.com/wxAccount.aspx?id=2';
+      expect(await service.bindSource(unavailable), isNull);
+
+      expect(requestedUrls, [unavailable]);
+      expect(
+        PrefsService.instance.getString(PrefsKeys.ELECTRICITY_URL),
+        previous,
+      );
+    });
+
+    test('should_report_expiry_when_a_saved_link_expires', () async {
+      await PrefsService.instance.setString(
+        PrefsKeys.ELECTRICITY_URL,
+        'https://example.com/wxAccount.aspx?exp=1&sig=x',
+      );
+      final service = ElectricityService(
+        balanceReader: ({String? url}) async => fail('Queried expired link'),
+        weeklyDataReader: ({String? url}) async => fail('Queried expired link'),
+      );
+
+      expect(await service.hasConfiguredSource(), isTrue);
+      await expectLater(
+        service.fetchCurrentBalance(),
+        throwsA(ElectricitySourceError.expired),
+      );
+      await expectLater(
+        service.fetchWeeklyData(),
+        throwsA(ElectricitySourceError.expired),
+      );
     });
 
     test('should_delegate_weekly_data_request_with_cached_url', () async {

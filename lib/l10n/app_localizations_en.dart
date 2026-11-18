@@ -1671,6 +1671,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Open the university finance electricity page, copy the URL and paste below';
 
   @override
+  String get electricityUrlInvalid => 'Enter the full electricity link';
+
+  @override
+  String get electricityUrlExpired =>
+      'This electricity link has expired. Copy a new one from WeChat.';
+
+  @override
   String get urlPlaceholder => 'Enter URL';
 
   @override

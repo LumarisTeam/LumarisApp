@@ -1609,6 +1609,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get electricityUrlPrompt => '大学の財務電気料金ページを開き、URLをコピーして下に貼り付けてください';
 
   @override
+  String get electricityUrlInvalid => '電気料金ページの完全なリンクを入力してください';
+
+  @override
+  String get electricityUrlExpired =>
+      '電気料金のリンクの有効期限が切れました。WeChatから新しいリンクをコピーしてください。';
+
+  @override
   String get urlPlaceholder => 'URLを入力';
 
   @override

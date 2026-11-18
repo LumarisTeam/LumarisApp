@@ -1620,6 +1620,12 @@ class AppLocalizationsKo extends AppLocalizations {
       '건축대학교 재무처 전기요금 상세 페이지를 열고, 페이지 URL을 복사하여 아래 입력창에 붙여넣으세요';
 
   @override
+  String get electricityUrlInvalid => '전기요금 페이지의 전체 링크를 입력하세요';
+
+  @override
+  String get electricityUrlExpired => '전기요금 링크가 만료되었습니다. WeChat에서 새 링크를 복사하세요.';
+
+  @override
   String get urlPlaceholder => 'URL을 입력하세요';
 
   @override

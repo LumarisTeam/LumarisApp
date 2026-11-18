@@ -552,6 +552,8 @@
   "changeRoom": "Raum wechseln",
   "getElectricity": "Strom abrufen",
   "electricityUrlPrompt": "Öffnen Sie die Finanz-Stromseite der Universität, kopieren Sie die URL und fügen Sie sie unten ein",
+  "electricityUrlInvalid": "Gib den vollständigen Link zum Stromkonto ein",
+  "electricityUrlExpired": "Der Link zum Stromkonto ist abgelaufen. Kopiere einen neuen Link aus WeChat.",
   "urlPlaceholder": "URL eingeben",
   "createLowBalanceAlert": "Warnung bei niedrigem Guthaben erstellen",
   "lowBalanceAlertDesc": "Das System verwendet die gebundene Wohnheim-Stromseite, um E-Mail-Warnungen zu senden, wenn das Guthaben unter den Schwellenwert fällt.",

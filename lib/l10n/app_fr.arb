@@ -552,6 +552,8 @@
   "changeRoom": "Changer de chambre",
   "getElectricity": "Obtenir l'électricité",
   "electricityUrlPrompt": "Ouvrez la page électricité de l'université, copiez l'URL et collez-la ci-dessous",
+  "electricityUrlInvalid": "Saisissez le lien complet du compte d’électricité",
+  "electricityUrlExpired": "Ce lien a expiré. Copiez un nouveau lien depuis WeChat.",
   "urlPlaceholder": "Saisir l'URL",
   "createLowBalanceAlert": "Créer une alerte solde faible",
   "lowBalanceAlertDesc": "Le système utilisera la page électricité liée pour envoyer des alertes par email lorsque le solde passe sous le seuil.",

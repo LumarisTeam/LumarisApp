@@ -2,6 +2,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/electric_data.dart';
 import '../models/edu_api_models.dart';
+import '../../../core/services/network_exception.dart';
 import '../../../core/services/prefs_service.dart';
 import '../../../core/utils/app_logger.dart';
 import '../../../state/prefs_keys.dart';
@@ -18,6 +19,8 @@ typedef ElectricitySubscriptionCreator =
 typedef ElectricitySubscriptionQueryReader =
     Future<ElectricitySubscriptionQueryResponse> Function(String email);
 typedef ElectricitySubscriptionDeleter = Future<void> Function(String id);
+
+enum ElectricitySourceError implements Exception { invalidUrl, expired }
 
 /// 电费数据服务
 ///
@@ -50,37 +53,61 @@ class ElectricityService {
   Future<double?> fetchCurrentBalance({String? url}) async {
     try {
       if (url != null) {
-        await PrefsService.instance.setString(PrefsKeys.ELECTRICITY_URL, url);
+        return await bindSource(url);
       }
-      final resolvedUrl = await _resolveSourceUrl();
-      if (resolvedUrl.isEmpty) {
-        return null;
-      }
-
-      return await _balanceReader(url: resolvedUrl);
-    } catch (e) {
-      AppLogger.error('获取电费余额失败: $e');
+      final String savedUrl = _savedSourceUrl;
+      return savedUrl.isEmpty
+          ? null
+          : await _readSource(
+              () => _balanceReader(url: _validateSourceUrl(savedUrl)),
+            );
+    } on ElectricitySourceError {
+      if (url == null) rethrow;
+      return null;
+    } catch (_) {
+      AppLogger.error('获取电费余额失败');
       return null;
     }
   }
 
-  Future<bool> hasConfiguredSource() async {
-    final resolvedUrl = await _resolveSourceUrl();
-    return resolvedUrl.trim().isNotEmpty;
+  Future<double?> bindSource(String url) async {
+    final String source = _validateSourceUrl(url);
+    final double? balance = await _readSource(
+      () => _balanceReader(url: source),
+    );
+    if (balance != null) {
+      _validateSourceUrl(source);
+      final bool saved = await PrefsService.instance.setString(
+        PrefsKeys.ELECTRICITY_URL,
+        source,
+      );
+      if (!saved) throw StateError('无法保存电费链接');
+    }
+    return balance;
   }
 
+  Future<T> _readSource<T>(Future<T> Function() read) async {
+    try {
+      return await read();
+    } on NetworkException catch (error) {
+      if (error.apiCode == 30002 || error.statusCode == 410) {
+        throw ElectricitySourceError.expired;
+      }
+      if (error.apiCode == 10001) throw ElectricitySourceError.invalidUrl;
+      rethrow;
+    }
+  }
+
+  Future<bool> hasConfiguredSource() async => _savedSourceUrl.isNotEmpty;
+
   Future<List<ElectricData>> fetchWeeklyData() async {
-    final resolvedUrl = await _resolveSourceUrl();
-    return await _weeklyDataReader(
-      url: resolvedUrl.isEmpty ? null : resolvedUrl,
-    );
+    final String? source = _validatedSavedSource;
+    return await _readSource(() => _weeklyDataReader(url: source));
   }
 
   Future<String?> getRechargeUrl() async {
-    final resolvedUrl = await _resolveSourceUrl();
-    return await _rechargeUrlReader(
-      url: resolvedUrl.isEmpty ? null : resolvedUrl,
-    );
+    final String? source = _validatedSavedSource;
+    return await _readSource(() => _rechargeUrlReader(url: source));
   }
 
   Future<void> openRechargePage() async {
@@ -136,8 +163,8 @@ class ElectricityService {
     required String email,
     required double threshold,
   }) async {
-    final resolvedUrl = await _resolveSourceUrl();
-    if (resolvedUrl.isEmpty) {
+    final String? resolvedUrl = _validatedSavedSource;
+    if (resolvedUrl == null) {
       throw StateError('请先添加电费页面链接');
     }
 
@@ -171,12 +198,45 @@ class ElectricityService {
     await _subscriptionDeleter(id);
   }
 
-  Future<String> _resolveSourceUrl({String? url}) async {
-    if (url != null) {
-      await PrefsService.instance.setString(PrefsKeys.ELECTRICITY_URL, url);
+  String get _savedSourceUrl =>
+      PrefsService.instance.getString(PrefsKeys.ELECTRICITY_URL)?.trim() ?? '';
 
-      return url;
+  String? get _validatedSavedSource {
+    final String source = _savedSourceUrl;
+    return source.isEmpty ? null : _validateSourceUrl(source);
+  }
+
+  static String _validateSourceUrl(String url) {
+    final String source = url.trim();
+    final Uri? uri = Uri.tryParse(source);
+    if (uri == null ||
+        (uri.scheme != 'http' && uri.scheme != 'https') ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty ||
+        RegExp(r'[\s\x00-\x1f\x7f]').hasMatch(source) ||
+        source.contains(r'\')) {
+      throw ElectricitySourceError.invalidUrl;
     }
-    return PrefsService.instance.getString(PrefsKeys.ELECTRICITY_URL) ?? '';
+
+    final List<String> values;
+    try {
+      values = uri.queryParametersAll.entries
+          .where((entry) => entry.key.toLowerCase() == 'exp')
+          .expand((entry) => entry.value)
+          .toList();
+    } on FormatException {
+      throw ElectricitySourceError.invalidUrl;
+    }
+    if (values.isNotEmpty) {
+      final int? expiration =
+          values.length == 1 && RegExp(r'^[0-9]+$').hasMatch(values.single)
+          ? int.tryParse(values.single)
+          : null;
+      if (expiration == null) throw ElectricitySourceError.invalidUrl;
+      if (expiration <= DateTime.now().millisecondsSinceEpoch ~/ 1000) {
+        throw ElectricitySourceError.expired;
+      }
+    }
+    return source;
   }
 }

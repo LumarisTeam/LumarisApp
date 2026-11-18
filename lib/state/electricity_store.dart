@@ -80,6 +80,7 @@ class ElectricityStore extends Notifier<ElectricityState> {
         electricity: value ?? state.electricity,
         hasData: value != null || state.hasData,
         hasConfiguredSource: hasConfiguredSource,
+        sourceError: null,
       );
       final isVisible = await ref.read(electricityTileVisibilityReaderProvider)(
         '电费',
@@ -101,9 +102,17 @@ class ElectricityStore extends Notifier<ElectricityState> {
         electricity: value ?? state.electricity,
         hasData: value != null ? true : state.hasData,
         hasConfiguredSource: hasConfiguredSource,
+        sourceError: null,
         tiles: nextTiles,
         weeklyData: weekly,
       );
+    } on ElectricitySourceError catch (error) {
+      if (_loadGuard.isCurrent(requestId)) {
+        state = state.copyWith(
+          hasConfiguredSource: hasConfiguredSource ?? state.hasConfiguredSource,
+          sourceError: error,
+        );
+      }
     } catch (_) {
       // Keep the last known values on transient failures.
       if (_loadGuard.isCurrent(requestId) && hasConfiguredSource != null) {
@@ -131,6 +140,7 @@ class ElectricityStore extends Notifier<ElectricityState> {
         electricity: value ?? state.electricity,
         hasData: value != null || state.hasData,
         hasConfiguredSource: hasConfiguredSource,
+        sourceError: null,
       );
       final weekly = await ref.read(electricityWeeklyReaderProvider)();
 
@@ -140,8 +150,16 @@ class ElectricityStore extends Notifier<ElectricityState> {
         electricity: value ?? state.electricity,
         hasData: value != null ? true : state.hasData,
         hasConfiguredSource: hasConfiguredSource,
+        sourceError: null,
         weeklyData: weekly,
       );
+    } on ElectricitySourceError catch (error) {
+      if (_loadGuard.isCurrent(requestId)) {
+        state = state.copyWith(
+          hasConfiguredSource: hasConfiguredSource ?? state.hasConfiguredSource,
+          sourceError: error,
+        );
+      }
     } catch (_) {
       // Keep the last known values on transient failures.
       if (_loadGuard.isCurrent(requestId) && hasConfiguredSource != null) {
@@ -170,15 +188,13 @@ class ElectricityStore extends Notifier<ElectricityState> {
     await ref.read(tileEditControllerProvider.notifier).reload();
   }
 
-  Future<void> setElectricityValue(double value) async {
+  void setBoundBalance(double value) {
     state = state.copyWith(
       electricity: value,
       hasData: true,
       hasConfiguredSource: true,
+      sourceError: null,
+      weeklyData: const [],
     );
-  }
-
-  void setSourceConfigured(bool value) {
-    state = state.copyWith(hasConfiguredSource: value);
   }
 }

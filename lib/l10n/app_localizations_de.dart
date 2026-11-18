@@ -1704,6 +1704,14 @@ class AppLocalizationsDe extends AppLocalizations {
       'Öffnen Sie die Finanz-Stromseite der Universität, kopieren Sie die URL und fügen Sie sie unten ein';
 
   @override
+  String get electricityUrlInvalid =>
+      'Gib den vollständigen Link zum Stromkonto ein';
+
+  @override
+  String get electricityUrlExpired =>
+      'Der Link zum Stromkonto ist abgelaufen. Kopiere einen neuen Link aus WeChat.';
+
+  @override
   String get urlPlaceholder => 'URL eingeben';
 
   @override

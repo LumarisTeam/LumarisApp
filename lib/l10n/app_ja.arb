@@ -554,6 +554,8 @@
   "changeRoom": "部屋を変更",
   "getElectricity": "電気料金を取得",
   "electricityUrlPrompt": "大学の財務電気料金ページを開き、URLをコピーして下に貼り付けてください",
+  "electricityUrlInvalid": "電気料金ページの完全なリンクを入力してください",
+  "electricityUrlExpired": "電気料金のリンクの有効期限が切れました。WeChatから新しいリンクをコピーしてください。",
   "urlPlaceholder": "URLを入力",
   "createLowBalanceAlert": "残高不足アラートを作成",
   "lowBalanceAlertDesc": "システムはバインドされた寮の電気料金ページを使用して、残高が閾値を下回ったときにメールアラートを送信します。",

@@ -10,6 +10,7 @@ import 'package:ios_club_app/features/education/models/plan_course.dart';
 import 'package:ios_club_app/features/education/models/user_data.dart';
 import 'package:ios_club_app/core/services/app_locale_service.dart';
 import 'package:ios_club_app/state/schedule_color_themes.dart';
+import '../features/education/services/electricity_service.dart';
 import '../ui/theme/app_theme_color.dart';
 
 part 'app_states.freezed.dart';
@@ -141,6 +142,7 @@ class ElectricityState with _$ElectricityState {
     @Default(true) bool isLoading,
     @Default(false) bool hasData,
     @Default(false) bool hasConfiguredSource,
+    ElectricitySourceError? sourceError,
     @Default(0.0) double electricity,
     @Default(<String>[]) List<String> tiles,
     @Default(<ElectricData>[]) List<ElectricData> weeklyData,

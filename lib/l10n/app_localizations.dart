@@ -3177,6 +3177,18 @@ abstract class AppLocalizations {
   ///
   ///
   /// In zh, this message translates to:
+  /// **'请输入完整的电费链接'**
+  String get electricityUrlInvalid;
+
+  ///
+  ///
+  /// In zh, this message translates to:
+  /// **'电费链接已过期，请从微信重新复制'**
+  String get electricityUrlExpired;
+
+  ///
+  ///
+  /// In zh, this message translates to:
   /// **'请输入URL'**
   String get urlPlaceholder;
 

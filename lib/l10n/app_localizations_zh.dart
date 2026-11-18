@@ -1602,6 +1602,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get electricityUrlPrompt => '请打开建大财务处电费详情页面，复制页面URL并粘贴到下方输入框';
 
   @override
+  String get electricityUrlInvalid => '请输入完整的电费链接';
+
+  @override
+  String get electricityUrlExpired => '电费链接已过期，请从微信重新复制';
+
+  @override
   String get urlPlaceholder => '请输入URL';
 
   @override
@@ -4065,6 +4071,12 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
 
   @override
   String get electricityUrlPrompt => '請開啟建大財務處電費詳情頁面，複製頁面URL並貼上到下方輸入框';
+
+  @override
+  String get electricityUrlInvalid => '請輸入完整的電費連結';
+
+  @override
+  String get electricityUrlExpired => '電費連結已過期，請從微信重新複製';
 
   @override
   String get urlPlaceholder => '請輸入URL';

@@ -1698,6 +1698,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ouvrez la page électricité de l\'université, copiez l\'URL et collez-la ci-dessous';
 
   @override
+  String get electricityUrlInvalid =>
+      'Saisissez le lien complet du compte d’électricité';
+
+  @override
+  String get electricityUrlExpired =>
+      'Ce lien a expiré. Copiez un nouveau lien depuis WeChat.';
+
+  @override
   String get urlPlaceholder => 'Saisir l\'URL';
 
   @override

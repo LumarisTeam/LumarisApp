@@ -1676,6 +1676,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Откройте финансовую страницу электричества университета, скопируйте URL и вставьте ниже';
 
   @override
+  String get electricityUrlInvalid =>
+      'Введите полную ссылку на страницу оплаты электроэнергии';
+
+  @override
+  String get electricityUrlExpired =>
+      'Срок действия ссылки истёк. Скопируйте новую ссылку из WeChat.';
+
+  @override
   String get urlPlaceholder => 'Введите URL';
 
   @override
